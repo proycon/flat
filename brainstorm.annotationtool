@@ -1,0 +1,81 @@
+
+
+
+FoLiA Linguistic Annotation Tool - FLAT
+
+Declarations:
+    - set a declaration for each annotation-type & set
+        - each gets a color
+
+    - allow preset declarations
+
+
+
+
+Features:
+    - Token annotation
+    - Span annotation
+    - Corrections
+    - Alignments
+    - Comments
+
+Views:
+    - Full document view
+    - View any subpart(s), support highlights (allows concordance view)
+    
+    
+
+
+- server: update by one or more subparts (structures)
+
+
+
+/$DOCID/download/
+    download the folia document
+/$DOCID/    POST
+    upload a document
+    returns docid
+/$DOCID/
+    view entire folia document, with interface
+/$DOCID/?ids=x,y,z
+    Return multile subparts (json)
+/$DOCID/$STRUCTUREID
+    Return subpart (json)
+/$DOCID/addannotation/
+    ?type=pos,lemma,su,etc...
+    ?set=
+    ?class=
+    ?to= (single ID for token annotaiton, multiple for span)
+    ?annotator=
+    ?annotatortype=
+/$DOCID/delannotation/
+    [?id=]
+    ?type=pos,lemma,su,etc...
+    ?set=
+    ?class=
+    
+ 
+
+
+
+
+
+Annotation Server (python/django)
+
+
+Annotation Client (javascript)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
