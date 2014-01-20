@@ -29,32 +29,59 @@ Views:
 - server: update by one or more subparts (structures)
 
 
+    - insertions
+    - deletions
+    - joins & splits
+    - select suggestions
+    - undo
 
-/$DOCID/download/
-    download the folia document
-/$DOCID/    POST
-    upload a document
-    returns docid
-/$DOCID/
-    view entire folia document, with interface
-/$DOCID/?ids=x,y,z
+
+
+foliadocserve
+-------------------
+
+/$NAMESPACE/$DOCID/
+    Return entire document (json)
+/$NAMESPACE/$DOCID/?ids=x,y,z
     Return multile subparts (json)
-/$DOCID/$STRUCTUREID
+/$NAMESPACE/$DOCID/$STRUCTUREID
     Return subpart (json)
-/$DOCID/addannotation/
+/$NAMESPACE/$DOCID/addannotation/
     ?type=pos,lemma,su,etc...
     ?set=
     ?class=
     ?to= (single ID for token annotaiton, multiple for span)
     ?annotator=
     ?annotatortype=
-/$DOCID/delannotation/
+/$NAMESPACE/$DOCID/correction/
+    
+/$NAMESPACE/$DOCID/delannotation/
     [?id=]
     ?type=pos,lemma,su,etc...
     ?set=
     ?class=
     
  
+server
+--------------
+
+/ 
+    Login screen or My Documents view
+/$DOCID/$EDITOR/
+    Document editor
+/$DOCID/
+
+
+
+
+
+
+----------
+
+
+
+
+
 
 
 
