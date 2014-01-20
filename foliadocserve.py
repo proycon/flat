@@ -101,7 +101,7 @@ class Root:
         return "ok"
 
     @cherrypy.expose
-    def getdoc(self, namespace, docid, **args):
+    def getdoc(self, namespace, docid):
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -112,7 +112,16 @@ class Root:
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
-
+    def getelement(self, namespace, docid, elementid):
+        namepace = namespace.replace('/','').replace('..','')
+        try:
+            cherrypy.response.headers['Content-Type'] = 'application/json'
+            return json.dumps({
+                'html': gethtml(self.docstore[(namespace,docid)][elementid]),
+                'annotations': getannotations(self.docstore[(namespace,docid)][elementid]),
+            })
+        except NoSuchDocument:
+            raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
 
     @cherrypy.expose
