@@ -29,6 +29,7 @@ DATABASES = {
 
 if hostname == 'mhysa' or hostname == 'galactica':
     ROOT = "/home/proycon/work/flat/"
+    WORKDIR = "/home/proycon/work/flat/tmpworkdir/"
     FOLIADOCSERVE_HOST = '127.0.0.1'
     FOLIADOCSERVE_PORT = 8080
     DATABASES['default'] = {
@@ -99,6 +100,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
+
+LOGIN_URL = "
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
