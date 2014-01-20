@@ -97,12 +97,14 @@ class Root:
     def makenamespace(self, namespace):
         namepace = namespace.replace('/','').replace('..','')
         os.mkdir(self.workdir + '/' + namespace)
+        cherrypy.response.headers['Content-Type']= 'text/plain'
         return "ok"
 
     @cherrypy.expose
     def getdoc(self, namespace, docid, **args):
         namepace = namespace.replace('/','').replace('..','')
         try:
+            cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)].data[0]),
                 'annotations': getannotations(self.docstore[(namespace,docid)].data[0]),
@@ -117,6 +119,7 @@ class Root:
     def getdocjson(self, namespace, docid, **args):
         namepace = namespace.replace('/','').replace('..','')
         try:
+            cherrypy.response.headers['Content-Type']= 'application/json'
             return json.dumps(self.docstore[(namespace,docid)].json())
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
@@ -125,6 +128,7 @@ class Root:
     def getdocxml(self, namespace, docid, **args):
         namepace = namespace.replace('/','').replace('..','')
         try:
+            cherrypy.response.headers['Content-Type']= 'text/xml'
             return self.docstore[(namespace,docid)].xmlstring()
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
