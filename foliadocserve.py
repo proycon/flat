@@ -6,6 +6,7 @@ import argparse
 import time
 import os
 import sys
+import json
 from pynlpl.formats import folia
 
 def fake_wait_for_occupied_port(host, port): return
@@ -57,6 +58,34 @@ class DocStore(dict):
             self.unload(key, save)
 
 
+def gethtml(element):
+    """Converts the element to html skeleton"""
+    if isinstance(element, folia.AbstractStructureElement):
+        s = "<div id=\"" + element.id + "\" class=\"" + element.XMLTAG + "\">"
+        for child in element:
+            if isinstance(element, folia.AbstractStructureElement):
+                s += gethtml(child)
+        s += "</div>"
+        return s
+    else:
+        raise Exception("Structure element expected")
+
+def getannotations(element):
+    if isinstance(element, folia.AbstractTokenAnnotation):
+        annotation = element.json()
+        p = element.parent
+        while not p.id or not isinstance(p, folia.AbstractStructureElement):
+            p = p.parent
+        annotation['targets'] = [ p.id ]
+        yield annotation
+    elif isinstance(element, folia.AbstractSpanAnnotation):
+        annotation = element.json()
+        annotation['targets'] = [ x.id for x in element.wrefs() ]
+    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element.AbstractSpanAnnotatation):
+        for child in element:
+            for x in getannotations(child):
+                yield x
+
 
 
 class Root:
@@ -71,13 +100,26 @@ class Root:
         return "ok"
 
     @cherrypy.expose
-    def getdocjson(self, namespace, docid, **args):
+    def getdoc(self, namespace, docid, **args):
         namepace = namespace.replace('/','').replace('..','')
         try:
-            self.docstore[(namespace,docid)]
+            return json.dumps({
+                'html': gethtml(self.docstore[(namespace,docid)].data[0]),
+                'annotations': getannotations(self.docstore[(namespace,docid)].data[0]),
+            })
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
+
+
+
+    @cherrypy.expose
+    def getdocjson(self, namespace, docid, **args):
+        namepace = namespace.replace('/','').replace('..','')
+        try:
+            return json.dumps(self.docstore[(namespace,docid)].json())
+        except NoSuchDocument:
+            raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
     @cherrypy.expose
     def getdocxml(self, namespace, docid, **args):
