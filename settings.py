@@ -1,5 +1,5 @@
 # Django settings for flat project.
-import os
+from socket import gethostname
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -11,7 +11,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 
-hostname = os.gethostname()
+hostname = gethostname()
 
 
 
@@ -29,6 +29,8 @@ DATABASES = {
 
 if hostname == 'mhysa' or hostname == 'galactica':
     ROOT = "/home/proycon/work/flat/"
+    FOLIADOCSERVE_HOST = '127.0.0.1'
+    FOLIADOCSERVE_PORT = 8080
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'db',                      # Or path to database file if using sqlite3.
