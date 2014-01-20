@@ -40,11 +40,9 @@ Views:
 foliadocserve
 -------------------
 
-/$NAMESPACE/$DOCID/
+/getdocjson/$NAMESPACE/$DOCID/
     Return entire document (json)
-/$NAMESPACE/$DOCID/?ids=x,y,z
-    Return multile subparts (json)
-/$NAMESPACE/$DOCID/$STRUCTUREID
+/getpartjson/$NAMESPACE/$DOCID/$STRUCTUREID
     Return subpart (json)
 /$NAMESPACE/$DOCID/addannotation/
     ?type=pos,lemma,su,etc...
@@ -68,7 +66,7 @@ server
 / 
     Login screen or My Documents view
 /$DOCID/$EDITOR/
-    Document editor
+    Document editor (according to specific module)
 /$DOCID/
 
 
