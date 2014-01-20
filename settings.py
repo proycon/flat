@@ -1,13 +1,19 @@
 # Django settings for flat project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Maarten van Gompel', 'proycon@anaproy.nl'),
 )
 
 MANAGERS = ADMINS
+
+
+hostname = os.gethostname()
+
+
 
 DATABASES = {
     'default': {
@@ -21,6 +27,16 @@ DATABASES = {
     }
 }
 
+if hostname == 'mhysa' or hostname == 'galactica':
+    ROOT = "/home/proycon/work/flat/"
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'db',                      # Or path to database file if using sqlite3.
+    }
+else:
+    raise Exception("I don't know where I'm running from!")
+
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -29,7 +45,7 @@ ALLOWED_HOSTS = []
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Amsterdam'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -39,7 +55,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
@@ -111,6 +127,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    ROOT + 'templates/'
 )
 
 INSTALLED_APPS = (
