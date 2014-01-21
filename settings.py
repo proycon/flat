@@ -153,7 +153,7 @@ INSTALLED_APPS = (
 )
 
 EDITOR_MODES = {
-    ('Viewer','view'),
+    ('viewer','Viewer'),
 }
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
