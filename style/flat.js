@@ -28,7 +28,7 @@ function loadtext(annotationlist) {
     annotationlist.forEach(function(annotation){
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             annotation.targets.forEach(function(target){
-                $('#' + target).html("<span class=\"t\">" + annotation.text + "</span>");
+                $('#' + target + " span.lbl").html(annotation.text);
             });
         }
     });
