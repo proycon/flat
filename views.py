@@ -3,12 +3,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import django.contrib.auth
 import flat.settings as settings
+import flat.comm as comm
 
 import glob
 import os
 
-from urllib import urlencode
-from urllib2 import urlopen
 
 def login(request):
     if 'username' in request.POST and 'password' in request.POST:
@@ -48,11 +47,7 @@ def index(request):
             docs.append(docid)
     else:
         docs = []
-        params = urlencode({'foo': 1, 'bar': 2})
-        f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/makenamespace/" + request.user.username) #or opener.open()
-        for line in f:
-            pass
-        f.close()
+        comm.get(request, "makenamespace/%NS%")
     return render(request, 'index.html', {'docs': docs, 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
 
