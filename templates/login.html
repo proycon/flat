@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div id="dialog">
+    <form action="/login/" method="post">
+        <label>Username:</label> <input name="username" />
+        <label>Password:</label> <input type="password" name="password" />
+        <input type="submit" value="Log in" />
+    </form>
+</div>
+{% endblock %}
+
