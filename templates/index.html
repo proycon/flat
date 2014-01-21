@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<div class="dialog">
+    <h3>My Documents</h3>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    <ul id="doclist">
+    {% for doc in docs %}
+    <li><a href="/editor/{{ doc }}/">{{ doc }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
