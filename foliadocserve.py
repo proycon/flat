@@ -91,6 +91,8 @@ def gethtml(element):
                 s += gethtml(child)
         if not isinstance(element, folia.Text) and not isinstance(element, folia.Division):
             label = "<span class=\"lbl\">" + element.text() + " </span>"
+        else:
+            label = ""
         if isinstance(element, folia.Word) and element.space:
             label += "&nbsp;"
 
