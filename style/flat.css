@@ -160,9 +160,17 @@ div.div, div.p {
 div.s, div.w {
     display: inline;
 }
+div.head {
+    font-size: 120%;
+    font-weight: bold;
+}
 
 span.lbl {
     display: none;
+}
+
+div.hover span.lbl {
+    background: #b9d8d9;
 }
 
 

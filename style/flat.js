@@ -22,6 +22,20 @@ function onfoliaclick() {
         f(this);
     }
 }
+function onfoliamouseenter() {
+    sethover(this);
+    if (function_exists(mode + '_onmouseenter')) {
+        f = eval(mode + '_onmouseenter');
+        f(this);
+    }
+}
+function onfoliamouseleave() {
+    sethover(null);
+    if (function_exists(mode + '_onmouseleave')) {
+        f = eval(mode + '_onmouseleave');
+        f(this);
+    }
+}
 
 function loadtext(annotationlist) {
     //reload text into the structure
@@ -56,25 +70,39 @@ function loadannotations(annotationlist) {
 }
 
 function registerhandlers() {
-    $('.F').click(onfoliaclick);
+    $('.F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
 }
 
-function setview(view) {
+function setview(v) {
+    view = v;
     $('div.F span.lbl').hide();
-    if (view == 'n') {
+    $('div.s').css('display', 'inline');
+    if (v == 'deepest') {
         $('div.deepest>span.lbl').show();
-    } else if (view == 'w') {
+    } else if (v == 'w') {
         $('div.w>span.lbl').show();
-    } else if (view == 's') {
+    } else if (v == 's') {
+        $('div.s').css('display', 'block');
         $('div.s>span.lbl').show();
-    } else if (view == 's') {
+    } else if (v == 'p') {
         $('div.p>span.lbl').show();
+    }
+}
+
+
+function sethover(element) {
+    if (element.hasClass(view)) {
+        if (hover) $(hover).removeClass("hover");
+        if (element) $(element).addClass("hover");
+        hover = element;
     }
 }
 
 annotations = {}; //annotations per structure item
 docid = null;
 initialannotationlist = [];
+hover = null;
+view = 'deepest';
 
 $(function() {
     //loadtext(initialannotationlist);
@@ -83,7 +111,6 @@ $(function() {
     if (function_exists(mode + '_oninit')) {
         f = eval(mode + '_oninit');
         f();
-    } else {
-        setview('n');
     }
+    setview(view);
 });
