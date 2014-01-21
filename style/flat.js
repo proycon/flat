@@ -29,18 +29,21 @@ function onfoliaclick() {
         f = eval(mode + '_onclick');
         f(this);
     }
+    return false;
 }
 function onfoliamouseenter() {
     if (function_exists(mode + '_onmouseenter')) {
         f = eval(mode + '_onmouseenter');
         f(this);
     }
+    return false;
 }
 function onfoliamouseleave() {
     if (function_exists(mode + '_onmouseleave')) {
         f = eval(mode + '_onmouseleave');
         f(this);
     }
+    return false;
 }
 
 function loadtext(annotationlist) {

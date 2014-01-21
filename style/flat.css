@@ -180,25 +180,33 @@ nav ul ul li.on {
     background: #0b470a;
 }
 
-div.info {
+div#info {
     position: absolute;
     display: none;
-    width: 320px;
+    width: 480px;
     min-height: 25px;
-    opacity: 0.8;
-    width: 70%;
+    opacity: 0.95;
     background: #b9d8d9;
     padding: 2px;
     margin: 5px;
+    text-align: left;
+    border: #30677c 1px solid;
 }
 div#info table {
     width: 100%;
 }
 div#info th {
     width: 39%
+    font-weight: bold;
+}
+div#info th span.setname {
+    font-weight: normal;
+    text-size: 8pt;
+    padding-left: 10px;
 }
 div#info td {
     width: 59%
+    font-style: italic;
 }
 
 

@@ -38,24 +38,31 @@ function viewer_onmouseenter(element) {
 }
 
 function showinfo(element) {
-    s = "<table>"
-    if ((element.id)  && (annotations[element.id])) {
-        Object.keys(annotations[element.id]).forEach(function(annotationtype){
-            annotation = annotations[element.id][annotationtype];
-            if (viewannotations[annotationtype]) {
-                if (annotationtypenames[annotation.type]) {
-                    label = annotationtypenames[annotation.type];
-                } else {
-                    label = annotation.type;
+    if ((element) && ($(element).hasClass(view))) {
+        if ((element.id)  && (annotations[element.id])) {
+            s = "<table>";
+            Object.keys(annotations[element.id]).forEach(function(annotationtype){
+                annotation = annotations[element.id][annotationtype];
+                if (viewannotations[annotationtype]) {
+                    if (annotationtypenames[annotation.type]) {
+                        label = annotationtypenames[annotation.type];
+                    } else {
+                        label = annotation.type;
+                    }
+                    if (annotation.set) {
+                        setname = annotation.set;
+                    } else {
+                        setname = "";
+                    }
+                    s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>" + annotation.class + "</td></tr>";
                 }
-                s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + annotation.set + "</span></th><td>" + annotation.class + "</td></tr>";
-            }
-        });
+            });
+            s = s + "</table>";
+            $('#info').html(s);
+            $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
+            $('#info').show();    
+        }
     }
-    s = s = "</table>";
-    $('#info').html(s);
-    $('#info').css({'top':mouseY+ 20, 'left':mouseX} );
-    $('#info').show();    
 }
 
 
@@ -86,5 +93,6 @@ function viewer_oninit() {
       });
     });
     $('#annotationsviewmenu').html(s);
+    if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
 }
