@@ -109,7 +109,7 @@ def getannotations(element):
     elif isinstance(element, folia.AbstractSpanAnnotation):
         annotation = element.json()
         annotation['targets'] = [ x.id for x in element.wrefs() ]
-    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element.AbstractSpanAnnotatation):
+    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotatation):
         for child in element:
             for x in getannotations(child):
                 yield x
@@ -135,7 +135,7 @@ class Root:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)].data[0]),
-                'annotations': getannotations(self.docstore[(namespace,docid)].data[0]),
+                'annotations': tuple(getannotations(self.docstore[(namespace,docid)].data[0])),
             })
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
@@ -146,7 +146,7 @@ class Root:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)][elementid]),
-                'annotations': getannotations(self.docstore[(namespace,docid)][elementid]),
+                'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
             })
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
