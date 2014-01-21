@@ -48,14 +48,17 @@ function toggleannotationview(annotationtype) {
 function viewer_oninit() {
     setview(view);
     s = "";
-    Object.values(annotations).forEach(function(annotation){
-        viewannotations[annotation.type] = true;
-        if (annotationtypenames[annotation.type]) {
-            label = annotationtypenames[annotation.type];
-        } else {
-            label = annotation.type;
+    Object.keys(annotations).forEach(function(annotationkey){
+        annotation = annotations[annotationkey];
+        if (!viewannotations[annotation.type]) {
+            viewannotations[annotation.type] = true;
+            if (annotationtypenames[annotation.type]) {
+                label = annotationtypenames[annotation.type];
+            } else {
+                label = annotation.type;
+            }
+            s = s +  "<li id=\"annotationtypeview_" +annotation.type+"\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotation.type + "')\">" + label + "</a></li>";
         }
-       s = s +  "<li id=\"annotationtypeview_" +annotation.type+"\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotation.type + "')\">" + label + "</a></li>";
     });
     $('#annotationsviewmenu').html(s);
 }

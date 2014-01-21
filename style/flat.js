@@ -1,4 +1,4 @@
-annotationtypes = {
+annotationtypenames = {
     'pos': 'Part-of-Speech',
     'lemma': 'Lemma',
 }
