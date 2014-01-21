@@ -89,10 +89,14 @@ def gethtml(element):
         for child in element:
             if isinstance(child, folia.AbstractStructureElement):
                 s += gethtml(child)
-        if s:
-            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\"><span class=\"lbl\"></span>" + s
+        if not isinstance(element, folia.Text) and not isinstance(element, folia.Division):
+            label = "<span class=\"lbl\">" + element.text() + " </span>"
         else:
-            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\"><span class=\"lbl\"></span>"
+            label = ""
+        if s:
+            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + s
+        else:
+            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\"><span class=\"lbl\">" +element.text() + "</span>"
         s += "</div>"
         return s
     else:

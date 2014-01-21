@@ -24,14 +24,19 @@ function onfoliaclick() {
 }
 
 function loadtext(annotationlist) {
+    alert('loadtext ' + annotationlist.length);
     //load text into the structure
+    count = 0;
     annotationlist.forEach(function(annotation){
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
-            annotation.targets.forEach(function(target){
-                $('#' + target + " span.lbl").html(annotation.text);
-            });
+            if (annotation.targets) {
+                annotation.targets.forEach(function(target){
+                    $('#' + target + " span.lbl").html(annotation.text);
+                });
+            }
         }
     });
+    alert('loadtext2');
     if (function_exists(mode + '_onloadtext')) {
         f = eval(mode + '_onloadtext');
         f(annotationlist);
@@ -39,6 +44,7 @@ function loadtext(annotationlist) {
 }
 
 function loadannotations(annotationlist) {
+    alert('loadannotations');
     //load text into the structure
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
@@ -64,7 +70,7 @@ docid = null;
 initialannotationlist = [];
 
 $(function() {
-    loadtext(initialannotationlist);
+    //loadtext(initialannotationlist);
     loadannotations(initialannotationlist);
     registerhandlers();
 });
