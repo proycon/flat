@@ -57,15 +57,16 @@ function registerhandlers() {
     });
 }
 
-if (typeof docid !== undefined) {
-    annotations = {} //annotations per structure item
+annotations = {}; //annotations per structure item
+docid = null;
+initialannotationlist = [];
 
-
-    $(function() {
-        if (typeof initialannotationlist !== undefined) {
+$(function() {
+    if (docid) {
+        if (initialannotationlist) {
             loadtext(initialannotationlist);
             loadannotations(initialannotationlist);
             registerhandlers();
         }
-    });
-}
+    }
+});

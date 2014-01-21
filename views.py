@@ -48,7 +48,8 @@ def index(request):
     else:
         docs = []
         comm.get(request, "makenamespace/%NS%")
-    return render(request, 'index.html', {'docs': docs, 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
+
+    return render(request, 'index.html', {'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
 
 

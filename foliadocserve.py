@@ -15,10 +15,11 @@ def fake_wait_for_occupied_port(host, port): return
 class NoSuchDocument(Exception):
     pass
 
-class DocStore(dict):
+class DocStore:
     def __init__(self, workdir, expiretime):
         self.workdir = workdir
         self.expiretime = expiretime
+        self.data = {}
         self.lastchange = {}
         super().__init__()
 
@@ -28,17 +29,20 @@ class DocStore(dict):
 
     def load(self,key):
         filename = self.getfilename(key)
-        if not filename in self:
+        if not key in self:
             if not os.path.exists(filename):
                 raise NoSuchDocument
-            self[key] = folia.Document(file=filename)
+            print("Loading " + filename,file=sys.stderr)
+            self.data[key] = folia.Document(file=filename)
             self.lastchange[key] = time.time()
 
     def unload(self, key, save=True):
         if key in self:
             if save:
-                self[key].save()
-            del self[key]
+                print("Saving " + "/".join(key),file=sys.stderr)
+                self.data[key].save()
+            print("Unloading " + "/".join(key),file=sys.stderr)
+            del self.data[key]
             del self.lastchange[key]
         else:
             raise NoSuchDocument
@@ -46,7 +50,24 @@ class DocStore(dict):
     def __getitem__(self, key):
         assert isinstance(key, tuple) and len(key) == 2
         self.load(key)
-        super().__getitem__(key)
+        return self.data[key]
+
+    def __contains__(self,key):
+        assert isinstance(key, tuple) and len(key) == 2
+        return key in self.data
+
+
+    def __len__(self):
+        return len(self.data)
+
+    def keys(self):
+        return self.data.keys()
+
+    def items(self):
+        return self.data.items()
+
+    def values(self):
+        return self.data.values()
 
     def autounload(self, save=True):
         unload = []

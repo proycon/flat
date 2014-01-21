@@ -45,6 +45,7 @@ EDITOR_MODES = {
     ('viewer','Viewer'),
 }
 
+DEFAULTMODE = 'viewer'
 
 
 

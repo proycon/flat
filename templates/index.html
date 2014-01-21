@@ -9,7 +9,7 @@
     {% endif %}
     <ul id="doclist">
     {% for doc in docs %}
-    <li><a href="/editor/{{ doc }}/">{{ doc }}</li>
+    <li><a href="/{{ defaultmode }}/{{ doc }}/">{{ doc }}</a></li>
     {% endfor %}
     </ul>
 </div>
