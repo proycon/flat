@@ -8,9 +8,7 @@ import glob
 import os
 
 def login(request):
-    if not request.user.is_authenticated():
-        return render(request, 'login.html')
-    else:
+    if 'username' in request.POST and 'password' in request.POST:
         username = request.POST['username']
         password = request.POST['password']
         user = django.contrib.auth.authenticate(username=username, password=password)
@@ -30,6 +28,8 @@ def login(request):
         else:
             # Return an 'invalid login' error message.
             return render(request, 'login.html', {'error': "Invalid username or password"} )
+    else:
+        return render(request, 'login.html')
 
 
 def logout(request):
