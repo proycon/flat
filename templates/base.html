@@ -9,11 +9,27 @@
         <script type="text/javascript" src="/style/flat.js"></script> 
         {% block head %}
         {% endblock %}
+        {% if docid %}
+        <script type="text/javascrtips">
+            username = "{{ username }}";
+            docid = "{{ docid }}";
+            modes = {{ json_modes }};
+            mode = "{{ mode }}";
+            {% if docannotations %}
+            initialannotationlist = {{ docannotations }};
+            {% endif %}
+        </script>
+        {% endif %}
     </head>
     <body>
         <div id="topbar">
             <div class="left">
-            <ul>
+            <ul class="menu">
+            {% if docid %}
+                {% for mode, modename in modes %}
+                    <li><a href="/{{ mode }}/{{ docid }}/">{{ modename }}</li>
+                {% endfor %}
+            {% endif %}
             {% block topbar_left %}
             {% endblock %}
             </ul>

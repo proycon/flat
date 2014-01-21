@@ -8,6 +8,6 @@ import json
 @login_required
 def view(request, docid):
     doc = comm.get(request, '/getdoc/%NS%/' + docid + '/')
-    return render(request, 'viewer.html', {'dochtml': dochtml, 'docannotations': json.dumps(doc.annotations), 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
+    return render(request, 'viewer.html', {'docid': docid, 'mode': 'viewer', 'modes': modes, 'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]), 'dochtml': doc['html'], 'docannotations': json.dumps(doc['annotations']), 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
 

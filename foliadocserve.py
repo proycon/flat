@@ -61,17 +61,21 @@ class DocStore(dict):
 def gethtml(element):
     """Converts the element to html skeleton"""
     if isinstance(element, folia.AbstractStructureElement):
-        s = "<div id=\"" + element.id + "\" class=\"" + element.XMLTAG + "\">"
+        s = ""
         for child in element:
             if isinstance(element, folia.AbstractStructureElement):
                 s += gethtml(child)
+        if s:
+            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + s
+        else:
+            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\">"
         s += "</div>"
         return s
     else:
         raise Exception("Structure element expected")
 
 def getannotations(element):
-    if isinstance(element, folia.AbstractTokenAnnotation):
+    if isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
         while not p.id or not isinstance(p, folia.AbstractStructureElement):
