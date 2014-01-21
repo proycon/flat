@@ -1,0 +1,68 @@
+body {
+    font-family: Ubuntu, Verdana, sans-serif;
+    font-size: 10pt;
+    background: #cbd9de;
+}
+
+#topbar {
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+    background: black;
+    color: white;
+    min-height: 64px;
+}
+#topbar ul {
+    margin: 0px;
+}
+#topbar li {
+    display: inline;
+    list-style-type: none;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.right {
+    float: right;
+}
+
+#topbar a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#topbar a:hover {
+    color: #cbd9de;
+    text-decoration: underline;
+}
+
+div.dialog {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    background: #ededed;
+    color: #333;
+    border: #30677c 1px solid;
+    border-radius: 15px;
+    min-height: 100px;
+}
+div.dialog label {
+    display: inline-block;
+    font-weight: bold;
+    width: 120px;
+}
+div.dialog input {
+    display: inline-block;
+    width: 120px;
+    background: white;
+    border: #30677c 1px solid;
+    border-radius: 5px;
+}
+input.button {
+    background: #2a2a2a;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+}

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div id="dialog">
+<div id="logindialog" class="dialog">
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
     <form action="/login/" method="post">
-        <label>Username:</label> <input name="username" />
-        <label>Password:</label> <input type="password" name="password" />
-        <input type="submit" value="Log in" />
+    <label>Username:</label> <input name="username" /><br />
+    <label>Password:</label> <input type="password" name="password" /></br>
+    <input class="button" type="submit" value="Log in" />
     </form>
 </div>
 {% endblock %}
