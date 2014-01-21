@@ -167,6 +167,8 @@ div.head {
 
 span.lbl {
     display: none;
+    padding: 0;
+    margin: 0;
 }
 
 div.hover span.lbl {

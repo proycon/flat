@@ -30,7 +30,6 @@ function onfoliamouseenter() {
     }
 }
 function onfoliamouseleave() {
-    sethover(null);
     if (function_exists(mode + '_onmouseleave')) {
         f = eval(mode + '_onmouseleave');
         f(this);
@@ -91,9 +90,9 @@ function setview(v) {
 
 
 function sethover(element) {
-    if (element.hasClass(view)) {
+    if ((element) && ($(element).hasClass(view))) {
         if (hover) $(hover).removeClass("hover");
-        if (element) $(element).addClass("hover");
+        $(element).addClass("hover");
         hover = element;
     }
 }
