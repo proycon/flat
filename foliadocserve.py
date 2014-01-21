@@ -109,7 +109,7 @@ def getannotations(element):
     elif isinstance(element, folia.AbstractSpanAnnotation):
         annotation = element.json()
         annotation['targets'] = [ x.id for x in element.wrefs() ]
-    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotatation):
+    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotation):
         for child in element:
             for x in getannotations(child):
                 yield x
