@@ -12,7 +12,22 @@
     </head>
     <body>
         <div id="topbar">
-
+            <div class="left">
+            <ul>
+            {% block topbar_left %}
+            {% endblock %}
+            </ul>
+            </div>
+            <div class="right">
+            <ul>
+            {% block topbar_right %}
+            {% endblock %}
+            {% if loggedin %}
+            <li><a href="/">My Documents</a></li>
+            <li><a href="/logout/">Log out {{ username }}</a></li>
+            {% endif %}
+            </ul>
+            </div>
         </div>
         
         <div id="main">

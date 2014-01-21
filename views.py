@@ -45,7 +45,8 @@ def index(request):
     else:
         docs = []
         #TODO: makenamespace
-    return render(request, 'index.html', {'docs': docs})
+        pass
+    return render(request, 'index.html', {'docs': docs, 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
 
 
