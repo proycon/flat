@@ -66,6 +66,5 @@ if (docid !== undefined) {
             loadtext(initialannotationlist)
             loadannotations(initialannotationlist)
         }
-
     });
 }

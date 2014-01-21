@@ -118,3 +118,8 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+//Hide all FoLiA elements initially, editor has to explicitly make the desired items visibile
+.F {
+    display: none;
+}
