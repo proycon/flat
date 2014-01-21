@@ -7,6 +7,9 @@ import flat.settings as settings
 import glob
 import os
 
+from urllib import urlencode
+from urllib2 import urlopen
+
 def login(request):
     if 'username' in request.POST and 'password' in request.POST:
         username = request.POST['username']
@@ -34,18 +37,22 @@ def login(request):
 
 def logout(request):
     django.contrib.auth.logout(request)
-    redirect("/login")
+    return redirect("/login")
 
 @login_required
 def index(request):
     if os.path.isdir(settings.WORKDIR + "/" + request.user.username):
         docs = []
         for filename in glob.glob(settings.WORKDIR + "/" + request.user.username + "/*.folia.xml"):
-            docs.append( os.path.basename(filename) )
+            docid =  os.path.basename(filename.replace('.folia.xml',''))
+            docs.append(docid)
     else:
         docs = []
-        #TODO: makenamespace
-        pass
+        params = urlencode({'foo': 1, 'bar': 2})
+        f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/makenamespace/" + request.user.username) #or opener.open()
+        for line in f:
+            pass
+        f.close()
     return render(request, 'index.html', {'docs': docs, 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
 

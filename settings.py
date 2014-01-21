@@ -152,6 +152,10 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+EDITOR_MODES = {
+    ('Viewer','view'),
+}
+
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # A sample logging configuration. The only tangible logging

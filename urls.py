@@ -18,4 +18,12 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-) + static(settings.STYLE_URL, document_root=settings.STYLE_ROOT)
+)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STYLE_URL, document_root=settings.STYLE_ROOT)
+
+for mode, _ in settings.EDITOR_MODES:
+    urlpatterns += patterns('',url(r'^' + mode + '/', include('flat.modes.' + mode + '.urls')))
+
+

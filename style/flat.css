@@ -99,13 +99,22 @@ span.title {
 h3 {
     border-bottom: #30677c 1px solid;
     color: #30677c;
+    margin-top: -5px;
 }
 ul#doclist {
     border: #30677c 1px solid;
     border-radius: 5px;
     padding: 2px;
     margin: 5px;
-    background: #2a2a2a;
-    color: white;
+    background: white;
+    color: black;
     min-height: 50px;
+}
+a {
+    color: #30677c;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
