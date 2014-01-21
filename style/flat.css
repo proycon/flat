@@ -153,12 +153,14 @@ nav>ul>li {
     font-weight: bold;
 }
 
-div.FB {
+div.div, div.p {
     display: block;
+    margin-bottom: 5px;
 }
-div.F {
+div.s, div.w {
     display: inline;
 }
+
 span.lbl {
     display: none;
 }

@@ -57,12 +57,10 @@ function loadannotations(annotationlist) {
 
 function registerhandlers() {
     $('.F').click(onfoliaclick);
-    $('.FB').click(onfoliaclick);
 }
 
 function setview(view) {
     $('div.F span.lbl').hide();
-    $('div.FB span.lbl').hide();
     if (view == 'n') {
         $('div.deepest>span.lbl').show();
     } else if (view == 'w') {
