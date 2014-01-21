@@ -17,11 +17,11 @@ def login(request):
                 django.contrib.auth.login(request, user)
                 # Redirect to a success page.
                 if 'next' in request.POST:
-                    redirect("/" + request.POST['next'])
+                    return redirect("/" + request.POST['next'])
                 elif 'next' in request.GET:
-                    redirect("/" + request.GET['next'])
+                    return redirect("/" + request.GET['next'])
                 else:
-                    redirect("/")
+                    return redirect("/")
             else:
                 # Return a 'disabled account' error message
                 return render(request, 'login.html', {'error', "This account is disabled" } )

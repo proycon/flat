@@ -85,7 +85,9 @@ div.dialog input {
 div.error {
     color: red;
     font-weight: bold;
-    border: red dashed 1px;
+    border: #220000 dashed 1px;
+    padding: 5px;
+    text-align: center;
 }
 div.buttoncontainer {
     text-align: center;
