@@ -133,7 +133,7 @@ a:hover {
     padding-left: 5px;
     padding-right: 5px;
 }
-//Hide all FoLiA elements initially, editor has to explicitly make the desired elements visibile
+//Hide all FoLiA elements initially, editor has to explicitly make the desired elements visible
 .F {
     display: none;
 }

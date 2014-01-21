@@ -5,9 +5,9 @@ function function_exists(functionName) {
 }
 
 function getannotationid(annotation) {
-    if (annotation.id !== undefined)  {
+    if (typeof annotation.id !== undefined)  {
         return annotation.id;
-    } else if (annotation.set !== undefined) {
+    } else if (typeof annotation.set !== undefined) {
         return annotation.type + '/' + annotation.set;
     } else {
         return annotation.type;
@@ -24,7 +24,7 @@ function onfoliaclick() {
 function loadtext(annotationlist) {
     //load text into the structure
     annotationlist.forEach(function(annotation){
-        if ((annotation.text !== undefined) && (annotation.class == "current")) {
+        if ((typeof annotation.text !== undefined) && (annotation.class == "current")) {
             annotation.targets.forEach(function(target){
                 $('#' + target).html(annotation.text);
             });
@@ -40,7 +40,7 @@ function loadannotations(annotationlist) {
     //load text into the structure
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
-            if (annotations[target] === undefined) annotations[target] = {};
+            if (typeof annotations[target] === undefined) annotations[target] = {};
             annotationid = getannotationid(annotation)
             annotations[target][annotationid] = annotation;
         });
@@ -57,12 +57,12 @@ function registerhandlers() {
     });
 }
 
-if (docid !== undefined) {
+if (typeof docid !== undefined) {
     annotations = {} //annotations per structure item
 
 
     $(function() {
-        if (initialannotationlist !== undefined) {
+        if (typeof initialannotationlist !== undefined) {
             loadtext(initialannotationlist);
             loadannotations(initialannotationlist);
             registerhandlers();
