@@ -94,9 +94,9 @@ def gethtml(element):
         else:
             label = ""
         if s:
-            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + s
+            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + label + s
         else:
-            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\"><span class=\"lbl\">" +element.text() + "</span>"
+            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\">" + label
         s += "</div>"
         return s
     else:
