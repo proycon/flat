@@ -68,8 +68,9 @@ function loadannotations(annotationlist) {
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
             if (!(annotations[target])) annotations[target] = {};
-            var annotationid = getannotationid(annotation)
+            var annotationid = getannotationid(annotation);
             annotations[target][annotationid] = annotation;
+            annotations[target][annotationid].annotationid = annotationid;
         });
     });
     if (function_exists(mode + '_onloadannotations')) {
@@ -100,6 +101,10 @@ $(function() {
         $('>ul',this).css('left', mouseX-30);
     });
 
+
+    $('#document').mouseleave( function(e) {
+        $('#info').hide();
+    });  
 
     //loadtext(initialannotationlist);
     loadannotations(initialannotationlist);

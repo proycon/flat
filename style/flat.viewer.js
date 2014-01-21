@@ -1,6 +1,6 @@
 view = 'deepest';
 viewannotations = {};
-annotationfocus = null;
+annotationfocus = 't';
 hover = null;
 
 function setview(v) {
@@ -27,9 +27,19 @@ function setview(v) {
 
 function sethover(element) {
     if ((element) && ($(element).hasClass(view))) {
-        if (hover) $(hover).removeClass("hover");
+        if (hover) $(".hover").removeClass("hover");
         $(element).addClass("hover");
         hover = element;
+        if ($(element).hasClass('focustype')) {
+            //colour related elements
+            Object.keys(annotations[element.id]).forEach(function(annotationid){
+                if ((annotations[element.id][annotationid].type == annotationfocus) && (annotations[element.id][annotationid].targets.length > 1)) {
+                    annotations[element.id][annotationid].targets.forEach(function(target){
+                        $('#' + valid(target)).addClass("hover");
+                    });
+                }
+            });
+        }
     }
 }
 
@@ -86,18 +96,21 @@ function setannotationfocus(t) {
     }
     annotationfocus = t;
     $('#annotationtypefocus_' + annotationfocus).addClass('on');
-    Object.keys(annotations).forEach(function(target){
-      Object.keys(annotations[target]).forEach(function(annotationkey){
-        annotation = annotations[target][annotationkey];
-        if (annotation.type == annotationfocus) {
-            $('#' + valid(target)).addClass("focustype");
-        }
-     });
-    });
+    if (annotationfocus != 't') {
+        Object.keys(annotations).forEach(function(target){
+        Object.keys(annotations[target]).forEach(function(annotationkey){
+            annotation = annotations[target][annotationkey];
+            if (annotation.type == annotationfocus) {
+                $('#' + valid(target)).addClass("focustype");
+            }
+        });
+        });
+    }
 }
 
 function viewer_oninit() {
     setview(view);
+    setannotationfocus(annotationfocus);
     s = "";
     s2 = "";
     Object.keys(annotations).forEach(function(target){
