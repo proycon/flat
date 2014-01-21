@@ -63,8 +63,9 @@ if (docid !== undefined) {
 
     $(function() {
         if (initialannotationlist !== undefined) {
-            loadtext(initialannotationlist)
-            loadannotations(initialannotationlist)
+            loadtext(initialannotationlist);
+            loadannotations(initialannotationlist);
+            registerhandlers();
         }
     });
 }

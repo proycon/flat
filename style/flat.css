@@ -137,3 +137,15 @@ a:hover {
 .F {
     display: none;
 }
+#document {
+    margin-left: auto;
+    margin-right: auto;
+    display: 70%;
+    color: #222;
+    background: #eee;
+    border: #30677c 1px solid;
+    border-radius: 25px;
+    padding: 10px;
+    margin: 5px;
+}
+
