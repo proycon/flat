@@ -24,9 +24,7 @@ function onfoliaclick() {
 }
 
 function loadtext(annotationlist) {
-    alert('loadtext ' + annotationlist.length);
-    //load text into the structure
-    count = 0;
+    //reload text into the structure
     annotationlist.forEach(function(annotation){
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             if (annotation.targets) {
@@ -36,7 +34,6 @@ function loadtext(annotationlist) {
             }
         }
     });
-    alert('loadtext2');
     if (function_exists(mode + '_onloadtext')) {
         f = eval(mode + '_onloadtext');
         f(annotationlist);
@@ -44,8 +41,7 @@ function loadtext(annotationlist) {
 }
 
 function loadannotations(annotationlist) {
-    alert('loadannotations');
-    //load text into the structure
+    //load annotations in memory
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
             if (!(annotations[target])) annotations[target] = {};
