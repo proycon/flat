@@ -1,5 +1,6 @@
 # Django settings for flat project.
 from socket import gethostname
+import os.path
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -38,6 +39,13 @@ if hostname == 'mhysa' or hostname == 'galactica':
     }
 else:
     raise Exception("I don't know where I'm running from!")
+
+
+EDITOR_MODES = {
+    ('viewer','Viewer'),
+}
+
+
 
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -132,14 +140,20 @@ ROOT_URLCONF = 'flat.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'flat.wsgi.application'
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     ROOT + 'templates/'
-)
+]
+for mode,_ in EDITOR_MODES:
+    if os.path.isdir(ROOT + '/modes/' + mode + '/templates/'):
+        TEMPLATE_DIRS.append(ROOT + '/modes/' + mode + '/templates/')
 
-INSTALLED_APPS = (
+TEMPLATE_DIRS = tuple(TEMPLATE_DIRS)
+
+
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -150,11 +164,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-)
+]
+for mode,_ in EDITOR_MODES:
+    INSTALLED_APPS.append('flat.modes.' + mode)
+INSTALLED_APPS = tuple(INSTALLED_APPS)
 
-EDITOR_MODES = {
-    ('viewer','Viewer'),
-}
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
