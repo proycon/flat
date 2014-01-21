@@ -24,15 +24,21 @@
     <body>
         <div id="topbar">
             <div class="left">
-            <ul class="menu">
-            {% if docid %}
-                {% for mode, modename in modes %}
-                    <li><a href="/{{ mode }}/{{ docid }}/">{{ modename }}</li>
-                {% endfor %}
-            {% endif %}
-            {% block topbar_left %}
-            {% endblock %}
-            </ul>
+            <nav>
+                <ul>
+                <li><a href="#">Modes</a>
+                <ul>
+                    {% if docid %}
+                        {% for mode, modename in modes %}
+                            <li><a href="/{{ mode }}/{{ docid }}/">{{ modename }}</li>
+                        {% endfor %}
+                    {% endif %}
+                    {% block topbar_left %}
+                    {% endblock %}
+                </ul>
+                </li>
+                </ul>
+            </nav>
             </div>
             <span class="title">FoLiA Linguistic Annotation Tool</span>
             <div class="right">
@@ -47,7 +53,10 @@
             </div>
             <span style="clear: both"></span>
         </div>
-        
+       
+        <div id="toolbox">
+        </div>
+
         <div id="main">
             {% block main %}
             {% endblock %}
