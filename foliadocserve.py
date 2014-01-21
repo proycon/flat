@@ -91,12 +91,17 @@ def gethtml(element):
                 s += gethtml(child)
         if not isinstance(element, folia.Text) and not isinstance(element, folia.Division):
             label = "<span class=\"lbl\">" + element.text() + " </span>"
+            cssclass = "FB" #block
         else:
             label = ""
+            cssclass = "F" #inline
+        if isinstance(element, folia.Word) and element.space:
+            label += "&nbsp;"
+
         if s:
-            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + label + s
+            s = "<div id=\"" + element.id + "\" class=\"" + cssclass + " " + element.XMLTAG + "\">" + label + s
         else:
-            s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\">" + label
+            s = "<div id=\"" + element.id + "\" class=\"" + cssclass + " " + element.XMLTAG + " deepest\">" + label
         s += "</div>"
         return s
     else:

@@ -125,7 +125,16 @@ a:hover {
     opacity: 0.9;
 }
 #topbar nav ul li:hover > ul {
+    position: absolute;
     display: block;
+    background: black;
+    padding: 5px;
+    padding-left: 10px;
+    opacity: 0.9;
+}
+#topbar nav ul li:hover > ul li {
+    padding: 5px;
+    padding-left: 10px;
 }
 #topbar nav li li {
     display: inline-block;
@@ -133,10 +142,19 @@ a:hover {
     padding-left: 5px;
     padding-right: 5px;
 }
-//Hide all FoLiA elements initially, editor has to explicitly make the desired elements visible
-.F {
+
+div.FB {
+    display: block;
+}
+div.F {
+    display: inline;
+}
+span.lbl {
     display: none;
 }
+
+
+
 #document {
     margin-left: auto;
     margin-right: auto;
