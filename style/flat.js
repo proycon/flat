@@ -92,6 +92,11 @@ docid = null;
 initialannotationlist = [];
 
 $(function() {
+    $('nav>ul>li').mouseenter(function(){
+        $('>ul',this).css('left', mouseX-30);
+    });
+
+
     //loadtext(initialannotationlist);
     loadannotations(initialannotationlist);
     registerhandlers();
@@ -99,4 +104,5 @@ $(function() {
         f = eval(mode + '_oninit');
         f();
     }
+
 });

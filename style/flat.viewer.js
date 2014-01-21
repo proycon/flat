@@ -1,5 +1,6 @@
 view = 'deepest';
 viewannotations = {};
+annotationfocus = null;
 hover = null;
 
 function setview(v) {
@@ -77,9 +78,28 @@ function toggleannotationview(annotationtype) {
     }
 }
 
+
+function setannotationfocus(t) {
+    if (annotationfocus) {
+        $('.' + annotationfocus).removeClass("focustype");
+        $('#annotationtypefocus_' + annotationfocus).removeClass('on');
+    }
+    annotationfocus = t;
+    $('#annotationtypefocus_' + annotationfocus).addClass('on');
+    Object.keys(annotations).forEach(function(target){
+      Object.keys(annotations[target]).forEach(function(annotationkey){
+        annotation = annotations[target][annotationkey];
+        if (annotation.type == annotationfocus) {
+            $('#' + target).addClass("focustype");
+        }
+     });
+    });
+}
+
 function viewer_oninit() {
     setview(view);
     s = "";
+    s2 = "";
     Object.keys(annotations).forEach(function(target){
       Object.keys(annotations[target]).forEach(function(annotationkey){
         annotation = annotations[target][annotationkey];
@@ -91,10 +111,12 @@ function viewer_oninit() {
                 label = annotation.type;
             }
             s = s +  "<li id=\"annotationtypeview_" +annotation.type+"\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotation.type + "')\">" + label + "</a></li>";
+            s2 = s2 +  "<li id=\"annotationtypefocus_" +annotation.type+"\"><a href=\"javascript:setannotationfocus('" + annotation.type + "')\">" + label + "</a></li>";
         }
       });
     });
     $('#annotationsviewmenu').html(s);
+    $('#annotationsfocusmenu').html(s2);
     if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
 }
