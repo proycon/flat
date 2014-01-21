@@ -2,6 +2,10 @@
 
 {% block main %}
 <div id="dialog">
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    <span class
     <form action="/login/" method="post">
         <label>Username:</label> <input name="username" />
         <label>Password:</label> <input type="password" name="password" />
