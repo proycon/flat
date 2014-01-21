@@ -40,7 +40,7 @@ function viewer_onmouseenter(element) {
 function showinfo(element) {
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {
-            s = "<table>";
+            s = "";
             Object.keys(annotations[element.id]).forEach(function(annotationtype){
                 annotation = annotations[element.id][annotationtype];
                 if (viewannotations[annotationtype]) {
@@ -57,10 +57,12 @@ function showinfo(element) {
                     s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>" + annotation.class + "</td></tr>";
                 }
             });
-            s = s + "</table>";
-            $('#info').html(s);
-            $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
-            $('#info').show();    
+            if (s) {
+                s = "<table>"  + s + "</table>";
+                $('#info').html(s);
+                $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
+                $('#info').show();    
+            }
         }
     }
 }

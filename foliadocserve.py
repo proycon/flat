@@ -7,6 +7,7 @@ import time
 import os
 import sys
 import json
+import random
 from pynlpl.formats import folia
 
 def fake_wait_for_occupied_port(host, port): return
@@ -90,12 +91,17 @@ def gethtml(element):
             if isinstance(child, folia.AbstractStructureElement):
                 s += gethtml(child)
         if not isinstance(element, folia.Text) and not isinstance(element, folia.Division):
-            label = "<span class=\"lbl\">" + element.text() + " </span>"
+            try:
+                label = "<span class=\"lbl\">" + element.text() + " </span>"
+            except folia.NoSuchText:
+                label = "<span class=\"lbl\"></span>"
         else:
             label = ""
         if isinstance(element, folia.Word) and element.space:
             label += "&nbsp;"
 
+        if not element.id:
+            element.id = element.doc.id + "." + element.XMLTAG + ".id" + str(random.randint(1000,999999999))
         if s:
             s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + label + s
         else:
