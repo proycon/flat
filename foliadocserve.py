@@ -69,6 +69,9 @@ class DocStore:
     def values(self):
         return self.data.values()
 
+    def __iter__(self):
+        return iter(self.data)
+
     def autounload(self, save=True):
         unload = []
         for key, t in self.lastchange.items():
@@ -84,7 +87,7 @@ def gethtml(element):
     if isinstance(element, folia.AbstractStructureElement):
         s = ""
         for child in element:
-            if isinstance(element, folia.AbstractStructureElement):
+            if isinstance(child, folia.AbstractStructureElement):
                 s += gethtml(child)
         if s:
             s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + s
@@ -93,7 +96,7 @@ def gethtml(element):
         s += "</div>"
         return s
     else:
-        raise Exception("Structure element expected")
+        raise Exception("Structure element expected, got " + str(type(element)))
 
 def getannotations(element):
     if isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
