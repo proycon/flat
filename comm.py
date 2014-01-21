@@ -7,9 +7,9 @@ import json
 def get( request, url):
     url = url.replace("%NS%",request.user.username)
     f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
-    contents = f.readlines()
+    contents = f.read()
     f.close()
-    if contents and contents[0][0] == '{':
+    if contents and contents[0] == '{':
         #assume this is json
         return json.loads(contents)
     elif contents:

@@ -105,13 +105,17 @@ def getannotations(element):
         while not p.id or not isinstance(p, folia.AbstractStructureElement):
             p = p.parent
         annotation['targets'] = [ p.id ]
+        assert isinstance(annotation, dict)
         yield annotation
     elif isinstance(element, folia.AbstractSpanAnnotation):
         annotation = element.json()
         annotation['targets'] = [ x.id for x in element.wrefs() ]
+        assert isinstance(annotation, dict)
+        yield annotation
     if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotation):
         for child in element:
             for x in getannotations(child):
+                assert isinstance(x, dict)
                 yield x
 
 
@@ -136,7 +140,7 @@ class Root:
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)].data[0]),
                 'annotations': tuple(getannotations(self.docstore[(namespace,docid)].data[0])),
-            })
+            }).encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
@@ -147,7 +151,7 @@ class Root:
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)][elementid]),
                 'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
-            })
+            }).encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
@@ -157,7 +161,7 @@ class Root:
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type']= 'application/json'
-            return json.dumps(self.docstore[(namespace,docid)].json())
+            return json.dumps(self.docstore[(namespace,docid)].json()).encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
@@ -166,7 +170,7 @@ class Root:
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type']= 'text/xml'
-            return self.docstore[(namespace,docid)].xmlstring()
+            return self.docstore[(namespace,docid)].xmlstring().encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
