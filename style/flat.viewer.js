@@ -32,9 +32,32 @@ function sethover(element) {
     }
 }
 
-function viewer_onmouseenter() {
-    sethover(this);
+function viewer_onmouseenter(element) {
+    sethover(element);
+    showinfo(element);
 }
+
+function showinfo(element) {
+    s = "<table>"
+    if ((element.id)  && (annotations[element.id])) {
+        Object.keys(annotations[element.id]).forEach(function(annotationtype){
+            annotation = annotations[element.id][annotationtype];
+            if (viewannotations[annotationtype]) {
+                if (annotationtypenames[annotation.type]) {
+                    label = annotationtypenames[annotation.type];
+                } else {
+                    label = annotation.type;
+                }
+                s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + annotation.set + "</span></th><td>" + annotation.class + "</td></tr>";
+            }
+        });
+    }
+    s = s = "</table>";
+    $('#info').html(s);
+    $('#info').css({'top':mouseY+ 20, 'left':mouseX} );
+    $('#info').show();    
+}
+
 
 function toggleannotationview(annotationtype) {
     viewannotations[annotationtype] = !viewannotations[annotationtype];
@@ -48,8 +71,9 @@ function toggleannotationview(annotationtype) {
 function viewer_oninit() {
     setview(view);
     s = "";
-    Object.keys(annotations).forEach(function(annotationkey){
-        annotation = annotations[annotationkey];
+    Object.keys(annotations).forEach(function(target){
+      Object.keys(annotations[target]).forEach(function(annotationkey){
+        annotation = annotations[target][annotationkey];
         if (!viewannotations[annotation.type]) {
             viewannotations[annotation.type] = true;
             if (annotationtypenames[annotation.type]) {
@@ -59,6 +83,8 @@ function viewer_oninit() {
             }
             s = s +  "<li id=\"annotationtypeview_" +annotation.type+"\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotation.type + "')\">" + label + "</a></li>";
         }
+      });
     });
     $('#annotationsviewmenu').html(s);
+    $('#document').mouseleave(function() { $('#info').hide(); });
 }

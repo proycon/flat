@@ -1,6 +1,8 @@
 annotationtypenames = {
     'pos': 'Part-of-Speech',
     'lemma': 'Lemma',
+    't': 'Text',
+    'entity': 'Named-Entity',
 }
 
 
@@ -77,6 +79,10 @@ function registerhandlers() {
     $('.F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
 }
 
+$(document).mousemove( function(e) {
+   mouseX = e.pageX; 
+   mouseY = e.pageY;
+});  
 
 annotations = {}; //annotations per structure item
 docid = null;

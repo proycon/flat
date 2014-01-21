@@ -183,6 +183,22 @@ nav ul ul li.on {
 div.info {
     position: absolute;
     display: none;
+    width: 320px;
+    min-height: 25px;
+    opacity: 0.8;
+    width: 70%;
+    background: #b9d8d9;
+    padding: 2px;
+    margin: 5px;
+}
+div#info table {
+    width: 100%;
+}
+div#info th {
+    width: 39%
+}
+div#info td {
+    width: 59%
 }
 
 
