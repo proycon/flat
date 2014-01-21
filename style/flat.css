@@ -140,12 +140,15 @@ a:hover {
 #document {
     margin-left: auto;
     margin-right: auto;
-    display: 70%;
+    width: 60%;
     color: #222;
     background: #eee;
     border: #30677c 1px solid;
     border-radius: 25px;
     padding: 10px;
-    margin: 5px;
+    margin-top: 20px;
+    margin-bottom: 200px;
+    min-width: 480px;
+    min-height: 480px;
 }
 

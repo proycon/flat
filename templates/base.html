@@ -10,13 +10,13 @@
         {% block head %}
         {% endblock %}
         {% if docid %}
-        <script type="text/javascrtips">
-            username = "{{ username }}";
-            docid = "{{ docid }}";
-            modes = {{ json_modes }};
+        <script type="text/javascript">
+            username = "{{ username|safe }}";
+            docid = "{{ docid|safe }}";
+            modes = {{ modes_json|safe }};
             mode = "{{ mode }}";
             {% if docannotations %}
-            initialannotationlist = {{ docannotations }};
+            initialannotationlist = {{ docannotations|safe }};
             {% endif %}
         </script>
         {% endif %}

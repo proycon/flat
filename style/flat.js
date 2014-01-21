@@ -5,17 +5,19 @@ function function_exists(functionName) {
 }
 
 function getannotationid(annotation) {
-    if (typeof annotation.id !== undefined)  {
+    if (annotation.id)  {
         return annotation.id;
-    } else if (typeof annotation.set !== undefined) {
+    } else if (annotation.set) {
         return annotation.type + '/' + annotation.set;
-    } else {
+    } else if (annotation.type) {
         return annotation.type;
+    } else {
+        alert("Unable to get ID for " + annotation)
     }
 }
 
 function onfoliaclick() {
-    if (function_exist(mode + '_onclick')) {
+    if (function_exists(mode + '_onclick')) {
         f = eval(mode + '_onclick');
         f(this);
     }
@@ -24,13 +26,13 @@ function onfoliaclick() {
 function loadtext(annotationlist) {
     //load text into the structure
     annotationlist.forEach(function(annotation){
-        if ((typeof annotation.text !== undefined) && (annotation.class == "current")) {
+        if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             annotation.targets.forEach(function(target){
-                $('#' + target).html(annotation.text);
+                $('#' + target).html("<span class=\"t\">" + annotation.text + "</span>");
             });
         }
     });
-    if (function_exist(mode + '_onloadtext')) {
+    if (function_exists(mode + '_onloadtext')) {
         f = eval(mode + '_onloadtext');
         f(annotationlist);
     }
@@ -40,12 +42,12 @@ function loadannotations(annotationlist) {
     //load text into the structure
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
-            if (typeof annotations[target] === undefined) annotations[target] = {};
-            annotationid = getannotationid(annotation)
+            if (!(annotations[target])) annotations[target] = {};
+            var annotationid = getannotationid(annotation)
             annotations[target][annotationid] = annotation;
         });
     });
-    if (function_exist(mode + '_onloadannotations')) {
+    if (function_exists(mode + '_onloadannotations')) {
         f = eval(mode + '_onloadannotations');
         f(annotationlist);
     }
@@ -53,7 +55,7 @@ function loadannotations(annotationlist) {
 
 function registerhandlers() {
     $('.F').each(function(){ //loop over all folia elements
-        $(this).onclick(foliaclick);
+        $(this).click(onfoliaclick);
     });
 }
 
@@ -62,11 +64,7 @@ docid = null;
 initialannotationlist = [];
 
 $(function() {
-    if (docid) {
-        if (initialannotationlist) {
-            loadtext(initialannotationlist);
-            loadannotations(initialannotationlist);
-            registerhandlers();
-        }
-    }
+    loadtext(initialannotationlist);
+    loadannotations(initialannotationlist);
+    registerhandlers();
 });
