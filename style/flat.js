@@ -52,7 +52,7 @@ function loadtext(annotationlist) {
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             if (annotation.targets) {
                 annotation.targets.forEach(function(target){
-                    $('#' + target + " span.lbl").html(annotation.text);
+                    $('#' + valid(target) + " span.lbl").html(annotation.text);
                 });
             }
         }
@@ -80,6 +80,10 @@ function loadannotations(annotationlist) {
 
 function registerhandlers() {
     $('.F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+}
+
+function valid(id){
+    return id.replace(/\./g,'\\.');
 }
 
 $(document).mousemove( function(e) {

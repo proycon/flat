@@ -81,7 +81,7 @@ function toggleannotationview(annotationtype) {
 
 function setannotationfocus(t) {
     if (annotationfocus) {
-        $('.' + annotationfocus).removeClass("focustype");
+        $('.focustype').removeClass("focustype");
         $('#annotationtypefocus_' + annotationfocus).removeClass('on');
     }
     annotationfocus = t;
@@ -90,7 +90,7 @@ function setannotationfocus(t) {
       Object.keys(annotations[target]).forEach(function(annotationkey){
         annotation = annotations[target][annotationkey];
         if (annotation.type == annotationfocus) {
-            $('#' + target).addClass("focustype");
+            $('#' + valid(target)).addClass("focustype");
         }
      });
     });
