@@ -56,9 +56,8 @@ function loadannotations(annotationlist) {
 }
 
 function registerhandlers() {
-    $('.F').each(function(){ //loop over all folia elements
-        $(this).click(onfoliaclick);
-    });
+    $('.F').click(onfoliaclick);
+    $('.FB').click(onfoliaclick);
 }
 
 annotations = {}; //annotations per structure item

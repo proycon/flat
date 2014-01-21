@@ -30,17 +30,17 @@
             <div class="left">
             <nav>
                 <ul>
-                <li><a href="#">Modes</a>
+                <li>Modes
                 <ul>
                     {% if docid %}
                         {% for mode, modename in modes %}
                         <li><a href="/{{ mode }}/{{ docid }}/">{{ modename }}</a></li>
                         {% endfor %}
                     {% endif %}
-                    {% block topbar_left %}
-                    {% endblock %}
                 </ul>
                 </li>
+                {% block menu %}
+                {% endblock %}
                 </ul>
             </nav>
             </div>

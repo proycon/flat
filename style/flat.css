@@ -22,8 +22,8 @@ body {
 #topbar li {
     display: inline;
     list-style-type: none;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 #topbar .left {
     float: left;
@@ -40,6 +40,10 @@ body {
     text-decoration: none;
 }
 
+#topbar nav a {
+    color: white;
+    font-weight: normal;
+}
 #topbar a:hover {
     color: #cbd9de;
     text-decoration: underline;
@@ -126,21 +130,27 @@ a:hover {
 }
 #topbar nav ul li:hover > ul {
     position: absolute;
+    width: 320px;
     display: block;
     background: black;
     padding: 5px;
     padding-left: 10px;
-    opacity: 0.9;
+    opacity: 0.75;
 }
 #topbar nav ul li:hover > ul li {
+    display: block;
     padding: 5px;
     padding-left: 10px;
+    padding-right: 10px;
 }
 #topbar nav li li {
     display: inline-block;
     list-style-type: none;
     padding-left: 5px;
     padding-right: 5px;
+}
+nav>ul>li {
+    font-weight: bold;
 }
 
 div.FB {
