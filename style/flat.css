@@ -176,6 +176,15 @@ div.hover span.lbl {
 }
 
 
+nav ul ul li.on {
+    background: #0b470a;
+}
+
+div.info {
+    position: absolute;
+    display: none;
+}
+
 
 #document {
     margin-left: auto;
