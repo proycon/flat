@@ -60,6 +60,20 @@ function registerhandlers() {
     $('.FB').click(onfoliaclick);
 }
 
+function setview(view) {
+    $('div.F span.lbl').hide();
+    $('div.FB span.lbl').hide();
+    if (view == 'n') {
+        $('div.deepest>span.lbl').show();
+    } else if (view == 'w') {
+        $('div.w>span.lbl').show();
+    } else if (view == 's') {
+        $('div.s>span.lbl').show();
+    } else if (view == 's') {
+        $('div.p>span.lbl').show();
+    }
+}
+
 annotations = {}; //annotations per structure item
 docid = null;
 initialannotationlist = [];
@@ -68,4 +82,10 @@ $(function() {
     //loadtext(initialannotationlist);
     loadannotations(initialannotationlist);
     registerhandlers();
+    if (function_exists(mode + '_oninit')) {
+        f = eval(mode + '_oninit');
+        f();
+    } else {
+        setview('n');
+    }
 });
