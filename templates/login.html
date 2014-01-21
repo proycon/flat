@@ -7,8 +7,11 @@
     {% endif %}
     <form action="/login/" method="post">
     <label>Username:</label> <input name="username" /><br />
-    <label>Password:</label> <input type="password" name="password" /></br>
-    <input class="button" type="submit" value="Log in" />
+    <label>Password:</label> <input type="password" name="password" /><br/>
+    <div class="buttoncontainer">
+        <input class="button" type="submit" value="Log in" />
+    </div>
+    {% csrf_token %}
     </form>
 </div>
 {% endblock %}
