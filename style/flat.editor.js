@@ -28,6 +28,34 @@ function select(element) {
     $("#editortargetlist").html(edittargets_options);
 }
 
+function setaddablefields() {
+    editoraddablefields_options = "";
+    editoraddablefields = [];
+    Object.keys(declarations).forEach(function(annotationtype){
+        Object.keys(declarations[annotationtype]).forEach(function(set){
+            if (viewannotations[annotationtype + "/" + set]) {
+                found = false;
+                editdata.forEach(function(editdataitem){
+                    if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
+                        found = true; 
+                        return true;
+                    }
+                });
+                if (!found) {
+                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + annotationtype + "/" + set + "</option>";
+                    editoraddablefields.push({'type': annotationtype, 'set': set});
+                }
+            }
+        });
+    });
+    if (editoraddablefields_options) {
+        $("#editoraddablefields").html(editoraddablefields_options);
+        $("#editoraddfields").show();
+    } else {
+        $("#editoraddfields").hide();
+    }
+}
+
 function showeditor(element) {
 
     if ((element) && ($(element).hasClass(view))) {
@@ -63,6 +91,7 @@ function showeditor(element) {
                 }
                  
             });
+            s = s + "<tr id=\"editrowplaceholder\"></tr>";
             if (edittargets.length == 1) {
                 idheader = "<div id=\"id\">" + element.id + "</div>"
             } else {
@@ -70,32 +99,7 @@ function showeditor(element) {
             }
 
             //extra fields list
-            editoraddablefields_options = "";
-            editoraddablefields = [];
-            Object.keys(declarations).forEach(function(annotationtype){
-                Object.keys(declarations[annotationtype]).forEach(function(set){
-                    if (viewannotations[annotationtype + "/" + set]) {
-                        found = false;
-                        editdata.forEach(function(editdataitem){
-                            if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
-                                found = true; 
-                                return true;
-                            }
-                        });
-                        if (!found) {
-                            editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + annotationtype + "/" + set + "</option>";
-                            editoraddablefields.push({'type': annotationtype, 'set': set});
-                        }
-                    }
-                });
-            });
-            if (editoraddablefields_options) {
-                $("#editoraddablefields").html(editoraddablefields_options);
-                $("#editoraddfields").show();
-            } else {
-                $("#editoraddfields").hide();
-            }
-
+            setaddablefields();
 
 
 
@@ -124,6 +128,30 @@ function showeditor(element) {
             $('#editor').show();    
             $('#editor').draggable();    
 
+            $('#editoraddfield').click(function(){
+                var index = $('#editoraddablefields').val();
+
+                if (annotationtypenames[editoraddablefields[index].type]) {
+                    label = annotationtypenames[editoraddablefields[index].type];
+                } else {
+                    label = editoraddablefields[index].type;
+                }
+                if (editoraddablefields[index].set) {
+                    setname = editoraddablefields[index].set;
+                } else {
+                    setname = "";
+                }
+
+                s =  "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
+                s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
+                $('#editrowplaceholder')[0].outerHTML = s;
+
+                editfields = editfields + 1; //increment after adding
+                editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'class':'', 'new': true, 'changed': true };
+                editdata.push(editdataitem);
+                setaddablefields();
+            });
             $('#editorsubmit').click(function(){
 
                 for (var i = 0; i < editfields;i++) { 
