@@ -149,8 +149,9 @@ def getannotations(element):
 
 def getdeclarations(doc):
     for annotationtype, set in doc.annotations:
-        annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
-        yield {'annotationtype': annotationtype, 'set': set}
+        if issubclass(folia.ANNOTATIONTYPE2CLASS[annotationtype], folia.AbstractAnnotation): #rules out structure elements for now
+            annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
+            yield {'annotationtype': annotationtype, 'set': set}
 
 class Root:
     def __init__(self,docstore,args):

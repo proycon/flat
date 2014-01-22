@@ -52,9 +52,9 @@ function showinfo(element) {
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {
             s = "";
-            Object.keys(annotations[element.id]).forEach(function(annotationtype){
-                annotation = annotations[element.id][annotationtype];
-                if (viewannotations[annotationtype+"/" + annotation.set]) {
+            Object.keys(annotations[element.id]).forEach(function(annotationid){
+                annotation = annotations[element.id][annotationid];
+                if (viewannotations[annotation.type+"/" + annotation.set]) {
                     if (annotationtypenames[annotation.type]) {
                         label = annotationtypenames[annotation.type];
                     } else {
@@ -67,6 +67,7 @@ function showinfo(element) {
                     }
                     s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>" + annotation.class + "</td></tr>";
                 }
+                 
             });
             if (s) {
                 s = "<table>"  + s + "</table>";
@@ -115,16 +116,14 @@ function viewer_oninit() {
     s2 = "";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
-        if (!viewannotations[annotationtype + "/" + set]) {
-            viewannotations[annotationttype + "/" + set] = true;
-            if (annotationtypenames[annotationtype]) {
-                label = annotationtypenames[annotationtype];
-            } else {
-                label = annotationtype;
-            }
-            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
-            s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
+        viewannotations[annotationtype + "/" + set] = true;
+        if (annotationtypenames[annotationtype]) {
+            label = annotationtypenames[annotationtype];
+        } else {
+            label = annotationtype;
         }
+        s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+        s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
       });
     });
     $('#annotationsviewmenu').html(s);

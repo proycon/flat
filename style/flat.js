@@ -21,7 +21,11 @@ function function_exists(functionName) {
 }
 
 function hash(s){
-  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+  if (s) {
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+  } else {
+    return 0;
+  }
 }
 
 function getannotationid(annotation) {
@@ -94,6 +98,7 @@ function loadannotations(annotationlist) {
 
 function loaddeclarations(declarationlist) {
     declarationlist.forEach(function(declaration){
+        if (!declarations[declaration.annotationtype])  declarations[declaration.annotationtype] =  {};
         declarations[declaration.annotationtype][declaration.set] = { 'settype': 'open', 'classes': [] }; //this will hold proper set definitions later on, TODO
     });
 }
@@ -112,6 +117,7 @@ $(document).mousemove( function(e) {
 });  
 
 annotations = {}; //annotations per structure item
+declarations = {};
 docid = null;
 initialannotationlist = [];
 initialdeclarationlist = [];

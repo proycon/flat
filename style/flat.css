@@ -211,6 +211,11 @@ div#info td {
     width: 59%
     font-style: italic;
 }
+li .setname {
+    display: block;
+    font-size: 8px;
+    font-style: italic;
+}
 
 
 #document {
