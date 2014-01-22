@@ -47,6 +47,13 @@ function onfoliaclick() {
     }
     return false;
 }
+function onfoliadblclick() {
+    if (function_exists(mode + '_ondblclick')) {
+        f = eval(mode + '_ondblclick');
+        f(this);
+    }
+    return false;
+}
 function onfoliamouseenter() {
     if (function_exists(mode + '_onmouseenter')) {
         f = eval(mode + '_onmouseenter');
@@ -104,7 +111,7 @@ function loaddeclarations(declarationlist) {
 }
 
 function registerhandlers() {
-    $('.F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+    $('.F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
 }
 
 function valid(id){
@@ -122,7 +129,7 @@ function update(data) {
     }
     if (data.elementid) {
         //reregister handlers
-        $('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+        $('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
     }
     if (function_exists(mode + 'onupdate')) {
         f = eval(mode + '_onupdate');

@@ -197,6 +197,14 @@ function editor_onclick(element) {
     }
 }
 
+function editor_ondblclick(element) {
+    //open editor
+    $('#info').hide();
+    if (editoropen) {
+        closeeditor();
+    }
+    showeditor(element);
+}
 function editor_onmouseenter(element) {
     if (!editoropen) {
         sethover(element);
