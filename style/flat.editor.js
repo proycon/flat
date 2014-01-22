@@ -103,13 +103,20 @@ function showeditor(element) {
             $('#editor').draggable();    
 
             $('#editorsubmit').click(function(){
+                sendeditdata = [];
+                editdata.forEach(function(editdataitem){
+                    if (editdataitem.changes) {
+                        sendeditdata.push(editdataitem);
+                    }
+                });
                 $.ajax({
                     type: 'POST',
-                    url: "/editor/annotate",
+                    url: "/editor/annotate/" + docid + "/",
                     contentType: "application/json",
                     processData: false,
-                    data: {'editfields': editfields, 'editdata': editdata},
-                    success: function(data) {alert(data);},
+                    data: {'length': sendeditdata.length, 'data': sendeditdata},
+                    success: function(data) {update(data);},
+                    failure: function() { alert("Editor submission failed"); },
                     dataType: "json"
                 });
             });
