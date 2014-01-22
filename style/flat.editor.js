@@ -217,5 +217,10 @@ function editor_oninit() {
             $(this).addClass("selectoron");
         }
     });
+    $('#main').click(function(){
+        if (editoropen) {
+            closeeditor();
+        }
+    });
 
 }
