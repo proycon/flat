@@ -75,3 +75,6 @@ div.selected span.lbl {
     background: yellow;
     color: black;
 }
+#editoraddfields, #editortargets {
+    display: block;
+}
