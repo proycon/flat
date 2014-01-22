@@ -6,6 +6,11 @@ annotationtypenames = {
     'su': 'Syntax',
     'chunk': 'Chunk',
     'sense': 'Semantic Sense',
+    'semrole': 'Semantic Role',
+    'correction': 'Correction',
+    'errordetection': 'Error detection',
+    'dependency': 'Dependency',
+    'coreferencechain': 'Coreference',
 }
 
 

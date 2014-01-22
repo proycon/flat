@@ -106,7 +106,23 @@ def gethtml(element):
             s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + "\">" + label + s
         else:
             s = "<div id=\"" + element.id + "\" class=\"F " + element.XMLTAG + " deepest\">" + label
+        if isinstance(element, folia.Linebreak):
+            s += "<br />"
+        if isinstance(element, folia.Whitespace):
+            s += "<br /><br />"
+        elif isinstance(element, folia.Figure):
+            s += "<img src=\"" + element.src + "\">"
         s += "</div>"
+        if isinstance(element, folia.List):
+            s = "<ul>" + s + "</ul>"
+        elif isinstance(element, folia.ListItem):
+            s = "<li>" + s + "</li>"
+        elif isinstance(element, folia.Table):
+            s = "<table>" + s + "</table>"
+        elif isinstance(element, folia.Row):
+            s = "<tr>" + s + "</tr>"
+        elif isinstance(element, folia.Cell):
+            s = "<td>" + s + "</td>"
         return s
     else:
         raise Exception("Structure element expected, got " + str(type(element)))
