@@ -140,7 +140,7 @@ function showeditor(element) {
                         sendeditdata.push(editdataitem);
                     }
                 });
-                if (senditdata.length == 0) {
+                if (sendeditdata.length == 0) {
                     //discard
                     closeeditor();
                     return false;
