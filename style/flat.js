@@ -111,6 +111,26 @@ function valid(id){
     return id.replace(/\./g,'\\.');
 }
 
+function update(data) {
+    //partial update
+    if ((data.html) && (data.elementid)) { 
+        $('#' + valid(data.elementid))[0].outerHTML = data.html;
+    }
+    if (data.annotations) {
+        loadtext(data.annotations);
+        loadannotations(data.annotations);
+    }
+    if (data.elementid) {
+        //reregister handlers
+        $('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+    }
+    if (function_exists(mode + 'onupdate')) {
+        f = eval(mode + '_onupdate');
+        f(data);
+    }
+}
+
+
 $(document).mousemove( function(e) {
    mouseX = e.pageX; 
    mouseY = e.pageY;
