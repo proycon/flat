@@ -147,7 +147,10 @@ def getannotations(element):
                 assert isinstance(x, dict)
                 yield x
 
-
+def getdeclarations(doc):
+    for annotationtype, set in doc.annotations:
+        annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
+        yield {'annotationtype': annotationtype, 'set': set}
 
 class Root:
     def __init__(self,docstore,args):
@@ -168,6 +171,7 @@ class Root:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)].data[0]),
+                'declarations': tuple(getdeclarations(self.docstore[(namespace,docid)])),
                 'annotations': tuple(getannotations(self.docstore[(namespace,docid)].data[0])),
             }).encode('utf-8')
         except NoSuchDocument:

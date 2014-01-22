@@ -33,7 +33,7 @@ function sethover(element) {
         if ($(element).hasClass('focustype')) {
             //colour related elements
             Object.keys(annotations[element.id]).forEach(function(annotationid){
-                if ((annotations[element.id][annotationid].type == annotationfocus) && (annotations[element.id][annotationid].targets.length > 1)) {
+                if ((annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].targets.length > 1)) {
                     annotations[element.id][annotationid].targets.forEach(function(target){
                         $('#' + valid(target)).addClass("hover");
                     });
@@ -54,7 +54,7 @@ function showinfo(element) {
             s = "";
             Object.keys(annotations[element.id]).forEach(function(annotationtype){
                 annotation = annotations[element.id][annotationtype];
-                if (viewannotations[annotationtype]) {
+                if (viewannotations[annotationtype+"/" + annotation.set]) {
                     if (annotationtypenames[annotation.type]) {
                         label = annotationtypenames[annotation.type];
                     } else {
@@ -79,28 +79,28 @@ function showinfo(element) {
 }
 
 
-function toggleannotationview(annotationtype) {
-    viewannotations[annotationtype] = !viewannotations[annotationtype];
-    if (viewannotations[annotationtype]) {
-        $('#annotationtypeview_' + annotationtype).addClass('on');
+function toggleannotationview(annotationtype, set) {
+    viewannotations[annotationtype+"/"+set] = !viewannotations[annotationtype+"/"+set];
+    if (viewannotations[annotationtype+"/" + set]) {
+        $('#annotationtypeview_' + annotationtype + "_" + hash(set)).addClass('on');
     } else {
-        $('#annotationtypeview_' + annotationtype).removeClass('on');
+        $('#annotationtypeview_' + annotationtype + "_" + hash(set)).removeClass('on');
     }
 }
 
 
-function setannotationfocus(t) {
+function setannotationfocus(t,set) {
     if (annotationfocus) {
         $('.focustype').removeClass("focustype");
-        $('#annotationtypefocus_' + annotationfocus).removeClass('on');
+        $('#annotationsfocusmenu li').removeClass('on');
     }
-    annotationfocus = t;
-    $('#annotationtypefocus_' + annotationfocus).addClass('on');
+    annotationfocus = { 'type': t, 'set': set };
+    $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
     if (annotationfocus != 't') {
         Object.keys(annotations).forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationkey){
             annotation = annotations[target][annotationkey];
-            if (annotation.type == annotationfocus) {
+            if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
                 $('#' + valid(target)).addClass("focustype");
             }
         });
@@ -113,18 +113,17 @@ function viewer_oninit() {
     setannotationfocus(annotationfocus);
     s = "";
     s2 = "";
-    Object.keys(annotations).forEach(function(target){
-      Object.keys(annotations[target]).forEach(function(annotationkey){
-        annotation = annotations[target][annotationkey];
-        if (!viewannotations[annotation.type]) {
-            viewannotations[annotation.type] = true;
-            if (annotationtypenames[annotation.type]) {
-                label = annotationtypenames[annotation.type];
+    Object.keys(declarations).forEach(function(annotationtype){
+      Object.keys(declarations[annotationtype]).forEach(function(set){
+        if (!viewannotations[annotationtype + "/" + set]) {
+            viewannotations[annotationttype + "/" + set] = true;
+            if (annotationtypenames[annotationtype]) {
+                label = annotationtypenames[annotationtype];
             } else {
-                label = annotation.type;
+                label = annotationtype;
             }
-            s = s +  "<li id=\"annotationtypeview_" +annotation.type+"\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotation.type + "')\">" + label + "</a></li>";
-            s2 = s2 +  "<li id=\"annotationtypefocus_" +annotation.type+"\"><a href=\"javascript:setannotationfocus('" + annotation.type + "')\">" + label + "</a></li>";
+            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
         }
       });
     });

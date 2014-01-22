@@ -20,6 +20,10 @@ function function_exists(functionName) {
     }
 }
 
+function hash(s){
+  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+}
+
 function getannotationid(annotation) {
     if (annotation.id)  {
         return annotation.id;
@@ -87,6 +91,13 @@ function loadannotations(annotationlist) {
     }
 }
 
+
+function loaddeclarations(declarationlist) {
+    declarationlist.forEach(function(declaration){
+        declarations[declaration.annotationtype][declaration.set] = { 'settype': 'open', 'classes': [] }; //this will hold proper set definitions later on, TODO
+    });
+}
+
 function registerhandlers() {
     $('.F').click(onfoliaclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
 }
@@ -103,6 +114,7 @@ $(document).mousemove( function(e) {
 annotations = {}; //annotations per structure item
 docid = null;
 initialannotationlist = [];
+initialdeclarationlist = [];
 mouseX = 0;
 mouseY = 0;
 
@@ -118,6 +130,7 @@ $(function() {
 
     //loadtext(initialannotationlist);
     loadannotations(initialannotationlist);
+    loaddeclarations(initialdeclarationlist);
     registerhandlers();
     if (function_exists(mode + '_oninit')) {
         f = eval(mode + '_oninit');

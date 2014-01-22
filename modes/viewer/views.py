@@ -8,6 +8,18 @@ import json
 @login_required
 def view(request, docid):
     doc = comm.get(request, '/getdoc/%NS%/' + docid + '/')
-    return render(request, 'viewer.html', {'docid': docid, 'mode': 'viewer', 'modes': settings.EDITOR_MODES, 'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]), 'dochtml': doc['html'], 'docannotations': json.dumps(doc['annotations']), 'loggedin': request.user.is_authenticated(), 'username': request.user.username})
+    d = {
+            'docid': docid,
+            'mode': 'viewer',
+            'modes': settings.EDITOR_MODES,
+            'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]),
+            'dochtml': doc['html'],
+            'docannotations': json.dumps(doc['annotations']),
+            'docdeclarations': json.dumps(doc['declarations']),
+            'loggedin': request.user.is_authenticated(),
+            'username': request.user.username
+    }
+    #TODO later: add setdefinitions
+    return render(request, 'viewer.html', d)
 
 

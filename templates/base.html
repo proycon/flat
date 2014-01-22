@@ -19,6 +19,9 @@
             docid = "{{ docid|safe }}";
             modes = {{ modes_json|safe }};
             mode = "{{ mode }}";
+            {% if docdeclarations %}
+            initialdeclarationlist = {{ docdeclarations|safe }};
+            {% endif %}
             {% if docannotations %}
             initialannotationlist = {{ docannotations|safe }};
             {% endif %}
