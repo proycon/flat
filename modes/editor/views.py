@@ -10,7 +10,7 @@ def view(request, docid):
     doc = comm.get(request, '/getdoc/%NS%/' + docid + '/')
     d = {
             'docid': docid,
-            'mode': 'viewer',
+            'mode': 'editor',
             'modes': settings.EDITOR_MODES,
             'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]),
             'dochtml': doc['html'],

@@ -1,4 +1,5 @@
 div#editor {
+    display: none;
     width: 480px;
     padding: 10px;
     background: #ededed;
