@@ -2,7 +2,10 @@ annotationtypenames = {
     'pos': 'Part-of-Speech',
     'lemma': 'Lemma',
     't': 'Text',
-    'entity': 'Named-Entity',
+    'entity': 'Named Entity',
+    'su': 'Syntax',
+    'chunk': 'Chunk',
+    'sense': 'Semantic Sense',
 }
 
 
