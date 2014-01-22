@@ -155,9 +155,10 @@ def getdeclarations(doc):
 
 
 def doannotation(doc, data):
-    response = {'returnelementid':data['elementid']}
+    response = {'returnelementid': None}
     changed = [] #changed elements
 
+    print("Received: ", repr(data),file=sys.stderr)
 
     if len(data['targets']) > 1:
         ancestors = []
@@ -210,7 +211,7 @@ def doannotation(doc, data):
                     target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL) #does append if no replacable found
                 else:
                     #we have a deletion
-                    replace = Class.findreplacables(target.parent,edit['set'])
+                    replace = Class.findreplacables(target.parent, edit['set'])
                     if len(replace) == 1:
                         #good
                         target.remove(replace[0])

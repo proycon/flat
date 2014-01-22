@@ -103,9 +103,18 @@ function showeditor(element) {
             $('#editor').draggable();    
 
             $('#editorsubmit').click(function(){
+
+                for (var i = 0; i < editfields;i++) { 
+                    if ($('#editfield' + i).val() != editdata[i].class) {
+                        editdata[index].class = $('#editfield' + i).val();
+                        editdata[index].changed = true;
+                    }
+                }
+
+
                 sendeditdata = [];
                 editdata.forEach(function(editdataitem){
-                    if (editdataitem.changes) {
+                    if (editdataitem.changed) {
                         sendeditdata.push(editdataitem);
                     }
                 });
