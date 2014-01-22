@@ -184,7 +184,7 @@ function editor_onclick(element) {
     //open editor
     if (coselector) {
         select(element); //toggle
-    } else {
+    } else if (!editoropen) {
         $('#info').hide();
         showeditor(element);
     }
