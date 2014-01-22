@@ -174,6 +174,7 @@ function closeeditor() {
     editoropen = false;
     coselector = false;
     $('#document .selected').removeClass("selected");
+    $('#editor .selectoron').removeClass("selectoron");
 }
 
 function addeditorfield() {
