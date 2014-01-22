@@ -139,14 +139,21 @@ function editor_oninit() {
                 sendeditdata.push(editdataitem);
             }
         });
+        $('#wait').show();
         $.ajax({
             type: 'POST',
             url: "/editor/annotate/" + docid + "/",
             contentType: "application/json",
             processData: false,
             data: {'length': sendeditdata.length, 'data': sendeditdata, 'targets': edittargets},
-            success: function(data) {update(data);},
-            failure: function() { alert("Editor submission failed"); },
+            success: function(data) {
+                update(data);
+                $('#wait').hide();
+            },
+            failure: function() { 
+                alert("Editor submission failed");
+                $('#wait').hide();
+            },
             dataType: "json"
         });
     });

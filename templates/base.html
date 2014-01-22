@@ -61,7 +61,6 @@
             </div>
             <span style="clear: both"></span>
         </div>
-      
 
         {% block dialogs %}
         {% endblock %}
@@ -69,6 +68,10 @@
         <div id="main">
             {% block main %}
             {% endblock %}
+        </div>
+        
+        <div id="wait">
+            <img src="/style/loader.gif" alt="processing" />
         </div>
     </body>
 </html>
