@@ -56,3 +56,14 @@ li .setname {
     font-size: 8px;
     font-style: italic;
 }
+div#info div#id {
+    width: 100%;
+    text-align: center;
+    font-size: 8px;
+    font-style: italic;
+    color: #666;
+}
+div#info .setname {
+    font-size: 8px;
+    font-style: italic;
+}

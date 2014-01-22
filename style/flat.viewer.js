@@ -50,7 +50,7 @@ function viewer_onmouseenter(element) {
 
 function showinfo(element) {
     if ((element) && ($(element).hasClass(view))) {
-        if ((element.id)  && (annotations[element.id])) {
+        if ((element.id)  && (annotations[element.id])) {            
             s = "";
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
@@ -70,7 +70,7 @@ function showinfo(element) {
                  
             });
             if (s) {
-                s = "<table>"  + s + "</table>";
+                s = "<div id=\"id\">" + element.id + "</div><table>"  + s + "</table>";
                 $('#info').html(s);
                 $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
                 $('#info').show();    
