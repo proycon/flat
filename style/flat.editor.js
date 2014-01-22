@@ -85,7 +85,8 @@ function showeditor(element) {
                 $('#editfield'+i).click(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
-                    editdata[index].delete = true;
+                    editdata[index].class = $(this).val();
+                    editdata[index].changed = true;
                     if (!$(this).hasClass("changed")) $(this).addClass("changed");
                 });
                 /*$('#editordelete'+i).click(function(){
