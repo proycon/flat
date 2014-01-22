@@ -103,6 +103,8 @@ $(document).mousemove( function(e) {
 annotations = {}; //annotations per structure item
 docid = null;
 initialannotationlist = [];
+mouseX = 0;
+mouseY = 0;
 
 $(function() {
     $('nav>ul>li').mouseenter(function(){
