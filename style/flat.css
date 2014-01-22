@@ -153,68 +153,13 @@ nav>ul>li {
     font-weight: bold;
 }
 
-div.div, div.p {
-    display: block;
-    margin-bottom: 5px;
-}
-div.s, div.w {
-    display: inline;
-}
-div.head {
-    font-size: 120%;
-    font-weight: bold;
-}
-
-span.lbl {
-    display: none;
-    padding: 0;
-    margin: 0;
-}
-
-div.focustype span.lbl {
-    background: #dcc6da;
-}
-div.hover span.lbl {
-    background: #b9d8d9;
-}
-
 
 nav ul ul li.on {
     background: #0b470a;
 }
 
 div#info {
-    position: absolute;
     display: none;
-    width: 480px;
-    min-height: 25px;
-    opacity: 0.95;
-    background: #b9d8d9;
-    padding: 2px;
-    margin: 5px;
-    text-align: left;
-    border: #30677c 1px solid;
-}
-div#info table {
-    width: 100%;
-}
-div#info th {
-    width: 39%
-    font-weight: bold;
-}
-div#info th span.setname {
-    font-weight: normal;
-    text-size: 8pt;
-    padding-left: 10px;
-}
-div#info td {
-    width: 59%
-    font-style: italic;
-}
-li .setname {
-    display: block;
-    font-size: 8px;
-    font-style: italic;
 }
 
 

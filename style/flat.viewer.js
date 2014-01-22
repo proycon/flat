@@ -95,17 +95,19 @@ function setannotationfocus(t,set) {
         $('.focustype').removeClass("focustype");
         $('#annotationsfocusmenu li').removeClass('on');
     }
-    annotationfocus = { 'type': t, 'set': set };
-    $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
-    if (annotationfocus != 't') {
-        Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationkey){
-            annotation = annotations[target][annotationkey];
-            if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
-                $('#' + valid(target)).addClass("focustype");
-            }
-        });
-        });
+    if (t) {
+        annotationfocus = { 'type': t, 'set': set };
+        $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
+        if (annotationfocus != 't') {
+            Object.keys(annotations).forEach(function(target){
+            Object.keys(annotations[target]).forEach(function(annotationkey){
+                annotation = annotations[target][annotationkey];
+                if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
+                    $('#' + valid(target)).addClass("focustype");
+                }
+            });
+            });
+        }
     }
 }
 
@@ -113,7 +115,7 @@ function viewer_oninit() {
     setview(view);
     setannotationfocus(annotationfocus);
     s = "";
-    s2 = "";
+    s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
         viewannotations[annotationtype + "/" + set] = true;
