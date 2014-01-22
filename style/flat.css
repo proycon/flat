@@ -76,7 +76,7 @@ div.dialog input {
     padding: 2px;
     margin: 5px;
 }
-.button, div.dialog input.button {
+button, .button, div.dialog input.button {
     background: #2a2a2a;
     color: white;
     font-weight: bold;
@@ -94,6 +94,7 @@ div.error {
     text-align: center;
 }
 div.buttoncontainer {
+    padding: 5px;
     text-align: center;
 }
 span.title {

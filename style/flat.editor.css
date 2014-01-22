@@ -1,10 +1,60 @@
 div#editor {
+    position: absolute;
     display: none;
     width: 480px;
     padding: 10px;
-    background: #ededed;
+    background: #cdcdcd; 
     color: #333;
     border: #30677c 1px solid;
     border-radius: 15px;
     min-height: 100px;
+    text-align: left;
+}
+div#editorheader {
+    width:100%;
+    background: #30677c;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    margin-top: -3px;
+}
+div#editorheader button {
+    float: right;
+    margin-top: -5px;
+}
+div#editor table {
+    width: 100%;
+}
+div#editor th {
+    width: 39%
+    font-weight: bold;
+}
+div#editor th span.setname {
+    font-weight: normal;
+    text-size: 8pt;
+    padding-left: 10px;
+}
+div#editor td {
+    width: 59%
+    font-style: italic;
+}
+div#editor div#id {
+    width: 100%;
+    text-align: center;
+    font-size: 8px;
+    font-style: italic;
+    color: #666;
+}
+div#editor .setname {
+    font-size: 8px;
+    font-style: italic;
+}
+div#editor .buttoncontainer span {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+input.changed {
+    color: #660000;
 }

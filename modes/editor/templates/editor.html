@@ -7,7 +7,26 @@
 {% block dialogs %}
 <div id="info"></div>
 <div id="editor">
+    <div id="editorheader">
+        <span>Annotation Editor</span>
+        <button id="editordiscard">x</button>
+    </div>
     <div class="body">
+    </div>
+    <div class="buttoncontainer">
+        <span id="editoraddfields">Add fields:
+        <select id="editoraddablefields">
+        </select>
+        <button id="editoraddfield">+</button></span>
+        
+        <span id="editortargets">Targets:
+        <select id="editortargetlist">
+        </select>
+        <button id="editorremovetarget">-</button></span>
+    <button id="editorselecttarget">Select&gt;</button></span>
+    </div>
+    <div class="buttoncontainer">
+        <button id="editorsubmit">Ok</button>
     </div>
 </div>
 {% endblock %}
