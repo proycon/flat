@@ -22,6 +22,7 @@ div#editorheader {
 div#editorheader button {
     float: right;
     margin-top: -5px;
+    background: #30677c;
 }
 div#editor table {
     width: 100%;

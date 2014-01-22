@@ -128,8 +128,8 @@ function showeditor(element) {
 
                 for (var i = 0; i < editfields;i++) { 
                     if ($('#editfield' + i).val() != editdata[i].class) {
-                        editdata[index].class = $('#editfield' + i).val();
-                        editdata[index].changed = true;
+                        editdata[i].class = $('#editfield' + i).val();
+                        editdata[i].changed = true;
                     }
                 }
 
@@ -140,6 +140,12 @@ function showeditor(element) {
                         sendeditdata.push(editdataitem);
                     }
                 });
+                if (senditdata.length == 0) {
+                    //discard
+                    closeeditor();
+                    return false;
+                }
+
                 $('#wait').show();
                 $.ajax({
                     type: 'POST',
@@ -162,6 +168,7 @@ function showeditor(element) {
                     },
                     dataType: "json"
                 });
+                return true;
             });
 
         }
