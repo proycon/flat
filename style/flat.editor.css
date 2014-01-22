@@ -58,3 +58,19 @@ div#editor .buttoncontainer span {
 input.changed {
     color: #660000;
 }
+div#editor span#editoraddfields button {
+    border-radius: 0;
+    background: transparent;
+    border: 1px solid #30677c;
+    color: #30677c;
+    padding: 1px;
+}
+
+div.selected span.lbl {
+    background: yellow;
+}
+
+#editor button.selectoron {
+    background: yellow;
+    color: black;
+}

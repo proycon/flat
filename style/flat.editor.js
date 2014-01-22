@@ -1,5 +1,32 @@
 editoropen = false;
+coselector = false;
 
+function select(element) {
+    //toggles
+    var found = false;
+    var index = 0;
+    for (var i = 0; i < edittargets.length; i++) {
+        if (edittargets[i] == element.id) {
+            index = i;
+            found = true;
+            break;
+        }
+    }
+    if (found) {
+        edittargets.splice(index, 1);
+        $(element).removeClass("selected");
+    } else { 
+        edittargets.push( element.id);
+        $(element).addClass("selected");
+    }
+
+    //targets list
+    edittargets_options = "";
+    edittargets.forEach(function(edittarget){
+        edittargets_options = edittargets_options + "<option value=\"" + edittarget + "\">" + edittarget + "</option>";
+    });
+    $("#editortargetlist").html(edittargets_options);
+}
 
 function showeditor(element) {
 
@@ -10,7 +37,8 @@ function showeditor(element) {
             sethover(element);
             editfields = 0;
             editdata = [];
-            edittargets = [element.id];
+            edittargets = [];
+            select(element);
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
                 if (viewannotations[annotation.type+"/" + annotation.set]) {
@@ -68,12 +96,6 @@ function showeditor(element) {
                 $("#editoraddfields").hide();
             }
 
-            //targets list
-            edittargets_options = "";
-            edittargets.forEach(function(edittarget){
-                edittargets_options = edittargets_options + "<option value=\"" + edittarget + "\">" + edittarget + "</option>";
-            });
-            $("#editortargetlist").html(edittargets_options);
 
 
 
@@ -130,10 +152,8 @@ function showeditor(element) {
                             $('#wait').hide();
                             alert("Received error from document server: " + data.error);
                         } else {
+                            closeeditor();
                             update(data);
-                            $('#editor').hide();
-                            $('#wait').hide();
-                            editoropen = false;
                         }
                     },
                     error: function(req,err,exception) { 
@@ -148,14 +168,25 @@ function showeditor(element) {
     }
 }
 
+function closeeditor() {
+    $('#editor').hide();
+    $('#wait').hide();
+    editoropen = false;
+    coselector = false;
+    $('#document .selected').removeClass("selected");
+}
 
 function addeditorfield() {
 }
 
 function editor_onclick(element) {
     //open editor
-    $('#info').hide();
-    showeditor(element);
+    if (coselector) {
+        select(element); //toggle
+    } else {
+        $('#info').hide();
+        showeditor(element);
+    }
 }
 
 function editor_onmouseenter(element) {
@@ -168,9 +199,15 @@ function editor_onmouseenter(element) {
 
 function editor_oninit() {
     viewer_oninit();
-    $('#editordiscard').click(function(){
-        $('#editor').hide();
-        editoropen=false;
+    $('#editordiscard').click(closeeditor);
+    $('#editorselecttarget').click(function(){
+        if (coselector) {
+            coselector = false;
+            $(this).removeClass("selectoron");
+        } else {
+            coselector = true;
+            $(this).addClass("selectoron");
+        }
     });
 
 }
