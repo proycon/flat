@@ -1,0 +1,9 @@
+div#editor {
+    width: 480px;
+    padding: 10px;
+    background: #ededed;
+    color: #333;
+    border: #30677c 1px solid;
+    border-radius: 15px;
+    min-height: 100px;
+}
