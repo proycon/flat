@@ -26,12 +26,7 @@ def view(request, docid):
 
 @login_required
 def annotate(request, docid):
-    e = comm.postjson(request, '/annotate/%NS%/' + docid + '/', request.body)
-    d = {
-            'elementid': e['elementid'],
-            'html': e['html'],
-            'annotations': json.dumps(e['annotations']),
-    }
+    d = comm.postjson(request, '/annotate/%NS%/' + docid + '/', request.body)
     return HttpResponse(json.dumps(d), mimetype='application/json')
 
 

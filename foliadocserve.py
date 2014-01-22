@@ -185,7 +185,7 @@ class Root:
 
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
-        data = json.loads(rawbody)
+        data = json.loads(str(rawbody,'utf-8'))
 
         returnelementid = "";
         return self.getelement(namespace,docid, returnelementid);
@@ -196,10 +196,13 @@ class Root:
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
-            return json.dumps({
-                'html': gethtml(self.docstore[(namespace,docid)][elementid]),
-                'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
-            }).encode('utf-8')
+            if elementid:
+                return json.dumps({
+                    'html': gethtml(self.docstore[(namespace,docid)][elementid]),
+                    'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
+                }).encode('utf-8')
+            else:
+                return "{}".encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 

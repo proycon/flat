@@ -142,17 +142,19 @@ function editor_oninit() {
         $('#wait').show();
         $.ajax({
             type: 'POST',
-            url: "/editor/annotate/" + docid + "/",
+            url: "/editor/" + docid + "/annotate/",
             contentType: "application/json",
-            processData: false,
-            data: {'length': sendeditdata.length, 'data': sendeditdata, 'targets': edittargets},
+            //processData: false,
+            data: JSON.stringify( {'length': sendeditdata.length, 'data': sendeditdata, 'targets': edittargets}),
             success: function(data) {
                 update(data);
+                $('#editor').hide();
                 $('#wait').hide();
+                editoropen = false;
             },
-            failure: function() { 
-                alert("Editor submission failed");
+            error: function(req,err,exception) { 
                 $('#wait').hide();
+                alert("Editor submission failed" + req + " " + err + " " + exception);
             },
             dataType: "json"
         });
