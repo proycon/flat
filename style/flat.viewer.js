@@ -112,6 +112,9 @@ function setannotationfocus(t,set) {
 }
 
 function viewer_oninit() {
+    $('#document').mouseleave( function(e) {
+        $('#info').hide();
+    });  
     setview(view);
     setannotationfocus(annotationfocus);
     s = "";

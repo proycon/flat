@@ -130,9 +130,6 @@ $(function() {
     });
 
 
-    $('#document').mouseleave( function(e) {
-        $('#info').hide();
-    });  
 
     //loadtext(initialannotationlist);
     loadannotations(initialannotationlist);

@@ -43,9 +43,10 @@ else:
 
 EDITOR_MODES = {
     ('viewer','Viewer'),
+    ('editor','Editor'),
 }
 
-DEFAULTMODE = 'viewer'
+DEFAULTMODE = 'editor'
 
 
 
