@@ -158,11 +158,32 @@ def doannotation(doc, data):
     response = {'returnelementid':data['elementid']}
     changed = [] #changed elements
 
-    try:
-        element = doc[data['elementid']]
-    except:
-        response['error'] = "Pivot element " + data['elementid'] + " does not exist!"
-        return response
+
+    if len(data['targets']) > 1:
+        ancestors = []
+        for targetid in data['targets']:
+            try:
+                target = doc[targetid]
+            except:
+                response['error'] = "Target element " + targetid + " does not exist!"
+                return response
+
+            ancestors.append( set( ( x for x in target.ancestors() if isinstance(x,folia.AbstractStructureAnnotation) and x.id ) ) )
+
+        commonancestors = set.intersection(*ancestors)
+        commonancestor = commonancestors[0]
+        response['returnelementid'] = commonancestor.id
+    else:
+        for targetid in data['targets']:
+            try:
+                target = doc[targetid]
+                response['returnelementid'] = target.id
+            except:
+                response['error'] = "Target element " + targetid + " does not exist!"
+                return response
+
+
+
 
 
     for edit in data['edits']:
@@ -189,7 +210,7 @@ def doannotation(doc, data):
                     target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL) #does append if no replacable found
                 else:
                     #we have a deletion
-                    replace = Class.findreplacables(self,edit['set'])
+                    replace = Class.findreplacables(target.parent,edit['set'])
                     if len(replace) == 1:
                         #good
                         target.remove(replace[0])
@@ -199,42 +220,56 @@ def doannotation(doc, data):
                 changed.append(target)
 
         elif issubclass(Class, folia.AbstractSpanAnnotation):
+            targets = []
+            for targetid in data['targets']:
+                try:
+                    targets.append( doc[targetid] )
+                except:
+                    response['error'] = "Target element " + targetid + " does not exist!"
+                    return response
+
             #Span annotation, one annotation spanning all tokens
             if edit['new']:
                 #this is a new span annotation
+
+                #find common ancestor of all targets
+                layers = commonancestor.layers(annotationtype, edit['set'])
+                if len(layers) >= 1:
+                    layer = layers[0]
+                else:
+                    layer = commonancestor.append(folia.ANNOTATIONTYPE2LAYERCLASS[annotationtype])
+
+                layer.append(Class, *targets, set=edit['set'], cls=edit['cls'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL)
+
 
             elif 'id' in edit:
                 #existing span annotation, we should have an ID
                 try:
                     annotation = doc[edit['id']]
                 except Exception as e:
-                    response['error'] = str(e)
+                    response['error'] = "No existing span annotation with id " + edit['id'] + " found"
                     return response
 
+                currenttargets = annotation.wrefs()
+                if currenttargets != targets:
+                    if annotation.hasannotation(Class):
+                        response['error'] = "Unable to change the span of this annotation as there are nested span annotations embedded"
+                        return response
+                    else:
+                        annotation.data = targets
+
+                annotation.cls = edit['cls']
+                annotation.annotator = data['annotator']
+                annotation.annotatortype = folia.AnnotatorType.MANUAL
 
             else:
                 #no ID, fail
                 response['error'] = "Unable to edit span annotation without explicit id"
                 return response
+        else:
+            response['error'] = "Unable to edit annotations of type " + Class.__name__
+            return response
 
-
-
-
-
-
-
-        if not annotation:
-
-
-
-
-
-        if annotation:
-            if 'class' in edit:
-                annotation.cls = edit['class']
-            if 'annotator' in data:
-                annotation.annotator = data['annotator']
-                annotation.annotatortype = folia.AnnotatorType.MANUAL
 
     return response
 
