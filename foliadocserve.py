@@ -178,6 +178,20 @@ class Root:
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
+
+    @cherrypy.expose
+    def annotate(self, namespace, docid):
+        namepace = namespace.replace('/','').replace('..','')
+
+        cl = cherrypy.request.headers['Content-Length']
+        rawbody = cherrypy.request.body.read(int(cl))
+        data = json.loads(rawbody)
+
+        returnelementid = "";
+        return self.getelement(namespace,docid, returnelementid);
+
+
+    @cherrypy.expose
     def getelement(self, namespace, docid, elementid):
         namepace = namespace.replace('/','').replace('..','')
         try:
@@ -188,6 +202,16 @@ class Root:
             }).encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
+
+
+
+
+
+
+
+
+
+    #UNUSED:
 
 
     @cherrypy.expose

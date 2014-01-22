@@ -82,7 +82,7 @@ function showeditor(element) {
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
             //configure actions and events for edit fields
             for (var i = 0; i < editfields;i++){
-                $('#editfield'+i).click(function(){
+                $('#editfield'+i).change(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
                     if ($(this).val() != editdata[index].class) {
@@ -101,6 +101,18 @@ function showeditor(element) {
             }
             $('#editor').show();    
             $('#editor').draggable();    
+
+            $('#editorsubmit').click(function(){
+                $.ajax({
+                    type: 'POST',
+                    url: "/editor/annotate",
+                    contentType: "application/json",
+                    processData: false,
+                    data: {'editfields': editfields, 'editdata': editdata},
+                    success: function(data) {alert(data);},
+                    dataType: "json"
+                });
+            });
 
         }
     }
