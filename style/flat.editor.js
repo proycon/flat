@@ -32,6 +32,11 @@ function setaddablefields() {
     editoraddablefields_options = "";
     editoraddablefields = [];
     Object.keys(declarations).forEach(function(annotationtype){
+        if (annotationtypenames[annotationtype]) {
+            label = annotationtypenames[annotationtype];
+        } else {
+            label = annotationtype;
+        }
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if (viewannotations[annotationtype + "/" + set]) {
                 found = false;
@@ -42,7 +47,7 @@ function setaddablefields() {
                     }
                 });
                 if (!found) {
-                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + annotationtype + "/" + set + "</option>";
+                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + set + "</span></option>";
                     editoraddablefields.push({'type': annotationtype, 'set': set});
                 }
             }
