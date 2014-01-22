@@ -153,6 +153,94 @@ def getdeclarations(doc):
             annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
             yield {'annotationtype': annotationtype, 'set': set}
 
+
+def doannotation(doc, data):
+    response = {'returnelementid':data['elementid']}
+    changed = [] #changed elements
+
+    try:
+        element = doc[data['elementid']]
+    except:
+        response['error'] = "Pivot element " + data['elementid'] + " does not exist!"
+        return response
+
+
+    for edit in data['edits']:
+        assert 'type' in edit
+        Class = folia.XML2CLASS[edit['type']]
+        annotationtype = Class.ANNOTATIONTYPE
+        annotation = None
+
+
+
+        if not 'set' in edit or edit['set'] == 'undefined' or edit['set'] == 'null':
+            edit['set'] = None
+
+        if issubclass(Class, folia.AbstractTokenAnnotation):
+            #Token annotation, each target will get a copy
+            for targetid in data['targets']:
+                try:
+                    target = doc[targetid]
+                except:
+                    response['error'] = "Target element " + targetid + " does not exist!"
+                    return response
+
+                if edit['class']:
+                    target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL) #does append if no replacable found
+                else:
+                    #we have a deletion
+                    replace = Class.findreplacables(self,edit['set'])
+                    if len(replace) == 1:
+                        #good
+                        target.remove(replace[0])
+                    elif len(replace) > 1:
+                        response['error'] = "Unable to delete, multiple ambiguous candidates found!"
+                        return response
+                changed.append(target)
+
+        elif issubclass(Class, folia.AbstractSpanAnnotation):
+            #Span annotation, one annotation spanning all tokens
+            if edit['new']:
+                #this is a new span annotation
+
+            elif 'id' in edit:
+                #existing span annotation, we should have an ID
+                try:
+                    annotation = doc[edit['id']]
+                except Exception as e:
+                    response['error'] = str(e)
+                    return response
+
+
+            else:
+                #no ID, fail
+                response['error'] = "Unable to edit span annotation without explicit id"
+                return response
+
+
+
+
+
+
+
+        if not annotation:
+
+
+
+
+
+        if annotation:
+            if 'class' in edit:
+                annotation.cls = edit['class']
+            if 'annotator' in data:
+                annotation.annotator = data['annotator']
+                annotation.annotatortype = folia.AnnotatorType.MANUAL
+
+    return response
+
+
+
+
 class Root:
     def __init__(self,docstore,args):
         self.docstore = docstore
@@ -186,9 +274,9 @@ class Root:
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
         data = json.loads(str(rawbody,'utf-8'))
-
-        returnelementid = "";
-        return self.getelement(namespace,docid, returnelementid);
+        doc = self.docstore[(namespace,docid)]
+        response = doannotation(doc, data)
+        return self.getelement(namespace,docid, response['returnelementid']);
 
 
     @cherrypy.expose

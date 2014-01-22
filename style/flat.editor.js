@@ -102,6 +102,38 @@ function showeditor(element) {
             $('#editor').show();    
             $('#editor').draggable();    
 
+            $('#editorsubmit').click(function(){
+                sendeditdata = [];
+                editdata.forEach(function(editdataitem){
+                    if (editdataitem.changes) {
+                        sendeditdata.push(editdataitem);
+                    }
+                });
+                $('#wait').show();
+                $.ajax({
+                    type: 'POST',
+                    url: "/editor/" + docid + "/annotate/",
+                    contentType: "application/json",
+                    //processData: false,
+                    data: JSON.stringify( { 'elementid': element.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username}),
+                    success: function(data) {
+                        if (data.error) {
+                            $('#wait').hide();
+                            alert("Received error from document server: " + data.error);
+                        } else {
+                            update(data);
+                            $('#editor').hide();
+                            $('#wait').hide();
+                            editoropen = false;
+                        }
+                    },
+                    error: function(req,err,exception) { 
+                        $('#wait').hide();
+                        alert("Editor submission failed" + req + " " + err + " " + exception);
+                    },
+                    dataType: "json"
+                });
+            });
 
         }
     }
@@ -132,31 +164,4 @@ function editor_oninit() {
         editoropen=false;
     });
 
-    $('#editorsubmit').click(function(){
-        sendeditdata = [];
-        editdata.forEach(function(editdataitem){
-            if (editdataitem.changes) {
-                sendeditdata.push(editdataitem);
-            }
-        });
-        $('#wait').show();
-        $.ajax({
-            type: 'POST',
-            url: "/editor/" + docid + "/annotate/",
-            contentType: "application/json",
-            //processData: false,
-            data: JSON.stringify( {'length': sendeditdata.length, 'data': sendeditdata, 'targets': edittargets}),
-            success: function(data) {
-                update(data);
-                $('#editor').hide();
-                $('#wait').hide();
-                editoropen = false;
-            },
-            error: function(req,err,exception) { 
-                $('#wait').hide();
-                alert("Editor submission failed" + req + " " + err + " " + exception);
-            },
-            dataType: "json"
-        });
-    });
 }
