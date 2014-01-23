@@ -212,7 +212,7 @@ function closeeditor() {
     $('#editor .selectoron').removeClass("selectoron");
 }
 
-function addeditorfield(var index) {
+function addeditorfield(index) {
 
     if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
