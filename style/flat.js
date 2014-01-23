@@ -190,19 +190,20 @@ $(document).ajaxSend(function(event, xhr, settings) {
 });
 
 $(function() {
-    $('nav>ul>li').mouseenter(function(){
-        $('>ul',this).css('left', mouseX-30);
-    });
+    if (typeof(mode) != "undefined") {
+        $('nav>ul>li').mouseenter(function(){
+            $('>ul',this).css('left', mouseX-30);
+        });
 
 
 
-    //loadtext(initialannotationlist);
-    loadannotations(initialannotationlist);
-    loaddeclarations(initialdeclarationlist);
-    registerhandlers();
-    if (function_exists(mode + '_oninit')) {
-        f = eval(mode + '_oninit');
-        f();
+        //loadtext(initialannotationlist);
+        loadannotations(initialannotationlist);
+        loaddeclarations(initialdeclarationlist);
+        registerhandlers();
+        if (function_exists(mode + '_oninit')) {
+            f = eval(mode + '_oninit');
+            f();
+        }
     }
-
 });

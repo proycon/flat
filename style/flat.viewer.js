@@ -1,6 +1,6 @@
 view = 'deepest';
 viewannotations = {};
-annotationfocus = 't';
+annotationfocus = null;
 hover = null;
 
 function setview(v) {
@@ -95,7 +95,7 @@ function setannotationfocus(t,set) {
         $('.focustype').removeClass("focustype");
         $('#annotationsfocusmenu li').removeClass('on');
     }
-    if (t) {
+    if (t && set) {
         annotationfocus = { 'type': t, 'set': set };
         $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
         if (annotationfocus != 't') {
@@ -108,6 +108,8 @@ function setannotationfocus(t,set) {
             });
             });
         }
+    } else {
+        annotationfocus = null;
     }
 }
 

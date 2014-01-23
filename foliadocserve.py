@@ -8,6 +8,7 @@ import os
 import sys
 import json
 import random
+import datetime
 from pynlpl.formats import folia
 
 def fake_wait_for_occupied_port(host, port): return
@@ -193,6 +194,7 @@ def doannotation(doc, data):
         annotationtype = Class.ANNOTATIONTYPE
         annotation = None
 
+        edit['datetime'] = datetime.datetime.now()
 
 
         if not 'set' in edit or edit['set'] == 'undefined' or edit['set'] == 'null':
@@ -208,7 +210,7 @@ def doannotation(doc, data):
                     return response
 
                 if edit['class']:
-                    target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL) #does append if no replacable found
+                    target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                 else:
                     #we have a deletion
                     replace = Class.findreplacables(target.parent, edit['set'])
@@ -240,7 +242,7 @@ def doannotation(doc, data):
                 else:
                     layer = commonancestor.append(folia.ANNOTATIONTYPE2LAYERCLASS[annotationtype])
 
-                layer.append(Class, *targets, set=edit['set'], cls=edit['cls'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL)
+                layer.append(Class, *targets, set=edit['set'], cls=edit['cls'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
 
             elif 'id' in edit:

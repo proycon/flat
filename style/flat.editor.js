@@ -53,7 +53,7 @@ function setaddablefields() {
             }
         });
     });
-    if (editoraddablefields_options) {
+    if ((editoraddablefields_options) && (!annotationfocus)) {
         $("#editoraddablefields").html(editoraddablefields_options);
         $("#editoraddfields").show();
     } else {
@@ -162,7 +162,7 @@ function showeditor(element) {
                 }
 
 
-                sendeditdata = [];
+                sendeditdata = []; //TODO: sort in proper order
                 editdata.forEach(function(editdataitem){
                     if (editdataitem.changed) {
                         sendeditdata.push(editdataitem);
@@ -173,6 +173,8 @@ function showeditor(element) {
                     closeeditor();
                     return false;
                 }
+                
+
 
                 $('#wait').show();
                 $.ajax({
