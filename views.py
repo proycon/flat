@@ -45,14 +45,14 @@ def index(request):
         for namespace in os.listdir(settings.WORKDIR):
             if models.hasreadpermission(request.user.username, namespace):
                 docs[namespace] = []
-                for filename in glob.glob(settings.WORKDIR + "/" + namespace + "/" + request.user.username + "/*.folia.xml"):
+                for filename in glob.glob(settings.WORKDIR + "/" + namespace + "/*.folia.xml"):
                     docid =  os.path.basename(filename.replace('.folia.xml',''))
                     docs[namespace].append(docid)
     else:
         docs = []
-        comm.get(request, "makenamespace/%NS%")
+        comm.get(request, "makenamespace/" + namespace)
 
-    return render(request, 'index.html', {'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username})
+    return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
 
 

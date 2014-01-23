@@ -8,10 +8,10 @@
     <div class="error">{{ error }}</div>
     {% endif %}
     <ul id="doclist">
-    {% for namespace in docs %}
+    {% for namespace, docsinnamespace in docs %}
         <li><strong>{{ namespace }}</strong><ul>
-        {% for doc in docs[namespace] %}
-            <li><a href="/{{ defaultmode }}/{{ doc }}/">{{ doc }}</a></li>
+        {% for doc  in docsinnamespace %}
+            <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/">{{ doc }}</a></li>
         {% endfor %}
         </ul></li>
     {% endfor %}
