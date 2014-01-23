@@ -2,15 +2,15 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,HttpResponseForbidden
-import flat.comm as comm
 import flat.settings as settings
-import flat.models as models
+import flat.comm
+import flat.users
 import json
 
 @login_required
 def view(request, namespace, docid):
-    if models.hasreadpermission(request.user.username, namespace):
-        doc = comm.get(request, '/getdoc/%NS%/' + docid + '/')
+    if flat.users.models.hasreadpermission(request.user.username, namespace):
+        doc = flat.comm.get(request, '/getdoc/%NS%/' + docid + '/')
         d = {
                 'namespace': namespace,
                 'docid': docid,
@@ -30,8 +30,8 @@ def view(request, namespace, docid):
 
 @login_required
 def annotate(request,namespace, docid):
-    if models.haswritepermission(request.user.username, namespace):
-        d = comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
+    if flat.users.models.haswritepermission(request.user.username, namespace):
+        d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden()

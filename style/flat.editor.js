@@ -194,7 +194,7 @@ function showeditor(element) {
                     },
                     error: function(req,err,exception) { 
                         $('#wait').hide();
-                        alert("Editor submission failed" + req + " " + err + " " + exception);
+                        alert("Editor submission failed: " + req + " " + err + " " + exception);
                     },
                     dataType: "json"
                 });

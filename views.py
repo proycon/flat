@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import django.contrib.auth
 import flat.settings as settings
-import flat.comm as comm
-import flat.models as models
+import flat.comm
+import flat.users
 import glob
 import os
 
@@ -43,14 +43,14 @@ def index(request):
     if os.path.isdir(settings.WORKDIR + "/" + request.user.username):
         docs = {}
         for namespace in os.listdir(settings.WORKDIR):
-            if models.hasreadpermission(request.user.username, namespace):
+            if flat.users.models.hasreadpermission(request.user.username, namespace):
                 docs[namespace] = []
                 for filename in glob.glob(settings.WORKDIR + "/" + namespace + "/*.folia.xml"):
                     docid =  os.path.basename(filename.replace('.folia.xml',''))
                     docs[namespace].append(docid)
     else:
         docs = []
-        comm.get(request, "makenamespace/" + namespace)
+        flat.comm.get(request, "makenamespace/" + namespace)
 
     return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 

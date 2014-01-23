@@ -2,15 +2,15 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
-import flat.comm as comm
 import flat.settings as settings
-import flat.models as models
+import flat.comm
+import flat.users
 import json
 
 @login_required
 def view(request, namespace, docid):
-    if models.hasreadpermission(request.user.username, namespace):
-        doc = comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
+    if flat.users.models.hasreadpermission(request.user.username, namespace):
+        doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
         d = {
                 'namespace': namespace,
                 'docid': docid,
@@ -33,8 +33,8 @@ def view(request, namespace, docid):
 
 @login_required
 def subview(request, namespace, docid, elementid):
-    if models.hasreadpermission(request.user.username, namespace):
-        e = comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
+    if flat.users.models.hasreadpermission(request.user.username, namespace):
+        e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
         d = {
                 'elementid': elementid,
                 'html': e['html'],

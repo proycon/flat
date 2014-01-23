@@ -166,6 +166,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'flat.users'
 ]
 for mode,_ in EDITOR_MODES:
     INSTALLED_APPS.append('flat.modes.' + mode)
