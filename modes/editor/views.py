@@ -26,7 +26,7 @@ def view(request, namespace, docid):
         #TODO later: add setdefinitions
         return render(request, 'editor.html', d)
     else:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("Permission denied")
 
 @login_required
 def annotate(request,namespace, docid):
@@ -34,7 +34,7 @@ def annotate(request,namespace, docid):
         d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("Permission denied, no write access")
 
 
 

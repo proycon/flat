@@ -26,7 +26,7 @@ def view(request, namespace, docid):
         #TODO later: add setdefinitions
         return render(request, 'viewer.html', d)
     else:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("Permission denied")
 
 
 
@@ -42,4 +42,4 @@ def subview(request, namespace, docid, elementid):
         }
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("Permission denied")
