@@ -65,7 +65,12 @@ function showinfo(element) {
                     } else {
                         setname = "";
                     }
-                    s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>" + annotation.class + "</td></tr>";
+                    s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                    s = s + "<span class=\"class\">" + annotation.class + "</span>";
+                    if (annotation.type == "t") {
+                        s = s + "<br /><span class=\"text\">" + annotation.text + "</span>";
+                    }
+                    s = s + "</td></tr>";
                 }
                  
             });
@@ -98,16 +103,14 @@ function setannotationfocus(t,set) {
     if (t && set) {
         annotationfocus = { 'type': t, 'set': set };
         $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
-        if (annotationfocus != 't') {
-            Object.keys(annotations).forEach(function(target){
+        Object.keys(annotations).forEach(function(target){
             Object.keys(annotations[target]).forEach(function(annotationkey){
                 annotation = annotations[target][annotationkey];
                 if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
                     $('#' + valid(target)).addClass("focustype");
                 }
             });
-            });
-        }
+        });
     } else {
         annotationfocus = null;
     }
@@ -135,6 +138,6 @@ function viewer_oninit() {
     });
     $('#annotationsviewmenu').html(s);
     $('#annotationsfocusmenu').html(s2);
-    if (viewannotations['t']) toggleannotationview('t');
+    //if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
 }

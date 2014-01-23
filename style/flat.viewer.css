@@ -51,6 +51,10 @@ div#info td {
     width: 59%
     font-style: italic;
 }
+div#info .class {
+    font-style: italic;
+    color: #31355a;
+}
 li .setname {
     display: block;
     font-size: 8px;
