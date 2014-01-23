@@ -72,9 +72,15 @@ function showeditor(element) {
             editdata = [];
             edittargets = [];
             select(element);
+            var annotationfocusfound = false;
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
-                if (viewannotations[annotation.type+"/" + annotation.set]) {
+                if ((annotationfocus) && ((annotationfocus.type != annotation.type) || (annotationfocus.set != annotation.set))) {
+                    continue;
+                } else {
+                    annotationfocusfound = true;
+                }
+                if ((annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set])) {
                     if (annotationtypenames[annotation.type]) {
                         label = annotationtypenames[annotation.type];
                     } else {
@@ -103,9 +109,18 @@ function showeditor(element) {
                 idheader = "<div id=\"id\">Editing " + edittargets.length + " items!</div>"
             }
 
+
             //extra fields list
             setaddablefields();
 
+            if ((annotationfocus) && (!annotationfocusfound)) {
+                for (var i = 0; i < editoraddablefields.length; i++) {
+                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
+                        addeditorfield(i);
+                        break;
+                    }
+                }
+            }
 
 
             s = idheader + "<table>"  + s + "</table>";
@@ -133,30 +148,8 @@ function showeditor(element) {
             $('#editor').show();    
             $('#editor').draggable();    
 
-            $('#editoraddfield').click(function(){
-                var index = $('#editoraddablefields').val();
 
-                if (annotationtypenames[editoraddablefields[index].type]) {
-                    label = annotationtypenames[editoraddablefields[index].type];
-                } else {
-                    label = editoraddablefields[index].type;
-                }
-                if (editoraddablefields[index].set) {
-                    setname = editoraddablefields[index].set;
-                } else {
-                    setname = "";
-                }
 
-                s =  "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
-                s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
-                $('#editrowplaceholder')[0].outerHTML = s;
-
-                editfields = editfields + 1; //increment after adding
-                editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'class':'', 'new': true, 'changed': true };
-                editdata.push(editdataitem);
-                setaddablefields();
-            });
             $('#editorsubmit').click(function(){
 
                 for (var i = 0; i < editfields;i++) { 
@@ -217,7 +210,28 @@ function closeeditor() {
     $('#editor .selectoron').removeClass("selectoron");
 }
 
-function addeditorfield() {
+function addeditorfield(var index) {
+
+    if (annotationtypenames[editoraddablefields[index].type]) {
+        label = annotationtypenames[editoraddablefields[index].type];
+    } else {
+        label = editoraddablefields[index].type;
+    }
+    if (editoraddablefields[index].set) {
+        setname = editoraddablefields[index].set;
+    } else {
+        setname = "";
+    }
+
+    s =  "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+    s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
+    s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
+    $('#editrowplaceholder')[0].outerHTML = s;
+
+    editfields = editfields + 1; //increment after adding
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'class':'', 'new': true, 'changed': true };
+    editdata.push(editdataitem);
+    setaddablefields();
 }
 
 function editor_onclick(element) {
@@ -262,6 +276,10 @@ function editor_oninit() {
         if (editoropen) {
             closeeditor();
         }
+    });
+    $('#editoraddfield').click(function(){
+        var index = $('#editoraddablefields').val();
+        addeditorfield(index);
     });
 
 }
