@@ -66,9 +66,12 @@ function showinfo(element) {
                         setname = "";
                     }
                     s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                    s = s + "<span class=\"class\">" + annotation.class + "</span>";
+                    if (!((annotation.type == "t") && (annotation.class == "current"))) {
+                        s = s + "<span class=\"class\">" + annotation.class + "</span>";
+                    }
                     if (annotation.type == "t") {
-                        s = s + "<br /><span class=\"text\">" + annotation.text + "</span>";
+                        if (annotation.class != "current") s = s + "<br />";
+                        s = s + "<span class=\"text\">" + annotation.text + "</span>";
                     }
                     s = s + "</td></tr>";
                 }
