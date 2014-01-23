@@ -94,7 +94,16 @@ function showeditor(element) {
                         setname = "";
                     }
                     s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                    s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                    if (annotation.type == 't') {
+                        if (annotation.class != "current") {
+                            s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/><br/>Text:";
+                        } else {
+                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                        }
+                        s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + annotation.text + "\"/>";
+                    } else {
+                        s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                    }
                     //s = s + "<button id=\"editordelete" + editfields + "\">-</button>";
                     s = s + "</td></tr>";
                     editfields = editfields + 1;
