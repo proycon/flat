@@ -17,6 +17,7 @@
         {% if docid %}
         <script type="text/javascript">
             username = "{{ username|safe }}";
+            namespace = "{{ namespace|safe }}";
             docid = "{{ docid|safe }}";
             modes = {{ modes_json|safe }};
             mode = "{{ mode }}";

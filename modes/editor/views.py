@@ -1,33 +1,41 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseForbidden
 import flat.comm as comm
 import flat.settings as settings
+import flat.models as models
 import json
 
 @login_required
-def view(request, docid):
-    doc = comm.get(request, '/getdoc/%NS%/' + docid + '/')
-    d = {
-            'docid': docid,
-            'mode': 'editor',
-            'modes': settings.EDITOR_MODES,
-            'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]),
-            'dochtml': doc['html'],
-            'docannotations': json.dumps(doc['annotations']),
-            'docdeclarations': json.dumps(doc['declarations']),
-            'loggedin': request.user.is_authenticated(),
-            'username': request.user.username
-    }
-    #TODO later: add setdefinitions
-    return render(request, 'editor.html', d)
-
+def view(request, namespace, docid):
+    if models.hasreadpermission(request.user.username, namespace):
+        doc = comm.get(request, '/getdoc/%NS%/' + docid + '/')
+        d = {
+                'namespace': namespace,
+                'docid': docid,
+                'mode': 'editor',
+                'modes': settings.EDITOR_MODES,
+                'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]),
+                'dochtml': doc['html'],
+                'docannotations': json.dumps(doc['annotations']),
+                'docdeclarations': json.dumps(doc['declarations']),
+                'loggedin': request.user.is_authenticated(),
+                'username': request.user.username
+        }
+        #TODO later: add setdefinitions
+        return render(request, 'editor.html', d)
+    else:
+        return HttpResponseForbidden()
 
 @login_required
-def annotate(request, docid):
-    d = comm.postjson(request, '/annotate/%NS%/' + docid + '/', request.body)
-    return HttpResponse(json.dumps(d), mimetype='application/json')
+def annotate(request,namespace, docid):
+    if models.haswritepermission(request.user.username, namespace):
+        d = comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
+        return HttpResponse(json.dumps(d), mimetype='application/json')
+    else:
+        return HttpResponseForbidden()
+
 
 
 

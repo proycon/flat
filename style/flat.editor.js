@@ -179,7 +179,7 @@ function showeditor(element) {
                 $('#wait').show();
                 $.ajax({
                     type: 'POST',
-                    url: "/editor/" + docid + "/annotate/",
+                    url: "/editor/" + namespace + "/"+ docid + "/annotate/",
                     contentType: "application/json",
                     //processData: false,
                     data: JSON.stringify( { 'elementid': element.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username}),

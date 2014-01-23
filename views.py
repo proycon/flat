@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 import django.contrib.auth
 import flat.settings as settings
 import flat.comm as comm
-
+import flat.models as models
 import glob
 import os
 
@@ -41,10 +41,13 @@ def logout(request):
 @login_required
 def index(request):
     if os.path.isdir(settings.WORKDIR + "/" + request.user.username):
-        docs = []
-        for filename in glob.glob(settings.WORKDIR + "/" + request.user.username + "/*.folia.xml"):
-            docid =  os.path.basename(filename.replace('.folia.xml',''))
-            docs.append(docid)
+        docs = {}
+        for namespace in os.listdir(settings.WORKDIR):
+            if models.hasreadpermission(request.user.username, namespace):
+                docs[namespace] = []
+                for filename in glob.glob(settings.WORKDIR + "/" + namespace + "/" + request.user.username + "/*.folia.xml"):
+                    docid =  os.path.basename(filename.replace('.folia.xml',''))
+                    docs[namespace].append(docid)
     else:
         docs = []
         comm.get(request, "makenamespace/%NS%")
