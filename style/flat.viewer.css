@@ -18,28 +18,28 @@ span.lbl {
 }
 
 div.focustype span.lbl {
-    background: #dcdcdc;
+    background: #bfbfbf;
 }
 
-div.class0 span.lbl, div#class0legend {
+div.class1 span.lbl, div#class1legend {
     background: #b4e0aa; //green
 }
-div.class1 span.lbl, div#class1legend {
+div.class2 span.lbl, div#class2legend {
     background: #aaace0; //blue 
 }
-div.class2 span.lbl, div#class2legend {
+div.class3 span.lbl, div#class3legend {
     background: #e19898; //red
 }
-div.class3 span.lbl, div#class3legend {
+div.class4 span.lbl, div#class4legend {
     background: #e1e098; //yellow 
 }
-div.class4 span.lbl, div#class4legend {
+div.class5 span.lbl, div#class5legend {
     background: #98e1dd; //cyan
 }
-div.class5 span.lbl, div#class5legend {
+div.class6 span.lbl, div#class6legend {
     background: #dcc6da; //pink
 }
-div.class6 span.lbl, div#class6legend {
+div.class7 span.lbl, div#class7legend {
     background: #e1c398; //orange
 }
 div.hover span.lbl {

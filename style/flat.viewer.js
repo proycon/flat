@@ -144,11 +144,18 @@ function setannotationfocus(t,set) {
     }
 }
 
-function removeclasscolors() {
-    for (var int = 0; i < 7; i++) {
+function removeclasscolors(toggle) {
+    for (var i = 1; i < 8; i++) {
         $('.class' + i).removeClass('class' + i);
     }
-    $('#legend').hide();
+    $('.focustype').removeClass('focustype');
+    if (toggle) {
+        s = "<span class=\"title\">Legend &bull; " + title + "</span>"; //text for legend
+        s = s + "(<a href=\"javascript:setannotationfocus('"+ annotationfocus.type +"','" + annotationfocus.set + "')\">Show</a>)<br />";
+        $('#legend').html(s);
+    } else {
+        $('#legend').hide();
+    }
 }
 
 function setclasscolors() {
@@ -172,11 +179,12 @@ function setclasscolors() {
     } else {
         title = annotation.type;
     }
-    s = "<span class=\"title\">" + title + "</span>"; //text for legend
+    s = "<span class=\"title\">Legend &bull; " + title + "</span>"; //text for legend
+    s = s + "(<a href=\"javascript:removeclasscolors(true)\">Hide</a>)<br />";
     classrank = {}
-    currentrank = 0;
+    currentrank = 1;
     bySortedValue(classfreq, function(key, val){
-        if (currentrank < 7) {
+        if (currentrank < 8) {
             classrank[key] = currentrank;
             if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].classes[key])) {
                 key = setdefinitions[annotation.set].classes[key].label;
