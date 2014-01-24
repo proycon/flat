@@ -1,0 +1,67 @@
+.F {
+    border: 2px solid #666;
+    margin: 5px;
+    padding: 0px;
+    width: 90%;
+}
+.F>.hb {
+    display: block;
+    background: #666;
+    width: 100%;
+    min-height: 16px;
+    color: white;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 9px;
+}
+
+div.div {
+    display: block;
+    margin-bottom: 5px;
+    border: 2px solid #742222;
+}
+div.div>.hb {
+    background: #742222
+}
+
+div.p {
+    display: block;
+    margin-bottom: 5px;
+    border: 2px solid #746b22;
+}
+div.p>.hb {
+    background: #746b22;
+}
+
+div.s {
+    display: block;
+    border: 2px solid #272274;
+}
+div.s>.hb {
+    background: #272274;
+}
+
+div.w {
+    display: inline-block;
+    width: auto;
+    border: 2px solid #b9d8d9;
+}
+div.w>.hb {
+    background: #b9d8d9;
+    color: black;
+}
+
+div.head {
+    font-size: 120%;
+    font-weight: bold;
+    border: 2px solid black;
+}
+div.head>.hb {
+    background: black;
+}
+
+span.lbl {
+    display: none;
+    padding: 0;
+    margin: 0;
+}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- dependencies -->
+<link rel="StyleSheet" href="/style/flat.editor.css" type="text/css" />
+{% endblock %}
+
+{% block menu %}
+{% endblock %}
+
+{% block dialogs %}
+<div id="editor">
+    <div id="editorheader">
+        <span>Structure Editor</span>
+        <button id="editordiscard">x</button>
+    </div>
+    <div class="body">
+    </div>
+    <div class="buttoncontainer">
+        <span id="editoraddfields">New:
+        <select id="editoraddablefields">
+        </select>
+        <button id="editoraddfield">+</button></span>
+        
+        <span id="editortargets">Targets:
+        <select id="editortargetlist">
+        </select>
+        <button id="editorselecttarget">Select&gt;</button>
+        </span>
+    </div>
+    <div class="buttoncontainer">
+        <button id="editorsubmit">Ok</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+<div id="document">
+{{ dochtml|safe }}
+</div>
+{% endblock %}
+
