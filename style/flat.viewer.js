@@ -69,6 +69,19 @@ function showinfo(element) {
                     if (!((annotation.type == "t") && (annotation.class == "current"))) {
                         s = s + "<span class=\"class\">" + annotation.class + "</span>";
                     }
+                    if (annotation.targets.length > 1) {
+                        spantext = "";
+                        annotation.targets.forEach(function(target){
+                            Object.keys(annotations[target]).forEach(function(annotationid2){
+                                annotation2 = annotations[target][annotationid2];
+                                if ((annotation2.type == "t") && (annotation2.class == "current")) {
+                                    if (spantext) spantext += " ";
+                                    spantext += annotation2.text;
+                                }
+                            });
+                        });
+                        s = s + "<br/><span class=\"text\">" + spantext + "</span>";
+                    }
                     if (annotation.type == "t") {
                         if (annotation.class != "current") s = s + "<br />";
                         s = s + "<span class=\"text\">" + annotation.text + "</span>";
