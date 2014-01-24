@@ -125,6 +125,7 @@ function setannotationfocus(t,set) {
     if (annotationfocus) {
         $('.focustype').removeClass("focustype");
         $('#annotationsfocusmenu li').removeClass('on');
+        removeclasscolors();
     }
     if (t && set) {
         annotationfocus = { 'type': t, 'set': set };
@@ -137,8 +138,73 @@ function setannotationfocus(t,set) {
                 }
             });
         });
+        setclasscolors();
     } else {
         annotationfocus = null;
+    }
+}
+
+function removeclasscolors() {
+    for (var int = 0; i < 7; i++) {
+        $('.class' + i).removeClass('class' + i);
+    }
+    $('#legend').hide();
+}
+
+function setclasscolors() {
+    //count class distribution
+    classfreq = {};
+    Object.keys(annotations).forEach(function(target){
+        Object.keys(annotations[target]).forEach(function(annotationkey){
+            annotation = annotations[target][annotationkey];
+            if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
+                if (classfreq[annotation.class]) {
+                    classfreq[annotation.class]--; //reverse for sorting later
+                } else {
+                    classfreq[annotation.class] = -1; //reverse for sorting later
+                }
+            }
+        });
+    });
+
+    if (annotationtypenames[annotation.type]) {
+        title = annotationtypenames[annotation.type];
+    } else {
+        title = annotation.type;
+    }
+    s = "<span class=\"title\">" + title + "</span>"; //text for legend
+    classrank = {}
+    currentrank = 0;
+    bySortedValue(classfreq, function(key, val){
+        if (currentrank < 7) {
+            classrank[key] = currentrank;
+            if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].classes[key])) {
+                key = setdefinitions[annotation.set].classes[key].label;
+            }
+            s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + key + "</span><br />"
+            currentrank++;
+        }
+    });
+
+
+    Object.keys(annotations).forEach(function(target){
+        Object.keys(annotations[target]).forEach(function(annotationkey){
+            annotation = annotations[target][annotationkey];
+            if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
+                if (classrank[annotation.class]) {
+                    $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
+                }
+            }
+        });
+    });
+
+    $('#legend').html(s);
+    $('#legend').show();
+}
+
+function viewer_onloadannotations(annotationlist) {
+    if (annotationfocus) {
+        setclasscolors();
     }
 }
 

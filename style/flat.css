@@ -97,7 +97,7 @@ div.buttoncontainer {
     padding: 5px;
     text-align: center;
 }
-span.title {
+#topbar span.title {
     font-weight: bold;
     text-align: center;
     color: #cbd9de;

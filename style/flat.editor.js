@@ -310,6 +310,7 @@ function editor_ondblclick(element) {
     }
     showeditor(element);
 }
+
 function editor_onmouseenter(element) {
     if (!editoropen) {
         sethover(element);
@@ -317,6 +318,11 @@ function editor_onmouseenter(element) {
     }
 }
 
+
+
+function editor_onloadannotations(annotationlist) {
+    viewer_onloadannotations(annotationlist);
+}
 
 function editor_oninit() {
     viewer_oninit();

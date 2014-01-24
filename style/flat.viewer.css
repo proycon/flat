@@ -18,11 +18,62 @@ span.lbl {
 }
 
 div.focustype span.lbl {
-    background: #dcc6da;
+    background: #dcdcdc;
+}
+
+div.class0 span.lbl, div#class0legend {
+    background: #b4e0aa; //green
+}
+div.class1 span.lbl, div#class1legend {
+    background: #aaace0; //blue 
+}
+div.class2 span.lbl, div#class2legend {
+    background: #e19898; //red
+}
+div.class3 span.lbl, div#class3legend {
+    background: #e1e098; //yellow 
+}
+div.class4 span.lbl, div#class4legend {
+    background: #98e1dd; //cyan
+}
+div.class5 span.lbl, div#class5legend {
+    background: #dcc6da; //pink
+}
+div.class6 span.lbl, div#class6legend {
+    background: #e1c398; //orange
 }
 div.hover span.lbl {
     background: #b9d8d9;
 }
+
+div#legend {
+    position: fixed;
+    display: none;
+    width: 160px;
+    left:10px;
+    top: 100px;
+    background: transparent;
+    font-size: 9px;
+}
+div#legend .colorbox {
+    display: inline-block;
+    min-width: 16px;
+    min-height: 16px;
+    border: 1px #444 solid;
+    border-radius: 16px;
+}
+div#legend span {
+    display: inline-block;
+}
+div#legend .title {
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    font-style: italic;
+    color: black;
+    text-align: left;
+}
+
 div#info {
     position: absolute;
     display: none;
