@@ -27,6 +27,7 @@
 .slot:hover {
     background: #bbb;
     color: #333;
+    cursor: pointer;
 }
 div.s .slot {
     display: inline-block;

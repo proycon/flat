@@ -8,6 +8,12 @@
 
 {% block menu %}
 {% include "viewermenu.html" %}
+<li>Tools &amp; Options
+<ul id="toolsandoptions">
+    <li><a href="javascript:declare()">Add new Annotation Type</li>
+    <li id="showannotatordetails"><a href="javascript:showannotatordetails()">Show annotator details</li>
+</ul>
+</li>
 {% endblock %}
 
 {% block dialogs %}
