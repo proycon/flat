@@ -232,5 +232,9 @@ $(function() {
             f = eval(mode + '_oninit');
             f();
         }
+        window.setInterval(function() {
+            f = eval(mode + '_ontimer');
+            f();
+        }, 5000);
     }
 });

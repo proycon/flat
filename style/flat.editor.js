@@ -322,6 +322,10 @@ function editor_onloadannotations(annotationlist) {
     viewer_onloadannotations(annotationlist);
 }
 
+function editor_ontimer() {
+    viewer_ontimer();
+}
+
 function editor_oninit() {
     viewer_oninit();
     $('#editordiscard').click(closeeditor);

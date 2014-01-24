@@ -234,6 +234,22 @@ function viewer_onloadannotations(annotationlist) {
     }
 }
 
+function viewer_ontimer() {
+    $.ajax({
+        type: 'GET',
+        url: "/viewer/" + namespace + "/"+ docid + "/poll/",
+        success: function(data) {
+            if (data.length > 0) {
+                data.forEach(function(d){
+                    update(d);
+                });
+            }
+        },
+        dataType: "json"
+    });
+
+}
+
 function viewer_oninit() {
     $('#document').mouseleave( function(e) {
         $('#info').hide();

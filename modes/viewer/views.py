@@ -47,3 +47,21 @@ def subview(request, namespace, docid, elementid):
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied")
+
+@login_required
+def poll(request, namespace, docid):
+    if flat.users.models.hasreadpermission(request.user.username, namespace):
+        r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/')
+        d = []
+        if len(r) > 0:
+            for elementid in r:
+                e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
+                d.append({
+                        'elementid': elementid,
+                        'html': e['html'],
+                        'annotations': json.dumps(e['annotations']),
+                })
+        return HttpResponse(json.dumps(d), mimetype='application/json')
+    else:
+        return HttpResponseForbidden("Permission denied")
+
