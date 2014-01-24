@@ -7,23 +7,27 @@ import flat.comm
 import flat.users
 import json
 
+def getcontext(request,namespace,docid, doc):
+    return {
+            'namespace': namespace,
+            'docid': docid,
+            'mode': 'viewer',
+            'modes': settings.EDITOR_MODES,
+            'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]),
+            'dochtml': doc['html'],
+            'docannotations': json.dumps(doc['annotations']),
+            'docdeclarations': json.dumps(doc['declarations']),
+            'setdefinitions': json.dumps(doc['setdefinitions']),
+            'loggedin': request.user.is_authenticated(),
+            'username': request.user.username
+    }
+
+
 @login_required
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
-        d = {
-                'namespace': namespace,
-                'docid': docid,
-                'mode': 'viewer',
-                'modes': settings.EDITOR_MODES,
-                'modes_json': json.dumps([x[0] for x in settings.EDITOR_MODES]),
-                'dochtml': doc['html'],
-                'docannotations': json.dumps(doc['annotations']),
-                'docdeclarations': json.dumps(doc['declarations']),
-                'loggedin': request.user.is_authenticated(),
-                'username': request.user.username
-        }
-        #TODO later: add setdefinitions
+        d = getcontext(request,namespace,docid, doc)
         return render(request, 'viewer.html', d)
     else:
         return HttpResponseForbidden("Permission denied")

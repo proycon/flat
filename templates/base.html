@@ -27,6 +27,9 @@
             {% if docannotations %}
             initialannotationlist = {{ docannotations|safe }};
             {% endif %}
+            {% if setdefinitions %}
+            setdefinitions = {{ setdefinitions|safe }};
+            {% endif %}
         </script>
         {% endif %}
     </head>

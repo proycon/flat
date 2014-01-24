@@ -23,6 +23,7 @@ class DocStore:
         self.expiretime = expiretime
         self.data = {}
         self.lastchange = {}
+        self.setdefinitions = {}
         super().__init__()
 
     def getfilename(self, key):
@@ -35,7 +36,7 @@ class DocStore:
             if not os.path.exists(filename):
                 raise NoSuchDocument
             print("Loading " + filename,file=sys.stderr)
-            self.data[key] = folia.Document(file=filename)
+            self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions)
             self.lastchange[key] = time.time()
 
     def unload(self, key, save=True):
@@ -155,6 +156,12 @@ def getdeclarations(doc):
             annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
             yield {'annotationtype': annotationtype, 'set': set}
 
+def getsetdefinitions(doc):
+    setdefs = {}
+    for annotationtype, set in doc.annotations:
+        if set in doc.setdefinitions:
+            setdefs[set] = doc.setdefinitions[set].json()
+    return setdefs
 
 def doannotation(doc, data):
     response = {'returnelementid': None}
@@ -301,6 +308,7 @@ class Root:
                 'html': gethtml(self.docstore[(namespace,docid)].data[0]),
                 'declarations': tuple(getdeclarations(self.docstore[(namespace,docid)])),
                 'annotations': tuple(getannotations(self.docstore[(namespace,docid)].data[0])),
+                'setdefinitions': getsetdefinitions(self.docstore[(namespace,docid)]),
             }).encode('utf-8')
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
