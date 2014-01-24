@@ -146,6 +146,10 @@ function showeditor(element) {
             //extra fields list
             setaddablefields();
 
+
+
+            s = idheader + "<table>"  + s + "</table>";
+            $('#editor div.body').html(s);
             if ((annotationfocus) && (!annotationfocusfound)) {
                 for (var i = 0; i < editoraddablefields.length; i++) {
                     if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
@@ -154,10 +158,6 @@ function showeditor(element) {
                     }
                 }
             }
-
-
-            s = idheader + "<table>"  + s + "</table>";
-            $('#editor div.body').html(s);
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
             //configure actions and events for edit fields
             for (var i = 0; i < editfields;i++){
@@ -282,9 +282,7 @@ function addeditorfield(index) {
         s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
     }
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
-    if ($('#editrowplaceholder')) {
-        $('#editrowplaceholder')[0].outerHTML = s;
-    }
+    $('#editrowplaceholder')[0].outerHTML = s;
 
     editfields = editfields + 1; //increment after adding
     editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'class':'', 'new': true, 'changed': true };
