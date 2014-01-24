@@ -85,7 +85,6 @@ function showinfo(element) {
                         s = s + "<span class=\"class\">" + annotation.class + "</span>";
                     }
                     if (annotation.targets.length > 1) {
-
                         spantext = getspantext(annotation)
                         s = s + "<br/><span class=\"text\">" + spantext + "</span>";
                     }

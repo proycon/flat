@@ -102,6 +102,10 @@ function showeditor(element) {
                         }
                         s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + annotation.text + "\"/>";
                     } else {
+                        if (annotation.targets.length > 1) {
+                            spantext = getspantext(annotation);
+                            s  = s + "<span class=\"text\">" + spantext + "</span><br/>";
+                        }
                         s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
                     }
                     //s = s + "<button id=\"editordelete" + editfields + "\">-</button>";
