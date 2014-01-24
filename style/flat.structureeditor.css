@@ -2,7 +2,7 @@
     border: 2px solid #666;
     margin: 5px;
     padding: 0px;
-    width: 90%;
+    width: 96%;
 }
 .F>.hb {
     display: block;
@@ -13,6 +13,31 @@
     font-family: monospace;
     font-weight: bold;
     font-size: 9px;
+}
+.slot {
+    display: block;
+    background: #eee;
+    min-width: 25px;
+    min-height: 25px;
+    color: #eee;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+.slot:hover {
+    background: #bbb;
+    color: #333;
+}
+div.s .slot {
+    display: inline-block;
+    min-width: 5px;
+    min-height: 20px;
+}
+
+div.s .slot:hover {
+    display: inline-block;
+    min-width: 25px;
+    min-height: 25px;
 }
 
 div.div {
@@ -58,6 +83,16 @@ div.head {
 }
 div.head>.hb {
     background: black;
+}
+.hb .id {
+    display; inline;
+    color: #ddd;
+    font-size: 8px;
+    font-weight: normal;    
+    font-style: normal;
+}
+.w>.hb>.id {
+    display: none;
 }
 
 span.lbl {

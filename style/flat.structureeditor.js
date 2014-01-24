@@ -1,7 +1,19 @@
 
 function structureeditor_oninit() {
     $('div.F span.lbl').hide();
+    $('div.F').prepend(function(){
+      if (!$(this).hasClass('w')) {
+       return "<div class=\"slot\" onclick=\"structureeditor('" + $(this).id + "', null)\">+</div>"
+      } 
+    })
     $('div.F').prepend("<span class=\"hb\"></span>" )
+    $('div.F').after(function(){
+      if (!$(this).hasClass('text')) {
+       return "<div class=\"slot\" onclick=\"structureeditor('" + $(this).parent().id + "','" + this.id + "')\">+</div>"
+      } else {
+       return "";
+      } 
+    });
     //set headerbar text
     $("div.div>.hb").html("division")
     $("div.p>.hb").html("paragraph")
@@ -20,6 +32,12 @@ function structureeditor_oninit() {
     $("div.tablehead>.hb").html("tablehead")
     $("div.row>.hb").html("row")
     $("div.cell>.hb").html("cell")
+    $("div.text>.hb").html("text")
 
+    $('div.F').each(function(){
+        if (this.id) {
+            $(">.hb",this).append(" <span class=\"id\">" + this.id + "</span>");
+        }
+    });
     $('div.deepest>span.lbl').show();
 }
