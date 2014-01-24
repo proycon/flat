@@ -193,6 +193,18 @@ $(document).ajaxSend(function(event, xhr, settings) {
     }
 });
 
+$.fn.sortOptions = function(){
+    var sel = $(this).val();
+    $(this).each(function(){
+        var op = $(this).children("option");
+        op.sort(function(a, b) {
+            return a.text > b.text ? 1 : -1;
+        })
+        return $(this).empty().append(op);
+    });
+    $(this).val(sel);
+}
+
 $(function() {
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){

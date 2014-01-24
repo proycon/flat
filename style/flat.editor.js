@@ -156,6 +156,7 @@ function showeditor(element) {
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
             //configure actions and events for edit fields
             for (var i = 0; i < editfields;i++){
+                $('select#editfield'+i).sortOptions();
                 $('#editfield'+i).change(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
