@@ -9,6 +9,8 @@ import sys
 import json
 import random
 import datetime
+import time
+from collections import defaultdict
 from pynlpl.formats import folia
 
 def fake_wait_for_occupied_port(host, port): return
@@ -23,6 +25,8 @@ class DocStore:
         self.expiretime = expiretime
         self.data = {}
         self.lastchange = {}
+        self.updateq = defaultdict(dict) #update queue, (namespace,docid) => session_id => [folia element id], for concurrency
+        self.lastaccess = defaultdict(dict) # (namespace,docid) => session_id => time
         self.setdefinitions = {}
         super().__init__()
 
@@ -301,6 +305,12 @@ class Root:
 
     @cherrypy.expose
     def getdoc(self, namespace, docid):
+        try:
+            sid = cherrypy.request.params['sid']
+            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+            self.docstore.updateq[(namespace,docid)][sid] = []
+        except:
+            pass
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -316,6 +326,11 @@ class Root:
 
     @cherrypy.expose
     def annotate(self, namespace, docid):
+        try:
+            sid = cherrypy.request.params['sid']
+            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+        except:
+            pass
         namepace = namespace.replace('/','').replace('..','')
 
         cl = cherrypy.request.headers['Content-Length']
@@ -328,6 +343,12 @@ class Root:
 
     @cherrypy.expose
     def getelement(self, namespace, docid, elementid):
+        try:
+            sid = cherrypy.request.params['sid']
+            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+            self.docstore.updateq[(namespace,docid)][sid].remove(elementid)
+        except:
+            pass
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -342,7 +363,11 @@ class Root:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
 
-
+    @cherrypy.expose
+    def poll(self, namespace, docid):
+        sid = cherrypy.request.params['sid']
+        ids = self.docstore.updateq[(namespace,docid)][sid]
+        return json.dumps(ids)
 
 
 
