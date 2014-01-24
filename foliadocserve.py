@@ -36,7 +36,7 @@ class DocStore:
             if not os.path.exists(filename):
                 raise NoSuchDocument
             print("Loading " + filename,file=sys.stderr)
-            self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions)
+            self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions, loadsetdefinitions=True)
             self.lastchange[key] = time.time()
 
     def unload(self, key, save=True):
