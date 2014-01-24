@@ -112,6 +112,7 @@ function showeditor(element) {
                         }
                         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
                             s = s + "<select id=\"editfield" + editfields + "\">";
+                            s = s + "<option value=\"\"></option>";
                             Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
                                 if (c.id == annotation.class) {
@@ -271,6 +272,7 @@ function addeditorfield(index) {
     s =  "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
     if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
         s = s + "<select id=\"editfield" + editfields + "\">";
+        s = s + "<option selected=\"selected\" value=\"\"></option>";
         Object.keys(setdefinitions[editoraddablefields[index].set].classes).forEach(function(cid){
             c = setdefinitions[editoraddablefields[index].set].classes[cid]
             s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
