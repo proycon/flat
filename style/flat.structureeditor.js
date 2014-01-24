@@ -21,6 +21,5 @@ function structureeditor_oninit() {
     $("div.row>.hb").html("row")
     $("div.cell>.hb").html("cell")
 
-    $('div.s').css('display', 'inline');
     $('div.deepest>span.lbl').show();
 }
