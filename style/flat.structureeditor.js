@@ -1,7 +1,7 @@
 
 function structureeditor_oninit() {
     $('div.F span.lbl').hide();
-    $('span.lbl').before("<span class=\"hb\"></span>" )
+    $('div.F').prepend("<span class=\"hb\"></span>" )
     //set headerbar text
     $("div.div>.hb").html("division")
     $("div.p>.hb").html("paragraph")
