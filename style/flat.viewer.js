@@ -48,6 +48,21 @@ function viewer_onmouseenter(element) {
     showinfo(element);
 }
 
+
+function getspantext(annotation) {
+    spantext= "";
+    annotation.targets.forEach(function(target){
+        Object.keys(annotations[target]).forEach(function(annotationid2){
+            annotation2 = annotations[target][annotationid2];
+            if ((annotation2.type == "t") && (annotation2.class == "current")) {
+                if (spantext) spantext += " ";
+                spantext += annotation2.text;
+            }
+        });
+    });
+    return spantext;
+}
+
 function showinfo(element) {
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {            
@@ -70,16 +85,8 @@ function showinfo(element) {
                         s = s + "<span class=\"class\">" + annotation.class + "</span>";
                     }
                     if (annotation.targets.length > 1) {
-                        spantext = "";
-                        annotation.targets.forEach(function(target){
-                            Object.keys(annotations[target]).forEach(function(annotationid2){
-                                annotation2 = annotations[target][annotationid2];
-                                if ((annotation2.type == "t") && (annotation2.class == "current")) {
-                                    if (spantext) spantext += " ";
-                                    spantext += annotation2.text;
-                                }
-                            });
-                        });
+
+                        spantext = getspantext(annotation)
                         s = s + "<br/><span class=\"text\">" + spantext + "</span>";
                     }
                     if (annotation.type == "t") {
