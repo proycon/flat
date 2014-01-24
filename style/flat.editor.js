@@ -113,7 +113,7 @@ function showeditor(element) {
                                 if (c.id == annotation.class) {
                                     s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
                                 } else {
-                                    s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+                                    s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
                                 }
                             });
                             s = s + "</select>";
