@@ -55,8 +55,9 @@ div#info .class {
     font-style: italic;
     color: #31355a;
 }
-li .setname {
+nav li .setname {
     display: block;
+    max-width: 150px;
     font-size: 8px;
     font-style: italic;
 }

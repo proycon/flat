@@ -39,6 +39,10 @@ function setaddablefields() {
         }
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if (viewannotations[annotationtype + "/" + set]) {
+                setname = set;
+                if (setname.length > 30) {
+                    setname = setname.substr(0,15) + ".." + setname.substr(setname.length-15,15);
+                }
                 found = false;
                 editdata.forEach(function(editdataitem){
                     if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
@@ -47,7 +51,7 @@ function setaddablefields() {
                     }
                 });
                 if (!found) {
-                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + set + "</span></option>";
+                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
                     editoraddablefields.push({'type': annotationtype, 'set': set});
                 }
             }
@@ -248,6 +252,8 @@ function closeeditor() {
     $('#editor .selectoron').removeClass("selectoron");
 }
 
+
+
 function addeditorfield(index) {
 
     if (annotationtypenames[editoraddablefields[index].type]) {
@@ -261,10 +267,22 @@ function addeditorfield(index) {
         setname = "";
     }
 
+
     s =  "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-    s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
+    if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
+        s = s + "<select id=\"editfield" + editfields + "\">";
+        Object.keys(setdefinitions[editoraddablefields[index].set].classes).forEach(function(cid){
+            c = setdefinitions[editoraddablefields[index].set].classes[cid]
+            s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+        });
+        s = s + "</select>";
+    } else {
+        s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
+    }
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
-    $('#editrowplaceholder')[0].outerHTML = s;
+    if ($('#editrowplaceholder')) {
+        $('#editrowplaceholder')[0].outerHTML = s;
+    }
 
     editfields = editfields + 1; //increment after adding
     editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'class':'', 'new': true, 'changed': true };
