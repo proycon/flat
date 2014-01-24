@@ -11,7 +11,7 @@ import json
 @login_required
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        doc = flat.comm.get(request, '/getdoc/%NS%/' + docid + '/')
+        doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
         return render(request, 'editor.html', d)

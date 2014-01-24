@@ -43,7 +43,8 @@ else:
 
 EDITOR_MODES = {
     ('viewer','Viewer'),
-    ('editor','Editor'),
+    ('editor','Annotation Editor'),
+    ('structureeditor','Structure Editor'),
 }
 
 DEFAULTMODE = 'editor'
