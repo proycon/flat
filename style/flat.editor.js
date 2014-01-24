@@ -110,7 +110,7 @@ function showeditor(element) {
                             s = s + "<select id=\"editfield" + editfields + "\">";
                             Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
-                                if (c.class == annotation.class) {
+                                if (c.id == annotation.class) {
                                     s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
                                 } else {
                                     s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
