@@ -175,7 +175,7 @@ function showeditor(element) {
                 }
 
 
-                sendeditdata = []; //TODO: sort in proper order
+                sendeditdata = []; 
                 editdata.forEach(function(editdataitem){
                     if (editdataitem.changed) {
                         sendeditdata.push(editdataitem);
@@ -187,6 +187,13 @@ function showeditor(element) {
                     return false;
                 }
                 
+                //sort targets in proper order
+                sortededittargets = [];
+                $('.' + view).each(function(element){
+                    if (edittargets.indexOf(element.id) > -1) {
+                        sortededittargets.push(element.id);
+                    }
+                });
 
 
                 $('#wait').show();
