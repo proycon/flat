@@ -106,6 +106,14 @@ div#info .class {
     font-style: italic;
     color: #31355a;
 }
+div#info .annotator {
+    font-style: italic;
+    color: #2d7431;
+}
+div#info .datetime {
+    font-style: italic;
+    color: #72742d;
+}
 nav li .setname {
     display: block;
     max-width: 150px;

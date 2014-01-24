@@ -1,6 +1,7 @@
 view = 'deepest';
 viewannotations = {};
 annotationfocus = null;
+annotatordetails = false;
 hover = null;
 
 function setview(v) {
@@ -40,6 +41,16 @@ function sethover(element) {
                 }
             });
         }
+    }
+}
+
+
+function toggleannotatordetails() {
+    annotatordetails = !annotatordetails;
+    if (annotatordetails) {
+        $('#toggleannotatordetails').addClass("on");
+    } else {
+        $('#toggleannotatordetails').removeClass("on");
     }
 }
 
@@ -96,7 +107,14 @@ function showinfo(element) {
                         if (annotation.class != "current") s = s + "<br />";
                         s = s + "<span class=\"text\">" + annotation.text + "</span>";
                     }
+                    if (annotatordetails && annotation.annotator) {
+                        s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
+                        if (annotation.datetime) {
+                            s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
+                        }
+                    }
                     s = s + "</td></tr>";
+
                 }
                  
             });
