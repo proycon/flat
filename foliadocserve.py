@@ -367,6 +367,7 @@ class Root:
     def poll(self, namespace, docid):
         sid = cherrypy.request.params['sid']
         ids = self.docstore.updateq[(namespace,docid)][sid]
+        self.docstore.updateq[(namespace,docid)][sid] = []
         return json.dumps(ids)
 
 
