@@ -82,7 +82,11 @@ function showinfo(element) {
                     }
                     s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                     if (!((annotation.type == "t") && (annotation.class == "current"))) {
-                        s = s + "<span class=\"class\">" + annotation.class + "</span>";
+                        if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
+                            s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
+                        } else {
+                            s = s + "<span class=\"class\">" + annotation.class + "</span>";
+                        }
                     }
                     if (annotation.targets.length > 1) {
                         spantext = getspantext(annotation)

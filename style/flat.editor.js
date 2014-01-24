@@ -106,7 +106,20 @@ function showeditor(element) {
                             spantext = getspantext(annotation);
                             s  = s + "<span class=\"text\">" + spantext + "</span><br/>";
                         }
-                        s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                        if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
+                            s = s + "<select id=\"editfield" + editfields + "\">";
+                            Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
+                                c = setdefinitions[annotation.set].classes[cid]
+                                if (c.class == annotation.class) {
+                                    s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+                                } else {
+                                    s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+                                }
+                            });
+                            s = s + "</select>";
+                        } else {
+                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                        }
                     }
                     //s = s + "<button id=\"editordelete" + editfields + "\">-</button>";
                     s = s + "</td></tr>";
