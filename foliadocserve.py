@@ -304,13 +304,14 @@ class Root:
         return "ok"
 
     @cherrypy.expose
-    def getdoc(self, namespace, docid):
-        try:
-            sid = cherrypy.request.params['sid']
-            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+    def getdoc(self, namespace, docid, sid):
+        #try:
+        #sid = cherrypy.request.params['sid']
+        self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+        if sid in self.docstore.updateq[(namespace,docid)]:
             self.docstore.updateq[(namespace,docid)][sid] = []
-        except:
-            pass
+        #except:
+        #    pass
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -325,30 +326,25 @@ class Root:
 
 
     @cherrypy.expose
-    def annotate(self, namespace, docid):
-        try:
-            sid = cherrypy.request.params['sid']
-            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
-        except:
-            pass
+    def annotate(self, namespace, docid, sid):
         namepace = namespace.replace('/','').replace('..','')
-
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
         data = json.loads(str(rawbody,'utf-8'))
+        self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
         return self.getelement(namespace,docid, response['returnelementid']);
 
 
     @cherrypy.expose
-    def getelement(self, namespace, docid, elementid):
-        try:
-            sid = cherrypy.request.params['sid']
-            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+    def getelement(self, namespace, docid, elementid, sid):
+        #try:
+        self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+        if sid in self.docstore.updateq[(namespace,docid)]:
             self.docstore.updateq[(namespace,docid)][sid].remove(elementid)
-        except:
-            pass
+        #except:
+        #    pass
         namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -364,11 +360,13 @@ class Root:
 
 
     @cherrypy.expose
-    def poll(self, namespace, docid):
-        sid = cherrypy.request.params['sid']
-        ids = self.docstore.updateq[(namespace,docid)][sid]
-        self.docstore.updateq[(namespace,docid)][sid] = []
-        return json.dumps(ids)
+    def poll(self, namespace, docid, sid):
+        if sid in self.docstore.updateq[(namespace,docid)]:
+            ids = self.docstore.updateq[(namespace,docid)][sid]
+            self.docstore.updateq[(namespace,docid)][sid] = []
+            return json.dumps(ids)
+        else:
+            return json.dumps([])
 
 
 
