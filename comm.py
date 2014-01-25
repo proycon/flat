@@ -23,7 +23,10 @@ def get( request, url):
 def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
         data = json.dumps(data)
-    sid = request.session.session_key + '_' + request.POST['sid']
+    else:
+        data = json.loads(data)
+        data['sid'] = sid = request.session.session_key + '_' + data['sid']
+        data = json.dumps(data)
     req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
     req.add_header('Content-Type', 'application/json')
     f = urlopen(req, data)

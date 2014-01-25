@@ -237,6 +237,7 @@ function viewer_onloadannotations(annotationlist) {
 function viewer_ontimer() {
     $.ajax({
         type: 'GET',
+        data: {'sid': sid },
         url: "/viewer/" + namespace + "/"+ docid + "/poll/",
         success: function(data) {
             if (data.update) {

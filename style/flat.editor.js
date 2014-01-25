@@ -221,7 +221,7 @@ function showeditor(element) {
                     url: "/editor/" + namespace + "/"+ docid + "/annotate/",
                     contentType: "application/json",
                     //processData: false,
-                    data: JSON.stringify( { 'elementid': element.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username}),
+                    data: JSON.stringify( { 'elementid': element.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username, 'sid': sid}),
                     success: function(data) {
                         if (data.error) {
                             $('#wait').hide();

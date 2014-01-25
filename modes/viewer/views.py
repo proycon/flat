@@ -38,7 +38,7 @@ def view(request, namespace, docid):
 @login_required
 def subview(request, namespace, docid, elementid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
+        e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/') #handles sid
         d = {
                 'elementid': elementid,
                 'html': e['html'],
@@ -51,7 +51,7 @@ def subview(request, namespace, docid, elementid):
 @login_required
 def poll(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/')
+        r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/') #handles sid
         d = []
         if len(r) > 0:
             for elementid in r:
