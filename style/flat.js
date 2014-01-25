@@ -16,7 +16,7 @@ annotationtypenames = {
     'dependency': 'Dependency',
     'coreferencechain': 'Coreference',
 }
-sessionid = ((Math.random() * 1e9) | 0);
+sid = ((Math.random() * 1e9) | 0); //session id
 
 
 function function_exists(functionName) {
