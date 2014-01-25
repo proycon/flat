@@ -349,6 +349,7 @@ class Root:
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             if elementid:
+                print("Request element: ", elementid,file=sys.stderr)
                 return json.dumps({
                     'html': gethtml(self.docstore[(namespace,docid)][elementid]),
                     'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
@@ -364,9 +365,9 @@ class Root:
         if sid in self.docstore.updateq[(namespace,docid)]:
             ids = self.docstore.updateq[(namespace,docid)][sid]
             self.docstore.updateq[(namespace,docid)][sid] = []
-            return json.dumps(ids)
+            return json.dumps({'update': ids})
         else:
-            return json.dumps([])
+            return json.dumps({})
 
 
 

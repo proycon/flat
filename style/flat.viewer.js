@@ -239,8 +239,8 @@ function viewer_ontimer() {
         type: 'GET',
         url: "/viewer/" + namespace + "/"+ docid + "/poll/",
         success: function(data) {
-            if (data.length > 0) {
-                data.forEach(function(d){
+            if (data.update) {
+                data.update.forEach(function(d){
                     update(d);
                 });
             }
