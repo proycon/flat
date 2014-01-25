@@ -5,7 +5,10 @@ import flat.settings as settings
 import json
 
 def get( request, url):
-    sid = request.session.session_key
+    if 'sid' in request.GET:
+        sid = request.session.session_key + '_' + request.GET['sid']
+    else:
+        sid = request.session.session_key + '_NOSID'
     f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + "/" + sid) #or opener.open()
     contents = f.read()
     f.close()
@@ -18,11 +21,11 @@ def get( request, url):
         return None
 
 def postjson( request, url, data):
-    sid = request.session.session_key
-    req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
-    req.add_header('Content-Type', 'application/json')
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
         data = json.dumps(data)
+    sid = request.session.session_key + '_' + request.POST['sid']
+    req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
+    req.add_header('Content-Type', 'application/json')
     f = urlopen(req, data)
     contents = f.read()
     f.close()
