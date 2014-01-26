@@ -142,6 +142,10 @@ def gethtml(element):
 
 def getannotations(element):
     if isinstance(element, folia.Correction):
+        if not element.id:
+            #annotator requires IDS on corrections, make one on the fly
+            hash = random.getrandbits(128)
+            element.id = element.doc.id + ".correction.%032x" % hash
         correction_new = []
         correction_original = []
         correction_suggestions = []
