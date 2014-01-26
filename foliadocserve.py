@@ -94,13 +94,14 @@ def gethtml(element):
     if isinstance(element, folia.Correction):
         s = ""
         if element.hasnew():
-            for x in element.new():
-                s += gethtml(x)
+            for child in element.new():
+                if isinstance(child, folia.AbstractStructureElement) or isinstance(child, folia.Correction):
+                    s += gethtml(child)
         return s
     elif isinstance(element, folia.AbstractStructureElement):
         s = ""
         for child in element:
-            if isinstance(child, folia.AbstractStructureElement):
+            if isinstance(child, folia.AbstractStructureElement) or isinstance(child, folia.Correction):
                 s += gethtml(child)
         if not isinstance(element, folia.Text) and not isinstance(element, folia.Division):
             try:
