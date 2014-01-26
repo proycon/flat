@@ -91,7 +91,13 @@ class DocStore:
 
 def gethtml(element):
     """Converts the element to html skeleton"""
-    if isinstance(element, folia.AbstractStructureElement):
+    if isinstance(element, folia.Correction):
+        s = ""
+        if element.hasnew():
+            for x in element.new():
+                s += gethtml(x)
+        return s
+    elif isinstance(element, folia.AbstractStructureElement):
         s = ""
         for child in element:
             if isinstance(child, folia.AbstractStructureElement):
@@ -167,6 +173,10 @@ def getannotations(element):
             annotation['annotatortype'] = "auto"
         elif element.annotatortype == folia.AnnotatorType.MANUAL:
             annotation['annotatortype'] = "manual"
+        p = element.parent
+        while not p.id or not isinstance(p, folia.AbstractStructureElement):
+            p = p.parent
+        annotation['targets'] = [ p.id ]
         yield annotation
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
