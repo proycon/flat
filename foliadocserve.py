@@ -134,7 +134,41 @@ def gethtml(element):
         raise Exception("Structure element expected, got " + str(type(element)))
 
 def getannotations(element):
-    if isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
+    if isinstance(element, folia.Correction):
+        correction_new = []
+        correction_original = []
+        correction_suggestions = []
+        if element.hasnew():
+            for x in element.new():
+                for y in  getannotations(x):
+                    if not 'incorrection' in y: y['incorrection'] = []
+                    y['incorrection'].append(element.id)
+                    correction_new.append(y)
+                    yield y #yield as any other
+        if element.hasoriginal():
+            for x in element.original():
+                for y in  getannotations(x):
+                    y['auth'] = False
+                    if not 'incorrection' in y: y['incorrection'] = []
+                    y['incorrection'].append(element.id)
+                    correction_original.append(y)
+        if element.hassuggestions():
+            for x in element.original():
+                for y in  getannotations(x):
+                    y['auth'] = False
+                    if not 'incorrection' in y: y['incorrection'] = []
+                    y['incorrection'].append(element.id)
+                    correction_suggestions.append(y)
+
+        annotation = {'id': element.id ,'set': element.set, 'class': element.cls, 'type': 'correction', 'new': correction_new, 'original': correction_original, 'suggestions': correction_suggestions}
+        if element.annotator:
+            annotation['annotator'] = element.annotator
+        if element.annotatortype == folia.AnnotatorType.AUTO:
+            annotation['annotatortype'] = "auto"
+        elif element.annotatortype == folia.AnnotatorType.MANUAL:
+            annotation['annotatortype'] = "manual"
+        yield annotation
+    elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
         while not p.id or not isinstance(p, folia.AbstractStructureElement):
