@@ -74,6 +74,63 @@ function getspantext(annotation) {
     return spantext;
 }
 
+
+function renderannotation(annotation, norecurse) {
+    if (!((annotation.type == "t") && ((annotation.class == "current")  || (annotation.class == "original")) )) {
+        if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
+            s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
+        } else {
+            s = s + "<span class=\"class\">" + annotation.class + "</span>";
+        }
+    }
+    if (annotation.targets.length > 1) {
+        spantext = getspantext(annotation)
+        s = s + "<br/><span class=\"text\">" + spantext + "</span>";
+    }
+    if (annotation.type == "t") {
+        if (annotation.class != "current") s = s + "<br />";
+        s = s + "<span class=\"text\">" + annotation.text + "</span>";
+    }
+    if (annotatordetails && annotation.annotator) {
+        s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
+        if (annotation.datetime) {
+            s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
+        }
+    }
+    if ((annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
+        var correctionid = annotation.incorrection[0];
+        if (corrections[correctionid]) {
+            correction = corrections[correctionid];
+            s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
+            if (annotatordetails && correction.annotator) {
+                s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
+                if (annotation.datetime) {
+                    s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
+                }
+            }
+            if (correction.suggestions.length > 0) {
+                correction.suggestions.forEach(function(suggestion){
+                    s = s + "<br />Suggestion: ";
+                    s = s +  "<div class=\"correctionchild\">";
+                    renderannotation(suggestion,true)
+                    s = s + "</div>";
+                });
+            }
+            if (correction.original.length > 0) {
+                correction.original.forEach(function(original){
+                    s = s + "<br />Original: ";
+                    s = s +  "<div class=\"correctionchild\">";
+                    renderannotation(original,true);
+                    s = s + "</div>";
+                });
+            }
+            s = s + "</div>";
+        } else {
+            s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
+        }
+    }
+}
+
 function showinfo(element) {
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {            
@@ -92,27 +149,7 @@ function showinfo(element) {
                         setname = "";
                     }
                     s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                    if (!((annotation.type == "t") && (annotation.class == "current"))) {
-                        if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
-                            s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
-                        } else {
-                            s = s + "<span class=\"class\">" + annotation.class + "</span>";
-                        }
-                    }
-                    if (annotation.targets.length > 1) {
-                        spantext = getspantext(annotation)
-                        s = s + "<br/><span class=\"text\">" + spantext + "</span>";
-                    }
-                    if (annotation.type == "t") {
-                        if (annotation.class != "current") s = s + "<br />";
-                        s = s + "<span class=\"text\">" + annotation.text + "</span>";
-                    }
-                    if (annotatordetails && annotation.annotator) {
-                        s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
-                        if (annotation.datetime) {
-                            s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
-                        }
-                    }
+                    renderannotation(annotation);
                     s = s + "</td></tr>";
 
                 }

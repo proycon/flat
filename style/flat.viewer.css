@@ -132,3 +132,16 @@ div#info .setname {
     font-style: italic;
 }
 
+div#info div.correction {
+    width: 90%;
+    border: 1px dashed #666;
+    padding: 2px;
+}
+div#info div.correction span.title {
+    color: #680000;
+    font-weight: bold;
+}
+div#info div.correctionchild {
+    padding-left: 10px;
+}
+

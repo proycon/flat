@@ -100,6 +100,9 @@ function loadannotations(annotationlist) {
             annotations[target][annotationid] = annotation;
             annotations[target][annotationid].annotationid = annotationid;
         });
+        if ((annotation.type == "correction") && (annotation.id)) {
+            corrections[annotation.id] = annotation;
+        }
     });
     if (function_exists(mode + '_onloadannotations')) {
         f = eval(mode + '_onloadannotations');
@@ -150,6 +153,7 @@ $(document).mousemove( function(e) {
 
 annotations = {}; //annotations per structure item
 declarations = {};
+corrections = {};
 docid = null;
 initialannotationlist = [];
 initialdeclarationlist = [];
