@@ -153,7 +153,7 @@ def getannotations(element):
                     y['incorrection'].append(element.id)
                     correction_original.append(y)
         if element.hassuggestions():
-            for x in element.original():
+            for x in element.hassuggestions():
                 for y in  getannotations(x):
                     y['auth'] = False
                     if not 'incorrection' in y: y['incorrection'] = []
