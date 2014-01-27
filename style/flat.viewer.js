@@ -108,21 +108,27 @@ function renderannotation(annotation, norecurse) {
                     s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
                 }
             }
+            if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+                s = s + "<table>";
+            }
             if (correction.suggestions.length > 0) {
                 correction.suggestions.forEach(function(suggestion){
-                    s = s + "<br />Suggestion: ";
+                    s = s + "<tr><th>Suggestion:</th><td>";
                     s = s +  "<div class=\"correctionchild\">";
                     renderannotation(suggestion,true)
-                    s = s + "</div>";
+                    s = s + "</div></td></tr>";
                 });
             }
             if (correction.original.length > 0) {
                 correction.original.forEach(function(original){
-                    s = s + "<br />Original: ";
+                    s = s + "<tr><th>Original:</th><td> ";
                     s = s +  "<div class=\"correctionchild\">";
                     renderannotation(original,true);
-                    s = s + "</div>";
+                    s = s + "</div></td></tr>";
                 });
+            }
+            if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+                s = s + "</table>";
             }
             s = s + "</div>";
         } else {
