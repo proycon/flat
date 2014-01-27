@@ -18,6 +18,13 @@ annotationtypenames = {
 }
 sid = ((Math.random() * 1e9) | 0); //session id
 
+function getannotationtypename(t) {
+    if (annotationtypenames[t]) {
+        return annotationtypenames[t];
+    } else {
+        return t;
+    }
+}
 
 function function_exists(functionName) {
     if(eval("typeof(" + functionName + ") == typeof(Function)")) {

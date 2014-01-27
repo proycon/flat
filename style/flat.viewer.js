@@ -77,6 +77,59 @@ function getspantext(annotation) {
 }
 
 
+function rendercorrection(correctionid) {
+    var s = "";
+    var correction = corrections[correctionid];
+    if ((viewannotations[correction.type+"/"+correction.set])) {
+        s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
+        if (annotatordetails && correction.annotator) {
+            s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
+            if (correction.datetime) {
+                s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
+            }
+        }
+        if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+            s = s + "<table>";
+        }
+        if (correction.suggestions.length > 0) {
+            correction.suggestions.forEach(function(suggestion){
+                s = s + "<tr><th>Suggestion:</th><td>";
+                s = s +  "<div class=\"correctionchild\">";
+                s = s +  renderannotation(suggestion,true)
+                s = s + "</div></td></tr>";
+            });
+        }
+        if (correction.original.length > 0) {
+            correction.original.forEach(function(original){
+                s = s + "<tr><th>Original:</th><td> ";
+                s = s +  "<div class=\"correctionchild\">";
+                s = s + renderannotation(original,true);
+                s = s + "</div></td></tr>";
+            });
+        }
+        if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+            s = s + "</table>";
+        }
+        s = s + "</div>";
+    }
+    return s;
+}
+
+function checkparentincorrection(annotation, correctionid) {
+    var parentincorrection = false;
+    annotation.targets.forEach(function(t){
+        Object.keys(annotations[t]).forEach(function(aid) {
+            var a = annotations[t][aid];
+            if (aid == 'self') {
+                //alert(t + ": '" + a.incorrection + "' vs '" + annotation.incorrection + "'");
+                if ((a.incorrection) && (a.incorrection[0] == annotation.incorrection[0]))  {
+                    parentincorrection = t;
+                }
+            }
+        });
+    });
+    return parentincorrection;
+}
 
 function renderannotation(annotation, norecurse) {
     var s = "";
@@ -105,56 +158,11 @@ function renderannotation(annotation, norecurse) {
         //is this item part of a correction? if so, deal with it
         var correctionid = annotation.incorrection[0];
         //is it really this item or is the entire parent part of the
-        //correction?
-        parentincorrection = false;
-        //look up the parent
-        //:
-        annotation.targets.forEach(function(t){
-            Object.keys(annotations[t]).forEach(function(aid) {
-                var a = annotations[t][aid];
-                if (aid == 'self') {
-                    //alert(t + ": '" + a.incorrection + "' vs '" + annotation.incorrection + "'");
-                    if ((a.incorrection) && (a.incorrection[0] == annotation.incorrection[0]))  {
-                        parentincorrection = t;
-                    }
-                }
-            });
-        });
-        if (!parentincorrection) {
+        //correction? in the latter case we don't want to display a correction
+        //here
+        if (!checkparentincorrection(annotation, correctionid)) {
             if (corrections[correctionid]) {
-                var correction = corrections[correctionid];
-                if ((viewannotations[correction.type+"/"+correction.set])) {
-                    s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
-                    if (annotatordetails && correction.annotator) {
-                        s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
-                        if (annotation.datetime) {
-                            s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
-                        }
-                    }
-                    if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
-                        s = s + "<table>";
-                    }
-                    if (correction.suggestions.length > 0) {
-                        correction.suggestions.forEach(function(suggestion){
-                            s = s + "<tr><th>Suggestion:</th><td>";
-                            s = s +  "<div class=\"correctionchild\">";
-                            s = s +  renderannotation(suggestion,true)
-                            s = s + "</div></td></tr>";
-                        });
-                    }
-                    if (correction.original.length > 0) {
-                        correction.original.forEach(function(original){
-                            s = s + "<tr><th>Original:</th><td> ";
-                            s = s +  "<div class=\"correctionchild\">";
-                            s = s + renderannotation(original,true);
-                            s = s + "</div></td></tr>";
-                        });
-                    }
-                    if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
-                        s = s + "</table>";
-                    }
-                    s = s + "</div>";
-                }
+                s = s + rendercorrection( correctionid);
             } else {
                 s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
             }
@@ -166,16 +174,12 @@ function renderannotation(annotation, norecurse) {
 function showinfo(element) {
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {            
-            s = "";
+            s = "<div id=\"id\">" + getannotationtypename(annotations[element.id].self.type) + " &bull; " + element.id + " &bull; " + annotations[element.id].self.class + "</div><table>";
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
                 if (annotationid != "self") {
                     if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                        if (annotationtypenames[annotation.type]) {
-                            label = annotationtypenames[annotation.type];
-                        } else {
-                            label = annotation.type;
-                        }
+                        label = getannotationtypename(annotation.type);
                         if (annotation.set) {
                             setname = annotation.set;
                         } else {
@@ -184,16 +188,16 @@ function showinfo(element) {
                         s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                         s = s + renderannotation(annotation);
                         s = s + "</td></tr>";
-
                     }
                 }
             });
-            if (s) {
-                s = "<div id=\"id\">" + element.id + "</div><table>"  + s + "</table>";
-                $('#info').html(s);
-                $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
-                $('#info').show();    
+            s = s + "</table>";
+            if (annotations[element.id].self.incorrection) {
+                s = s + rendercorrection( annotations[element.id].self.incorrection[0]);
             }
+            $('#info').html(s);
+            $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
+            $('#info').show();    
         }
     }
 }
@@ -332,11 +336,7 @@ function viewer_oninit() {
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
         viewannotations[annotationtype + "/" + set] = true;
-        if (annotationtypenames[annotationtype]) {
-            label = annotationtypenames[annotationtype];
-        } else {
-            label = annotationtype;
-        }
+        label = getannotationtypename(annotationtype);
         s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
         s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
       });

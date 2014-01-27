@@ -32,11 +32,7 @@ function setaddablefields() {
     editoraddablefields_options = "";
     editoraddablefields = [];
     Object.keys(declarations).forEach(function(annotationtype){
-        if (annotationtypenames[annotationtype]) {
-            label = annotationtypenames[annotationtype];
-        } else {
-            label = annotationtype;
-        }
+        label = getannotationtypename(annotationtype);
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if (viewannotations[annotationtype + "/" + set]) {
                 setname = set;
@@ -87,11 +83,7 @@ function showeditor(element) {
                 }
                 ok = ok && ((annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set]));
                 if (ok) {
-                    if (annotationtypenames[annotation.type]) {
-                        label = annotationtypenames[annotation.type];
-                    } else {
-                        label = annotation.type;
-                    }
+                    label = getannotationtypename(annotation.type);
                     if (annotation.set) {
                         setname = annotation.set;
                     } else {
@@ -256,7 +248,6 @@ function closeeditor() {
 
 
 function addeditorfield(index) {
-
     if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
     } else {

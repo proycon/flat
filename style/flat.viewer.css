@@ -115,6 +115,9 @@ div#info .datetime {
     font-style: italic;
     color: #72742d;
 }
+div#infoheader {
+
+}
 nav li .setname {
     display: block;
     max-width: 150px;
