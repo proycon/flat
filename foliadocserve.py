@@ -170,7 +170,6 @@ def getannotations(element):
                     if not 'incorrection' in y: y['incorrection'] = []
                     y['incorrection'].append(element.id)
                     correction_suggestions.append(y)
-
         annotation = {'id': element.id ,'set': element.set, 'class': element.cls, 'type': 'correction', 'new': correction_new, 'original': correction_original, 'suggestions': correction_suggestions}
         if element.annotator:
             annotation['annotator'] = element.annotator

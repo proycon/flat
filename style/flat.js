@@ -102,6 +102,18 @@ function loadannotations(annotationlist) {
         });
         if ((annotation.type == "correction") && (annotation.id)) {
             corrections[annotation.id] = annotation;
+            if ((annotation.suggestions.length > 0) && (annotation.new.length == 0)) {
+                //find the annotation the suggestions apply to and act as if
+                //that is part of the correction
+                target = annotation.targets[0];
+                annotations[target].forEach(function(annotationid){
+                    if ((annotation[target][annotationid].type == annotation.suggestions[0].type) && (annotation[target][annotationid].set == annotation.suggestions[0].set)) {
+                        if (!annotation[target][annotationid].incorrection) {
+                            annotation[target][annotationid].incorrection = [annotation.id];
+                        }
+                    }
+                });
+            }
         }
     });
     if (function_exists(mode + '_onloadannotations')) {
