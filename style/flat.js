@@ -106,10 +106,10 @@ function loadannotations(annotationlist) {
                 //find the annotation the suggestions apply to and act as if
                 //that is part of the correction
                 target = annotation.targets[0];
-                annotations[target].forEach(function(annotationid){
-                    if ((annotation[target][annotationid].type == annotation.suggestions[0].type) && (annotation[target][annotationid].set == annotation.suggestions[0].set)) {
-                        if (!annotation[target][annotationid].incorrection) {
-                            annotation[target][annotationid].incorrection = [annotation.id];
+                Object.keys(annotations[target]).forEach(function(annotationid){
+                    if ((annotations[target][annotationid].type == annotation.suggestions[0].type) && (annotations[target][annotationid].set == annotation.suggestions[0].set)) {
+                        if (!annotations[target][annotationid].incorrection) {
+                            annotations[target][annotationid].incorrection = [annotation.id];
                         }
                     }
                 });

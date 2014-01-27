@@ -195,7 +195,7 @@ def getannotations(element):
         annotation['targets'] = [ x.id for x in element.wrefs() ]
         assert isinstance(annotation, dict)
         yield annotation
-    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotation):
+    if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotation) or isinstance(element, folia.Suggestion):
         for child in element:
             for x in getannotations(child):
                 assert isinstance(x, dict)
