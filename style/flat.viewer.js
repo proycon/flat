@@ -108,9 +108,16 @@ function renderannotation(annotation, norecurse) {
         //look up the parent
         //:
         annotation.targets.forEach(function(t){
-            if ((annotations[t].self.incorrection) && (annotations[t].self.incorrection == annotation.incorrection)) {
-                parentincorrection = t;
-            }
+            Object.keys(annotations[t]).forEach(function(aid) {
+                var a = annotations[t][aid];
+                if (aid == 'self') {
+                    alert(t + ": '" + a.incorrection + "' vs '" + annotation.incorrection + "'");
+                    if (a.incorrection[0] == annotation.incorrection[0])  {
+                        alert("match");
+                        parentincorrection = t;
+                    }
+                }
+            });
         });
         if (!parentincorrection) {
             if (corrections[correctionid]) {
