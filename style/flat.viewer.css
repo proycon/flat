@@ -92,6 +92,7 @@ div#info table {
 div#info th {
     width: 39%
     font-weight: bold;
+    vertical-align: top;
 }
 div#info th span.setname {
     font-weight: normal;
