@@ -262,8 +262,8 @@ def doannotation(doc, data):
         edit['datetime'] = datetime.datetime.now()
 
 
-        if not 'set' in edit or edit['set'] == 'undefined' or edit['set'] == 'null':
-            edit['set'] = None
+        if not 'set' in edit or edit['set'] == 'null':
+            edit['set'] = 'undefined'
 
         if issubclass(Class, folia.TextContent):
             #Text Content, each target will get a copy
@@ -278,7 +278,7 @@ def doannotation(doc, data):
                 return response
 
             if edit['text']:
-                target.replace(Class,value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
+                target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                 changed.append(target)
             else:
                 #we have a text deletion! This implies deletion of the entire structure element!
