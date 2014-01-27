@@ -34,7 +34,9 @@ function hash(s){
 }
 
 function getannotationid(annotation) {
-    if (annotation.id)  {
+    if (annotation.self) {
+        return "self";
+    } else if (annotation.id)  {
         return annotation.id;
     } else if (annotation.set) {
         return annotation.type + '/' + annotation.set;
@@ -107,9 +109,11 @@ function loadannotations(annotationlist) {
                 //that is part of the correction
                 target = annotation.targets[0];
                 Object.keys(annotations[target]).forEach(function(annotationid){
-                    if ((annotations[target][annotationid].type == annotation.suggestions[0].type) && (annotations[target][annotationid].set == annotation.suggestions[0].set)) {
-                        if (!annotations[target][annotationid].incorrection) {
-                            annotations[target][annotationid].incorrection = [annotation.id];
+                    if (annotationid != "self") {
+                        if ((annotations[target][annotationid].type == annotation.suggestions[0].type) && (annotations[target][annotationid].set == annotation.suggestions[0].set)) {
+                            if (!annotations[target][annotationid].incorrection) {
+                                annotations[target][annotationid].incorrection = [annotation.id];
+                            }
                         }
                     }
                 });

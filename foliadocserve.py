@@ -195,6 +195,11 @@ def getannotations(element):
         annotation['targets'] = [ x.id for x in element.wrefs() ]
         assert isinstance(annotation, dict)
         yield annotation
+    if isinstance(element, folia.AbstractStructureElement):
+        annotation =  element.json(None, False) #no recursion
+        annotation['self'] = True #this describes the structure element itself rather than an annotation under it
+        annotation['targets'] = [ element.id ]
+        yield annotation
     if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotation) or isinstance(element, folia.Suggestion):
         for child in element:
             for x in getannotations(child):
@@ -204,7 +209,7 @@ def getannotations(element):
 def getdeclarations(doc):
     for annotationtype, set in doc.annotations:
         C = folia.ANNOTATIONTYPE2CLASS[annotationtype]
-        if (issubclass(C, folia.AbstractAnnotation) or C is folia.TextContent) and not (issubclass(C, folia.AbstractTextMarkup)): #rules out structure elements for now
+        if (issubclass(C, folia.AbstractAnnotation) or C is folia.TextContent or C is folia.Correction) and not (issubclass(C, folia.AbstractTextMarkup)): #rules out structure elements for now
             annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
             yield {'annotationtype': annotationtype, 'set': set}
 

@@ -34,7 +34,7 @@ function sethover(element) {
         if ($(element).hasClass('focustype')) {
             //colour related elements
             Object.keys(annotations[element.id]).forEach(function(annotationid){
-                if ((annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].targets.length > 1)) {
+                if ((annotationtype != "self") && (annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].targets.length > 1)) {
                     annotations[element.id][annotationid].targets.forEach(function(target){
                         $('#' + valid(target)).addClass("hover");
                     });
@@ -64,10 +64,12 @@ function getspantext(annotation) {
     spantext= "";
     annotation.targets.forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationid2){
-            annotation2 = annotations[target][annotationid2];
-            if ((annotation2.type == "t") && (annotation2.class == "current")) {
-                if (spantext) spantext += " ";
-                spantext += annotation2.text;
+            if (annotationid2 != "self") {
+                annotation2 = annotations[target][annotationid2];
+                if ((annotation2.type == "t") && (annotation2.class == "current")) {
+                    if (spantext) spantext += " ";
+                    spantext += annotation2.text;
+                }
             }
         });
     });
@@ -100,42 +102,54 @@ function renderannotation(annotation, norecurse) {
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
         var correctionid = annotation.incorrection[0];
-        if (corrections[correctionid]) {
-            correction = corrections[correctionid];
-            if ((viewannotations[correction.type+"/"+correction.set])) {
-                s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
-                if (annotatordetails && correction.annotator) {
-                    s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
-                    if (annotation.datetime) {
-                        s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
-                    }
-                }
-                if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
-                    s = s + "<table>";
-                }
-                if (correction.suggestions.length > 0) {
-                    correction.suggestions.forEach(function(suggestion){
-                        s = s + "<tr><th>Suggestion:</th><td>";
-                        s = s +  "<div class=\"correctionchild\">";
-                        renderannotation(suggestion,true)
-                        s = s + "</div></td></tr>";
-                    });
-                }
-                if (correction.original.length > 0) {
-                    correction.original.forEach(function(original){
-                        s = s + "<tr><th>Original:</th><td> ";
-                        s = s +  "<div class=\"correctionchild\">";
-                        renderannotation(original,true);
-                        s = s + "</div></td></tr>";
-                    });
-                }
-                if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
-                    s = s + "</table>";
-                }
-                s = s + "</div>";
+        //is it really this item or is the entire parent part of the
+        //correction?
+        parentincorrection = false;
+        //look up the parent
+        //:
+        annotation.targets.forEach(function(t){
+            if ((annotations[t].self.incorrection) && (annotations[t].self.incorrection == annotation.incorrection)) {
+                parentincorrection = t;
             }
-        } else {
-            s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
+        });
+        if (!parentincorrection) {
+            if (corrections[correctionid]) {
+                var correction = corrections[correctionid];
+                if ((viewannotations[correction.type+"/"+correction.set])) {
+                    s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
+                    if (annotatordetails && correction.annotator) {
+                        s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
+                        if (annotation.datetime) {
+                            s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
+                        }
+                    }
+                    if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+                        s = s + "<table>";
+                    }
+                    if (correction.suggestions.length > 0) {
+                        correction.suggestions.forEach(function(suggestion){
+                            s = s + "<tr><th>Suggestion:</th><td>";
+                            s = s +  "<div class=\"correctionchild\">";
+                            renderannotation(suggestion,true)
+                            s = s + "</div></td></tr>";
+                        });
+                    }
+                    if (correction.original.length > 0) {
+                        correction.original.forEach(function(original){
+                            s = s + "<tr><th>Original:</th><td> ";
+                            s = s +  "<div class=\"correctionchild\">";
+                            renderannotation(original,true);
+                            s = s + "</div></td></tr>";
+                        });
+                    }
+                    if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+                        s = s + "</table>";
+                    }
+                    s = s + "</div>";
+                }
+            } else {
+                s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
+            }
         }
     }
 }
@@ -146,23 +160,24 @@ function showinfo(element) {
             s = "";
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
-                if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                    if (annotationtypenames[annotation.type]) {
-                        label = annotationtypenames[annotation.type];
-                    } else {
-                        label = annotation.type;
-                    }
-                    if (annotation.set) {
-                        setname = annotation.set;
-                    } else {
-                        setname = "";
-                    }
-                    s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                    renderannotation(annotation);
-                    s = s + "</td></tr>";
+                if (annotationid != "self") {
+                    if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
+                        if (annotationtypenames[annotation.type]) {
+                            label = annotationtypenames[annotation.type];
+                        } else {
+                            label = annotation.type;
+                        }
+                        if (annotation.set) {
+                            setname = annotation.set;
+                        } else {
+                            setname = "";
+                        }
+                        s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                        renderannotation(annotation);
+                        s = s + "</td></tr>";
 
+                    }
                 }
-                 
             });
             if (s) {
                 s = "<div id=\"id\">" + element.id + "</div><table>"  + s + "</table>";
