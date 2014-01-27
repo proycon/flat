@@ -97,40 +97,43 @@ function renderannotation(annotation, norecurse) {
             s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
         }
     }
-    if ((annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
+    if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
+        //is this item part of a correction? if so, deal with it
         var correctionid = annotation.incorrection[0];
         if (corrections[correctionid]) {
             correction = corrections[correctionid];
-            s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
-            if (annotatordetails && correction.annotator) {
-                s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
-                if (annotation.datetime) {
-                    s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
+            if ((viewannotations[correction.type+"/"+correction.set])) {
+                s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
+                if (annotatordetails && correction.annotator) {
+                    s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
+                    if (annotation.datetime) {
+                        s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
+                    }
                 }
+                if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+                    s = s + "<table>";
+                }
+                if (correction.suggestions.length > 0) {
+                    correction.suggestions.forEach(function(suggestion){
+                        s = s + "<tr><th>Suggestion:</th><td>";
+                        s = s +  "<div class=\"correctionchild\">";
+                        renderannotation(suggestion,true)
+                        s = s + "</div></td></tr>";
+                    });
+                }
+                if (correction.original.length > 0) {
+                    correction.original.forEach(function(original){
+                        s = s + "<tr><th>Original:</th><td> ";
+                        s = s +  "<div class=\"correctionchild\">";
+                        renderannotation(original,true);
+                        s = s + "</div></td></tr>";
+                    });
+                }
+                if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+                    s = s + "</table>";
+                }
+                s = s + "</div>";
             }
-            if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
-                s = s + "<table>";
-            }
-            if (correction.suggestions.length > 0) {
-                correction.suggestions.forEach(function(suggestion){
-                    s = s + "<tr><th>Suggestion:</th><td>";
-                    s = s +  "<div class=\"correctionchild\">";
-                    renderannotation(suggestion,true)
-                    s = s + "</div></td></tr>";
-                });
-            }
-            if (correction.original.length > 0) {
-                correction.original.forEach(function(original){
-                    s = s + "<tr><th>Original:</th><td> ";
-                    s = s +  "<div class=\"correctionchild\">";
-                    renderannotation(original,true);
-                    s = s + "</div></td></tr>";
-                });
-            }
-            if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
-                s = s + "</table>";
-            }
-            s = s + "</div>";
         } else {
             s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
         }
@@ -143,7 +146,7 @@ function showinfo(element) {
             s = "";
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
-                if (viewannotations[annotation.type+"/" + annotation.set]) {
+                if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
                     if (annotationtypenames[annotation.type]) {
                         label = annotationtypenames[annotation.type];
                     } else {
