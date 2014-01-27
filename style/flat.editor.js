@@ -34,7 +34,7 @@ function setaddablefields() {
     Object.keys(declarations).forEach(function(annotationtype){
         label = getannotationtypename(annotationtype);
         Object.keys(declarations[annotationtype]).forEach(function(set){
-            if (viewannotations[annotationtype + "/" + set]) {
+            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
                 setname = set;
                 if (setname.length > 30) {
                     setname = setname.substr(0,15) + ".." + setname.substr(setname.length-15,15);
