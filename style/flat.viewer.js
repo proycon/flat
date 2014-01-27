@@ -77,7 +77,9 @@ function getspantext(annotation) {
 }
 
 
+
 function renderannotation(annotation, norecurse) {
+    var s = "";
     if (!((annotation.type == "t") && ((annotation.class == "current")  || (annotation.class == "original")) )) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
@@ -136,7 +138,7 @@ function renderannotation(annotation, norecurse) {
                         correction.suggestions.forEach(function(suggestion){
                             s = s + "<tr><th>Suggestion:</th><td>";
                             s = s +  "<div class=\"correctionchild\">";
-                            renderannotation(suggestion,true)
+                            s = s +  renderannotation(suggestion,true)
                             s = s + "</div></td></tr>";
                         });
                     }
@@ -144,7 +146,7 @@ function renderannotation(annotation, norecurse) {
                         correction.original.forEach(function(original){
                             s = s + "<tr><th>Original:</th><td> ";
                             s = s +  "<div class=\"correctionchild\">";
-                            renderannotation(original,true);
+                            s = s + renderannotation(original,true);
                             s = s + "</div></td></tr>";
                         });
                     }
@@ -158,6 +160,7 @@ function renderannotation(annotation, norecurse) {
             }
         }
     }
+    return s;
 }
 
 function showinfo(element) {
@@ -179,7 +182,7 @@ function showinfo(element) {
                             setname = "";
                         }
                         s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                        renderannotation(annotation);
+                        s = s + renderannotation(annotation);
                         s = s + "</td></tr>";
 
                     }
