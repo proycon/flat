@@ -111,9 +111,8 @@ function renderannotation(annotation, norecurse) {
             Object.keys(annotations[t]).forEach(function(aid) {
                 var a = annotations[t][aid];
                 if (aid == 'self') {
-                    alert(t + ": '" + a.incorrection + "' vs '" + annotation.incorrection + "'");
-                    if (a.incorrection[0] == annotation.incorrection[0])  {
-                        alert("match");
+                    //alert(t + ": '" + a.incorrection + "' vs '" + annotation.incorrection + "'");
+                    if ((a.incorrection) && (a.incorrection[0] == annotation.incorrection[0]))  {
                         parentincorrection = t;
                     }
                 }
