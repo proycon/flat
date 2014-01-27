@@ -10,8 +10,10 @@
         <script type="text/javascript" src="/style/flat.js"></script> 
         {% block head %}
         {% endblock %}
+        {% if mode %}
         <link rel="StyleSheet" href="/style/flat.{{ mode }}.css" type="text/css" />
         <script type="text/javascript" src="/style/flat.{{ mode }}.js"></script> 
+        {% endif %}
         {% if docid %}
         <script type="text/javascript">
             username = "{{ username|safe }}";
