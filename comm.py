@@ -25,7 +25,7 @@ def postjson( request, url, data):
         data = json.dumps(data)
     else:
         data = json.loads(data)
-        data['sid'] = sid = request.session.session_key + '_' + data['sid']
+        data['sid'] = sid = request.session.session_key + '_' + str(data['sid'])
         data = json.dumps(data)
     req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
     req.add_header('Content-Type', 'application/json')
