@@ -34,7 +34,7 @@ function sethover(element) {
         if ($(element).hasClass('focustype')) {
             //colour related elements
             Object.keys(annotations[element.id]).forEach(function(annotationid){
-                if ((annotationtype != "self") && (annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].targets.length > 1)) {
+                if ((annotationid != "self") && (annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].targets.length > 1)) {
                     annotations[element.id][annotationid].targets.forEach(function(target){
                         $('#' + valid(target)).addClass("hover");
                     });
