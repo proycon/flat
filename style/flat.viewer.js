@@ -77,7 +77,7 @@ function getspantext(annotation) {
 }
 
 
-function rendercorrection(correctionid) {
+function rendercorrection(correctionid, addlabels) {
     var s = "";
     var correction = corrections[correctionid];
     if ((viewannotations[correction.type+"/"+correction.set])) {
@@ -101,7 +101,11 @@ function rendercorrection(correctionid) {
         }
         if (correction.original.length > 0) {
             correction.original.forEach(function(original){
-                s = s + "<tr><th>Original:</th><td> ";
+                s = s + "<tr><th>Original";
+                if (addlabels) {
+                    s = s + " " + getannotationtypename(original.type);
+                }
+                s = s + ":</th><td> ";
                 s = s +  "<div class=\"correctionchild\">";
                 s = s + renderannotation(original,true);
                 s = s + "</div></td></tr>";
@@ -193,7 +197,7 @@ function showinfo(element) {
             });
             s = s + "</table>";
             if (annotations[element.id].self.incorrection) {
-                s = s + rendercorrection( annotations[element.id].self.incorrection[0]);
+                s = s + rendercorrection( annotations[element.id].self.incorrection[0], true);
             }
             $('#info').html(s);
             $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
