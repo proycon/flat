@@ -265,7 +265,27 @@ def doannotation(doc, data):
         if not 'set' in edit or edit['set'] == 'undefined' or edit['set'] == 'null':
             edit['set'] = None
 
-        if issubclass(Class, folia.AbstractTokenAnnotation):
+        if issubclass(Class, folia.TextContent):
+            #Text Content, each target will get a copy
+            if len(data['targets']) > 1:
+                response['error'] = "Refusing to apply text change to multiple elements at once"
+                return response
+
+            try:
+                target = doc[data['targets'][0]]
+            except:
+                response['error'] = "Target element " + data['targets'][0] + " does not exist!"
+                return response
+
+            if edit['text']:
+                target.replace(Class,value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
+                changed.append(target)
+            else:
+                #we have a text deletion! This implies deletion of the entire structure element!
+                target.parent.remove(target)
+                changed.append(target.parent)
+
+        elif issubclass(Class, folia.AbstractTokenAnnotation):
             #Token annotation, each target will get a copy
             for targetid in data['targets']:
                 try:
