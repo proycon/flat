@@ -179,11 +179,11 @@ function showeditor(element) {
             $('#editorsubmit').click(function(){
 
                 for (var i = 0; i < editfields;i++) { 
-                    if (($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
+                    if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
                         editdata[i].class = $('#editfield' + i).val();
                         editdata[i].changed = true;
                     }
-                    if (($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text)) {
+                    if ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text)) {
                         editdata[i].text = $('#editfield' + i + 'text').val();
                         editdata[i].changed = true;
                     }
