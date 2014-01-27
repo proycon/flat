@@ -378,11 +378,11 @@ class Root:
 
     @cherrypy.expose
     def getdoc(self, namespace, docid, sid):
-        if sid[-5:] != 'NOSID':
-            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
-            if sid in self.docstore.updateq[(namespace,docid)]:
-                self.docstore.updateq[(namespace,docid)][sid] = []
         namepace = namespace.replace('/','').replace('..','')
+        if sid[-5:] != 'NOSID':
+            print("Creating session " + sid + " for " + "/".join((namespace,docid)),file=sys.stderr)
+            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+            self.docstore.updateq[(namespace,docid)][sid] = []
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps({
@@ -401,12 +401,14 @@ class Root:
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
         data = json.loads(str(rawbody,'utf-8'))
+        print("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,docid)),file=sys.stderr)
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
         #set concurrency:
         for s in self.docstore.updateq[(namespace,docid)]:
             if s != sid:
+                print("Scheduling update for " + s,file=sys.stderr)
                 self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
         return self.getelement(namespace,docid, response['returnelementid'],sid);
 
@@ -422,6 +424,7 @@ class Root:
                         if time.time() - lastaccess > 3600*12:  #expire after 12 hours
                             deletelist.append( (d,s) )
         for d,s in deletelist:
+            print("Expiring session " + s + " for " + "/".join(d),file=sys.stderr)
             del self.docstore.lastaccess[d][s]
             del self.docstore.updateq[d][s]
             if len(self.docstore.lastaccess[d]) == 0:
@@ -435,6 +438,7 @@ class Root:
 
     @cherrypy.expose
     def getelement(self, namespace, docid, elementid, sid):
+        namepace = namespace.replace('/','').replace('..','')
         if sid[-5:] != 'NOSID':
             self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
             if sid in self.docstore.updateq[(namespace,docid)]:
@@ -442,7 +446,6 @@ class Root:
                     self.docstore.updateq[(namespace,docid)][sid].remove(elementid)
                 except:
                     pass
-        namepace = namespace.replace('/','').replace('..','')
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             if elementid:
@@ -459,9 +462,11 @@ class Root:
 
     @cherrypy.expose
     def poll(self, namespace, docid, sid):
+        print("Poll from sesssion " + sid + " for " + "/".join((namespace,docid)),file=sys.stderr)
         self.checkexpireconcurrency()
         if sid in self.docstore.updateq[(namespace,docid)]:
             ids = self.docstore.updateq[(namespace,docid)][sid]
+            print("Returning IDs: " + repr(ids),file=sys.stderr)
             self.docstore.updateq[(namespace,docid)][sid] = []
             return json.dumps({'update': ids})
         else:
