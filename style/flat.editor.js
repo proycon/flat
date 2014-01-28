@@ -1,5 +1,6 @@
 editoropen = false;
 coselector = false;
+editforms = {'direct': true, 'correction': false,'alternative': false} ;
 
 
 function toggleeditform(editform) {
@@ -73,6 +74,46 @@ function setaddablefields() {
     }
 }
 
+
+function addeditforms() {
+    //do we have a single selection?
+    var selected = false;
+    Object.keys(editforms).forEach(function(editform){
+        if (editforms[editform]) {
+            if (selected == false) {
+                selected = editform;
+            } else {
+                selected = null;
+            }
+        }
+    });
+
+    s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
+    if (editforms.direct) {
+        if ((selected == "direct") || (selected == null)) {
+            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
+        } else {
+            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" /><label title=\"Edit Directly\">D</label>";
+        }
+    }
+    if (editforms.correction) {
+        if (selected == "correction") {
+            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" checked=\"checked\" /><label title=\"Edit as new Correction\">C</label>";
+        } else {
+            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
+        }
+    }
+    if (editforms.alternative) {
+        if (selected == "alternative") {
+            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" checked=\"checked\" /><label title=\"Edit as new Alternative\">A</label>";
+        } else {
+            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" /><label title=\"Edit as new Alternative\">A</label>";
+        }
+    }
+    s = s + "</span>";
+    return s
+}
+
 function showeditor(element) {
 
     if ((element) && ($(element).hasClass(view))) {
@@ -130,6 +171,7 @@ function showeditor(element) {
                             s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
                         }
                     }
+                    s = s + addeditforms();
                     //s = s + "<button id=\"editordelete" + editfields + "\">-</button>";
                     s = s + "</td></tr>";
                     editfields = editfields + 1;
