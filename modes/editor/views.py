@@ -14,6 +14,10 @@ def view(request, namespace, docid):
         doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
+        try:
+            d['editforms'] = settings.EDITFORMS
+        except AttributeError:
+            d['editforms'] = ['direct']
         return render(request, 'editor.html', d)
     else:
         return HttpResponseForbidden("Permission denied")

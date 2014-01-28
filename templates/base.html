@@ -30,6 +30,8 @@
             {% if setdefinitions %}
             setdefinitions = {{ setdefinitions|safe }};
             {% endif %}
+            {% block js %}
+            {% endblock js %}
         </script>
         {% endif %}
     </head>

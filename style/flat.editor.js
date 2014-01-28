@@ -1,6 +1,18 @@
 editoropen = false;
 coselector = false;
 
+
+function toggleeditform(editform) {
+    if (editforms[editform]) {
+        editforms[editform] = false;
+        $('#editform' + editform).removeClass('on');
+    } else {
+        editforms[editform] = true;
+        $('#editform' + editform).addClass('on');
+    }
+}
+
+
 function select(element) {
     //toggles
     var found = false;
@@ -295,6 +307,7 @@ function editor_onclick(element) {
     }
 }
 
+
 function editor_ondblclick(element) {
     //open editor
     $('#info').hide();
@@ -310,7 +323,6 @@ function editor_onmouseenter(element) {
         showinfo(element);
     }
 }
-
 
 
 function editor_onloadannotations(annotationlist) {
@@ -342,5 +354,7 @@ function editor_oninit() {
         var index = $('#editoraddablefields').val();
         addeditorfield(index);
     });
-
+    Object.keys(editforms).forEach(function(editform){
+        if (editforms[editform]) $('#editform' + editform).addClass('on');
+    });
 }

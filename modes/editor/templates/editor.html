@@ -6,13 +6,20 @@
 <script type="text/javascript" src="/style/flat.viewer.js"></script> 
 {% endblock %}
 
+{% block js %}
+{% for editform in editforms %}
+editforms = {}
+editforms['{{ editform }}'] = true;
+{% endfor %}
+{% endblock %}
+
 {% block menu %}
 {% include "viewermenu.html" %}
-<li>Edit Form
-<ul id="editform">
-    <li id="editformnormal"><a href="toggleeditmode('corrections)">Direct Edit</li>
-    <li id="editformcorrecton"><a href="toggleeditmode('corrections)">Edit as correction</li>
-    <li id="editformalternative"><a href="toggleeditmode('alternatives)">Edit as alternative</li>
+<li>Edit Forms
+<ul id="editforms">
+    <li id="editformdirect"><a href="javascript:toggleeditform('direct')">Direct Edit</li>
+    <li id="editformcorrection"><a href="javascript:toggleeditform('correction')">Edit as correction</li>
+    <li id="editformalternative"><a href="javascript:toggleeditform('alternative')">Edit as alternative</li>
 </ul>
 </li>
 <li>Tools &amp; Options
