@@ -15,7 +15,6 @@ from pynlpl.formats import folia
 
 def fake_wait_for_occupied_port(host, port): return
 
-
 class NoSuchDocument(Exception):
     pass
 
@@ -226,7 +225,6 @@ def getsetdefinitions(doc):
 def doannotation(doc, data):
     response = {'returnelementid': None}
     changed = [] #changed elements
-
     print("Received: ", repr(data),file=sys.stderr)
 
     if len(data['targets']) > 1:
@@ -280,13 +278,20 @@ def doannotation(doc, data):
                 response['error'] = "Target element " + data['targets'][0] + " does not exist!"
                 return response
 
-            if edit['text']:
-                target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
-                changed.append(target)
-            else:
-                #we have a text deletion! This implies deletion of the entire structure element!
-                target.parent.remove(target)
-                changed.append(target.parent)
+            if edit['editform'] == 'direct':
+                if edit['text']:
+                    target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
+                    changed.append(target)
+                else:
+                    #we have a text deletion! This implies deletion of the entire structure element!
+                    target.parent.remove(target)
+                    changed.append(target.parent)
+            elif edit['editform'] == 'alternative':
+                response['error'] = "Can not add alternative text yet, not implemented"
+                return response
+            elif edit['editform'] == 'correction':
+                target.correct(new=edit['text'], set=edit['set'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
             #Token annotation, each target will get a copy

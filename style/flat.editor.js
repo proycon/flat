@@ -103,6 +103,7 @@ function addeditforms() {
         } else {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
         }
+        s = s +  "<input type=\"text\" id=\"editform" + editfields + "correctionclass\" class=\"editformcorrectionclass\" placeholder=\"(enter correction class)\" />";
         editformcount++;
     }
     if (editforms.alternative) {
@@ -214,7 +215,7 @@ function showeditor(element) {
                 }
             }
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
-            if (editformcount > 1) {
+            if ((editformcount > 1) || (editforms.correction)) {
                 $('.editforms').show();                
             } else {
                 $('.editforms').hide();                
@@ -255,12 +256,19 @@ function showeditor(element) {
                         editdata[i].text = $('#editfield' + i + 'text').val();
                         editdata[i].changed = true;
                     }
-                    if ($('#editform' + i + 'correction').checked()) {
-                        editdata[i].editform = 'correction';
-                    } else if ($('#editform' + i + 'alternative').checked()) {
-                        editdata[i].editform = 'alternative';
-                    } else {
-                        editdata[i].editform = 'direct';
+                    if (editdata[i].changed) {
+                        if ($('#editform' + i + 'correction').checked()) {
+                            editdata[i].editform = 'correction';
+                            editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
+                            if (!editdata[i].correctionclass) {
+                                alert("Error: An annotation was changed and submitted as correction, but no correction class was entered");
+                                return false;
+                            }
+                        } else if ($('#editform' + i + 'alternative').checked()) {
+                            editdata[i].editform = 'alternative';
+                        } else {
+                            editdata[i].editform = 'direct';
+                        }
                     }
                 }
 
