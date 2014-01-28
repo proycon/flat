@@ -87,14 +87,15 @@ function addeditforms() {
             }
         }
     });
-
-    s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
+    var editformcount = 0;
+    var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
     if (editforms.direct) {
         if ((selected == "direct") || (selected == null)) {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
         } else {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" /><label title=\"Edit Directly\">D</label>";
         }
+        editformcount++;
     }
     if (editforms.correction) {
         if (selected == "correction") {
@@ -102,6 +103,7 @@ function addeditforms() {
         } else {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
         }
+        editformcount++;
     }
     if (editforms.alternative) {
         if (selected == "alternative") {
@@ -109,10 +111,14 @@ function addeditforms() {
         } else {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" /><label title=\"Edit as new Alternative\">A</label>";
         }
+        editformcount++;
     }
     s = s + "</span>";
-    return s
+    return [s,editformcount]
 }
+
+
+
 
 function showeditor(element) {
 
@@ -126,6 +132,7 @@ function showeditor(element) {
             edittargets = [];
             select(element);
             var annotationfocusfound = false;
+            var editformcount = 0;
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
                 var ok = true;
@@ -171,7 +178,9 @@ function showeditor(element) {
                             s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
                         }
                     }
-                    s = s + addeditforms();
+                    editformdata = addeditforms();
+                    editformcount = editformdata[1];
+                    s = s + editformdata[0];
                     //s = s + "<button id=\"editordelete" + editfields + "\">-</button>";
                     s = s + "</td></tr>";
                     editfields = editfields + 1;
@@ -205,6 +214,11 @@ function showeditor(element) {
                 }
             }
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
+            if (editformcount > 1) {
+                $('.editforms').show();                
+            } else {
+                $('.editforms').hide();                
+            }
             //configure actions and events for edit fields
             for (var i = 0; i < editfields;i++){
                 $('select#editfield'+i).sortOptions();
