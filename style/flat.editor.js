@@ -255,6 +255,13 @@ function showeditor(element) {
                         editdata[i].text = $('#editfield' + i + 'text').val();
                         editdata[i].changed = true;
                     }
+                    if ($('#editform' + i + 'correction').checked()) {
+                        editdata[i].editform = 'correction';
+                    } else if ($('#editform' + i + 'alternative').checked()) {
+                        editdata[i].editform = 'alternative';
+                    } else {
+                        editdata[i].editform = 'direct';
+                    }
                 }
 
 
