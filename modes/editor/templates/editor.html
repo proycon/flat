@@ -8,6 +8,13 @@
 
 {% block menu %}
 {% include "viewermenu.html" %}
+<li>Edit Form
+<ul id="editform">
+    <li id="editformnormal"><a href="toggleeditmode('corrections)">Direct Edit</li>
+    <li id="editformcorrecton"><a href="toggleeditmode('corrections)">Edit as correction</li>
+    <li id="editformalternative"><a href="toggleeditmode('alternatives)">Edit as alternative</li>
+</ul>
+</li>
 <li>Tools &amp; Options
 <ul id="toolsandoptions">
     <li><a href="javascript:declare()">Add new Annotation Type</li>
