@@ -86,4 +86,5 @@ div#editformcorrectionsetselector {
     top: 50px;
     background: transparent;
     font-size: 9px;
+    z-index: -100;
 }
