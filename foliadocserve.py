@@ -179,14 +179,20 @@ def getannotations(element):
         p = element.parent
         while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
             p = p.parent
-        annotation['targets'] = [ p.id ]
+        if p:
+            annotation['targets'] = [ p.id ]
+        else:
+            raise Exception("No parent found for " + element.__class__.__name__)
         yield annotation
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
         while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
             p = p.parent
-        annotation['targets'] = [ p.id ]
+        if p:
+            annotation['targets'] = [ p.id ]
+        else:
+            raise Exception("No parent found for " + element.__class__.__name__)
         assert isinstance(annotation, dict)
         yield annotation
     elif isinstance(element, folia.AbstractSpanAnnotation):
