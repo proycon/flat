@@ -21,6 +21,10 @@ div.focustype span.lbl {
     background: #bfbfbf;
 }
 
+div.undofocustype span.lbl {
+    background: transparent;
+}
+
 div.class1 span.lbl, div#class1legend {
     background: #b4e0aa; //green
 }

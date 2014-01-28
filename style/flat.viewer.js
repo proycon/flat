@@ -234,7 +234,11 @@ function setannotationfocus(t,set) {
                 }
             });
         });
-        setclasscolors();
+        if (annotationfocus.type != 't') {
+            setclasscolors();
+        } else {
+            $('.focustype').addClass('undofocustype');
+        }
     } else {
         annotationfocus = null;
     }
@@ -245,6 +249,7 @@ function removeclasscolors(toggle) {
         $('.class' + i).removeClass('class' + i);
     }
     $('.focustype').removeClass('focustype');
+    $('.undofocustype').removeClass('undofocustype');
     if (toggle) {
         s = "<span class=\"title\">Legend &bull; " + title + "</span>"; //text for legend
         s = s + "(<a href=\"javascript:setannotationfocus('"+ annotationfocus.type +"','" + annotationfocus.set + "')\">Show</a>)<br />";
