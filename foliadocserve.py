@@ -177,14 +177,14 @@ def getannotations(element):
         elif element.annotatortype == folia.AnnotatorType.MANUAL:
             annotation['annotatortype'] = "manual"
         p = element.parent
-        while not p.id or not isinstance(p, folia.AbstractStructureElement):
+        while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
             p = p.parent
         annotation['targets'] = [ p.id ]
         yield annotation
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
-        while not p.id or not isinstance(p, folia.AbstractStructureElement):
+        while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
             p = p.parent
         annotation['targets'] = [ p.id ]
         assert isinstance(annotation, dict)
@@ -291,7 +291,7 @@ def doannotation(doc, data):
                 return response
             elif edit['editform'] == 'correction':
                 if edit['text']:
-                    target.correct(new=edit['text'], set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                    target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                 else:
                     #we have a deletion as a correction! This implies deletion of the entire structure element!
                     p = target.parent #word
