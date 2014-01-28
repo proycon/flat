@@ -263,7 +263,7 @@ function showeditor(element) {
                         editdata[i].changed = true;
                     }
                     if (editdata[i].changed) {
-                        if ($('#editform' + i + 'correction').checked()) {
+                        if ($('#editform' + i + 'correction').attr('checked')) {
                             editdata[i].editform = 'correction';
                             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
                             editdata[i].correctionset = $('#editformcorrectionset').val(); 
@@ -271,7 +271,7 @@ function showeditor(element) {
                                 alert("Error: An annotation was changed and submitted as correction, but no correction class was entered");
                                 return false;
                             }
-                        } else if ($('#editform' + i + 'alternative').checked()) {
+                        } else if ($('#editform' + i + 'alternative').attr('checked')) {
                             editdata[i].editform = 'alternative';
                         } else {
                             editdata[i].editform = 'direct';
