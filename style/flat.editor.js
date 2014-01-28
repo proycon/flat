@@ -1,6 +1,7 @@
 editoropen = false;
 coselector = false;
 editforms = {'direct': true, 'correction': false,'alternative': false} ;
+editform_correctionset = null;
 
 
 function toggleeditform(editform) {
@@ -10,6 +11,11 @@ function toggleeditform(editform) {
     } else {
         editforms[editform] = true;
         $('#editform' + editform).addClass('on');
+    }
+    if (editforms.correction) {
+        $('#editformcorrectionsetselector').show();
+    } else {
+        $('#editformcorrectionsetselector').hide();
     }
 }
 
@@ -260,6 +266,7 @@ function showeditor(element) {
                         if ($('#editform' + i + 'correction').checked()) {
                             editdata[i].editform = 'correction';
                             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
+                            editdata[i].correctionset = $('#editformcorrectionset').val(); 
                             if (!editdata[i].correctionclass) {
                                 alert("Error: An annotation was changed and submitted as correction, but no correction class was entered");
                                 return false;
@@ -428,4 +435,18 @@ function editor_oninit() {
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) $('#editform' + editform).addClass('on');
     });
+    var s = "";
+    Object.keys(declarations).forEach(function(annotationtype){
+        Object.keys(declarations[annotationtype]).forEach(function(set){
+            if (annotationtype == "correction") {
+                if (s) {
+                    s = s + "<option value=\"" + set + "\">" + set + "</option>";
+                } else {
+                    s = "<option value=\"" + set + "\" selected=\"selected\">" + set + "</option>";
+                }
+            }
+        });
+    });
+    $('#editformcorrectionset').html(s);
+    if (editforms.correction) $('#editformcorrectionsetselector').show();
 }

@@ -290,7 +290,18 @@ def doannotation(doc, data):
                 response['error'] = "Can not add alternative text yet, not implemented"
                 return response
             elif edit['editform'] == 'correction':
-                target.correct(new=edit['text'], set=edit['set'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                if edit['text']:
+                    target.correct(new=edit['text'], set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                else:
+                    #we have a deletion as a correction! This implies deletion of the entire structure element!
+                    p = target.parent #word
+                    while p and not isinstance(p, folia.AbstractStructureElement):
+                        p = p.parent
+                    sp = p.parent #sentence
+                    while sp and not isinstance(p, folia.AbstractStructureElement):
+                        sp = sp.parent
+                    sp.deleteword(p,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
+                    response['returnelement'] = sp.id
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
