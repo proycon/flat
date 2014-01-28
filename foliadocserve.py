@@ -297,15 +297,12 @@ def doannotation(doc, data):
                     p = target.parent #word
                     while p and not isinstance(p, folia.AbstractStructureElement):
                         p = p.parent
-                    sp = p.parent #sentence
-                    while sp and not isinstance(p, folia.AbstractStructureElement):
-                        sp = sp.parent
-                    sp.deleteword(p,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
-                    response['returnelement'] = sp.id
+                    p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
+                    response['returnelement'] = p.id
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
-            #Token annotation, each target will get a copy
+            #Token annotation, each target will get a copy (usually just one target)
             for targetid in data['targets']:
                 try:
                     target = doc[targetid]
@@ -313,20 +310,32 @@ def doannotation(doc, data):
                     response['error'] = "Target element " + targetid + " does not exist!"
                     return response
 
-                if edit['class']:
-                    target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
-                else:
-                    #we have a deletion
-                    replace = Class.findreplacables(target.parent, edit['set'])
-                    if len(replace) == 1:
-                        #good
-                        target.remove(replace[0])
-                    elif len(replace) > 1:
-                        response['error'] = "Unable to delete, multiple ambiguous candidates found!"
-                        return response
-                changed.append(target)
+                if edit['editform'] == 'direct':
+                    if edit['class']:
+                        target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
+                    else:
+                        #we have a deletion
+                        replace = Class.findreplacables(target.parent, edit['set'])
+                        if len(replace) == 1:
+                            #good
+                            target.remove(replace[0])
+                        elif len(replace) > 1:
+                            response['error'] = "Unable to delete, multiple ambiguous candidates found!"
+                            return response
+                    changed.append(target)
+                elif edit['editform'] == 'alternative':
+                    target.append(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], alternative=True)
+                elif edit['editform'] == 'correction':
+                    target.correct(original=target, new=Class(doc, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+
 
         elif issubclass(Class, folia.AbstractSpanAnnotation):
+            if edit['editform'] != 'direct':
+                #TODO
+                response['error'] = "Only direct edit form is supported for span annotation elements at this time. Corrections and alternatives to be implemented still."
+                return response
+
+
             targets = []
             for targetid in data['targets']:
                 try:
