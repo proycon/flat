@@ -408,18 +408,24 @@ function editor_oninit() {
                         //of things
                         
                         //Is the leftmost word the same as the original word?
-                        //Then the user want to do an insertion to the right?
-                        //if editdata[i].text.substr(
+                        //Then the user want to do an insertion to the right
+                        if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
+                            editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
+                            editdata[i].text = editdata[i].oldtext;
+                        //Is the rightmost word the same as the original word?
+                        //Then the user want to do an insertion to the left
+                        } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
+                            editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].oldtext.length - 1);
+                            editdata[i].text = editdata[i].oldtext;
+                        } else {
+                            //Words are different? than the user may want to split
+                            //the original token into new ones:
+                            //
+                            //ask user if he wants to split the token into two
+                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split?"); 
                         
+                        }
                         
-                        //Is the leftmost word the same as the original word?
-                        //Then the user want to do an insertion to the right?
-                        
-                        //Words are different? than the user may want to split
-                        //the original token into new ones:
-                        //
-                        //ask user if he wants to split the token into two
-                       editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split?"); 
 
                     }
                 }
