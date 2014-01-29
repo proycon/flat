@@ -176,23 +176,15 @@ def getannotations(element):
             annotation['annotatortype'] = "auto"
         elif element.annotatortype == folia.AnnotatorType.MANUAL:
             annotation['annotatortype'] = "manual"
-        p = element.parent
-        while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
-            p = p.parent
-        if p:
-            annotation['targets'] = [ p.id ]
-        else:
-            raise Exception("No parent found for " + element.__class__.__name__)
+        p = element.ancestor(folia.AbstractStructureElement)
+        annotation['targets'] = [ p.id ]
         yield annotation
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
         #print("Parent of ", str(repr(element)), " is ", str(repr(p)),file=sys.stderr)
-        while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
-            p = p.parent
-            #print("Not good enough, next parent is ", str(repr(p)),file=sys.stderr)
-        if p:
-            annotation['targets'] = [ p.id ]
+        p = element.ancestor(folia.AbstractStructureElement)
+        annotation['targets'] = [ p.id ]
         else:
             raise Exception("No parent found for " + element.__class__.__name__)
         assert isinstance(annotation, dict)
@@ -291,7 +283,25 @@ def doannotation(doc, data):
                 return response
 
             if edit['editform'] == 'direct':
-                if edit['text']:
+                if 'insertright' in edit:
+
+                    try:
+                        index = target.parent.data.index(target) + 1
+                    except ValueError:
+                        response['error'] = "Unable to find insertion index"
+                        return response
+
+
+                    target.parent.insert()
+                elif 'insertleft' in edit:
+                    try:
+                        index = target.parent.data.index(target) - 1
+                    except ValueError:
+                        response['error'] = "Unable to find insertion index"
+                        return response
+
+                elif 'dosplit' in edit:
+                elif edit['text']:
                     target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     changed.append(target)
                 else:
@@ -303,15 +313,16 @@ def doannotation(doc, data):
                 response['error'] = "Can not add alternative text yet, not implemented"
                 return response
             elif edit['editform'] == 'correction':
-                if edit['text']:
+                if 'insertright' in edit:
+                elif 'insertleft' in edit:
+                elif 'dosplit' in edit:
+                elif edit['text']:
                     print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
                     target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                 else:
                     print("Deletion as correction",str(repr(target)),file=sys.stderr)
                     #we have a deletion as a correction! This implies deletion of the entire structure element!
-                    p = target.parent #word
-                    while p and not isinstance(p, folia.AbstractStructureElement):
-                        p = p.parent
+                    p = target.ancestor(folia.AbstractStructureElement)
                     p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
                     response['returnelementid'] = p.id
 
