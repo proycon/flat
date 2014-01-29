@@ -255,12 +255,12 @@ function showeditor(element) {
 
                 for (var i = 0; i < editfields;i++) { 
                     if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
-                        alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
+                        //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
                         editdata[i].class = $('#editfield' + i).val();
                         editdata[i].changed = true;
                     }
                     if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
-                        alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
+                        //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
                         editdata[i].text = $('#editfield' + i + 'text').val();
                         editdata[i].changed = true;
                     }
