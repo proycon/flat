@@ -247,87 +247,7 @@ function showeditor(element) {
                 });*/
             }
             $('#editor').show();    
-            $('#editor').draggable();    
-
-
-
-            $('#editorsubmit').click(function(){
-
-                for (var i = 0; i < editfields;i++) { 
-                    if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
-                        //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
-                        editdata[i].class = $('#editfield' + i).val();
-                        editdata[i].changed = true;
-                    }
-                    if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
-                        //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
-                        editdata[i].text = $('#editfield' + i + 'text').val();
-                        editdata[i].changed = true;
-                    }
-                    if (editdata[i].changed) {
-                        if ($('#editform' + i + 'correction').attr('checked')) {
-                            editdata[i].editform = 'correction';
-                            editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
-                            editdata[i].correctionset = $('#editformcorrectionset').val(); 
-                            if (!editdata[i].correctionclass) {
-                                alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                                return false;
-                            }
-                        } else if ($('#editform' + i + 'alternative').attr('checked')) {
-                            editdata[i].editform = 'alternative';
-                        } else {
-                            editdata[i].editform = 'direct';
-                        }
-                    }
-                }
-
-
-                sendeditdata = []; 
-                editdata.forEach(function(editdataitem){
-                    if (editdataitem.changed) {
-                        sendeditdata.push(editdataitem);
-                    }
-                });
-                if (sendeditdata.length == 0) {
-                    //discard
-                    closeeditor();
-                    return false;
-                }
-                
-                //sort targets in proper order
-                sortededittargets = [];
-                $('.' + view).each(function(element){
-                    if (edittargets.indexOf(element.id) > -1) {
-                        sortededittargets.push(element.id);
-                    }
-                });
-
-
-                $('#wait').show();
-                $.ajax({
-                    type: 'POST',
-                    url: "/editor/" + namespace + "/"+ docid + "/annotate/",
-                    contentType: "application/json",
-                    //processData: false,
-                    data: JSON.stringify( { 'elementid': element.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username, 'sid': sid}),
-                    success: function(data) {
-                        if (data.error) {
-                            $('#wait').hide();
-                            alert("Received error from document server: " + data.error);
-                        } else {
-                            closeeditor();
-                            update(data);
-                        }
-                    },
-                    error: function(req,err,exception) { 
-                        $('#wait').hide();
-                        alert("Editor submission failed: " + req + " " + err + " " + exception);
-                    },
-                    dataType: "json"
-                });
-                return true;
-            });
-
+            $('#editor').draggable();
         }
     }
 }
@@ -451,4 +371,82 @@ function editor_oninit() {
     });
     $('#editformcorrectionset').html(s);
     if (editforms.correction) $('#editformcorrectionsetselector').show();
+    $('#editorsubmit').click(function(){
+
+        for (var i = 0; i < editfields;i++) { 
+            if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
+                //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
+                editdata[i].class = $('#editfield' + i).val();
+                editdata[i].changed = true;
+            }
+            if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+                //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
+                editdata[i].text = $('#editfield' + i + 'text').val();
+                editdata[i].changed = true;
+            }
+            if (editdata[i].changed) {
+                if ($('#editform' + i + 'correction').attr('checked')) {
+                    editdata[i].editform = 'correction';
+                    editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
+                    editdata[i].correctionset = $('#editformcorrectionset').val(); 
+                    if (!editdata[i].correctionclass) {
+                        alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
+                        return false;
+                    }
+                } else if ($('#editform' + i + 'alternative').attr('checked')) {
+                    editdata[i].editform = 'alternative';
+                } else {
+                    editdata[i].editform = 'direct';
+                }
+            }
+        }
+
+
+        var sendeditdata = []; 
+        editdata.forEach(function(editdataitem){
+            if (editdataitem.changed) {
+                sendeditdata.push(editdataitem);
+            }
+        });
+        if (sendeditdata.length == 0) {
+            //discard
+            closeeditor();
+            return false;
+        }
+        
+        //sort targets in proper order
+        var sortededittargets = [];
+        $('.' + view).each(function(e){
+            if (edittargets.indexOf(e.id) > -1) {
+                sortededittargets.push(e.id);
+            }
+        });
+
+
+        $('#wait').show();
+
+
+        $.ajax({
+            type: 'POST',
+            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+            contentType: "application/json",
+            //processData: false,
+            data: JSON.stringify( { 'elementid': this.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username, 'sid': sid}),
+            success: function(data) {
+                if (data.error) {
+                    $('#wait').hide();
+                    alert("Received error from document server: " + data.error);
+                } else {
+                    editfields = 0;
+                    closeeditor();
+                    update(data);
+                }
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                alert("Editor submission failed: " + req + " " + err + " " + exception);
+            },
+            dataType: "json"
+        });
+    });
 }
