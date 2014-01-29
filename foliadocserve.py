@@ -253,6 +253,10 @@ def doannotation(doc, data):
 
 
 
+    if 'elementid' in data:
+        ElementClass = folia.XML2CLASS[data['elementid']]
+    else:
+        ElementClass = None
 
 
     for edit in data['edits']:
@@ -260,6 +264,7 @@ def doannotation(doc, data):
         Class = folia.XML2CLASS[edit['type']]
         annotationtype = Class.ANNOTATIONTYPE
         annotation = None
+
 
         edit['datetime'] = datetime.datetime.now()
 
@@ -284,15 +289,14 @@ def doannotation(doc, data):
 
             if edit['editform'] == 'direct':
                 if 'insertright' in edit:
-
                     try:
                         index = target.parent.data.index(target) + 1
                     except ValueError:
                         response['error'] = "Unable to find insertion index"
                         return response
 
-
-                    target.parent.insert()
+                    for wordtext in reversed(edit['insertright'].split(' ')):
+                        target.parent.insert(index, ElementClass(doc, wordtext ) )
                 elif 'insertleft' in edit:
                     try:
                         index = target.parent.data.index(target) - 1
