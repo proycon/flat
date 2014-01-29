@@ -422,7 +422,7 @@ function editor_oninit() {
                             //the original token into new ones:
                             //
                             //ask user if he wants to split the token into two
-                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split?"); 
+                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
                         
                         }
                         
