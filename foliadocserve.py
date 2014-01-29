@@ -329,7 +329,7 @@ def doannotation(doc, data):
                         target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
                         #we have a deletion
-                        replace = Class.findreplacables(target.parent, edit['set'])
+                        replace = Class.findreplaceables(target.parent, edit['set'])
                         if len(replace) == 1:
                             #good
                             target.remove(replace[0])
