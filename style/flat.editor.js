@@ -192,6 +192,7 @@ function showeditor(element) {
                     s = s + "</td></tr>";
                     editfields = editfields + 1;
                     editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
+                    if (annotation.type == 't') editdataitem.text = annotation.text;
                     if (annotation.id) editdataitem.id = annotation.id;
                     editdata.push(editdataitem);
                 }
@@ -234,7 +235,6 @@ function showeditor(element) {
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
                     if ($(this).val() != editdata[index].class) {
                         editdata[index].class = $(this).val();
-                        editdata[index].changed = true;
                         if (!$(this).hasClass("changed")) $(this).addClass("changed");
                     }
                 });
@@ -255,10 +255,12 @@ function showeditor(element) {
 
                 for (var i = 0; i < editfields;i++) { 
                     if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
+                        alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
                         editdata[i].class = $('#editfield' + i).val();
                         editdata[i].changed = true;
                     }
-                    if ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text)) {
+                    if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+                        alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
                         editdata[i].text = $('#editfield' + i + 'text').val();
                         editdata[i].changed = true;
                     }
@@ -268,7 +270,7 @@ function showeditor(element) {
                             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
                             editdata[i].correctionset = $('#editformcorrectionset').val(); 
                             if (!editdata[i].correctionclass) {
-                                alert("Error: An annotation was changed and submitted as correction, but no correction class was entered");
+                                alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                                 return false;
                             }
                         } else if ($('#editform' + i + 'alternative').attr('checked')) {

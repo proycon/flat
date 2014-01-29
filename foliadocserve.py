@@ -187,8 +187,10 @@ def getannotations(element):
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
+        #print("Parent of ", str(repr(element)), " is ", str(repr(p)),file=sys.stderr)
         while p and (not p.id or not isinstance(p, folia.AbstractStructureElement)):
             p = p.parent
+            #print("Not good enough, next parent is ", str(repr(p)),file=sys.stderr)
         if p:
             annotation['targets'] = [ p.id ]
         else:
@@ -231,7 +233,7 @@ def getsetdefinitions(doc):
 def doannotation(doc, data):
     response = {'returnelementid': None}
     changed = [] #changed elements
-    print("Received: ", repr(data),file=sys.stderr)
+    print("Received data for doannotation: ", repr(data),file=sys.stderr)
 
     if len(data['targets']) > 1:
         ancestors = []
@@ -297,8 +299,10 @@ def doannotation(doc, data):
                 return response
             elif edit['editform'] == 'correction':
                 if edit['text']:
+                    print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
                     target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                 else:
+                    print("Deletion as correction",str(repr(target)),file=sys.stderr)
                     #we have a deletion as a correction! This implies deletion of the entire structure element!
                     p = target.parent #word
                     while p and not isinstance(p, folia.AbstractStructureElement):
@@ -392,7 +396,8 @@ def doannotation(doc, data):
             response['error'] = "Unable to edit annotations of type " + Class.__name__
             return response
 
-
+    print("Return element: ", response['returnelementid'], file=sys.stderr)
+    print(doc[response['returnelementid']].xmlstring(),file=sys.stderr)
     return response
 
 
