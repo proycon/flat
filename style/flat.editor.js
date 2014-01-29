@@ -2,6 +2,7 @@ editoropen = false;
 coselector = false;
 editforms = {'direct': true, 'correction': false,'alternative': false} ;
 editform_correctionset = null;
+editedelementid = null;
 
 
 function toggleeditform(editform) {
@@ -131,9 +132,11 @@ function showeditor(element) {
 
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {            
+
             s = "";
             editoropen = true;
             sethover(element);
+            editedelementid = element.id;
             editfields = 0;
             editdata = [];
             edittargets = [];
@@ -376,19 +379,20 @@ function editor_oninit() {
         for (var i = 0; i < editfields;i++) { 
             if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
                 //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
-                editdata[i].class = $('#editfield' + i).val();
+                editdata[i].class = $('#editfield' + i).val().trim();
                 editdata[i].changed = true;
             }
             if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
                 //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
-                editdata[i].text = $('#editfield' + i + 'text').val();
+                editdata[i].oldtext = editdata[i].text;
+                editdata[i].text = $('#editfield' + i + 'text').val().trim();
                 editdata[i].changed = true;
             }
             if (editdata[i].changed) {
                 if ($('#editform' + i + 'correction').attr('checked')) {
                     editdata[i].editform = 'correction';
-                    editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val();
-                    editdata[i].correctionset = $('#editformcorrectionset').val(); 
+                    editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+                    editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
                     if (!editdata[i].correctionclass) {
                         alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                         return false;
@@ -397,6 +401,27 @@ function editor_oninit() {
                     editdata[i].editform = 'alternative';
                 } else {
                     editdata[i].editform = 'direct';
+                }
+                if (editdata[i].type == 't') {
+                    if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
+                        //there is a space in a token! This can mean a number
+                        //of things
+                        
+                        //Is the leftmost word the same as the original word?
+                        //Then the user want to do an insertion to the right?
+                        //if editdata[i].text.substr(
+                        
+                        
+                        //Is the leftmost word the same as the original word?
+                        //Then the user want to do an insertion to the right?
+                        
+                        //Words are different? than the user may want to split
+                        //the original token into new ones:
+                        //
+                        //ask user if he wants to split the token into two
+                       editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split?"); 
+
+                    }
                 }
             }
         }
@@ -431,7 +456,7 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'elementid': this.id, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username, 'sid': sid}),
+            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username, 'sid': sid}),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
