@@ -230,14 +230,14 @@ function showeditor(element) {
             //configure actions and events for edit fields
             for (var i = 0; i < editfields;i++){
                 $('select#editfield'+i).sortOptions();
-                $('#editfield'+i).change(function(){
+                /*$('#editfield'+i).change(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
                     if ($(this).val() != editdata[index].class) {
                         editdata[index].class = $(this).val();
                         if (!$(this).hasClass("changed")) $(this).addClass("changed");
                     }
-                });
+                });*/
                 /*$('#editordelete'+i).click(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editordelete" + i) { index = i; break; } }

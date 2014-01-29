@@ -248,6 +248,7 @@ def doannotation(doc, data):
 
         commonancestors = set.intersection(*ancestors)
         commonancestor = commonancestors[0]
+        print("Common ancestor as return element: ", commonancestor.id ,file=sys.stderr)
         response['returnelementid'] = commonancestor.id
     else:
         for targetid in data['targets']:
@@ -273,6 +274,9 @@ def doannotation(doc, data):
 
         if not 'set' in edit or edit['set'] == 'null':
             edit['set'] = 'undefined'
+
+        print("Processing edit: ", str(repr(edit)), file=sys.stderr )
+        print("Class=", Class.__name__, file=sys.stderr )
 
         if issubclass(Class, folia.TextContent):
             #Text Content, each target will get a copy
@@ -336,7 +340,8 @@ def doannotation(doc, data):
                 elif edit['editform'] == 'alternative':
                     target.append(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], alternative=True)
                 elif edit['editform'] == 'correction':
-                    target.correct(original=target, new=Class(doc, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                    print("Calling correct",file=sys.stderr)
+                    target.correct(new=Class(doc, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
 
         elif issubclass(Class, folia.AbstractSpanAnnotation):
