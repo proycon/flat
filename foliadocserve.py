@@ -298,6 +298,7 @@ def doannotation(doc, data):
                     #we have a text deletion! This implies deletion of the entire structure element!
                     target.parent.remove(target)
                     changed.append(target.parent)
+                    response['returnelementid'] = target.parent.id
             elif edit['editform'] == 'alternative':
                 response['error'] = "Can not add alternative text yet, not implemented"
                 return response
@@ -312,7 +313,7 @@ def doannotation(doc, data):
                     while p and not isinstance(p, folia.AbstractStructureElement):
                         p = p.parent
                     p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
-                    response['returnelement'] = p.id
+                    response['returnelementid'] = p.id
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
