@@ -252,7 +252,7 @@ def doannotation(doc, data):
 
 
     if 'elementid' in data:
-        ElementClass = folia.XML2CLASS[data['elementid']]
+        ElementClass = folia.XML2CLASS[data['elementid'].XMLTAG]
     else:
         ElementClass = None
 
