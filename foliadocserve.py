@@ -222,7 +222,6 @@ def getsetdefinitions(doc):
 
 def doannotation(doc, data):
     response = {'returnelementid': None}
-    changed = [] #changed elements
     print("Received data for doannotation: ", repr(data),file=sys.stderr)
 
     if len(data['targets']) > 1:
@@ -314,23 +313,23 @@ def doannotation(doc, data):
                         response['error'] = "Unable to find insertion index"
                         return response
 
+                    p = target.parent
                     index = -1
                     for i, w in enumerate(target.data):
                         if w is target:
                             index = i
                     if index > -1:
-                        target.parent.remove(target)
+                        p.remove(target)
 
                     for wordtext in reversed(edit['text'].split(' ')):
-                        target.parent.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
+                        p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
                 elif edit['text']:
                     target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
-                    changed.append(target)
                 else:
                     #we have a text deletion! This implies deletion of the entire structure element!
-                    target.parent.remove(target)
-                    changed.append(target.parent)
-                    response['returnelementid'] = target.parent.id
+                    p = target.parent
+                    p.remove(target)
+                    response['returnelementid'] = p.id
             elif edit['editform'] == 'alternative':
                 response['error'] = "Can not add alternative text yet, not implemented"
                 return response
@@ -385,7 +384,6 @@ def doannotation(doc, data):
                         elif len(replace) > 1:
                             response['error'] = "Unable to delete, multiple ambiguous candidates found!"
                             return response
-                    changed.append(target)
                 elif edit['editform'] == 'alternative':
                     target.append(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], alternative=True)
                 elif edit['editform'] == 'correction':
