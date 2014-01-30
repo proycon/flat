@@ -41,6 +41,10 @@ else:
     raise Exception("I don't know where I'm running from!")
 
 
+
+# Settings specific to FLAT
+
+#Editor modes the user can switch between
 EDITOR_MODES = {
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
@@ -48,6 +52,30 @@ EDITOR_MODES = {
 }
 
 DEFAULTMODE = 'editor'
+
+#The default annotation focus upon loading a document, set to None to start without a focus
+ANNOTATIONFOCUS = None
+
+#list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+SHOWANNOTATIONFOCUS = True
+
+#List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+ANNOTATIONDETAILS = True
+
+#list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
+SHOWANNOTATIONDETAILS = True
+
+
+
+
+
+#########################################
+
+
+
+
+
+
 
 
 
