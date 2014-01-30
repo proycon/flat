@@ -339,6 +339,9 @@ function editor_ontimer() {
 function editor_oninit() {
     viewer_oninit();
     $('#editordiscard').click(closeeditor);
+    $('#newdeclarationdiscard').click(function(){
+        $('#newdeclaration').hide();
+    });
     $('#editorselecttarget').click(function(){
         if (coselector) {
             coselector = false;
@@ -353,6 +356,14 @@ function editor_oninit() {
             closeeditor();
         }
     });
+
+    var s = "";
+    Object.keys(annotationtypenames).forEach(function(annotationtype){
+        s = s + "<option value=\"" + annotationtype + "\">" + annotationtypenames[annotationtype] + "</option>";
+    });
+    $('#newdeclarationannotationtype').html(s);
+
+
     $('#editoraddfield').click(function(){
         var index = $('#editoraddablefields').val();
         addeditorfield(index);

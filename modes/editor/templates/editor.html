@@ -59,6 +59,17 @@ Correction set: <select id="editformcorrectionset"></select>
         <button id="editorsubmit">Ok</button>
     </div>
 </div>
+<div id="newdeclaration" class="dialog">
+    <div id="newdeclarationheader">
+        <span>Declare New Annotation Type</span>
+        <button id="newdeclarationdiscard">x</button>
+    </div>
+    <label>Annotation Type:</label> <select id="newdeclarationannotationtype"></select><br />
+    <label>Set: </label> <input id="newdeclarationset" /> 
+    <div class="buttoncontainer">
+        <input id="newdeclarationsubmit" type="submit" value="Add declaration" />
+    </div>
+</div>
 {% endblock %}
 
 {% block main %}

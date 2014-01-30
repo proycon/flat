@@ -91,3 +91,29 @@ div#editformcorrectionsetselector {
 #editortargets label, #editortargetlist {
     display: none;
 }
+div#newdeclaration {
+    position: absolute;
+    display: none;
+    width: 480px;
+    padding: 10px;
+    background: #cdcdcd; 
+    color: #333;
+    border: #30677c 1px solid;
+    border-radius: 15px;
+    min-height: 100px;
+    text-align: left;
+}
+div#newdeclarationheader {
+    width:100%;
+    background: #30677c;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    margin-top: -3px;
+}
+div#newdeclaration button {
+    float: right;
+    margin-top: -5px;
+    background: #30677c;
+}
