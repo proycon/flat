@@ -340,16 +340,19 @@ def doannotation(doc, data):
                     for wordtext in reversed(edit['insertright'].split(' ')):
                         newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
                     target.parent.insertword(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                    response['returnelementid'] = target.parent.id
                 elif 'insertleft' in edit:
                     newwords = []
                     for wordtext in reversed(edit['insertright'].split(' ')):
                         newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
                     target.parent.insertwordleft(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                    response['returnelementid'] = target.parent.id
                 elif 'dosplit' in edit:
                     newwords = []
                     for wordtext in reversed(edit['text'].split(' ')):
                         newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
                     target.parent.splitword(target, *newwords, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                    response['returnelementid'] = target.parent.id
                 elif edit['text']:
                     print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
                     target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
