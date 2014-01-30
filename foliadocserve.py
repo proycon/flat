@@ -185,8 +185,6 @@ def getannotations(element):
         #print("Parent of ", str(repr(element)), " is ", str(repr(p)),file=sys.stderr)
         p = element.ancestor(folia.AbstractStructureElement)
         annotation['targets'] = [ p.id ]
-        else:
-            raise Exception("No parent found for " + element.__class__.__name__)
         assert isinstance(annotation, dict)
         yield annotation
     elif isinstance(element, folia.AbstractSpanAnnotation):
@@ -305,6 +303,8 @@ def doannotation(doc, data):
                         return response
 
                 elif 'dosplit' in edit:
+                    #TODO: implement
+                    pass
                 elif edit['text']:
                     target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     changed.append(target)
@@ -318,8 +318,14 @@ def doannotation(doc, data):
                 return response
             elif edit['editform'] == 'correction':
                 if 'insertright' in edit:
+                    #TODO :implement
+                    pass
                 elif 'insertleft' in edit:
+                    #TODO: implement
+                    pass
                 elif 'dosplit' in edit:
+                    #TODO: implement
+                    pass
                 elif edit['text']:
                     print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
                     target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
