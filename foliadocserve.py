@@ -275,61 +275,81 @@ def doannotation(doc, data):
         if issubclass(Class, folia.TextContent):
             #Text Content, each target will get a copy
             if len(data['targets']) > 1:
-                response['error'] = "Refusing to apply text change to multiple elements at once"
-                return response
-
-            try:
-                target = doc[data['targets'][0]]
-            except:
-                response['error'] = "Target element " + data['targets'][0] + " does not exist!"
-                return response
-
-            if edit['editform'] == 'direct':
-                if 'insertright' in edit:
-                    try:
-                        index = target.parent.data.index(target) + 1
-                    except ValueError:
-                        response['error'] = "Unable to find insertion index"
+                #more than one target, this implies a merge
+                targets = []
+                ancestor = None
+                for target in data['targets']:
+                    targets.append( doc[target] )
+                    if not ancestor:
+                        ancestor = doc[target].ancestor(folia.AbstractStructureElement)
+                        index = ancestor.data.index(doc[target])
+                    elif ancestor != doc[target].ancestor(folia.AbstractStructureElement):
+                        response['error'] = "Unable to merge words, they are not in the same structure element"
                         return response
 
-                    for wordtext in reversed(edit['insertright'].split(' ')):
-                        target.parent.insert(index, ElementClass(doc, wordtext ) )
-                    response['returnelementid'] = target.parent.id
-                elif 'insertleft' in edit:
-                    try:
-                        index = target.parent.data.index(target)
-                    except ValueError:
-                        response['error'] = "Unable to find insertion index"
-                        return response
+                if edit['editform'] == 'direct':
+                    #remove all targets and insert a new one in its place
+                    for target in targets:
+                        ancestor.remove(target)
+                    ancestor.insert(index, ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor ) )
+                elif edit['editform'] == 'correction':
+                    ancestor.mergewords(ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor), *targets, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
 
-                    for wordtext in reversed(edit['insertleft'].split(' ')):
-                        target.parent.insert(index, ElementClass(doc, wordtext ) )
-                    response['returnelementid'] = target.parent.id
+                response['returnelementid'] = ancestor.id
+            else:
 
-                elif 'dosplit' in edit:
-                    try:
-                        index = target.parent.data.index(target)
-                    except ValueError:
-                        response['error'] = "Unable to find insertion index"
-                        return response
+                try:
+                    target = doc[data['targets'][0]]
+                except:
+                    response['error'] = "Target element " + data['targets'][0] + " does not exist!"
+                    return response
 
-                    p = target.parent
-                    index = -1
-                    for i, w in enumerate(target.data):
-                        if w is target:
-                            index = i
-                    if index > -1:
+                if edit['editform'] == 'direct':
+                    if 'insertright' in edit:
+                        try:
+                            index = target.parent.data.index(target) + 1
+                        except ValueError:
+                            response['error'] = "Unable to find insertion index"
+                            return response
+
+                        for wordtext in reversed(edit['insertright'].split(' ')):
+                            target.parent.insert(index, ElementClass(doc, wordtext ) )
+                        response['returnelementid'] = target.parent.id
+                    elif 'insertleft' in edit:
+                        try:
+                            index = target.parent.data.index(target)
+                        except ValueError:
+                            response['error'] = "Unable to find insertion index"
+                            return response
+
+                        for wordtext in reversed(edit['insertleft'].split(' ')):
+                            target.parent.insert(index, ElementClass(doc, wordtext ) )
+                        response['returnelementid'] = target.parent.id
+
+                    elif 'dosplit' in edit:
+                        try:
+                            index = target.parent.data.index(target)
+                        except ValueError:
+                            response['error'] = "Unable to find insertion index"
+                            return response
+
+                        p = target.parent
+                        index = -1
+                        for i, w in enumerate(target.data):
+                            if w is target:
+                                index = i
+                        if index > -1:
+                            p.remove(target)
+
+                        for wordtext in reversed(edit['text'].split(' ')):
+                            p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
+                    elif edit['text']:
+                        target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
+                    else:
+                        #we have a text deletion! This implies deletion of the entire structure element!
+                        p = target.parent
                         p.remove(target)
-
-                    for wordtext in reversed(edit['text'].split(' ')):
-                        p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
-                elif edit['text']:
-                    target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
-                else:
-                    #we have a text deletion! This implies deletion of the entire structure element!
-                    p = target.parent
-                    p.remove(target)
-                    response['returnelementid'] = p.id
+                        response['returnelementid'] = p.id
             elif edit['editform'] == 'alternative':
                 response['error'] = "Can not add alternative text yet, not implemented"
                 return response
@@ -337,19 +357,19 @@ def doannotation(doc, data):
                 if 'insertright' in edit:
                     newwords = []
                     for wordtext in reversed(edit['insertright'].split(' ')):
-                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
+                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                     target.parent.insertword(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                     response['returnelementid'] = target.parent.id
                 elif 'insertleft' in edit:
                     newwords = []
                     for wordtext in reversed(edit['insertright'].split(' ')):
-                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
+                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                     target.parent.insertwordleft(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                     response['returnelementid'] = target.parent.id
                 elif 'dosplit' in edit:
                     newwords = []
                     for wordtext in reversed(edit['text'].split(' ')):
-                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
+                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                     target.parent.splitword(target, *newwords, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                     response['returnelementid'] = target.parent.id
                 elif edit['text']:
