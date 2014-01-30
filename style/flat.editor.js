@@ -353,6 +353,14 @@ function editor_oninit() {
             closeeditor();
         }
     });
+
+    var s = "";
+    Object.keys(annotationtypenames).forEach(function(annotationtype){
+        s = s + "<option value=\"" + annotationtype + "\">" + annotationtypenames[annotationtype] + "</option>";
+    });
+    $('#newdeclarationannotationtype').html(s);
+
+
     $('#editoraddfield').click(function(){
         var index = $('#editoraddablefields').val();
         addeditorfield(index);

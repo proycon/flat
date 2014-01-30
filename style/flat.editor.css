@@ -88,3 +88,6 @@ div#editformcorrectionsetselector {
     font-size: 9px;
     z-index: -100;
 }
+div#newdeclaration {
+    display: none;
+}
