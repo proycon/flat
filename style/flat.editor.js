@@ -339,6 +339,9 @@ function editor_ontimer() {
 function editor_oninit() {
     viewer_oninit();
     $('#editordiscard').click(closeeditor);
+    $('#newdeclarationdiscard').click(function(){
+        $('#newdeclaration').hide();
+    });
     $('#editorselecttarget').click(function(){
         if (coselector) {
             coselector = false;
