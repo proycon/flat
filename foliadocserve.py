@@ -295,16 +295,34 @@ def doannotation(doc, data):
 
                     for wordtext in reversed(edit['insertright'].split(' ')):
                         target.parent.insert(index, ElementClass(doc, wordtext ) )
+                    response['returnelementid'] = target.parent.id
                 elif 'insertleft' in edit:
                     try:
-                        index = target.parent.data.index(target) - 1
+                        index = target.parent.data.index(target)
                     except ValueError:
                         response['error'] = "Unable to find insertion index"
                         return response
 
+                    for wordtext in reversed(edit['insertleft'].split(' ')):
+                        target.parent.insert(index, ElementClass(doc, wordtext ) )
+                    response['returnelementid'] = target.parent.id
+
                 elif 'dosplit' in edit:
-                    #TODO: implement
-                    pass
+                    try:
+                        index = target.parent.data.index(target)
+                    except ValueError:
+                        response['error'] = "Unable to find insertion index"
+                        return response
+
+                    index = -1
+                    for i, w in enumerate(target.data):
+                        if w is target:
+                            index = i
+                    if index > -1:
+                        target.parent.remove(target)
+
+                    for wordtext in reversed(edit['text'].split(' ')):
+                        target.parent.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
                 elif edit['text']:
                     target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     changed.append(target)
@@ -318,14 +336,20 @@ def doannotation(doc, data):
                 return response
             elif edit['editform'] == 'correction':
                 if 'insertright' in edit:
-                    #TODO :implement
-                    pass
+                    newwords = []
+                    for wordtext in reversed(edit['insertright'].split(' ')):
+                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
+                    target.parent.insertword(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                 elif 'insertleft' in edit:
-                    #TODO: implement
-                    pass
+                    newwords = []
+                    for wordtext in reversed(edit['insertright'].split(' ')):
+                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
+                    target.parent.insertwordleft(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                 elif 'dosplit' in edit:
-                    #TODO: implement
-                    pass
+                    newwords = []
+                    for wordtext in reversed(edit['text'].split(' ')):
+                        newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']) ) )
+                    target.parent.splitword(target, *newwords, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                 elif edit['text']:
                     print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
                     target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
@@ -351,7 +375,7 @@ def doannotation(doc, data):
                         target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
                         #we have a deletion
-                        replace = Class.findreplaceables(target.parent, edit['set'])
+                        replace = Class.findreplaceables(target, edit['set'])
                         if len(replace) == 1:
                             #good
                             target.remove(replace[0])
