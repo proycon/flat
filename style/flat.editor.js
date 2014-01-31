@@ -491,4 +491,8 @@ function editor_oninit() {
             dataType: "json"
         });
     });
+
+    $('#newdeclarationsubmit').click(function(){
+
+    });
 }

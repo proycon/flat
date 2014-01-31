@@ -585,6 +585,19 @@ class Root:
 
 
 
+    @cherrypy.expose
+    def declare(self, namespace, docid, sid):
+        cl = cherrypy.request.headers['Content-Length']
+        rawbody = cherrypy.request.body.read(int(cl))
+        data = json.loads(str(rawbody,'utf-8'))
+        print("Declaration - Renewing session " + sid + " for " + "/".join((namespace,docid)),file=sys.stderr)
+        self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+        doc = self.docstore[(namespace,docid)]
+        Class = folia.XML2CLASS[data['annotationtype']]
+        doc.declare(Class, set=data['set'])
+        return json.dumps({
+                'declarations': tuple(getdeclarations(self.docstore[(namespace,docid)])),
+        })
 
 
 
