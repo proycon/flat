@@ -190,3 +190,7 @@ nav ul ul li.on {
     left: 0px;
     top: 0px;
 }
+#doclist span {
+    font-size: 8px;
+    font-family: monospace;
+}

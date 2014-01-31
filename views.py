@@ -1,6 +1,7 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse,HttpResponseForbidden
 import django.contrib.auth
 import flat.settings as settings
 import flat.comm
@@ -55,5 +56,8 @@ def index(request):
 
     return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
-
+@login_required
+def download(request, namespace, docid):
+    data = flat.comm.get(request, '/getdocxml/' +namespace + '/' + docid + '/',False)
+    return HttpResponse(data, mimetype='text/xml')
 

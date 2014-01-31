@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^$', 'flat.views.index', name='index'),
     url(r'^login/?$', 'flat.views.login', name='login'),
     url(r'^logout/?$', 'flat.views.logout', name='logout'),
+    url(r'^download/(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/?$', 'flat.views.download', name='download'),
     # url(r'^flat/', include('flat.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
