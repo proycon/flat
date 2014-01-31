@@ -334,12 +334,7 @@ function viewer_ontimer() {
 
 }
 
-function viewer_oninit() {
-    $('#document').mouseleave( function(e) {
-        $('#info').hide();
-    });  
-    setview(view);
-    setannotationfocus(annotationfocus);
+function viewer_loadmenus() {
     s = "";
     s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
     Object.keys(declarations).forEach(function(annotationtype){
@@ -352,6 +347,15 @@ function viewer_oninit() {
     });
     $('#annotationsviewmenu').html(s);
     $('#annotationsfocusmenu').html(s2);
+}
+
+function viewer_oninit() {
+    $('#document').mouseleave( function(e) {
+        $('#info').hide();
+    });  
+    setview(view);
+    setannotationfocus(annotationfocus);
+    viewer_loadmenus();
     //if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
 }

@@ -31,5 +31,11 @@ def annotate(request,namespace, docid):
         return HttpResponseForbidden("Permission denied, no write access")
 
 
-
+@login_required
+def declare(request,namespace, docid):
+    if flat.users.models.haswritepermission(request.user.username, namespace):
+        d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
+        return HttpResponse(json.dumps(d), mimetype='application/json')
+    else:
+        return HttpResponseForbidden("Permission denied, no write access")
 

@@ -385,6 +385,7 @@ function editor_oninit() {
     });
     $('#editformcorrectionset').html(s);
     if (editforms.correction) $('#editformcorrectionsetselector').show();
+
     $('#editorsubmit').click(function(){
 
         for (var i = 0; i < editfields;i++) { 
@@ -493,6 +494,28 @@ function editor_oninit() {
     });
 
     $('#newdeclarationsubmit').click(function(){
+        $('#wait').show();
+        $.ajax({
+            type: 'POST',
+            url: "/editor/" + namespace + "/"+ docid + "/declare/",
+            contentType: "application/json",
+            //processData: false,
+            data: JSON.stringify( { 'annotationtype': $('#newdeclarationannotationtype').val(), 'set': $('#newdeclarationset').val() }),
+            success: function(data) {
+                if (data.error) {
+                    $('#wait').hide();
+                    alert("Received error from document server: " + data.error);
+                } else {
+                    loaddeclarations(data['declarations']);
+                    viewer_loadmenus();
+                }
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                alert("Declaration failed: " + req + " " + err + " " + exception);
+            },
+            dataType: "json"
+        });
 
     });
 }
