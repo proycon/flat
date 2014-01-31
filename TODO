@@ -2,7 +2,6 @@
 - Annotationtype correction should have no effect on editor
 - Multiple corrections on text goes wrong?
 - 2nd order corrections
-- Implement declare
 - Adding namespaces
 - Download option in my documents
 - Merges

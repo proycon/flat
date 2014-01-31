@@ -146,12 +146,14 @@ function showeditor(element) {
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
                 var ok = true;
-                if ((annotationfocus) && ((annotationfocus.type != annotation.type) || (annotationfocus.set != annotation.set))) {
-                    ok = false;;
-                } else if (annotationfocus) {
-                    annotationfocusfound = true;
+                if ((annotationfocus) && (annotationfocus.type != "correction")) {
+                    if ((annotationfocus) && ((annotationfocus.type != annotation.type) || (annotationfocus.set != annotation.set))) {
+                        ok = false;
+                    } else if (annotationfocus) {
+                        annotationfocusfound = true;
+                    }
+                    ok = ok && ((annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set]));
                 }
-                ok = ok && ((annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set]));
                 if (ok) {
                     label = getannotationtypename(annotation.type);
                     if (annotation.set) {
