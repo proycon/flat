@@ -102,6 +102,7 @@ div#newdeclaration {
     border-radius: 15px;
     min-height: 100px;
     text-align: left;
+    left: 30%;
 }
 div#newdeclarationheader {
     width:100%;

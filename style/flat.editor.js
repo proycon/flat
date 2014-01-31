@@ -336,6 +336,11 @@ function editor_ontimer() {
     viewer_ontimer();
 }
 
+
+function declare() {
+    $('#newdeclaration').show();
+}
+
 function editor_oninit() {
     viewer_oninit();
     $('#editordiscard').click(closeeditor);
@@ -500,7 +505,7 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/declare/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'annotationtype': $('#newdeclarationannotationtype').val(), 'set': $('#newdeclarationset').val() }),
+            data: JSON.stringify( { 'annotationtype': $('#newdeclarationannotationtype').val(), 'set': $('#newdeclarationset').val(),'sid': sid }),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -508,6 +513,7 @@ function editor_oninit() {
                 } else {
                     loaddeclarations(data['declarations']);
                     viewer_loadmenus();
+                    $('#wait').hide();
                 }
             },
             error: function(req,err,exception) { 
