@@ -4,12 +4,15 @@ from urllib2 import urlopen, Request
 import flat.settings as settings
 import json
 
-def get( request, url):
+def get( request, url, usesid=True):
     if 'sid' in request.GET:
         sid = request.session.session_key + '_' + request.GET['sid']
-    else:
+    elif usesid:
         sid = request.session.session_key + '_NOSID'
-    f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + "/" + sid) #or opener.open()
+    if usesid:
+        f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + "/" + sid) #or opener.open()
+    else:
+        f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
     contents = f.read()
     f.close()
     if contents and contents[0] == '{':

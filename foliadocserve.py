@@ -483,7 +483,10 @@ class Root:
     @cherrypy.expose
     def makenamespace(self, namespace):
         namepace = namespace.replace('/','').replace('..','')
-        os.mkdir(self.workdir + '/' + namespace)
+        try:
+            os.mkdir(self.workdir + '/' + namespace)
+        except FileExistsError:
+            pass
         cherrypy.response.headers['Content-Type']= 'text/plain'
         return "ok"
 
@@ -601,7 +604,19 @@ class Root:
 
 
 
-    #UNUSED:
+    @cherrypy.expose
+    def getnamespaces(self):
+        namespaces = [ x for x in os.listdir(self.docstore.workdir) ]
+        return json.dumps({
+                'namespaces': namespaces
+        })
+
+    @cherrypy.expose
+    def getdocuments(self, namespace):
+        namepace = namespace.replace('/','').replace('..','')
+        return json.dumps({
+                'documents': [ x for x in os.listdir(self.docstore.workdir + "/" + namespace) if x[-10:] == ".folia.xml" ]
+        })
 
 
     @cherrypy.expose

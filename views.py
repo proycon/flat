@@ -5,8 +5,8 @@ import django.contrib.auth
 import flat.settings as settings
 import flat.comm
 import flat.users
-import glob
 import os
+import sys
 
 
 def login(request):
@@ -40,17 +40,18 @@ def logout(request):
 
 @login_required
 def index(request):
-    if os.path.isdir(settings.WORKDIR + "/" + request.user.username):
-        docs = {}
-        for namespace in os.listdir(settings.WORKDIR):
-            if flat.users.models.hasreadpermission(request.user.username, namespace):
-                docs[namespace] = []
-                for filename in glob.glob(settings.WORKDIR + "/" + namespace + "/*.folia.xml"):
-                    docid =  os.path.basename(filename.replace('.folia.xml',''))
-                    docs[namespace].append(docid)
-    else:
-        docs = []
-        flat.comm.get(request, "makenamespace/" + namespace)
+    docs = {}
+    namespaces = flat.comm.get(request, '/getnamespaces/', False)
+    print(repr(namespaces),file=sys.stderr)
+    if not request.user.username in namespaces['namespaces']:
+        flat.comm.get(request, "makenamespace/" + request.user.username, False)
+    for namespace in namespaces['namespaces']:
+        if flat.users.models.hasreadpermission(request.user.username, namespace):
+            docfiles = flat.comm.get(request, '/getdocuments/' + namespace, False)
+            docs[namespace] = []
+            for d in docfiles['documents']:
+                docid =  os.path.basename(d.replace('.folia.xml',''))
+                docs[namespace].append(docid)
 
     return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username})
 
