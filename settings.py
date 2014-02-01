@@ -53,19 +53,32 @@ EDITOR_MODES = {
 
 DEFAULTMODE = 'editor'
 
-#The default annotation focus upon loading a document, set to None to start without a focus
-ANNOTATIONFOCUS = None
+CONFIGURATIONS = {
+'full':{
+    'NAME': "Full Editor",
+    #The default annotation focus upon loading a document, set to None to start without a focus
+    'ANNOTATIONFOCUS': None,
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+    'SHOWANNOTATIONFOCUS': True,
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'ANNOTATIONDETAILS': True,
+    #list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
+    'SHOWANNOTATIONDETAILS': True
+},
+'valkuileval':{
+    'NAME': "Valkuil Evaluation Project",
+    #The default annotation focus upon loading a document, set to None to start without a focus
+    'ANNOTATIONFOCUS': None,
 
-#list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
-SHOWANNOTATIONFOCUS = True
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+    'SHOWANNOTATIONFOCUS': True,
 
-#List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-ANNOTATIONDETAILS = True
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'ANNOTATIONDETAILS': True,
 
-#list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
-SHOWANNOTATIONDETAILS = True
-
-
+    #list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
+    'SHOWANNOTATIONDETAILS': True
+}}
 
 
 

@@ -1,19 +1,18 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse,HttpResponseForbidden
+from django.http import HttpResponse
 import django.contrib.auth
 import flat.settings as settings
 import flat.comm
 import flat.users
 import os
-import sys
-
 
 def login(request):
     if 'username' in request.POST and 'password' in request.POST:
         username = request.POST['username']
         password = request.POST['password']
+        request.session['configuration'] = request.POST['configuration']
         user = django.contrib.auth.authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
@@ -36,6 +35,8 @@ def login(request):
 
 
 def logout(request):
+    if 'configuration' in request.session:
+        del request.session['configuration']
     django.contrib.auth.logout(request)
     return redirect("/login")
 
@@ -43,7 +44,6 @@ def logout(request):
 def index(request):
     docs = {}
     namespaces = flat.comm.get(request, '/getnamespaces/', False)
-    print(repr(namespaces),file=sys.stderr)
     if not request.user.username in namespaces['namespaces']:
         flat.comm.get(request, "makenamespace/" + request.user.username, False)
     for namespace in namespaces['namespaces']:
