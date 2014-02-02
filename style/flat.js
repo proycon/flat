@@ -120,6 +120,8 @@ function loadannotations(annotationlist) {
                         if ((annotations[target][annotationid].type == annotation.suggestions[0].type) && (annotations[target][annotationid].set == annotation.suggestions[0].set)) {
                             if (!annotations[target][annotationid].incorrection) {
                                 annotations[target][annotationid].incorrection = [annotation.id];
+                            } else {
+                                annotations[target][annotationid].incorrection.push(annotation.id);
                             }
                         }
                     }

@@ -63,7 +63,7 @@ CONFIGURATIONS = {
     'showannotationfocus': True,
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'annotationdetails': True,
-    #list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
+    #list of FoLiA annotation types (xml tags) that are  allowed as annotation details, set to True to allow all
     'showannotationdetails': True,
     'allowaddfields': True, #boolean
     'allowdeclare': True, #boolean
@@ -84,7 +84,7 @@ CONFIGURATIONS = {
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'annotationdetails': True,
 
-    #list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
+    #list of FoLiA annotation types (xml tags) that are allowed as annotation details, set to True to allow all
     'showannotationdetails': True,
     'allowaddfields': False, #boolean
     'allowdeclare': False, #boolean
