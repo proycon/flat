@@ -247,7 +247,7 @@ def doannotation(doc, data):
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
             ancestors = list( ( x.id for x in target.ancestors() if isinstance(x,folia.AbstractStructureElement) and x.id ) )
-            if ancestors_intersection is None:
+            if commonancestors is None:
                 commonancestors = copy(ancestors)
             else:
                 removeancestors = []
