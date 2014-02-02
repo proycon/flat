@@ -108,13 +108,13 @@ def gethtml(element):
                 s += gethtml(child)
         if not isinstance(element, folia.Text) and not isinstance(element, folia.Division):
             try:
-                label = "<span class=\"lbl\">" + element.text() + " </span>"
+                label = "<span class=\"lbl\">" + element.text() + "</span>"
             except folia.NoSuchText:
                 label = "<span class=\"lbl\"></span>"
         else:
             label = ""
         if isinstance(element, folia.Word) and element.space:
-            label += "&nbsp;"
+            label += " "
 
         if not element.id:
             element.id = element.doc.id + "." + element.XMLTAG + ".id" + str(random.randint(1000,999999999))
