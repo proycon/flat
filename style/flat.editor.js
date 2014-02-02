@@ -147,16 +147,12 @@ function showeditor(element) {
             var editformcount = 0;
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
-                var ok = true;
-                if ((annotationfocus) && (annotationfocus.type != "correction")) {
-                    if ((annotationfocus) && ((annotationfocus.type != annotation.type) || (annotationfocus.set != annotation.set))) {
-                        ok = false;
-                    } else if (annotationfocus) {
+                if (annotationfocus) {
+                    if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         annotationfocusfound = true;
                     }
-                    ok = ok && ((annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set]));
                 }
-                if (annotation.type == "correction") ok = false;
+                var ok = ((annotation.type != "correction") && (annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set]));
                 if (ok) {
                     label = getannotationtypename(annotation.type);
                     if (annotation.set) {
