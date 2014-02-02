@@ -246,12 +246,12 @@ def doannotation(doc, data):
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
 
-            ancestors.append( set( ( x for x in target.ancestors() if isinstance(x,folia.AbstractStructureAnnotation) and x.id ) ) )
+            ancestors.append( set( ( x.id for x in target.ancestors() if isinstance(x,folia.AbstractStructureElement) and x.id ) ) )
 
         commonancestors = set.intersection(*ancestors)
         commonancestor = commonancestors[0]
-        print("Common ancestor as return element: ", commonancestor.id ,file=sys.stderr)
-        response['returnelementid'] = commonancestor.id
+        print("Common ancestor as return element: ", commonancestor ,file=sys.stderr)
+        response['returnelementid'] = commonancestor
     else:
         for targetid in data['targets']:
             try:
@@ -377,7 +377,7 @@ def doannotation(doc, data):
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
                         newwords = []
-                        for wordtext in edit['insertright'].split(' '):
+                        for wordtext in edit['insertleft'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
@@ -446,11 +446,11 @@ def doannotation(doc, data):
                 #this is a new span annotation
 
                 #find common ancestor of all targets
-                layers = commonancestor.layers(annotationtype, edit['set'])
+                layers = doc[commonancestor].layers(annotationtype, edit['set'])
                 if len(layers) >= 1:
                     layer = layers[0]
                 else:
-                    layer = commonancestor.append(folia.ANNOTATIONTYPE2LAYERCLASS[annotationtype])
+                    layer = doc[commonancestor].append(folia.ANNOTATIONTYPE2LAYERCLASS[annotationtype])
 
                 layer.append(Class, *targets, set=edit['set'], cls=edit['cls'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
