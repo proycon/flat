@@ -80,6 +80,8 @@ function setaddablefields() {
         } else {
             $("#editoraddfields").hide();
         }
+    } else {
+            $("#editoraddfields").hide();
     }
 }
 
