@@ -339,6 +339,9 @@ function editor_ontimer() {
     viewer_ontimer();
 }
 
+function editor_onupdate() {
+    viewer_onupdate();
+}
 
 function declare() {
     $('#newdeclaration').show();

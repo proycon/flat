@@ -326,7 +326,7 @@ def doannotation(doc, data):
                             return response
 
                         for wordtext in reversed(edit['insertright'].split(' ')):
-                            target.parent.insert(index, ElementClass(doc, wordtext ) )
+                            target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
                         try:
@@ -336,7 +336,7 @@ def doannotation(doc, data):
                             return response
 
                         for wordtext in reversed(edit['insertleft'].split(' ')):
-                            target.parent.insert(index, ElementClass(doc, wordtext ) )
+                            target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
                         response['returnelementid'] = target.parent.id
 
                     elif 'dosplit' in edit:
@@ -355,7 +355,7 @@ def doannotation(doc, data):
                             p.remove(target)
 
                         for wordtext in reversed(edit['text'].split(' ')):
-                            p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
+                            p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ), generate_id_in=p ) )
 
                         response['returnelementid'] = p.id
                     elif edit['text']:
@@ -371,19 +371,19 @@ def doannotation(doc, data):
                 elif edit['editform'] == 'correction':
                     if 'insertright' in edit:
                         newwords = []
-                        for wordtext in reversed(edit['insertright'].split(' ')):
+                        for wordtext in edit['insertright'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
                         newwords = []
-                        for wordtext in reversed(edit['insertright'].split(' ')):
+                        for wordtext in edit['insertright'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'dosplit' in edit:
                         newwords = []
-                        for wordtext in reversed(edit['text'].split(' ')):
+                        for wordtext in edit['text'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
@@ -537,13 +537,16 @@ class Root:
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
-        #set concurrency:
-        for s in self.docstore.updateq[(namespace,docid)]:
-            if s != sid:
-                print("Scheduling update for " + s,file=sys.stderr)
-                self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
         doc.save()
-        return self.getelement(namespace,docid, response['returnelementid'],sid);
+        if 'returnelementid' in response:
+            #set concurrency:
+            for s in self.docstore.updateq[(namespace,docid)]:
+                if s != sid:
+                    print("Scheduling update for " + s,file=sys.stderr)
+                    self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
+            return self.getelement(namespace,docid, response['returnelementid'],sid);
+        else:
+            return self.getelement(namespace,docid, doc.data[0].id,sid) #return all
 
 
     def checkexpireconcurrency(self):
@@ -584,6 +587,7 @@ class Root:
             if elementid:
                 print("Request element: ", elementid,file=sys.stderr)
                 return json.dumps({
+                    'elementid': elementid,
                     'html': gethtml(self.docstore[(namespace,docid)][elementid]),
                     'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
                 }).encode('utf-8')

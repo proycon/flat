@@ -45,11 +45,11 @@ else:
 # Settings specific to FLAT
 
 #Editor modes the user can switch between
-EDITOR_MODES = {
+EDITOR_MODES = [
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
     ('structureeditor','Structure Editor'),
-}
+]
 
 DEFAULTMODE = 'editor'
 

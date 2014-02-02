@@ -320,6 +320,11 @@ function viewer_onloadannotations(annotationlist) {
     }
 }
 
+
+function viewer_onupdate() {
+    setview(view);
+}
+
 function viewer_ontimer() {
     $.ajax({
         type: 'GET',

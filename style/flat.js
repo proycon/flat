@@ -155,6 +155,10 @@ function update(data) {
     //partial update
     if ((data.html) && (data.elementid)) { 
         $('#' + valid(data.elementid))[0].outerHTML = data.html;
+        //$('#' + valid(data.elementid)).attr('id',"replacing");
+        //$('#replacing').html("...");
+        //$('#replacing').after(data.html);
+        //$('#replacing').remove();
     }
     if (data.annotations) {
         loadtext(data.annotations);
