@@ -222,7 +222,7 @@ def getdeclarations(doc):
         except KeyError:
             pass
         #if (issubclass(C, folia.AbstractAnnotation) or C is folia.TextContent or C is folia.Correction) and not (issubclass(C, folia.AbstractTextMarkup)): #rules out structure elements for now
-        if not issubclass(C, folia.AbstractTextMarkup):
+        if not issubclass(C, folia.AbstractTextMarkup) and annotationtype in folia.ANNOTATIONTYPE2XML:
             annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
             yield {'annotationtype': annotationtype, 'set': set}
 
