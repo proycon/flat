@@ -10,6 +10,7 @@ import json
 import random
 import datetime
 import time
+from copy import copy
 from collections import defaultdict
 from pynlpl.formats import folia
 
@@ -238,20 +239,27 @@ def doannotation(doc, data):
     print("Received data for doannotation: ", repr(data),file=sys.stderr)
 
     if len(data['targets']) > 1:
-        ancestors = []
+        commonancestors = None
         for targetid in data['targets']:
             try:
                 target = doc[targetid]
             except:
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
-
-            ancestors.append( set( ( x.id for x in target.ancestors() if isinstance(x,folia.AbstractStructureElement) and x.id ) ) )
-
-        commonancestors = set.intersection(*ancestors)
-        commonancestor = commonancestors[0]
-        print("Common ancestor as return element: ", commonancestor ,file=sys.stderr)
-        response['returnelementid'] = commonancestor
+            ancestors = list( ( x.id for x in target.ancestors() if isinstance(x,folia.AbstractStructureElement) and x.id ) )
+            if ancestors_intersection is None:
+                commonancestors = copy(ancestors)
+            else:
+                removeancestors = []
+                for a in commonancestors:
+                    if not (a in ancestors):
+                        removeancestors.append(a)
+                for a in removeancestors:
+                    commonancestors.remove(a)
+        if commonancestors:
+            commonancestor = commonancestors[0]
+            print("Common ancestor as return element: ", commonancestor ,file=sys.stderr)
+            response['returnelementid'] = commonancestor
     else:
         for targetid in data['targets']:
             try:
