@@ -403,56 +403,58 @@ function editor_oninit() {
     $('#editorsubmit').click(function(){
 
         for (var i = 0; i < editfields;i++) { 
-            if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
-                //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
-                editdata[i].class = $('#editfield' + i).val().trim();
-                editdata[i].changed = true;
-            }
-            if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
-                //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
-                editdata[i].oldtext = editdata[i].text;
-                editdata[i].text = $('#editfield' + i + 'text').val().trim();
-                editdata[i].changed = true;
-            }
-            if (editdata[i].changed) {
-                if ($('#editform' + i + 'correction').attr('checked')) {
-                    editdata[i].editform = 'correction';
-                    editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
-                    editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
-                    if (!editdata[i].correctionclass) {
-                        alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                        return false;
-                    }
-                } else if ($('#editform' + i + 'alternative').attr('checked')) {
-                    editdata[i].editform = 'alternative';
-                } else {
-                    editdata[i].editform = 'direct';
+            if (editdata[i].type != "correction") { //corrections don't show directly
+                if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
+                    //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
+                    editdata[i].class = $('#editfield' + i).val().trim();
+                    editdata[i].changed = true;
                 }
-                if (editdata[i].type == 't') {
-                    if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
-                        //there is a space in a token! This can mean a number
-                        //of things
-                        
-                        //Is the leftmost word the same as the original word?
-                        //Then the user want to do an insertion to the right
-                        if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
-                            editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
-                            editdata[i].text = editdata[i].oldtext;
-                        //Is the rightmost word the same as the original word?
-                        //Then the user want to do an insertion to the left
-                        } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
-                            editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].oldtext.length - 1);
-                            editdata[i].text = editdata[i].oldtext;
-                        } else {
-                            //Words are different? than the user may want to split
-                            //the original token into new ones:
-                            //
-                            //ask user if he wants to split the token into two
-                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
-                        
+                if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+                    //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
+                    editdata[i].oldtext = editdata[i].text;
+                    editdata[i].text = $('#editfield' + i + 'text').val().trim();
+                    editdata[i].changed = true;
+                }
+                if (editdata[i].changed) {
+                    if ($('#editform' + i + 'correction').attr('checked')) {
+                        editdata[i].editform = 'correction';
+                        editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+                        editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
+                        if (!editdata[i].correctionclass) {
+                            alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
+                            return false;
                         }
-                        
+                    } else if ($('#editform' + i + 'alternative').attr('checked')) {
+                        editdata[i].editform = 'alternative';
+                    } else {
+                        editdata[i].editform = 'direct';
+                    }
+                    if (editdata[i].type == 't') {
+                        if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
+                            //there is a space in a token! This can mean a number
+                            //of things
+                            
+                            //Is the leftmost word the same as the original word?
+                            //Then the user want to do an insertion to the right
+                            if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
+                                editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
+                                editdata[i].text = editdata[i].oldtext;
+                            //Is the rightmost word the same as the original word?
+                            //Then the user want to do an insertion to the left
+                            } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
+                                editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].oldtext.length - 1);
+                                editdata[i].text = editdata[i].oldtext;
+                            } else {
+                                //Words are different? than the user may want to split
+                                //the original token into new ones:
+                                //
+                                //ask user if he wants to split the token into two
+                                editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
+                            
+                            }
+                            
 
+                        }
                     }
                 }
             }
