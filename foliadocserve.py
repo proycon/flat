@@ -96,6 +96,10 @@ def gethtml(element):
             for child in element.new():
                 if isinstance(child, folia.AbstractStructureElement) or isinstance(child, folia.Correction):
                     s += gethtml(child)
+        elif element.hascurrent():
+            for child in element.current():
+                if isinstance(child, folia.AbstractStructureElement) or isinstance(child, folia.Correction):
+                    s += gethtml(child)
         return s
     elif isinstance(element, folia.AbstractStructureElement):
         s = ""
@@ -146,6 +150,7 @@ def getannotations(element):
             hash = random.getrandbits(128)
             element.id = element.doc.id + ".correction.%032x" % hash
         correction_new = []
+        correction_current = []
         correction_original = []
         correction_suggestions = []
         if element.hasnew():
@@ -154,6 +159,13 @@ def getannotations(element):
                     if not 'incorrection' in y: y['incorrection'] = []
                     y['incorrection'].append(element.id)
                     correction_new.append(y)
+                    yield y #yield as any other
+        if element.hascurrent():
+            for x in element.current():
+                for y in  getannotations(x):
+                    if not 'incorrection' in y: y['incorrection'] = []
+                    y['incorrection'].append(element.id)
+                    correction_current.append(y)
                     yield y #yield as any other
         if element.hasoriginal():
             for x in element.original():
@@ -169,7 +181,7 @@ def getannotations(element):
                     if not 'incorrection' in y: y['incorrection'] = []
                     y['incorrection'].append(element.id)
                     correction_suggestions.append(y)
-        annotation = {'id': element.id ,'set': element.set, 'class': element.cls, 'type': 'correction', 'new': correction_new, 'original': correction_original, 'suggestions': correction_suggestions}
+        annotation = {'id': element.id ,'set': element.set, 'class': element.cls, 'type': 'correction', 'new': correction_new,'current': correction_current, 'original': correction_original, 'suggestions': correction_suggestions}
         if element.annotator:
             annotation['annotator'] = element.annotator
         if element.annotatortype == folia.AnnotatorType.AUTO:
