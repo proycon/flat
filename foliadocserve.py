@@ -303,7 +303,7 @@ def doannotation(doc, data):
                     targets.append( doc[target] )
                     if not ancestor:
                         ancestor = doc[target].ancestor(folia.AbstractStructureElement)
-                        index = ancestor.data.index(doc[target])
+                        index = ancestor.data.index(doc[target]) #TODO, can't find if already part of a correction
                     elif ancestor != doc[target].ancestor(folia.AbstractStructureElement):
                         response['error'] = "Unable to merge words, they are not in the same structure element"
                         return response
