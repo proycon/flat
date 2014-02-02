@@ -168,7 +168,7 @@ function update(data) {
         //reregister handlers
         $('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
     }
-    if (function_exists(mode + 'onupdate')) {
+    if (function_exists(mode + '_onupdate')) {
         f = eval(mode + '_onupdate');
         f(data);
     }
