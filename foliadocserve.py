@@ -356,6 +356,8 @@ def doannotation(doc, data):
 
                         for wordtext in reversed(edit['text'].split(' ')):
                             p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ) ) )
+
+                        response['returnelementid'] = p.id
                     elif edit['text']:
                         target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
@@ -371,19 +373,19 @@ def doannotation(doc, data):
                         newwords = []
                         for wordtext in reversed(edit['insertright'].split(' ')):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
-                        target.parent.insertword(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                        target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
                         newwords = []
                         for wordtext in reversed(edit['insertright'].split(' ')):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
-                        target.parent.insertwordleft(newwords, target, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                        target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'dosplit' in edit:
                         newwords = []
                         for wordtext in reversed(edit['text'].split(' ')):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
-                        target.parent.splitword(target, *newwords, set=data['correctionset'], cls="split", annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                        target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif edit['text']:
                         print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
@@ -392,7 +394,7 @@ def doannotation(doc, data):
                         print("Deletion as correction",str(repr(target)),file=sys.stderr)
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
-                        p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
+                        p.deleteword(target,set=edit['correctionset'], cls=data['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
                         response['returnelementid'] = p.id
 
 
@@ -482,8 +484,11 @@ def doannotation(doc, data):
             return response
 
     print("Return element: ", response['returnelementid'], file=sys.stderr)
-    print(doc[response['returnelementid']].xmlstring(),file=sys.stderr)
-    return response
+    if response['returnelementid']:
+        print(doc[response['returnelementid']].xmlstring(),file=sys.stderr)
+        return response
+    else:
+        return {}
 
 
 
