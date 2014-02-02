@@ -524,6 +524,7 @@ class Root:
             if s != sid:
                 print("Scheduling update for " + s,file=sys.stderr)
                 self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
+        doc.save()
         return self.getelement(namespace,docid, response['returnelementid'],sid);
 
 

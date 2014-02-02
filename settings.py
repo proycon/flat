@@ -73,7 +73,7 @@ CONFIGURATIONS = {
 
 },
 'valkuileval':{
-    'NAME': "Valkuil Evaluation Project",
+    'name': "Valkuil Evaluation Project",
     #The default annotation focus upon loading a document, set to None to start without a focus
     'annotationfocustype': None,
     'annotationfocusset': None,

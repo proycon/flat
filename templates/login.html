@@ -10,8 +10,8 @@
     <label>Username:</label> <input name="username" /><br />
     <label>Password:</label> <input type="password" name="password" /><br/>
     <label>Configuration:</label> <select name="configuration">
-        {% for conf, confname in configurations %}
-            <option value="{{ conf }}">{{ confname }}</option>
+        {% for confname, conf in configurations.items %}
+        <option value="{{ confname }}">{{ conf.name }}</option>
         {% endfor %}
     </select></br>
     <div class="buttoncontainer">
