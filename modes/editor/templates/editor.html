@@ -17,13 +17,13 @@ editforms['{{ editform }}'] = true;
 {% include "viewermenu.html" %}
 <li>Edit Forms
 <ul id="editforms">
-    {% if configuration.items.editformdirect %}
+    {% if configuration.alloweditformdirect %}
     <li id="editformdirect"><a href="javascript:toggleeditform('direct')">Direct Edit</a></li>
     {% endif %}
-    {% if configuration.items.editformcorrection %}
+    {% if configuration.alloweditformcorrection %}
     <li id="editformcorrection"><a href="javascript:toggleeditform('correction')">Edit as correction</a></li>
     {% endif %}
-    {% if configuration.items.editformalternative %}
+    {% if configuration.alloweditformalternative %}
     <li id="editformalternative"><a href="javascript:toggleeditform('alternative')">Edit as alternative</a></li>
     {% endif %}
 </ul>

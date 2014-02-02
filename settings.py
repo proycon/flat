@@ -68,8 +68,11 @@ CONFIGURATIONS = {
     'allowaddfields': True, #boolean
     'allowdeclare': True, #boolean
     'editformdirect': True, #boolean
-    'editformcorrection': True, #boolean
-    'editformalternative': True, #boolean
+    'editformcorrection': False, #boolean
+    'editformalternative': False, #boolean
+    'alloweditformdirect': True, #boolean
+    'alloweditformcorrection': True, #boolean
+    'alloweditformalternative': True, #boolean
     'modes': EDITOR_MODES,
 },
 'valkuileval':{
@@ -91,6 +94,9 @@ CONFIGURATIONS = {
     'editformdirect': False, #boolean
     'editformcorrection': True, #boolean
     'editformalternative': False, #boolean
+    'alloweditformdirect': False, #boolean
+    'alloweditformcorrection': True, #boolean
+    'alloweditformalternative': False, #boolean
     'modes': [ ('editor','Annotation Editor')],
 }}
 
