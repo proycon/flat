@@ -70,7 +70,7 @@ CONFIGURATIONS = {
     'editformdirect': True, #boolean
     'editformcorrection': True, #boolean
     'editformalternative': True, #boolean
-
+    'modes': EDITOR_MODES,
 },
 'valkuileval':{
     'name': "Valkuil Evaluation Project",
@@ -91,6 +91,7 @@ CONFIGURATIONS = {
     'editformdirect': False, #boolean
     'editformcorrection': True, #boolean
     'editformalternative': False, #boolean
+    'modes': [ ('editor','Annotation Editor')],
 }}
 
 
