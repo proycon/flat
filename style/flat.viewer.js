@@ -356,8 +356,11 @@ function viewer_oninit() {
     $('#document').mouseleave( function(e) {
         $('#info').hide();
     });  
+    annotatordetails = false;
     setview(view);
-    setannotationfocus(annotationfocus);
+    if ((configuration.annotationfocustype) && (configuration.annotationfocusset)) {
+        setannotationfocus(configuration.annotationfocustype, configuration.annotationfocusset);
+    }
     viewer_loadmenus();
     //if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });

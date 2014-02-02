@@ -75,8 +75,8 @@ CONFIGURATIONS = {
 'valkuileval':{
     'name': "Valkuil Evaluation Project",
     #The default annotation focus upon loading a document, set to None to start without a focus
-    'annotationfocustype': None,
-    'annotationfocusset': None,
+    'annotationfocustype': 'correction',
+    'annotationfocusset': 'valkuilset',
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
     'showannotationfocus': True,
