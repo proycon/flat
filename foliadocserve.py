@@ -113,7 +113,7 @@ def gethtml(element):
                 label = "<span class=\"lbl\"></span>"
         else:
             label = ""
-        if isinstance(element, folia.Word) and element.space:
+        if not isinstance(element,folia.Word) or (isinstance(element, folia.Word) and element.space):
             label += " "
 
         if not element.id:
