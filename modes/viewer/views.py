@@ -1,5 +1,5 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 import flat.settings as settings
@@ -9,6 +9,8 @@ import json
 
 def getcontext(request,namespace,docid, doc):
     return {
+            'configuration': settings.CONFIGURATIONS[request.session['configuration']],
+            'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
             'namespace': namespace,
             'docid': docid,
             'mode': 'viewer',

@@ -160,17 +160,18 @@ function renderannotation(annotation, norecurse) {
     }
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
-        var correctionid = annotation.incorrection[0];
-        //is it really this item or is the entire parent part of the
-        //correction? in the latter case we don't want to display a correction
-        //here
-        if (!checkparentincorrection(annotation, correctionid)) {
-            if (corrections[correctionid]) {
-                s = s + rendercorrection( correctionid);
-            } else {
-                s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
+        annotation.incorrection.forEach(function(correctionid){
+            //is it really this item or is the entire parent part of the
+            //correction? in the latter case we don't want to display a correction
+            //here
+            if (!checkparentincorrection(annotation, correctionid)) {
+                if (corrections[correctionid]) {
+                    s = s + rendercorrection( correctionid);
+                } else {
+                    s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
+                }
             }
-        }
+        });
     }
     return s;
 }
@@ -197,7 +198,9 @@ function showinfo(element) {
             });
             s = s + "</table>";
             if (annotations[element.id].self.incorrection) {
-                s = s + rendercorrection( annotations[element.id].self.incorrection[0], true);
+                annotations[element.id].self.incorrection.forEach(function(correctionid){
+                    s = s + rendercorrection( correctionid, true);
+                });
             }
             $('#info').html(s);
             $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );

@@ -49,35 +49,37 @@ function select(element) {
 }
 
 function setaddablefields() {
-    editoraddablefields_options = "";
-    editoraddablefields = [];
-    Object.keys(declarations).forEach(function(annotationtype){
-        label = getannotationtypename(annotationtype);
-        Object.keys(declarations[annotationtype]).forEach(function(set){
-            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
-                setname = set;
-                if (setname.length > 30) {
-                    setname = setname.substr(0,15) + ".." + setname.substr(setname.length-15,15);
-                }
-                found = false;
-                editdata.forEach(function(editdataitem){
-                    if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
-                        found = true; 
-                        return true;
+    if (configuration.allowaddfields) {
+        editoraddablefields_options = "";
+        editoraddablefields = [];
+        Object.keys(declarations).forEach(function(annotationtype){
+            label = getannotationtypename(annotationtype);
+            Object.keys(declarations[annotationtype]).forEach(function(set){
+                if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
+                    setname = set;
+                    if (setname.length > 30) {
+                        setname = setname.substr(0,15) + ".." + setname.substr(setname.length-15,15);
                     }
-                });
-                if (!found) {
-                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
-                    editoraddablefields.push({'type': annotationtype, 'set': set});
+                    found = false;
+                    editdata.forEach(function(editdataitem){
+                        if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
+                            found = true; 
+                            return true;
+                        }
+                    });
+                    if (!found) {
+                        editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
+                        editoraddablefields.push({'type': annotationtype, 'set': set});
+                    }
                 }
-            }
+            });
         });
-    });
-    if ((editoraddablefields_options) && (!annotationfocus)) {
-        $("#editoraddablefields").html(editoraddablefields_options);
-        $("#editoraddfields").show();
-    } else {
-        $("#editoraddfields").hide();
+        if ((editoraddablefields_options) && (!annotationfocus)) {
+            $("#editoraddablefields").html(editoraddablefields_options);
+            $("#editoraddfields").show();
+        } else {
+            $("#editoraddfields").hide();
+        }
     }
 }
 
@@ -375,6 +377,11 @@ function editor_oninit() {
         var index = $('#editoraddablefields').val();
         addeditorfield(index);
     });
+
+    editforms['direct'] = configuration.editformdirect;
+    editforms['correction'] = configuration.editformcorrection;
+    editforms['alternative'] = configuration.editformalternative;
+
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) $('#editform' + editform).addClass('on');
     });

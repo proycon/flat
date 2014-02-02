@@ -16,7 +16,7 @@
         {% endif %}
         {% if docid %}
         <script type="text/javascript">
-            configuration = {{ configuration|safe }};
+            configuration = {{ configuration_json|safe }};
             username = "{{ username|safe }}";
             namespace = "{{ namespace|safe }}";
             docid = "{{ docid|safe }}";

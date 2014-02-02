@@ -55,29 +55,42 @@ DEFAULTMODE = 'editor'
 
 CONFIGURATIONS = {
 'full':{
-    'NAME': "Full Editor",
+    'name': "Full Editor",
     #The default annotation focus upon loading a document, set to None to start without a focus
-    'ANNOTATIONFOCUS': None,
+    'annotationfocustype': None,
+    'annotationfocusset': None,
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
-    'SHOWANNOTATIONFOCUS': True,
+    'showannotationfocus': True,
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'ANNOTATIONDETAILS': True,
+    'annotationdetails': True,
     #list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
-    'SHOWANNOTATIONDETAILS': True
+    'showannotationdetails': True,
+    'allowaddfields': True, #boolean
+    'allowdeclare': True, #boolean
+    'editformdirect': True, #boolean
+    'editformcorrection': True, #boolean
+    'editformalternative': True, #boolean
+
 },
 'valkuileval':{
     'NAME': "Valkuil Evaluation Project",
     #The default annotation focus upon loading a document, set to None to start without a focus
-    'ANNOTATIONFOCUS': None,
+    'annotationfocustype': None,
+    'annotationfocusset': None,
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
-    'SHOWANNOTATIONFOCUS': True,
+    'showannotationfocus': True,
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'ANNOTATIONDETAILS': True,
+    'annotationdetails': True,
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation details, set to True to allow all
-    'SHOWANNOTATIONDETAILS': True
+    'showannotationdetails': True,
+    'allowaddfields': False, #boolean
+    'allowdeclare': False, #boolean
+    'editformdirect': False, #boolean
+    'editformcorrection': True, #boolean
+    'editformalternative': False, #boolean
 }}
 
 
