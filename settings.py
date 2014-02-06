@@ -68,20 +68,20 @@ elif hostname[:8] == 'spitfire':
     FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
     FOLIADOCSERVE_PORT = 8023
 elif hostname[:4] == 'lilo':
+    ROOT = "/home/proycon/flat/"
+    WORKDIR = "/home/proycon/flat/docroot/"
+    FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
+    FOLIADOCSERVE_PORT = 8023
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'flat',                      # Or path to database file if using sqlite3.
             'USER': 'flat_admin',
-            'PASSWORD': open('/var/www2/flat/live/etc/.pw2').read().strip(),
+            'PASSWORD': open(ROOT + '.pw2').read().strip(),
             'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
             'PORT': '',                      # Set to empty string for default.
         }
     }
-    ROOT = "/var/www2/flat/live/repo/flat/"
-    WORKDIR = "/var/www2/flat/live/writable/docroot/"
-    FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
-    FOLIADOCSERVE_PORT = 8023
 else:
     raise Exception("I don't know where I'm running from!")
 
