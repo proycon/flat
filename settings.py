@@ -43,7 +43,7 @@ elif hostname[:9] == 'applejack':
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'flat',                      # Or path to database file if using sqlite3.
             'USER': 'flat_user',
-            'PASSWORD': open('/www/flat/live/etc/.pw').read(),
+            'PASSWORD': open('/www/flat/live/etc/.pw').read().strip(),
             'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
             'PORT': '',                      # Set to empty string for default.
         }
@@ -58,7 +58,7 @@ elif hostname[:8] == 'spitfire':
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'flat',                      # Or path to database file if using sqlite3.
             'USER': 'flat_user',
-            'PASSWORD': open('/var/www/flat/live/etc/.pw').read(),
+            'PASSWORD': open('/var/www2/flat/live/etc/.pw').read().strip(),
             'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
             'PORT': '',                      # Set to empty string for default.
         }
