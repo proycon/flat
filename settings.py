@@ -37,6 +37,36 @@ if hostname == 'mhysa' or hostname == 'galactica':
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'db',                      # Or path to database file if using sqlite3.
     }
+elif hostname[:9] == 'applejack':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'flat',                      # Or path to database file if using sqlite3.
+            'USER': 'flat_user',
+            'PASSWORD': open('/www/flat/live/etc/.pw').read(),
+            'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+            'PORT': '',                      # Set to empty string for default.
+        }
+    }
+    ROOT = "/www/flat/live/repo/flat/"
+    WORKDIR = "/www/flat/live/writable/docroot/"
+    FOLIADOCSERVE_HOST = '127.0.0.1'
+    FOLIADOCSERVE_PORT = 8023
+elif hostname[:8] == 'spitfire':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'flat',                      # Or path to database file if using sqlite3.
+            'USER': 'flat_user',
+            'PASSWORD': open('/var/wwww/flat/live/etc/.pw').read(),
+            'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+            'PORT': '',                      # Set to empty string for default.
+        }
+    }
+    ROOT = "/var/www2/flat/live/repo/flat/"
+    WORKDIR = "/var/www2/flat/live/writable/docroot/"
+    FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
+    FOLIADOCSERVE_PORT = 8023
 else:
     raise Exception("I don't know where I'm running from!")
 

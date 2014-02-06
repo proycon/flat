@@ -233,7 +233,9 @@ function setannotationfocus(t,set) {
             Object.keys(annotations[target]).forEach(function(annotationkey){
                 annotation = annotations[target][annotationkey];
                 if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
-                    $('#' + valid(target)).addClass("focustype");
+                    if ($('#' + valid(target)).hasClass('w')) {
+                        $('#' + valid(target)).addClass("focustype");
+                    }
                 }
             });
         });
@@ -304,7 +306,9 @@ function setclasscolors() {
             annotation = annotations[target][annotationkey];
             if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
                 if (classrank[annotation.class]) {
-                    $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
+                    if ($('#' + valid(target)).hasClass('w')) {
+                        $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
+                    }
                 }
             }
         });
