@@ -42,8 +42,8 @@ elif hostname[:9] == 'applejack':
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'flat',                      # Or path to database file if using sqlite3.
-            'USER': 'flat_user',
-            'PASSWORD': open('/www/flat/live/etc/.pw').read().strip(),
+            'USER': 'flat_admin',
+            'PASSWORD': open('/www/flat/live/etc/.pw2').read().strip(),
             'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
             'PORT': '',                      # Set to empty string for default.
         }
