@@ -194,3 +194,11 @@ nav ul ul li.on {
     font-size: 8px;
     font-family: monospace;
 }
+
+.uploadcontainer {
+    width: 100%;
+    text-align: right;
+}
+#uploadform {
+    display: none;
+}

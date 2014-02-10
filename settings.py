@@ -103,6 +103,7 @@ CONFIGURATIONS = {
     'alloweditformdirect': True, #boolean
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': True, #boolean
+    'allowupload': True, #boolean
     'modes': EDITOR_MODES,
 },
 'valkuileval':{
@@ -127,6 +128,7 @@ CONFIGURATIONS = {
     'alloweditformdirect': False, #boolean
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': False, #boolean
+    'allowupload': False, #boolean
     'modes': [ ('editor','Annotation Editor')],
 }}
 

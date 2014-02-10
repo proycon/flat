@@ -250,6 +250,11 @@ function bySortedValue(obj, callback, context) {
     while (length--) callback.call(context, tuples[length][0], tuples[length][1]);
 }
 
+function hideuploadform() {
+    $('#uploadform').hide();
+    return false;
+}
+
 $(function() {
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){
@@ -270,5 +275,12 @@ $(function() {
             f = eval(mode + '_ontimer');
             f();
         }, 5000);
+    } else {
+        $('#showuploadbutton').click(function(){
+            $('#uploadform').show();
+        });
+        $('#cancelupload').click(function(){
+            $('#uploadform').hide();
+        });
     }
 });

@@ -2,14 +2,36 @@
 
 
 {% block main %}
+<div id="uploadform" class="dialog">
+    <h3>Upload</h3>
+    <p>
+    Here you can upload a new FoLiA XML document to the editor.
+    </p>
+    <form action="/upload/" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <label>Select file:</label> <input type="file" name="file" />
+        <label>Namespace:</label> <input type="text" name="namespace" value="{{ username }}" />
+        <div class="buttoncontainer">
+            <input id="uploadbutton" class="button" type="submit" value="Upload" />
+            <button id="cancelupload" class="button">Cancel</button>
+        </div>
+    </form>
+</div>
+
 <div class="dialog">
     <h3>My Documents</h3>
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
+    {% if configuration.allowupload %}
+    <div class="uploadcontainer">
+        <button id="showuploadbutton" class="button">Upload</button>
+    </div>
+    {% endif %}
     <ul id="doclist">
     {% for namespace, docsinnamespace in docs %}
-        <li><strong>{{ namespace }}</strong><ul>
+        <li><strong>{{ namespace }}</strong>
+        <ul>
         {% for doc  in docsinnamespace %}
         <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/">{{ doc }}</a> <span>[<a href="/download/{{ namespace }}/{{ doc }}">Download</a>]</span></li>
         {% endfor %}
@@ -17,5 +39,6 @@
     {% endfor %}
     </ul>
 </div>
+
 {% endblock %}
 
