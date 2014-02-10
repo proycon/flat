@@ -681,7 +681,11 @@ class Root:
             response['error'] = "Uploaded file is no valid FoLiA Document"
             return json.dumps(response)
 
-        filename = self.docstore.getfilename(( namespace, doc.id))
+        filename = self.docstore.getfilename( (namespace, doc.id))
+        i = 1
+        while os.path.exists(filename):
+            filename = self.docstore.getfilename( (namespace, doc.id + "." + str(i)))
+            i += 1
         doc.save(filename)
         return json.dumps(response)
 
