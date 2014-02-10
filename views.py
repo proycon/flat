@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 import django.contrib.auth
 import flat.settings as settings
 import flat.comm
@@ -60,4 +60,19 @@ def index(request):
 def download(request, namespace, docid):
     data = flat.comm.get(request, '/getdocxml/' +namespace + '/' + docid + '/',False)
     return HttpResponse(data, mimetype='text/xml')
+
+
+@login_required
+def upload(request):
+    if request.method == 'POST':
+        namespace = request.POST['namespace'].replace('/','').replace('..','.')
+        if 'file' in request.FILES:
+            data = request.FILES['file'].read()
+            response = flat.comm.postjson(request,"upload/" + namespace + "/", data)
+            docid = response['docid']
+            return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid + "/")
+        else:
+            return HttpResponseForbidden("Permission denied")
+    else:
+        return HttpResponseForbidden("Permission denied")
 
