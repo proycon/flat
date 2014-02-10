@@ -198,11 +198,11 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ROOT + 'static/'
+STATIC_ROOT = ROOT + 'media/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/media/'
 
 STYLE_ROOT = ROOT + 'style/'
 STYLE_URL = '/style/'
