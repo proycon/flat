@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import * #patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -23,6 +23,7 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     urlpatterns += static(settings.STYLE_URL, document_root=settings.STYLE_ROOT)
+
 
 for mode, _ in settings.EDITOR_MODES:
     urlpatterns += patterns('',url(r'^' + mode + '/', include('flat.modes.' + mode + '.urls')))
