@@ -2,6 +2,7 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+import json
 import django.contrib.auth
 import flat.settings as settings
 import flat.comm
@@ -69,6 +70,7 @@ def upload(request):
         if 'file' in request.FILES:
             data = unicode(request.FILES['file'].read(),'utf-8')
             response = flat.comm.postxml(request,"upload/" + namespace + "/", data)
+            assert False
             docid = response['docid']
             return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid + "/")
         else:

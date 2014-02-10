@@ -1,8 +1,9 @@
-
 from urllib import urlencode
 from urllib2 import urlopen, Request
+from StringIO import StringIO
 import flat.settings as settings
 import json
+import pycurl
 
 def get( request, url, usesid=True):
     if 'sid' in request.GET:
@@ -44,12 +45,23 @@ def postjson( request, url, data):
         return None
 
 def postxml( request, url, data):
-    req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url, data.encode('utf-8'), {'Content-Type':'application/xml'}  ) #or opener.open()
-    #req.add_header('Content-Type', 'application/xml')
-    #f = urlopen(req, data)
-    f = urlopen(req)
-    contents = f.read()
-    f.close()
+    buf = StringIO()
+    c = pycurl.Curl()
+    url = "http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url
+    c.setopt(c.URL, url.encode('utf-8'))
+    c.setopt(c.HTTPPOST, [('data',data.encode('utf-8')) ] )
+    c.setopt(c.WRITEFUNCTION, buf.write)
+    c.perform()
+    code = c.getinfo(c.HTTP_CODE)
+    contents = buf.getvalue()
+    c.close()
+
+    #req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url)
+    #req.add_header('Content-Type', 'application/xml; charset=utf-8')
+    #req.add_data(urlencode({'data':data.encode('utf-8')}))
+    #f = urlopen(req)
+    #contents = f.read()
+    #f.close()
     if contents and contents[0] == '{':
         #assume this is json
         return json.loads(contents)

@@ -670,15 +670,19 @@ class Root:
 
     @cherrypy.expose
     def upload(self, namespace):
+        print("In upload, namespace=",namespace,file=sys.stderr)
         response = {}
-        cl = cherrypy.request.headers['Content-Length']
-        rawbody = cherrypy.request.body.read(int(cl))
-        cherrypy.response.headers['Content-Type'] = 'application/json'
+        #cl = cherrypy.request.headers['Content-Length']
+        #data = cherrypy.request.body.read(int(cl))
+        #cherrypy.response.headers['Content-Type'] = 'application/json'
+        data =cherrypy.request.params['data']
         try:
-            doc = folia.Document(string=str(rawbody,'utf-8'))
+            print("Loading document",file=sys.stderr)
+            doc = folia.Document(string=data)
             response['docid'] = doc.id
         except:
             response['error'] = "Uploaded file is no valid FoLiA Document"
+            print("error",file=sys.stderr)
             return json.dumps(response).encode('utf-8')
 
         filename = self.docstore.getfilename( (namespace, doc.id))
