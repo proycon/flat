@@ -69,10 +69,9 @@ def upload(request):
         namespace = request.POST['namespace'].replace('/','').replace('..','.')
         if 'file' in request.FILES:
             data = unicode(request.FILES['file'].read(),'utf-8')
-            response = flat.comm.postxml(request,"upload/" + namespace + "/", data)
-            assert False
+            response = flat.comm.postxml(request,"upload/" + namespace , data)
             docid = response['docid']
-            return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid + "/")
+            return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:
             return HttpResponseForbidden("Permission denied")
     else:

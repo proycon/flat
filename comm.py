@@ -49,7 +49,10 @@ def postxml( request, url, data):
     c = pycurl.Curl()
     url = "http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url
     c.setopt(c.URL, url.encode('utf-8'))
-    c.setopt(c.HTTPPOST, [('data',data.encode('utf-8')) ] )
+    #c.setopt(c.HTTPPOST, data.encode('utf-8') )
+    c.setopt(pycurl.HTTPHEADER, ["Content-Type: application/json"])
+    c.setopt(pycurl.POST, 1)
+    c.setopt(pycurl.POSTFIELDS, data.encode('utf-8'))
     c.setopt(c.WRITEFUNCTION, buf.write)
     c.perform()
     code = c.getinfo(c.HTTP_CODE)

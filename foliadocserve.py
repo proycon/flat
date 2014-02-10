@@ -672,10 +672,10 @@ class Root:
     def upload(self, namespace):
         print("In upload, namespace=",namespace,file=sys.stderr)
         response = {}
-        #cl = cherrypy.request.headers['Content-Length']
-        #data = cherrypy.request.body.read(int(cl))
-        #cherrypy.response.headers['Content-Type'] = 'application/json'
-        data =cherrypy.request.params['data']
+        cl = cherrypy.request.headers['Content-Length']
+        data = cherrypy.request.body.read(int(cl))
+        cherrypy.response.headers['Content-Type'] = 'application/json'
+        #data =cherrypy.request.params['data']
         try:
             print("Loading document",file=sys.stderr)
             doc = folia.Document(string=data)
