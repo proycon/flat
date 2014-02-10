@@ -351,10 +351,17 @@ function viewer_loadmenus() {
     s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
-        viewannotations[annotationtype + "/" + set] = true;
-        label = getannotationtypename(annotationtype);
-        s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
-        s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
+        if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
+            if ((configuration.initialviewannotations === true) || (configuration.initialviewannotations.indexOf(annotationtype) != -1)) {
+                viewannotations[annotationtype + "/" + set] = true;
+            }
+            label = getannotationtypename(annotationtype);
+            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+        }
+        if ((configuration.allowedannotationfocus === true) || (configuration.allowedannotationfocus.indexOf(annotationtype) != -1)) {
+            s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
+        }
+
       });
     });
     $('#annotationsviewmenu').html(s);

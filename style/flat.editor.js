@@ -361,9 +361,13 @@ function editor_loadmenus() {
     s = "";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
-        editannotations[annotationtype + "/" + set] = true;
-        label = getannotationtypename(annotationtype);
-        s = s +  "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+        if ((configuration.allowededitannotations === true) || (configuration.allowededitannotations.indexOf(annotationtype) != -1)) {
+            if ((configuration.initialeditannotations === true) || (configuration.initialeditannotations.indexOf(annotationtype) != -1)) {
+                editannotations[annotationtype + "/" + set] = true;
+            }
+            label = getannotationtypename(annotationtype);
+            s = s +  "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+        }
       });
     });
     $('#annotationseditviewmenu').html(s);

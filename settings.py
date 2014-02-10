@@ -89,12 +89,20 @@ CONFIGURATIONS = {
     #The default annotation focus upon loading a document, set to None to start without a focus
     'annotationfocustype': None,
     'annotationfocusset': None,
+
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
-    'showannotationfocus': True,
+    'allowedannotationfocus': True,
+
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'annotationdetails': True,
-    #list of FoLiA annotation types (xml tags) that are  allowed as annotation details, set to True to allow all
-    'showannotationdetails': True,
+    'initialviewannotations': True,
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowedviewannotations': True,
+
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialeditannotations': True,
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowededitannotations': True,
+
     'allowaddfields': True, #boolean
     'allowdeclare': True, #boolean
     'editformdirect': True, #boolean
@@ -113,13 +121,19 @@ CONFIGURATIONS = {
     'annotationfocusset': 'valkuilset',
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
-    'showannotationfocus': True,
+    'allowedannotationfocus': ('correction',),
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'annotationdetails': ('t',),
+    'initialviewannotations': True,
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowedviewannotations': True,
 
-    #list of FoLiA annotation types (xml tags) that are allowed as annotation details, set to True to allow all
-    'showannotationdetails': ('t',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialeditannotations': ('t',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowededitannotations': ('t',),
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+
     'allowaddfields': False, #boolean
     'allowdeclare': False, #boolean
     'editformdirect': False, #boolean
