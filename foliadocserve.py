@@ -679,7 +679,7 @@ class Root:
             response['docid'] = doc.id
         except:
             response['error'] = "Uploaded file is no valid FoLiA Document"
-            return json.dumps(response)
+            return json.dumps(response).encode('utf-8')
 
         filename = self.docstore.getfilename( (namespace, doc.id))
         i = 1
@@ -687,7 +687,7 @@ class Root:
             filename = self.docstore.getfilename( (namespace, doc.id + "." + str(i)))
             i += 1
         doc.save(filename)
-        return json.dumps(response)
+        return json.dumps(response).encode('utf-8')
 
 
 

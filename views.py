@@ -67,8 +67,8 @@ def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.')
         if 'file' in request.FILES:
-            data = request.FILES['file'].read()
-            response = flat.comm.postxml(request,"upload/" + namespace + "/", data.encode('utf-8'))
+            data = unicode(request.FILES['file'].read(),'utf-8')
+            response = flat.comm.postxml(request,"upload/" + namespace + "/", data)
             docid = response['docid']
             return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid + "/")
         else:

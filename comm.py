@@ -44,9 +44,10 @@ def postjson( request, url, data):
         return None
 
 def postxml( request, url, data):
-    req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
-    req.add_header('Content-Type', 'application/xml')
-    f = urlopen(req, data)
+    req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url, data.encode('utf-8'), {'Content-Type':'application/xml'}  ) #or opener.open()
+    #req.add_header('Content-Type', 'application/xml')
+    #f = urlopen(req, data)
+    f = urlopen(req)
     contents = f.read()
     f.close()
     if contents and contents[0] == '{':
