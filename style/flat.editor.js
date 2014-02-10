@@ -1,3 +1,4 @@
+editannotations = {};
 editoropen = false;
 coselector = false;
 editforms = {'direct': true, 'correction': false,'alternative': false} ;
@@ -20,6 +21,15 @@ function toggleeditform(editform) {
     }
 }
 
+
+function toggleannotationedit(annotationtype, set) {
+    editannotations[annotationtype+"/"+set] = !editannotations[annotationtype+"/"+set];
+    if (editannotations[annotationtype+"/" + set]) {
+        $('#annotationtypeedit_' + annotationtype + "_" + hash(set)).addClass('on');
+    } else {
+        $('#annotationtypeedit_' + annotationtype + "_" + hash(set)).removeClass('on');
+    }
+}
 
 function select(element) {
     //toggles
@@ -154,7 +164,7 @@ function showeditor(element) {
                         annotationfocusfound = true;
                     }
                 }
-                var ok = ((annotation.type != "correction") && (annotationfocusfound) || (viewannotations[annotation.type+"/" + annotation.set]));
+                var ok = ((annotation.type != "correction") && (annotationfocusfound) || (editannotations[annotation.type+"/" + annotation.set]));
                 if (ok) {
                     label = getannotationtypename(annotation.type);
                     if (annotation.set) {
@@ -347,8 +357,21 @@ function declare() {
     $('#newdeclaration').show();
 }
 
+function editor_loadmenus() {
+    s = "";
+    Object.keys(declarations).forEach(function(annotationtype){
+      Object.keys(declarations[annotationtype]).forEach(function(set){
+        editannotations[annotationtype + "/" + set] = true;
+        label = getannotationtypename(annotationtype);
+        s = s +  "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+      });
+    });
+    $('#annotationseditviewmenu').html(s);
+}
+
 function editor_oninit() {
     viewer_oninit();
+    editor_loadmenus();
     $('#editordiscard').click(closeeditor);
     $('#newdeclarationdiscard').click(function(){
         $('#newdeclaration').hide();
@@ -367,6 +390,7 @@ function editor_oninit() {
             closeeditor();
         }
     });
+
 
     var s = "";
     Object.keys(annotationtypenames).forEach(function(annotationtype){

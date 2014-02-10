@@ -116,10 +116,10 @@ CONFIGURATIONS = {
     'showannotationfocus': True,
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'annotationdetails': True,
+    'annotationdetails': ('t',),
 
     #list of FoLiA annotation types (xml tags) that are allowed as annotation details, set to True to allow all
-    'showannotationdetails': True,
+    'showannotationdetails': ('t',),
     'allowaddfields': False, #boolean
     'allowdeclare': False, #boolean
     'editformdirect': False, #boolean

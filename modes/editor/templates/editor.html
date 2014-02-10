@@ -15,6 +15,10 @@ editforms['{{ editform }}'] = true;
 
 {% block menu %}
 {% include "viewermenu.html" %}
+<li>Edit Annotations
+<ul id="annotationseditviewmenu">
+</ul>
+</li>
 <li>Edit Forms
 <ul id="editforms">
     {% if configuration.alloweditformdirect %}
