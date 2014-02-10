@@ -281,6 +281,7 @@ $(function() {
         });
         $('#cancelupload').click(function(){
             $('#uploadform').hide();
+            return false;
         });
     }
 });
