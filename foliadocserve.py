@@ -668,6 +668,26 @@ class Root:
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
+    @cherrypy.expose
+    def upload(self, namespace):
+        response = {}
+        cl = cherrypy.request.headers['Content-Length']
+        rawbody = cherrypy.request.body.read(int(cl))
+        cherrypy.response.headers['Content-Type'] = 'application/json'
+        try:
+            doc = folia.Document(string=str(rawbody,'utf-8'))
+            response['docid'] = doc.id
+        except:
+            response['error'] = "Uploaded file is no valid FoLiA Document"
+            return json.dumps(response)
+
+        filename = self.docstore.getfilename(( namespace, doc.id))
+        doc.save(filename)
+        return json.dumps(response)
+
+
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
