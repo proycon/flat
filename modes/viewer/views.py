@@ -21,6 +21,7 @@ def getcontext(request,namespace,docid, doc):
             'docdeclarations': json.dumps(doc['declarations']),
             'setdefinitions': json.dumps(doc['setdefinitions']),
             'loggedin': request.user.is_authenticated(),
+            'version': settings.VERSION,
             'username': request.user.username
     }
 

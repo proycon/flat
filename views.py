@@ -27,10 +27,10 @@ def login(request):
                     return redirect("/")
             else:
                 # Return a 'disabled account' error message
-                return render(request, 'login.html', {'error': "This account is disabled","configurations":settings.CONFIGURATIONS } )
+                return render(request, 'login.html', {'error': "This account is disabled","configurations":settings.CONFIGURATIONS , 'version': settings.VERSION} )
         else:
             # Return an 'invalid login' error message.
-            return render(request, 'login.html', {'error': "Invalid username or password","configurations":settings.CONFIGURATIONS} )
+            return render(request, 'login.html', {'error': "Invalid username or password","configurations":settings.CONFIGURATIONS, 'version': settings.VERSION} )
     else:
         return render(request, 'login.html',{"configurations":settings.CONFIGURATIONS})
 
@@ -55,7 +55,7 @@ def index(request):
                 docid =  os.path.basename(d.replace('.folia.xml',''))
                 docs[namespace].append(docid)
 
-    return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']]})
+    return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
 
 @login_required
 def download(request, namespace, docid):

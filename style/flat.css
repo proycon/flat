@@ -208,4 +208,6 @@ nav ul ul li.on {
     margin-right: auto;
     font-family: monospace;
     font-size: 80%;
+    text-align: center;
+    margin-top: 100px;
 }
