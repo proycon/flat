@@ -2,7 +2,7 @@
 from socket import gethostname
 import os.path
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -216,6 +216,8 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     ROOT + 'style/',
 )
+
+ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 # List of finder classes that know how to find static files in
 # various locations.
