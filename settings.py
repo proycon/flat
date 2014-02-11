@@ -2,7 +2,7 @@
 from socket import gethostname
 import os.path
 
-VERSION = "0.1"
+VERSION = "0.1.1"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
