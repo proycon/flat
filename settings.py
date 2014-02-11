@@ -69,6 +69,7 @@ elif hostname[:8] == 'spitfire':
     WORKDIR = "/var/www2/flat/live/writable/docroot/"
     FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
     FOLIADOCSERVE_PORT = 8023
+    ADMIN_MEDIA_PREFIX = '/media/'
 else:
     raise Exception("I don't know where I'm running from!")
 
@@ -200,11 +201,11 @@ MEDIA_URL = 'http://flat.science.ru.nl/usermedia/' #not used
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ROOT + 'media/'
+STATIC_ROOT = ROOT + 'static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/media/'
+STATIC_URL = '/static/'
 
 STYLE_ROOT = ROOT + 'style/'
 STYLE_URL = '/style/'
@@ -217,7 +218,6 @@ STATICFILES_DIRS = (
     ROOT + 'style/',
 )
 
-ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 # List of finder classes that know how to find static files in
 # various locations.
