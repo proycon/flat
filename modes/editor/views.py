@@ -25,7 +25,10 @@ def view(request, namespace, docid):
 @login_required
 def annotate(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
-        d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
+        if hasattr(request, 'body'):
+            d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
+        else: #older django
+            d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.raw_post_data)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
@@ -34,7 +37,10 @@ def annotate(request,namespace, docid):
 @login_required
 def declare(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
-        d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
+        if hasattr(request, 'body'):
+            d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
+        else:
+            d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.raw_post_data)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
