@@ -296,6 +296,7 @@ def doannotation(doc, data):
         if issubclass(Class, folia.TextContent):
             #Text Content, each target will get a copy
             if len(data['targets']) > 1:
+                print("Text edit of multiple elements",file=sys.stderr)
                 #more than one target, this implies a merge
                 targets = []
                 ancestor = None
@@ -310,23 +311,27 @@ def doannotation(doc, data):
 
                 if edit['editform'] == 'direct':
                     #remove all targets and insert a new one in its place
+                    print("Removing targets and inserting new word",file=sys.stderr)
                     for target in targets:
                         ancestor.remove(target)
                     ancestor.insert(index, ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor ) )
                 elif edit['editform'] == 'correction':
+                    print("Merging words (correction)",file=sys.stderr)
                     ancestor.mergewords(ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor), *targets, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
 
                 response['returnelementid'] = ancestor.id
             else:
-
                 try:
                     target = doc[data['targets'][0]]
                 except:
                     response['error'] = "Target element " + data['targets'][0] + " does not exist!"
                     return response
 
+                print("Text edit of " + target.id,file=sys.stderr)
+
                 if edit['editform'] == 'direct':
                     if 'insertright' in edit:
+                        print("Right insertion (direct)",file=sys.stderr)
                         try:
                             index = target.parent.data.index(target) + 1
                         except ValueError:
@@ -337,6 +342,7 @@ def doannotation(doc, data):
                             target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
+                        print("Left insertion (direct)",file=sys.stderr)
                         try:
                             index = target.parent.data.index(target)
                         except ValueError:
@@ -348,6 +354,7 @@ def doannotation(doc, data):
                         response['returnelementid'] = target.parent.id
 
                     elif 'dosplit' in edit:
+                        print("Split (direct)",file=sys.stderr)
                         try:
                             index = target.parent.data.index(target)
                         except ValueError:
@@ -367,8 +374,10 @@ def doannotation(doc, data):
 
                         response['returnelementid'] = p.id
                     elif edit['text']:
+                        print("Replacing text",file=sys.stderr)
                         target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
+                        print("Text deletion (implies element deletion)",file=sys.stderr)
                         #we have a text deletion! This implies deletion of the entire structure element!
                         p = target.parent
                         p.remove(target)
@@ -378,24 +387,28 @@ def doannotation(doc, data):
                     return response
                 elif edit['editform'] == 'correction':
                     if 'insertright' in edit:
+                        print("Right insertion (correction)",file=sys.stderr)
                         newwords = []
                         for wordtext in edit['insertright'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
+                        print("Left insertion (correction)",file=sys.stderr)
                         newwords = []
                         for wordtext in edit['insertleft'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'dosplit' in edit:
+                        print("Split (correction)",file=sys.stderr)
                         newwords = []
                         for wordtext in edit['text'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif edit['text']:
+                        print("Text correction",file=sys.stderr)
                         print("Correction: ", edit['text'],str(repr(target)), file=sys.stderr)
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
@@ -407,6 +420,7 @@ def doannotation(doc, data):
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
+            print("Edit of token annotatation",file=sys.stderr)
             #Token annotation, each target will get a copy (usually just one target)
             for targetid in data['targets']:
                 try:
