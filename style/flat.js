@@ -151,6 +151,21 @@ function valid(id){
     return id.replace(/\./g,'\\.');
 }
 
+function shorten(s) {
+    if (s.length > 30) {
+        if (s.substr(s.length -13) == ".foliaset.xml") {
+            s = s.substr(0,s.length-13) + '..'
+        }
+        if (s.substr(0,22) == "http://raw.github.com/") {
+            s = ".." + s.substr(22);
+        }
+        if (s.length > 40) {
+            s = s.substr(0,15) + ".." + s.substr(s.length-25,25);
+        }
+    }
+    return s;
+}
+
 function update(data) {
     //partial update
     if ((data.html) && (data.elementid)) { 

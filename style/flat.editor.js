@@ -66,10 +66,7 @@ function setaddablefields() {
             label = getannotationtypename(annotationtype);
             Object.keys(declarations[annotationtype]).forEach(function(set){
                 if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
-                    setname = set;
-                    if (setname.length > 30) {
-                        setname = setname.substr(0,15) + ".." + setname.substr(setname.length-15,15);
-                    }
+                    setname = shorten(set);
                     found = false;
                     editdata.forEach(function(editdataitem){
                         if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
@@ -420,9 +417,9 @@ function editor_oninit() {
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if (annotationtype == "correction") {
                 if (s) {
-                    s = s + "<option value=\"" + set + "\">" + set + "</option>";
+                    s = s + "<option value=\"" + set + "\">" + shorten(set) + "</option>";
                 } else {
-                    s = "<option value=\"" + set + "\" selected=\"selected\">" + set + "</option>";
+                    s = "<option value=\"" + set + "\" selected=\"selected\">" + shorten(set) + "</option>";
                 }
             }
         });
