@@ -18,6 +18,13 @@ def view(request, namespace, docid):
             d['editforms'] = settings.EDITFORMS
         except AttributeError:
             d['editforms'] = ['direct']
+        d['initialcorrectionset'] = settings.CONFIGURATIONS[request.session['configuration']]['initialcorrectionset']
+        if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
+            if flat.users.models.haswritepermission(request.user.username, namespace):
+                for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
+                    flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
+            else:
+                return HttpResponseForbidden("Permission denied, no write access")
         return render(request, 'editor.html', d)
     else:
         return HttpResponseForbidden("Permission denied")
