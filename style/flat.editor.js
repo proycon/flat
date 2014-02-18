@@ -417,9 +417,17 @@ function editor_oninit() {
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if (annotationtype == "correction") {
                 if (s) {
-                    s = s + "<option value=\"" + set + "\">" + shorten(set) + "</option>";
+                    if (initialcorrectionset == set) {
+                        s = s + "<option value=\"" + set + "\" selected=\"selected\">" + shorten(set) + "</option>";
+                    } else {
+                        s = s + "<option value=\"" + set + "\">" + shorten(set) + "</option>";
+                    }
                 } else {
-                    s = "<option value=\"" + set + "\" selected=\"selected\">" + shorten(set) + "</option>";
+                    if (!initialcorrectionset) { 
+                        s = "<option value=\"" + set + "\" selected=\"selected\">" + shorten(set) + "</option>";
+                    } else {
+                        s = "<option value=\"" + set + "\">" + shorten(set) + "</option>";
+                    }
                 }
             }
         });
