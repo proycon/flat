@@ -22,7 +22,8 @@ def view(request, namespace, docid):
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
             if flat.users.models.haswritepermission(request.user.username, namespace):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
-                    flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
+                    r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
+                    d['docdeclarations'] = json.dumps(r['declarations'])
             else:
                 return HttpResponseForbidden("Permission denied, no write access")
         return render(request, 'editor.html', d)
