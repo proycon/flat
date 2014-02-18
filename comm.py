@@ -27,6 +27,7 @@ def get( request, url, usesid=True):
 def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
         data = json.dumps(data)
+        sid = request.session.session_key + '_NOSID'
     else:
         data = json.loads(data)
         data['sid'] = sid = request.session.session_key + '_' + str(data['sid'])
