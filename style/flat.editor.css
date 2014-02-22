@@ -86,7 +86,6 @@ div#editformcorrectionsetselector {
     top: 50px;
     background: transparent;
     font-size: 9px;
-    z-index: -100;
 }
 #editortargets label, #editortargetlist {
     display: none;

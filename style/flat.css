@@ -129,6 +129,7 @@ a:hover {
     margin: 0px;
     padding: 0px;
     opacity: 0.9;
+    z-index: 100;
 }
 #topbar nav ul li:hover > ul {
     position: absolute;

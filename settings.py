@@ -118,7 +118,7 @@ CONFIGURATIONS = {
     'modes': EDITOR_MODES,
 },
 'valkuileval':{
-    'name': "Valkuil Evaluation Project",
+    'name': "Valkuil Evaluation Project - Stage 1",
     #The default annotation focus upon loading a document, set to None to start without a focus
     'annotationfocustype': 'correction',
     'annotationfocusset': 'valkuilset',
@@ -146,6 +146,8 @@ CONFIGURATIONS = {
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': False, #boolean
     'allowupload': False, #boolean
+    'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
+    'autodeclare': [('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml')],
     'modes': [ ('editor','Annotation Editor')],
 }}
 
