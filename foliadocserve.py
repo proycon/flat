@@ -49,7 +49,7 @@ class DocStore:
 
 
     def save(self, key, message = "unspecified"):
-        doc = self.docstore[key]
+        doc = self[key]
         doc.save()
         if self.git:
             os.chdir(self.workdir)
