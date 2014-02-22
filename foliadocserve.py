@@ -28,6 +28,10 @@ class DocStore:
         self.updateq = defaultdict(dict) #update queue, (namespace,docid) => session_id => [folia element id], for concurrency
         self.lastaccess = defaultdict(dict) # (namespace,docid) => session_id => time
         self.setdefinitions = {}
+        if os.path.exists(self.workdir + "/.git"):
+            self.git = True
+        else:
+            self.git = False
         super().__init__()
 
     def getfilename(self, key):
@@ -43,11 +47,22 @@ class DocStore:
             self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions, loadsetdefinitions=True)
             self.lastchange[key] = time.time()
 
+
+    def save(self, key, message = "unspecified"):
+        doc = self.docstore[key]
+        doc.save()
+        if self.git:
+            os.chdir(self.workdir)
+            r = os.system("git add " + self.getfilename(key) + " && git commit -m \"" + message + "\"")
+            if r != 0:
+                print("Error during git add/commit of " + self.getfilename(key),file=sys.stderr)
+
+
     def unload(self, key, save=True):
         if key in self:
             if save:
                 print("Saving " + "/".join(key),file=sys.stderr)
-                self.data[key].save()
+                self.save(key,"Saving unsaved changes")
             print("Unloading " + "/".join(key),file=sys.stderr)
             del self.data[key]
             del self.lastchange[key]
@@ -545,7 +560,7 @@ class Root:
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
-        doc.save()
+        self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + response['returnelementid'])
         if 'returnelementid' in response:
             #set concurrency:
             for s in self.docstore.updateq[(namespace,docid)]:
@@ -690,7 +705,7 @@ class Root:
         while os.path.exists(filename):
             filename = self.docstore.getfilename( (namespace, doc.id + "." + str(i)))
             i += 1
-        doc.save(filename)
+        self.docstore.save((namespace,doc.id), "Initial upload")
         return json.dumps(response).encode('utf-8')
 
 
