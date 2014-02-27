@@ -18,7 +18,11 @@ def view(request, namespace, docid):
             d['editforms'] = settings.EDITFORMS
         except AttributeError:
             d['editforms'] = ['direct']
-        d['initialcorrectionset'] = settings.CONFIGURATIONS[request.session['configuration']]['initialcorrectionset']
+        try:
+            d['initialcorrectionset'] = settings.CONFIGURATIONS[request.session['configuration']]['initialcorrectionset']
+        except:
+            pass
+
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
             if flat.users.models.haswritepermission(request.user.username, namespace):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
