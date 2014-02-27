@@ -2,7 +2,6 @@ editannotations = {};
 editoropen = false;
 coselector = false;
 editforms = {'direct': true, 'correction': false,'alternative': false} ;
-editform_correctionset = null;
 editedelementid = null;
 
 
@@ -121,7 +120,18 @@ function addeditforms() {
         } else {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
         }
-        s = s +  "<input type=\"text\" id=\"editform" + editfields + "correctionclass\" class=\"editformcorrectionclass\" placeholder=\"(enter correction class)\" />";
+        correctionset = $('#editformcorrectionset').val();
+        if ((setdefinitions[correctionset]) && (setdefinitions[correctionset].type == "closed")) {
+            s = s + "<select id=\"editform" + editfields + "correctionclass\">";
+            s = s + "<option value=\"\"></option>";
+            Object.keys(setdefinitions[correctionset].classes).forEach(function(cid){
+                c = setdefinitions[correctionset].classes[cid]
+                s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+            });
+            s = s + "</select>";
+        } else {
+            s = s +  "<input type=\"text\" id=\"editform" + editfields + "correctionclass\" class=\"editformcorrectionclass\" placeholder=\"(enter correction class)\" />";
+        }
         editformcount++;
     }
     if (editforms.alternative) {
