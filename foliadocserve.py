@@ -219,7 +219,7 @@ def getannotations(element):
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
-        #log("Parent of ", str(repr(element)), " is ", str(repr(p)))
+        #log("Parent of " + str(repr(element))+ " is "+ str(repr(p)))
         p = element.ancestor(folia.AbstractStructureElement)
         annotation['targets'] = [ p.id ]
         assert isinstance(annotation, dict)
@@ -433,7 +433,7 @@ def doannotation(doc, data):
                         response['returnelementid'] = target.parent.id
                     elif edit['text']:
                         log("Text correction")
-                        log("Correction: ", edit['text'],str(repr(target)))
+                        log("Correction: "+  edit['text'] + ' ' + str(repr(target)))
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
                         log("Deletion as correction",str(repr(target)))
@@ -713,7 +713,7 @@ class Root:
 
     @cherrypy.expose
     def upload(self, namespace):
-        log("In upload, namespace=",namespace)
+        log("In upload, namespace=" + namespace)
         response = {}
         cl = cherrypy.request.headers['Content-Length']
         data = cherrypy.request.body.read(int(cl))
