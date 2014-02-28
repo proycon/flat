@@ -54,7 +54,7 @@ def index(request):
             docs[namespace] = []
             for d in r['documents']:
                 docid =  os.path.basename(d.replace('.folia.xml',''))
-                docs[namespace].append( (docid, datetime.datetime.fromtimestamp(r['timestamp'][docid]).strftime("%Y-%m-%d %H:%M") ) )
+                docs[namespace].append( (docid, datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
 
     return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
 
