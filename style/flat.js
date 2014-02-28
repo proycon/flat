@@ -181,7 +181,8 @@ function update(data) {
     }
     if (data.elementid) {
         //reregister handlers
-        $('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+        //$('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+        $('.F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
     }
     if (function_exists(mode + '_onupdate')) {
         f = eval(mode + '_onupdate');
