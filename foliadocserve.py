@@ -630,7 +630,7 @@ class Root:
                     self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
             return self.getelement(namespace,docid, response['returnelementid'],sid);
         else:
-            self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + "/".join(namespace,docid))
+            self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + "/".join((namespace,docid)))
             return self.getelement(namespace,docid, doc.data[0].id,sid) #return all
 
 
