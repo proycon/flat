@@ -5,11 +5,9 @@ import cherrypy
 import argparse
 import time
 import os
-import sys
 import json
 import random
 import datetime
-import time
 from copy import copy
 from collections import defaultdict
 from pynlpl.formats import folia
@@ -316,8 +314,8 @@ def doannotation(doc, data):
         if not 'set' in edit or edit['set'] == 'null':
             edit['set'] = 'undefined'
 
-        log("Processing edit: ", str(repr(edit)) )
-        log("Class=", Class.__name__ )
+        log("Processing edit: "+ str(repr(edit)) )
+        log("Class=" + Class.__name__ )
 
         if issubclass(Class, folia.TextContent):
             #Text Content, each target will get a copy
@@ -551,7 +549,7 @@ class Root:
         namepace = namespace.replace('/','').replace('..','')
         try:
             os.mkdir(self.workdir + '/' + namespace)
-        except FileExistsError:
+        except:
             pass
         cherrypy.response.headers['Content-Type']= 'text/plain'
         return "ok"
@@ -743,7 +741,6 @@ class Root:
 
 def main():
     global logfile
-    import argparse
     parser = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d','--workdir', type=str,help="Work directory", action='store',required=True)
     parser.add_argument('-p','--port', type=int,help="Port", action='store',default=8080,required=False)
