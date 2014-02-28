@@ -685,7 +685,10 @@ class Root:
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
         if not 'log' in response:
-            response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid)
+            if 'returnelementid' in response:
+                response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid)
+            else:
+                response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join(namespace,docid)
         else:
             response['log'] += " in document " + "/".join(namespace,docid)
         if 'returnelementid' in response:
