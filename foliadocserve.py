@@ -564,6 +564,7 @@ class Root:
             self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
             self.docstore.updateq[(namespace,docid)][sid] = []
         try:
+            log("Returning document " + "/".join((namespace,docid)) + " in session " + sid)
             cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps({
                 'html': gethtml(self.docstore[(namespace,docid)].data[0]),
@@ -622,6 +623,7 @@ class Root:
 
     @cherrypy.expose
     def getelement(self, namespace, docid, elementid, sid):
+        log("Returning element " + str(elementid) + " in document " + "/".join((namespace,docid)) + ", session " + sid)
         namepace = namespace.replace('/','').replace('..','')
         if sid[-5:] != 'NOSID':
             self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
@@ -647,7 +649,7 @@ class Root:
 
     @cherrypy.expose
     def poll(self, namespace, docid, sid):
-        cherrypy.log("Poll from sesssion " + sid + " for " + "/".join((namespace,docid)))
+        cherrypy.log("Poll from session " + sid + " for " + "/".join((namespace,docid)))
         self.checkexpireconcurrency()
         if sid in self.docstore.updateq[(namespace,docid)]:
             ids = self.docstore.updateq[(namespace,docid)][sid]
@@ -664,7 +666,7 @@ class Root:
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
         data = json.loads(str(rawbody,'utf-8'))
-        log("Declaration - Renewing session " + sid + " for " + "/".join((namespace,docid)))
+        log("Declaration: " + data['set'] + " for " + "/".join((namespace,docid)))
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         Class = folia.XML2CLASS[data['annotationtype']]
