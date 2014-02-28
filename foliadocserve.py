@@ -621,6 +621,28 @@ class Root:
             return json.dumps({'history': []}).encode('utf-8')
 
     @cherrypy.expose
+    def revert(self, namespace, docid, commithash):
+        if not all([ x.isalphanum() for x in commithash ]):
+            return "{'error':'invalid commit hash'}"
+
+        cherrypy.response.headers['Content-Type'] = 'application/json'
+        if self.docstore.git:
+            if (namespace,docid) in self.docstore:
+                os.chdir(self.workdir)
+                #unload document (will even still save it if not done yet, cause we need a clean workdir)
+                key = (namespace,docid)
+                self.docstore.unload(key)
+
+            log("Doing git revert for " + self.getfilename(key) )
+            os.chdir(self.workdir)
+            r = os.system("git checkout " + commithash + " " + self.getfilename(key) + " && git commit -m \"Reverting to commit " + commithash + "\"")
+            if r != 0:
+                log("Error during git revert of " + self.getfilename(key))
+            return "{'reverted':'" + commithash + "'}"
+        else:
+            return "{'error':'no git'}"
+
+    @cherrypy.expose
     def annotate(self, namespace, docid, sid):
         namepace = namespace.replace('/','').replace('..','')
         cl = cherrypy.request.headers['Content-Length']

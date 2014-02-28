@@ -334,7 +334,7 @@ function showhistory() {
                 if (s == "") {
                     s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + '</em> - (current version)</li>';
                 } else {
-                    s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + "</em> - [<a href=\"javascript:revert('"+h['commit']+")\">Revert to this version</a>]</li>";
+                    s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + "</em> - [<a href=\"javascript:revert('"+h['commit']+"')\">Revert to this version</a>]</li>";
                 }
             });
             $('#historybody').html("<ol>" + s + "</ol>");
@@ -346,6 +346,26 @@ function showhistory() {
         },
         dataType: "json"
     });
+}
+
+
+function revert(commithash) {
+    $('#wait').show();
+    $.ajax({
+        type: 'GET',
+        url: "/editor/" + namespace + "/"+ docid + "/revert/" + commithash,
+        contentType: "application/json",
+        //processData: false,
+        success: function(data) {
+            location.reload();
+        },
+        error: function(req,err,exception) { 
+            $('#wait').hide();
+            alert("Unable to revert");
+        },
+        dataType: "json"
+    });
+
 }
 
 function editor_onclick(element) {

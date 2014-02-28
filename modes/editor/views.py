@@ -31,6 +31,8 @@ def view(request, namespace, docid):
             if flat.users.models.haswritepermission(request.user.username, namespace):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     try:
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
                         r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
                     except urllib2.URLError:
                         return HttpResponseForbidden("Unable to connect to the document server")
@@ -84,3 +86,17 @@ def history(request,namespace, docid):
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
+
+@login_required
+def revert(request,namespace, docid, commithash):
+    if flat.users.models.haswritepermission(request.user.username, namespace):
+        try:
+            if hasattr(request, 'body'):
+                flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
+            else:
+                flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
+        return HttpResponse("{}", mimetype='application/json') #no content, client will do a full reload
+    else:
+        return HttpResponseForbidden("Permission denied, no write access")
