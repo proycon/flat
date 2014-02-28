@@ -45,7 +45,10 @@ def logout(request):
 @login_required
 def index(request):
     docs = {}
-    namespaces = flat.comm.get(request, '/getnamespaces/', False)
+    try:
+        namespaces = flat.comm.get(request, '/getnamespaces/', False)
+    except urllib2.URLError:
+        return HttpResponseForbidden("Unable to connect to the document server")
     if not request.user.username in namespaces['namespaces']:
         try:
             flat.comm.get(request, "makenamespace/" + request.user.username, False)
