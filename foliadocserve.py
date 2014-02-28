@@ -359,12 +359,14 @@ def doannotation(doc, data):
 
                 if edit['editform'] == 'direct':
                     #remove all targets and insert a new one in its place
-                    log("Removing targets and inserting new word")
+                    response['log'] = "Merging/replacing words, by " + data['annotator']
+                    log(response['log'])
                     for target in targets:
                         ancestor.remove(target)
                     ancestor.insert(index, ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor ) )
                 elif edit['editform'] == 'correction':
-                    log("Merging words (correction)")
+                    response['log'] = "Merging/replacing words (correction " + edit['correctionclass'] + "), by " + data['annotator']
+                    log(response['log'])
                     ancestor.mergewords(ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor), *targets, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
 
                 response['returnelementid'] = ancestor.id
@@ -379,7 +381,8 @@ def doannotation(doc, data):
 
                 if edit['editform'] == 'direct':
                     if 'insertright' in edit:
-                        log("Right insertion (direct)")
+                        response['log'] = "Right insertion after " + target.id + ", by " + data['annotator']
+                        log(response['log'])
                         try:
                             index = target.parent.data.index(target) + 1
                         except ValueError:
@@ -390,7 +393,8 @@ def doannotation(doc, data):
                             target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
-                        log("Left insertion (direct)")
+                        response['log'] = "Left insertion before " + target.id + ", by " + data['annotator']
+                        log(response['log'])
                         try:
                             index = target.parent.data.index(target)
                         except ValueError:
@@ -402,7 +406,8 @@ def doannotation(doc, data):
                         response['returnelementid'] = target.parent.id
 
                     elif 'dosplit' in edit:
-                        log("Split (direct)")
+                        response['log'] = "Split of " + target.id + ", by " + data['annotator']
+                        log(response['log'])
                         try:
                             index = target.parent.data.index(target)
                         except ValueError:
@@ -422,10 +427,12 @@ def doannotation(doc, data):
 
                         response['returnelementid'] = p.id
                     elif edit['text']:
-                        log("Replacing text")
+                        response['log'] = "Text content change of " + target.id + " (" + edit['text']+"), by " + data['annotator']
+                        log(response['log'])
                         target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
-                        log("Text deletion (implies element deletion)")
+                        log("Text deletion of " + target.id + ", by " + data['annotator'])
+                        log(response['log'])
                         #we have a text deletion! This implies deletion of the entire structure element!
                         p = target.parent
                         p.remove(target)
@@ -435,32 +442,36 @@ def doannotation(doc, data):
                     return response
                 elif edit['editform'] == 'correction':
                     if 'insertright' in edit:
-                        log("Right insertion (correction)")
+                        response['log'] = "Right insertion (correction " + edit['correctionclass'] + ") after " + target.id +", by " + data['annotator']
+                        log(response['log'])
                         newwords = []
                         for wordtext in edit['insertright'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
-                        log("Left insertion (correction)")
+                        response['log'] = "Left insertion (correction " + edit['correctionclass'] + ") before " + target.id + ", by " + data['annotator']
+                        log(response['log'])
                         newwords = []
                         for wordtext in edit['insertleft'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'dosplit' in edit:
-                        log("Split (correction)")
+                        response['log'] = "Split of " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
+                        log(response['log'])
                         newwords = []
                         for wordtext in edit['text'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif edit['text']:
-                        log("Text correction")
-                        log("Correction: "+  edit['text'] + ' ' + str(repr(target)))
+                        response['log'] = "Text correction on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
+                        log(response['log'])
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
-                        log("Deletion as correction",str(repr(target)))
+                        log("Deletion of " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator'])
+                        log(response['log'])
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
                         p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
@@ -468,7 +479,7 @@ def doannotation(doc, data):
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
-            log("Edit of token annotatation")
+            log("Edit of token annotation")
             #Token annotation, each target will get a copy (usually just one target)
             for targetid in data['targets']:
                 try:
@@ -479,8 +490,12 @@ def doannotation(doc, data):
 
                 if edit['editform'] == 'direct':
                     if edit['class']:
+                        response['log'] = "Edit of " + Class.__name__ + " (" + edit['class'] + ") in " + target.id + ", by " + data['annotator']
+                        log(response['log'])
                         target.replace(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
+                        response['log'] = "Deletion of " + Class.__name__ + " in " + target.id + ", by " + data['annotator']
+                        log(response['log'])
                         #we have a deletion
                         replace = Class.findreplaceables(target, edit['set'])
                         if len(replace) == 1:
@@ -490,8 +505,12 @@ def doannotation(doc, data):
                             response['error'] = "Unable to delete, multiple ambiguous candidates found!"
                             return response
                 elif edit['editform'] == 'alternative':
+                    response['log'] = "Adding alternative of " + Class.__name__ + " (" + edit['class'] + ") in " + target.id + ", by " + data['annotator']
+                    log(response['log'])
                     target.append(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], alternative=True)
                 elif edit['editform'] == 'correction':
+                    response['log'] = "Correcting " + Class.__name__ + " (" + edit['class'] + ") in " + target.id + ", by " + data['annotator']
+                    log(response['log'])
                     log("Calling correct")
                     target.correct(new=Class(doc, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
@@ -515,6 +534,9 @@ def doannotation(doc, data):
             if edit['new']:
                 #this is a new span annotation
 
+                response['log'] = "Adding " + Class.__name__ + " (" + edit['class'] + ") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                log(response['log'])
+
                 #find common ancestor of all targets
                 layers = doc[commonancestor].layers(annotationtype, edit['set'])
                 if len(layers) >= 1:
@@ -522,14 +544,19 @@ def doannotation(doc, data):
                 else:
                     layer = doc[commonancestor].append(folia.ANNOTATIONTYPE2LAYERCLASS[annotationtype])
 
-                layer.append(Class, *targets, set=edit['set'], cls=edit['cls'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                layer.append(Class, *targets, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
 
             elif 'id' in edit:
+                if edit['class']:
+                    response['log'] = "Editing " + Class.__name__ + " (" + edit['class'] + ") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                else:
+                    response['log'] = "Deleting " + Class.__name__ + " for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                log(response['log'])
                 #existing span annotation, we should have an ID
                 try:
                     annotation = doc[edit['id']]
-                except Exception as e:
+                except:
                     response['error'] = "No existing span annotation with id " + edit['id'] + " found"
                     return response
 
@@ -541,9 +568,14 @@ def doannotation(doc, data):
                     else:
                         annotation.data = targets
 
-                annotation.cls = edit['cls']
-                annotation.annotator = data['annotator']
-                annotation.annotatortype = folia.AnnotatorType.MANUAL
+                if edit['class']:
+                    annotation.cls = edit['class']
+                    annotation.annotator = data['annotator']
+                    annotation.annotatortype = folia.AnnotatorType.MANUAL
+                else:
+                    #delete:
+                    annotation.parent.remove(annotation)
+
 
             else:
                 #no ID, fail
@@ -652,8 +684,12 @@ class Root:
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
+        if not 'log' in response:
+            response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid)
+        else:
+            response['log'] += " in document " + "/".join(namespace,docid)
         if 'returnelementid' in response:
-            self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid))
+            self.docstore.save((namespace,docid),response['log'] )
             #set concurrency:
             for s in self.docstore.updateq[(namespace,docid)]:
                 if s != sid:
@@ -661,7 +697,7 @@ class Root:
                     self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
             return self.getelement(namespace,docid, response['returnelementid'],sid);
         else:
-            self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + "/".join((namespace,docid)))
+            self.docstore.save((namespace,docid), response['log'])
             return self.getelement(namespace,docid, doc.data[0].id,sid) #return all
 
 
