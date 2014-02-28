@@ -623,7 +623,7 @@ class Root:
     @cherrypy.expose
     def revert(self, namespace, docid, commithash):
         if not all([ x.isalnum() for x in commithash ]):
-            return "{'error':'invalid commit hash'}".encode('utf-8')
+            return b"{}"
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
         if self.docstore.git:
@@ -638,9 +638,9 @@ class Root:
             r = os.system("git checkout " + commithash + " " + self.docstore.getfilename(key) + " && git commit -m \"Reverting to commit " + commithash + "\"")
             if r != 0:
                 log("Error during git revert of " + self.docstore.getfilename(key))
-            return "{'reverted':'" + commithash + "'}".encode('utf-8')
+            return b"{}"
         else:
-            return "{'error':'no git'}".encode('utf-8')
+            return b"{}"
 
     @cherrypy.expose
     def annotate(self, namespace, docid, sid):
