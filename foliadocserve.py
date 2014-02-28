@@ -596,9 +596,11 @@ class Root:
 
     @cherrypy.expose
     def getdochistory(self, namespace, docid):
+        log("Returning history for document " + "/".join((namespace,docid)))
         cherrypy.response.headers['Content-Type'] = 'application/json'
         if self.docstore.git and (namespace,docid) in self.docstore:
             filename = self.docstore.getfilename( (namespace, docid))
+            log("Invoking git log " + filename)
             proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,shell=True)
             try:
                 outs, errs = proc.communicate(timeout=15)
@@ -606,8 +608,11 @@ class Root:
                 proc.kill()
                 outs, errs = proc.communicate()
             d = {'history':[]}
+            count = 0
             for commit, date, msg in parsegitlog(outs.decode('utf-8')):
+                count += 1
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
+            log(str(count) + " revisions found")
             return json.dumps(d).encode('utf-8')
         else:
             return json.dumps({'history': []}).encode('utf-8')
