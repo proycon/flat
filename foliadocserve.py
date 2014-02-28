@@ -596,12 +596,14 @@ class Root:
 
     @cherrypy.expose
     def getdochistory(self, namespace, docid):
+        namepace = namespace.replace('/','').replace('..','').replace(';','').replace('&','')
+        docid = docid.replace('/','').replace('..','').replace(';','').replace('&','')
         log("Returning history for document " + "/".join((namespace,docid)))
         cherrypy.response.headers['Content-Type'] = 'application/json'
         if self.docstore.git and (namespace,docid) in self.docstore:
-            filename = self.docstore.getfilename( (namespace, docid))
-            log("Invoking git log " + filename)
-            proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,cwd=self.workdir)
+            log("Invoking git log " + namespace+"/"+docid + ".folia.xml")
+            os.chdir(self.workdir)
+            proc = subprocess.Popen("git log " + namespace + "/" + docid + ".folia.xml", stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,cwd=self.workdir)
             try:
                 outs, errs = proc.communicate(timeout=15)
             except:
