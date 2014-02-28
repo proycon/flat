@@ -608,6 +608,7 @@ class Root:
             d = {'history':[]}
             for commit, date, msg in parsegitlog(outs.decode('utf-8')):
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
+            return json.dumps(d)
         else:
             return json.dumps({'history': []})
 
