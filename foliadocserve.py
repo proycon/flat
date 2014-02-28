@@ -690,7 +690,7 @@ class Root:
         docs = [ x for x in os.listdir(self.docstore.workdir + "/" + namespace) if x[-10:] == ".folia.xml" ]
         return json.dumps({
                 'documents': docs,
-                'timestamp': { x:os.path.getmtime(x) for x in docs  }
+                'timestamp': { x:os.path.getmtime(self.docstore.workdir + "/" + namespace + "/"+ x) for x in docs  }
         })
 
 
