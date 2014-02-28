@@ -601,7 +601,7 @@ class Root:
         if self.docstore.git and (namespace,docid) in self.docstore:
             filename = self.docstore.getfilename( (namespace, docid))
             log("Invoking git log " + filename)
-            proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,shell=True)
+            proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,shell=True,cwd=self.workdir)
             try:
                 outs, errs = proc.communicate(timeout=15)
             except:
