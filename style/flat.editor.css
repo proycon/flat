@@ -93,7 +93,7 @@ div#editformcorrectionsetselector {
 div#newdeclaration, div#history {
     position: absolute;
     display: none;
-    width: 480px;
+    width: 520px;
     padding: 10px;
     background: #cdcdcd; 
     color: #333;

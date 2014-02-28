@@ -332,9 +332,9 @@ function showhistory() {
             s = "";
             data['history'].forEach(function(h){
                 if (s == "") {
-                    s = s + "<li><tt>" + h['date'] + '</tt> - <em>' + h['msg'] + '</em> (current version)</li>';
+                    s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + '</em> (current version)</li>';
                 } else {
-                    s = s + "<li><tt>" + h['date'] + '</tt> - <em>' + h['msg'] + "</em> <a href=\"javascript:revert('"+h['commit']+")\">Revert to this version</a></li>";
+                    s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + "</em> <a href=\"javascript:revert('"+h['commit']+")\">Revert to this version</a></li>";
                 }
             });
             $('#historybody').html("<ol>" + s + "</ol>");
