@@ -605,14 +605,14 @@ class Root:
             os.chdir(self.workdir)
             proc = subprocess.Popen("git log " + namespace + "/" + docid + ".folia.xml", stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,cwd=self.workdir)
             outs, errs = proc.communicate()
-            log("git log errors? " + errs.decode('utf-8'))
-            log("git log output: " + outs.decode('utf-8'))
+            if errs: log("git log errors? " + errs.decode('utf-8'))
             d = {'history':[]}
             count = 0
             for commit, date, msg in parsegitlog(outs.decode('utf-8')):
                 count += 1
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
-            #log(str(count) + " revisions found - " + errs.decode('utf-8'))
+            if count == 0: log("git log output: " + outs.decode('utf-8'))
+            log(str(count) + " revisions found - " + errs.decode('utf-8'))
             return json.dumps(d).encode('utf-8')
         else:
             return json.dumps({'history': []}).encode('utf-8')
