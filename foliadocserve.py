@@ -608,9 +608,9 @@ class Root:
             d = {'history':[]}
             for commit, date, msg in parsegitlog(outs.decode('utf-8')):
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
-            return json.dumps(d)
+            return json.dumps(d).encode('utf-8')
         else:
-            return json.dumps({'history': []})
+            return json.dumps({'history': []}).encode('utf-8')
 
     @cherrypy.expose
     def annotate(self, namespace, docid, sid):
