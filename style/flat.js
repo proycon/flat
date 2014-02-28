@@ -299,4 +299,5 @@ $(function() {
             return false;
         });
     }
+    $('#wait').hide();
 });

@@ -179,7 +179,6 @@ nav ul ul li.on {
 }
 #wait {
     position: fixed;
-    display: none;
     background: black;
     width: 100%;
     min-width: 100%;
