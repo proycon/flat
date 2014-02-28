@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 import json
 import django.contrib.auth
+import datetime
 import flat.settings as settings
 import flat.comm
 import flat.users
@@ -49,11 +50,11 @@ def index(request):
         flat.comm.get(request, "makenamespace/" + request.user.username, False)
     for namespace in namespaces['namespaces']:
         if flat.users.models.hasreadpermission(request.user.username, namespace):
-            docfiles = flat.comm.get(request, '/getdocuments/' + namespace, False)
+            r = flat.comm.get(request, '/getdocuments/' + namespace, False)
             docs[namespace] = []
-            for d in docfiles['documents']:
+            for d in r['documents']:
                 docid =  os.path.basename(d.replace('.folia.xml',''))
-                docs[namespace].append(docid)
+                docs[namespace].append( (docid, datetime.datetime.fromtimestamp(r['timestamp'][docid]).strftime("%Y-%m-%d %H:%M") ) )
 
     return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
 

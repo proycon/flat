@@ -32,8 +32,8 @@
     {% for namespace, docsinnamespace in docs %}
         <li><strong>{{ namespace }}</strong>
         <ul>
-        {% for doc  in docsinnamespace %}
-        <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/">{{ doc }}</a> <span>[<a href="/download/{{ namespace }}/{{ doc }}">Download</a>]</span></li>
+        {% for doc, timestamp  in docsinnamespace %}
+        <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/">{{ doc }}</a> <span>{{ timestamp }}</span> <span>[<a href="/download/{{ namespace }}/{{ doc }}">Download</a>]</span></li>
         {% endfor %}
         </ul></li>
     {% endfor %}
