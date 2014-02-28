@@ -673,6 +673,7 @@ class Root:
         doc.declare(Class, set=data['set'])
         return json.dumps({
                 'declarations': tuple(getdeclarations(self.docstore[(namespace,docid)])),
+                'setdefinitions': getsetdefinitions(self.docstore[(namespace,docid)])
         })
 
 

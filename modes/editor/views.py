@@ -28,6 +28,7 @@ def view(request, namespace, docid):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
                     d['docdeclarations'] = json.dumps(r['declarations'])
+                    d['setdefinitions'] = json.dumps(r['setdefinitions'])
             else:
                 return HttpResponseForbidden("Permission denied, no write access")
         return render(request, 'editor.html', d)
