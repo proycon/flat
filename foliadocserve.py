@@ -604,7 +604,7 @@ class Root:
             log("Invoking git log " + namespace+"/"+docid + ".folia.xml")
             os.chdir(self.workdir)
             proc = subprocess.Popen("git log " + namespace + "/" + docid + ".folia.xml", stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,cwd=self.workdir)
-            outs, errs = proc.communicate(timeout=15)
+            outs, errs = proc.communicate()
             log("git log errors? " + errs.decode('utf-8'))
             log("git log output: " + outs.decode('utf-8'))
             d = {'history':[]}
