@@ -2,6 +2,7 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,HttpResponseForbidden
+import urllib2
 import flat.settings as settings
 import flat.comm
 import flat.users
@@ -11,7 +12,10 @@ import json
 @login_required
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
+        try:
+            doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
         try:
@@ -26,7 +30,10 @@ def view(request, namespace, docid):
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
             if flat.users.models.haswritepermission(request.user.username, namespace):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
-                    r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
+                    try:
+                        r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
+                    except urllib2.URLError:
+                        return HttpResponseForbidden("Unable to connect to the document server")
                     d['docdeclarations'] = json.dumps(r['declarations'])
                     d['setdefinitions'] = json.dumps(r['setdefinitions'])
             else:
@@ -38,10 +45,13 @@ def view(request, namespace, docid):
 @login_required
 def annotate(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
-        if hasattr(request, 'body'):
-            d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
-        else: #older django
-            d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.raw_post_data)
+        try:
+            if hasattr(request, 'body'):
+                d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
+            else: #older django
+                d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.raw_post_data)
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
@@ -50,10 +60,13 @@ def annotate(request,namespace, docid):
 @login_required
 def declare(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
-        if hasattr(request, 'body'):
-            d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
-        else:
-            d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.raw_post_data)
+        try:
+            if hasattr(request, 'body'):
+                d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
+            else:
+                d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.raw_post_data)
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
@@ -61,10 +74,13 @@ def declare(request,namespace, docid):
 @login_required
 def history(request,namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        if hasattr(request, 'body'):
-            d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
-        else:
-            d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
+        try:
+            if hasattr(request, 'body'):
+                d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
+            else:
+                d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
