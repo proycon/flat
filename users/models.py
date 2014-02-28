@@ -16,7 +16,7 @@ def hasreadpermission(username, namespace):
             perms = ReadPermissions.objects.get(username=username, namespace=namespace)
         except:
             return False
-        return len(perms) >= 1
+        return True
 
 def haswritepermission(username, namespace):
     if username == namespace:
@@ -26,4 +26,4 @@ def haswritepermission(username, namespace):
             perms = WritePermissions.objects.get(username=username, namespace=namespace)
         except:
             return False
-        return len(perms) >= 1
+        return True
