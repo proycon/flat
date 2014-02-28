@@ -39,6 +39,7 @@ editforms['{{ editform }}'] = true;
     <li><a href="javascript:declare()">Add new Annotation Type</a></li>
     {% endif %}
     <li id="toggleannotatordetails"><a href="javascript:toggleannotatordetails()">Show annotator details</a></li>
+    <li><a href="javascript:showhistory()">History &amp; Undo</a></li>
 </ul>
 </li>
 {% endblock %}
@@ -81,6 +82,14 @@ Correction set: <select id="editformcorrectionset"></select>
     <label>Set: </label> <input id="newdeclarationset" /> 
     <div class="buttoncontainer">
         <input id="newdeclarationsubmit" type="submit" value="Add declaration" class="button" />
+    </div>
+</div>
+<div id="history" class="dialog">
+    <div id="historyheader">
+        <span>History</span>
+        <button id="historydiscard">x</button>
+    </div>
+    <div id="historybody">
     </div>
 </div>
 {% endblock %}

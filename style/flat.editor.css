@@ -90,7 +90,7 @@ div#editformcorrectionsetselector {
 #editortargets label, #editortargetlist {
     display: none;
 }
-div#newdeclaration {
+div#newdeclaration, div#history {
     position: absolute;
     display: none;
     width: 480px;
@@ -103,7 +103,7 @@ div#newdeclaration {
     text-align: left;
     left: 30%;
 }
-div#newdeclarationheader {
+div#newdeclarationheader, div#historyheader {
     width:100%;
     background: #30677c;
     text-align: center;
@@ -112,7 +112,7 @@ div#newdeclarationheader {
     border-radius: 5px;
     margin-top: -3px;
 }
-div#newdeclaration button {
+div#newdeclaration button, div#history button {
     float: right;
     margin-top: -5px;
     background: #30677c;

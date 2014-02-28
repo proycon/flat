@@ -8,6 +8,7 @@ import os
 import json
 import random
 import datetime
+import subprocess
 from copy import copy
 from collections import defaultdict
 from pynlpl.formats import folia
@@ -24,6 +25,26 @@ def log(msg):
     if logfile:
         logfile.write(msg+"\n")
         logfile.flush()
+
+
+def parsegitlog(data):
+    commit = None
+    for line in data.split("\n"):
+        if line[0:6] == 'commit':
+            #yield previous
+            if commit and date and msg:
+                yield commit, date, msg
+            commit = line[7:]
+            msg = None
+            date = None
+        elif line[0:7] == 'Author:':
+            pass
+        elif line[0:4] == 'Date:':
+            date = line[6:].strip()
+        elif line:
+            msg = line
+    if commit and date and msg:
+        yield commit, date, msg
 
 
 class DocStore:
@@ -573,6 +594,22 @@ class Root:
         except NoSuchDocument:
             raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
 
+    @cherrypy.expose
+    def getdochistory(self, namespace, docid):
+        cherrypy.response.headers['Content-Type'] = 'application/json'
+        if self.docstore.git and (namespace,docid) in self.docstore:
+            filename = self.docstore.getfilename( (namespace, docid))
+            proc = subprocess.Popen("git log " + filename)
+            try:
+                outs, errs = proc.communicate(timeout=15)
+            except:
+                proc.kill()
+                outs, errs = proc.communicate()
+            d = {'history':[]}
+            for commit, date, msg in parsegitlog(outs):
+                d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
+        else:
+            return json.dumps({'history': []})
 
     @cherrypy.expose
     def annotate(self, namespace, docid, sid):
@@ -584,8 +621,8 @@ class Root:
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
-        self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + response['returnelementid'])
         if 'returnelementid' in response:
+            self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid))
             #set concurrency:
             for s in self.docstore.updateq[(namespace,docid)]:
                 if s != sid:
@@ -593,6 +630,7 @@ class Root:
                     self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
             return self.getelement(namespace,docid, response['returnelementid'],sid);
         else:
+            self.docstore.save((namespace,docid), "Edit by " + data['annotator'] + " in " + "/".join(namespace,docid))
             return self.getelement(namespace,docid, doc.data[0].id,sid) #return all
 
 

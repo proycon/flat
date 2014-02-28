@@ -387,6 +387,9 @@ function editor_oninit() {
     $('#newdeclarationdiscard').click(function(){
         $('#newdeclaration').hide();
     });
+    $('#historydiscard').click(function(){
+        $('#history').hide();
+    });
     $('#editorselecttarget').click(function(){
         if (coselector) {
             coselector = false;
