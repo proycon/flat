@@ -622,7 +622,7 @@ class Root:
 
     @cherrypy.expose
     def revert(self, namespace, docid, commithash):
-        if not all([ x.isalphanum() for x in commithash ]):
+        if not all([ x.isalnum() for x in commithash ]):
             return "{'error':'invalid commit hash'}"
 
         cherrypy.response.headers['Content-Type'] = 'application/json'
