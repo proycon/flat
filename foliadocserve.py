@@ -24,7 +24,7 @@ logfile = None
 def log(msg):
     global logfile
     if logfile:
-        logfile.write(msg)
+        logfile.write(msg+"\n")
         logfile.flush()
 
 
