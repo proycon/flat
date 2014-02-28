@@ -320,6 +320,34 @@ function addeditorfield(index) {
     setaddablefields();
 }
 
+function showhistory() {
+    $('#wait').show();
+    $.ajax({
+        type: 'GET',
+        url: "/editor/" + namespace + "/"+ docid + "/getdochistory/",
+        contentType: "application/json",
+        //processData: false,
+        success: function(data) {
+            $('#wait').hide();
+            s = "";
+            data['history'].forEach(function(h){
+                if (s == "") {
+                    s = s + "<li>" + h['date'] + ' - ' + h['msg'] + ' (current version)<li>";
+                } else {
+                    s = s + "<li>" + h['date'] + ' - ' + h['msg'] + ' <a href=\"javascript:revert('"+h['commit']+')\">Revert to this version\"></a><li>";
+                }
+            });
+            $('#historybody').html("<ol>" + s + "</ol>");
+            $('#history').show();
+        },
+        error: function(req,err,exception) { 
+            $('#wait').hide();
+            alert("Unable to obtain history");
+        },
+        dataType: "json"
+    });
+}
+
 function editor_onclick(element) {
     //open editor
     if (coselector) {
@@ -329,6 +357,8 @@ function editor_onclick(element) {
         showeditor(element);
     }
 }
+
+
 
 
 function editor_ondblclick(element) {
@@ -379,6 +409,8 @@ function editor_loadmenus() {
     });
     $('#annotationseditviewmenu').html(s);
 }
+
+
 
 function editor_oninit() {
     viewer_oninit();
