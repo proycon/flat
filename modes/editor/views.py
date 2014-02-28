@@ -58,3 +58,13 @@ def declare(request,namespace, docid):
     else:
         return HttpResponseForbidden("Permission denied, no write access")
 
+@login_required
+def history(request,namespace, docid):
+    if flat.users.models.hasreadpermission(request.user.username, namespace):
+        if hasattr(request, 'body'):
+            d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
+        else:
+            d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
+        return HttpResponse(json.dumps(d), mimetype='application/json')
+    else:
+        return HttpResponseForbidden("Permission denied, no read access")

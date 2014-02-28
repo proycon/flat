@@ -324,7 +324,7 @@ function showhistory() {
     $('#wait').show();
     $.ajax({
         type: 'GET',
-        url: "/editor/" + namespace + "/"+ docid + "/getdochistory/",
+        url: "/editor/" + namespace + "/"+ docid + "/history/",
         contentType: "application/json",
         //processData: false,
         success: function(data) {
