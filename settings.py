@@ -121,7 +121,7 @@ CONFIGURATIONS = {
     'name': "Valkuil Evaluation Project - Stage 1",
     #The default annotation focus upon loading a document, set to None to start without a focus
     'annotationfocustype': 'correction',
-    'annotationfocusset': 'valkuilset',
+    'annotationfocusset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
     'allowedannotationfocus': ('correction',),
