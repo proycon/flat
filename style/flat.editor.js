@@ -339,6 +339,7 @@ function showhistory() {
             });
             $('#historybody').html("<ol>" + s + "</ol>");
             $('#history').show();
+            $('#history').draggable();
         },
         error: function(req,err,exception) { 
             $('#wait').hide();
@@ -412,6 +413,7 @@ function editor_onupdate() {
 
 function declare() {
     $('#newdeclaration').show();
+    $('#newdeclaration').draggable();
 }
 
 function editor_loadmenus() {
