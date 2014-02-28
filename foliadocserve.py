@@ -19,9 +19,18 @@ def fake_wait_for_occupied_port(host, port): return
 class NoSuchDocument(Exception):
     pass
 
+
+logfile = None
+def log(msg):
+    global logfile
+    if logfile:
+        logfile.write(msg)
+        logfile.flush()
+
+
 class DocStore:
     def __init__(self, workdir, expiretime):
-        cherrypy.log("Initialising document store in " + workdir)
+        log("Initialising document store in " + workdir)
         self.workdir = workdir
         self.expiretime = expiretime
         self.data = {}
@@ -44,28 +53,28 @@ class DocStore:
         if not key in self:
             if not os.path.exists(filename):
                 raise NoSuchDocument
-            cherrypy.log("Loading " + filename)
+            log("Loading " + filename)
             self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions, loadsetdefinitions=True)
             self.lastchange[key] = time.time()
 
 
     def save(self, key, message = "unspecified change"):
         doc = self[key]
-        cherrypy.log("Saving " + self.getfilename(key) + " - " + message)
+        log("Saving " + self.getfilename(key) + " - " + message)
         doc.save()
         if self.git:
-            cherrypy.log("Doing git commit for " + self.getfilename(key) + " - " + message)
+            log("Doing git commit for " + self.getfilename(key) + " - " + message)
             os.chdir(self.workdir)
             r = os.system("git add " + self.getfilename(key) + " && git commit -m \"" + message + "\"")
             if r != 0:
-                cherrypy.log("Error during git add/commit of " + self.getfilename(key))
+                log("Error during git add/commit of " + self.getfilename(key))
 
 
     def unload(self, key, save=True):
         if key in self:
             if save:
                 self.save(key,"Saving unsaved changes")
-            cherrypy.log("Unloading " + "/".join(key))
+            log("Unloading " + "/".join(key))
             del self.data[key]
             del self.lastchange[key]
         else:
@@ -212,7 +221,7 @@ def getannotations(element):
     elif isinstance(element, folia.AbstractTokenAnnotation) or isinstance(element,folia.TextContent):
         annotation = element.json()
         p = element.parent
-        #cherrypy.log("Parent of ", str(repr(element)), " is ", str(repr(p)))
+        #log("Parent of ", str(repr(element)), " is ", str(repr(p)))
         p = element.ancestor(folia.AbstractStructureElement)
         annotation['targets'] = [ p.id ]
         assert isinstance(annotation, dict)
@@ -253,7 +262,7 @@ def getsetdefinitions(doc):
 
 def doannotation(doc, data):
     response = {'returnelementid': None}
-    cherrypy.log("Received data for doannotation: "+ repr(data))
+    log("Received data for doannotation: "+ repr(data))
 
     if len(data['targets']) > 1:
         commonancestors = None
@@ -275,7 +284,7 @@ def doannotation(doc, data):
                     commonancestors.remove(a)
         if commonancestors:
             commonancestor = commonancestors[0]
-            cherrypy.log("Common ancestor as return element: "+ commonancestor )
+            log("Common ancestor as return element: "+ commonancestor )
             response['returnelementid'] = commonancestor
     else:
         for targetid in data['targets']:
@@ -307,13 +316,13 @@ def doannotation(doc, data):
         if not 'set' in edit or edit['set'] == 'null':
             edit['set'] = 'undefined'
 
-        cherrypy.log("Processing edit: ", str(repr(edit)) )
-        cherrypy.log("Class=", Class.__name__ )
+        log("Processing edit: ", str(repr(edit)) )
+        log("Class=", Class.__name__ )
 
         if issubclass(Class, folia.TextContent):
             #Text Content, each target will get a copy
             if len(data['targets']) > 1:
-                cherrypy.log("Text edit of multiple elements")
+                log("Text edit of multiple elements")
                 #more than one target, this implies a merge
                 targets = []
                 ancestor = None
@@ -328,12 +337,12 @@ def doannotation(doc, data):
 
                 if edit['editform'] == 'direct':
                     #remove all targets and insert a new one in its place
-                    cherrypy.log("Removing targets and inserting new word")
+                    log("Removing targets and inserting new word")
                     for target in targets:
                         ancestor.remove(target)
                     ancestor.insert(index, ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor ) )
                 elif edit['editform'] == 'correction':
-                    cherrypy.log("Merging words (correction)")
+                    log("Merging words (correction)")
                     ancestor.mergewords(ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor), *targets, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
 
                 response['returnelementid'] = ancestor.id
@@ -344,11 +353,11 @@ def doannotation(doc, data):
                     response['error'] = "Target element " + data['targets'][0] + " does not exist!"
                     return response
 
-                cherrypy.log("Text edit of " + target.id)
+                log("Text edit of " + target.id)
 
                 if edit['editform'] == 'direct':
                     if 'insertright' in edit:
-                        cherrypy.log("Right insertion (direct)")
+                        log("Right insertion (direct)")
                         try:
                             index = target.parent.data.index(target) + 1
                         except ValueError:
@@ -359,7 +368,7 @@ def doannotation(doc, data):
                             target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
-                        cherrypy.log("Left insertion (direct)")
+                        log("Left insertion (direct)")
                         try:
                             index = target.parent.data.index(target)
                         except ValueError:
@@ -371,7 +380,7 @@ def doannotation(doc, data):
                         response['returnelementid'] = target.parent.id
 
                     elif 'dosplit' in edit:
-                        cherrypy.log("Split (direct)")
+                        log("Split (direct)")
                         try:
                             index = target.parent.data.index(target)
                         except ValueError:
@@ -391,10 +400,10 @@ def doannotation(doc, data):
 
                         response['returnelementid'] = p.id
                     elif edit['text']:
-                        cherrypy.log("Replacing text")
+                        log("Replacing text")
                         target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
-                        cherrypy.log("Text deletion (implies element deletion)")
+                        log("Text deletion (implies element deletion)")
                         #we have a text deletion! This implies deletion of the entire structure element!
                         p = target.parent
                         p.remove(target)
@@ -404,32 +413,32 @@ def doannotation(doc, data):
                     return response
                 elif edit['editform'] == 'correction':
                     if 'insertright' in edit:
-                        cherrypy.log("Right insertion (correction)")
+                        log("Right insertion (correction)")
                         newwords = []
                         for wordtext in edit['insertright'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
-                        cherrypy.log("Left insertion (correction)")
+                        log("Left insertion (correction)")
                         newwords = []
                         for wordtext in edit['insertleft'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'dosplit' in edit:
-                        cherrypy.log("Split (correction)")
+                        log("Split (correction)")
                         newwords = []
                         for wordtext in edit['text'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif edit['text']:
-                        cherrypy.log("Text correction")
-                        cherrypy.log("Correction: ", edit['text'],str(repr(target)))
+                        log("Text correction")
+                        log("Correction: ", edit['text'],str(repr(target)))
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
-                        cherrypy.log("Deletion as correction",str(repr(target)))
+                        log("Deletion as correction",str(repr(target)))
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
                         p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
@@ -437,7 +446,7 @@ def doannotation(doc, data):
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation):
-            cherrypy.log("Edit of token annotatation")
+            log("Edit of token annotatation")
             #Token annotation, each target will get a copy (usually just one target)
             for targetid in data['targets']:
                 try:
@@ -461,7 +470,7 @@ def doannotation(doc, data):
                 elif edit['editform'] == 'alternative':
                     target.append(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], alternative=True)
                 elif edit['editform'] == 'correction':
-                    cherrypy.log("Calling correct")
+                    log("Calling correct")
                     target.correct(new=Class(doc, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
 
@@ -522,9 +531,9 @@ def doannotation(doc, data):
             response['error'] = "Unable to edit annotations of type " + Class.__name__
             return response
 
-    cherrypy.log("Return element: " + repr(response['returnelementid']))
+    log("Return element: " + repr(response['returnelementid']))
     if response['returnelementid']:
-        cherrypy.log(doc[response['returnelementid']].xmlstring())
+        log(doc[response['returnelementid']].xmlstring())
         return response
     else:
         return {}
@@ -551,7 +560,7 @@ class Root:
     def getdoc(self, namespace, docid, sid):
         namepace = namespace.replace('/','').replace('..','')
         if sid[-5:] != 'NOSID':
-            cherrypy.log("Creating session " + sid + " for " + "/".join((namespace,docid)))
+            log("Creating session " + sid + " for " + "/".join((namespace,docid)))
             self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
             self.docstore.updateq[(namespace,docid)][sid] = []
         try:
@@ -572,7 +581,7 @@ class Root:
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
         data = json.loads(str(rawbody,'utf-8'))
-        cherrypy.log("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,docid)))
+        log("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,docid)))
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
@@ -581,7 +590,7 @@ class Root:
             #set concurrency:
             for s in self.docstore.updateq[(namespace,docid)]:
                 if s != sid:
-                    cherrypy.log("Scheduling update for " + s)
+                    log("Scheduling update for " + s)
                     self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
             return self.getelement(namespace,docid, response['returnelementid'],sid);
         else:
@@ -599,7 +608,7 @@ class Root:
                         if time.time() - lastaccess > 3600*12:  #expire after 12 hours
                             deletelist.append( (d,s) )
         for d,s in deletelist:
-            cherrypy.log("Expiring session " + s + " for " + "/".join(d))
+            log("Expiring session " + s + " for " + "/".join(d))
             del self.docstore.lastaccess[d][s]
             del self.docstore.updateq[d][s]
             if len(self.docstore.lastaccess[d]) == 0:
@@ -624,7 +633,7 @@ class Root:
         try:
             cherrypy.response.headers['Content-Type'] = 'application/json'
             if elementid:
-                cherrypy.log("Request element: "+ elementid)
+                log("Request element: "+ elementid)
                 return json.dumps({
                     'elementid': elementid,
                     'html': gethtml(self.docstore[(namespace,docid)][elementid]),
@@ -638,11 +647,11 @@ class Root:
 
     @cherrypy.expose
     def poll(self, namespace, docid, sid):
-        cherrypy.log("Poll from sesssion " + sid + " for " + "/".join((namespace,docid)))
+        log("Poll from sesssion " + sid + " for " + "/".join((namespace,docid)))
         self.checkexpireconcurrency()
         if sid in self.docstore.updateq[(namespace,docid)]:
             ids = self.docstore.updateq[(namespace,docid)][sid]
-            cherrypy.log("Returning IDs: " + repr(ids))
+            log("Returning IDs: " + repr(ids))
             self.docstore.updateq[(namespace,docid)][sid] = []
             return json.dumps({'update': ids})
         else:
@@ -655,7 +664,7 @@ class Root:
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
         data = json.loads(str(rawbody,'utf-8'))
-        cherrypy.log("Declaration - Renewing session " + sid + " for " + "/".join((namespace,docid)))
+        log("Declaration - Renewing session " + sid + " for " + "/".join((namespace,docid)))
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         Class = folia.XML2CLASS[data['annotationtype']]
@@ -703,19 +712,19 @@ class Root:
 
     @cherrypy.expose
     def upload(self, namespace):
-        cherrypy.log("In upload, namespace=",namespace)
+        log("In upload, namespace=",namespace)
         response = {}
         cl = cherrypy.request.headers['Content-Length']
         data = cherrypy.request.body.read(int(cl))
         cherrypy.response.headers['Content-Type'] = 'application/json'
         #data =cherrypy.request.params['data']
         try:
-            cherrypy.log("Loading document from upload")
+            log("Loading document from upload")
             doc = folia.Document(string=data)
             response['docid'] = doc.id
         except:
             response['error'] = "Uploaded file is no valid FoLiA Document"
-            cherrypy.log("error")
+            log("error")
             return json.dumps(response).encode('utf-8')
 
         filename = self.docstore.getfilename( (namespace, doc.id))
@@ -730,12 +739,15 @@ class Root:
 
 
 def main():
+    global logfile
     import argparse
     parser = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d','--workdir', type=str,help="Work directory", action='store',required=True)
     parser.add_argument('-p','--port', type=int,help="Port", action='store',default=8080,required=False)
+    parser.add_argument('-l','--logfile', type=str,help="Log file", action='store',default="foliadocserve.log",required=False)
     parser.add_argument('--expirationtime', type=int,help="Expiration time in seconds, documents will be unloaded from memory after this period of inactivity", action='store',default=900,required=False)
     args = parser.parse_args()
+    logfile = open(args.logfile,'w',encoding='utf-8')
     #args.storeconst, args.dataset, args.num, args.bar
     cherrypy.config.update({
         'server.socket_host': '0.0.0.0',
