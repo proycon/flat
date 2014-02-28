@@ -29,7 +29,10 @@ def log(msg):
 
 def parsegitlog(data):
     commit = None
+    date = None
+    msg = None
     for line in data.split("\n"):
+        line = line.strip()
         if line[0:6] == 'commit':
             #yield previous
             if commit and date and msg:
