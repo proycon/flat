@@ -601,7 +601,7 @@ class Root:
         if self.docstore.git and (namespace,docid) in self.docstore:
             filename = self.docstore.getfilename( (namespace, docid))
             log("Invoking git log " + filename)
-            proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,shell=True,cwd=self.workdir)
+            proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,cwd=self.workdir)
             try:
                 outs, errs = proc.communicate(timeout=15)
             except:
@@ -612,7 +612,7 @@ class Root:
             for commit, date, msg in parsegitlog(outs.decode('utf-8')):
                 count += 1
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
-            log(str(count) + " revisions found")
+            log(str(count) + " revisions found - " + errs.decode('utf-8'))
             return json.dumps(d).encode('utf-8')
         else:
             return json.dumps({'history': []}).encode('utf-8')
