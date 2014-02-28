@@ -42,7 +42,7 @@ def parsegitlog(data):
             date = None
         elif line[0:7] == 'Author:':
             pass
-        elif line[0:4] == 'Date:':
+        elif line[0:5] == 'Date:':
             date = line[6:].strip()
         elif line:
             msg = line
