@@ -21,6 +21,7 @@ class NoSuchDocument(Exception):
 
 class DocStore:
     def __init__(self, workdir, expiretime):
+        print("Initialising document store in " + workdir,file=sys.stderr)
         self.workdir = workdir
         self.expiretime = expiretime
         self.data = {}
@@ -48,10 +49,12 @@ class DocStore:
             self.lastchange[key] = time.time()
 
 
-    def save(self, key, message = "unspecified"):
+    def save(self, key, message = "unspecified change"):
         doc = self[key]
+        print("Saving " + self.getfilename(key) + " - " + message,file=sys.stderr)
         doc.save()
         if self.git:
+            print("Doing git commit for " + self.getfilename(key) + " - " + message,file=sys.stderr)
             os.chdir(self.workdir)
             r = os.system("git add " + self.getfilename(key) + " && git commit -m \"" + message + "\"")
             if r != 0:
@@ -61,7 +64,6 @@ class DocStore:
     def unload(self, key, save=True):
         if key in self:
             if save:
-                print("Saving " + "/".join(key),file=sys.stderr)
                 self.save(key,"Saving unsaved changes")
             print("Unloading " + "/".join(key),file=sys.stderr)
             del self.data[key]
@@ -674,8 +676,10 @@ class Root:
     @cherrypy.expose
     def getdocuments(self, namespace):
         namepace = namespace.replace('/','').replace('..','')
+        docs = [ x for x in os.listdir(self.docstore.workdir + "/" + namespace) if x[-10:] == ".folia.xml" ]
         return json.dumps({
-                'documents': [ x for x in os.listdir(self.docstore.workdir + "/" + namespace) if x[-10:] == ".folia.xml" ]
+                'documents': docs,
+                'timestamp': { x:os.path.getmtime(x) for x in docs  }
         })
 
 
@@ -706,7 +710,7 @@ class Root:
         cherrypy.response.headers['Content-Type'] = 'application/json'
         #data =cherrypy.request.params['data']
         try:
-            print("Loading document",file=sys.stderr)
+            print("Loading document from upload",file=sys.stderr)
             doc = folia.Document(string=data)
             response['docid'] = doc.id
         except:
