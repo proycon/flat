@@ -2,12 +2,12 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-import json
 import django.contrib.auth
 import datetime
 import flat.settings as settings
 import flat.comm
 import flat.users
+import urllib2
 import os
 
 def login(request):
@@ -47,10 +47,16 @@ def index(request):
     docs = {}
     namespaces = flat.comm.get(request, '/getnamespaces/', False)
     if not request.user.username in namespaces['namespaces']:
-        flat.comm.get(request, "makenamespace/" + request.user.username, False)
+        try:
+            flat.comm.get(request, "makenamespace/" + request.user.username, False)
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
     for namespace in namespaces['namespaces']:
         if flat.users.models.hasreadpermission(request.user.username, namespace):
-            r = flat.comm.get(request, '/getdocuments/' + namespace, False)
+            try:
+                r = flat.comm.get(request, '/getdocuments/' + namespace, False)
+            except urllib2.URLError:
+                return HttpResponseForbidden("Unable to connect to the document server")
             docs[namespace] = []
             for d in r['documents']:
                 docid =  os.path.basename(d.replace('.folia.xml',''))
@@ -70,7 +76,10 @@ def upload(request):
         namespace = request.POST['namespace'].replace('/','').replace('..','.')
         if 'file' in request.FILES:
             data = unicode(request.FILES['file'].read(),'utf-8')
-            response = flat.comm.postxml(request,"upload/" + namespace , data)
+            try:
+                response = flat.comm.postxml(request,"upload/" + namespace , data)
+            except urllib2.URLError:
+                return HttpResponseForbidden("Unable to connect to the document server")
             docid = response['docid']
             return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:

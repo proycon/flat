@@ -6,6 +6,7 @@ import flat.settings as settings
 import flat.comm
 import flat.users
 import json
+import urllib2
 
 def getcontext(request,namespace,docid, doc):
     return {
@@ -29,7 +30,10 @@ def getcontext(request,namespace,docid, doc):
 @login_required
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
+        try:
+            doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         d = getcontext(request,namespace,docid, doc)
         return render(request, 'viewer.html', d)
     else:
@@ -41,7 +45,10 @@ def view(request, namespace, docid):
 @login_required
 def subview(request, namespace, docid, elementid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/') #handles sid
+        try:
+            e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/') #handles sid
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         d = {
                 'elementid': elementid,
                 'html': e['html'],
@@ -54,11 +61,17 @@ def subview(request, namespace, docid, elementid):
 @login_required
 def poll(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/') #handles sid
+        try:
+            r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/') #handles sid
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         d = []
         if len(r) > 0:
             for elementid in r:
-                e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
+                try:
+                    e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
+                except urllib2.URLError:
+                    return HttpResponseForbidden("Unable to connect to the document server")
                 d.append({
                         'elementid': elementid,
                         'html': e['html'],
