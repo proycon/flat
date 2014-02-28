@@ -606,7 +606,7 @@ class Root:
                 proc.kill()
                 outs, errs = proc.communicate()
             d = {'history':[]}
-            for commit, date, msg in parsegitlog(outs):
+            for commit, date, msg in parsegitlog(outs.decode('utf-8')):
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
         else:
             return json.dumps({'history': []})
