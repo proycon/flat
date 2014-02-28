@@ -193,6 +193,7 @@ nav ul ul li.on {
 #doclist span {
     font-size: 8px;
     font-family: monospace;
+    margin-left: 20px;
 }
 
 .uploadcontainer {
