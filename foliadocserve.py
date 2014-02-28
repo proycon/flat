@@ -791,6 +791,7 @@ def main():
     parser.add_argument('-l','--logfile', type=str,help="Log file", action='store',default="foliadocserve.log",required=False)
     parser.add_argument('--expirationtime', type=int,help="Expiration time in seconds, documents will be unloaded from memory after this period of inactivity", action='store',default=900,required=False)
     args = parser.parse_args()
+    os.chdir(args.workdir)
     logfile = open(args.logfile,'w',encoding='utf-8')
     #args.storeconst, args.dataset, args.num, args.bar
     cherrypy.config.update({
