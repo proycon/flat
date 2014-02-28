@@ -614,7 +614,9 @@ class Root:
             for commit, date, msg in parsegitlog(outs.decode('utf-8')):
                 count += 1
                 d['history'].append( {'commit': commit, 'date': date, 'msg':msg})
-            log(str(count) + " revisions found - " + errs.decode('utf-8'))
+            #log(str(count) + " revisions found - " + errs.decode('utf-8'))
+            log(errs.decode('utf-8'))
+            log(outs.decode('utf-8'))
             return json.dumps(d).encode('utf-8')
         else:
             return json.dumps({'history': []}).encode('utf-8')
