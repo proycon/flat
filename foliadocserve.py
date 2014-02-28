@@ -647,11 +647,11 @@ class Root:
 
     @cherrypy.expose
     def poll(self, namespace, docid, sid):
-        log("Poll from sesssion " + sid + " for " + "/".join((namespace,docid)))
+        cherrypy.log("Poll from sesssion " + sid + " for " + "/".join((namespace,docid)))
         self.checkexpireconcurrency()
         if sid in self.docstore.updateq[(namespace,docid)]:
             ids = self.docstore.updateq[(namespace,docid)][sid]
-            log("Returning IDs: " + repr(ids))
+            log("Returning IDs after poll: " + repr(ids))
             self.docstore.updateq[(namespace,docid)][sid] = []
             return json.dumps({'update': ids})
         else:
