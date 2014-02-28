@@ -686,12 +686,12 @@ class Root:
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
         if 'log' in response:
-            response['log'] += " in document " + "/".join(namespace,docid)
+            response['log'] += " in document " + "/".join((namespace,docid))
         else:
             if 'returnelementid' in response:
-                response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid)
+                response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join((namespace,docid))
             else:
-                response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join(namespace,docid)
+                response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join((namespace,docid))
         if 'returnelementid' in response:
             self.docstore.save((namespace,docid),response['log'] )
             #set concurrency:
