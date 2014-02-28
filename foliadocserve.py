@@ -633,11 +633,11 @@ class Root:
                 key = (namespace,docid)
                 self.docstore.unload(key)
 
-            log("Doing git revert for " + self.getfilename(key) )
+            log("Doing git revert for " + self.docstore.getfilename(key) )
             os.chdir(self.workdir)
-            r = os.system("git checkout " + commithash + " " + self.getfilename(key) + " && git commit -m \"Reverting to commit " + commithash + "\"")
+            r = os.system("git checkout " + commithash + " " + self.docstore.getfilename(key) + " && git commit -m \"Reverting to commit " + commithash + "\"")
             if r != 0:
-                log("Error during git revert of " + self.getfilename(key))
+                log("Error during git revert of " + self.docstore.getfilename(key))
             return "{'reverted':'" + commithash + "'}"
         else:
             return "{'error':'no git'}"
