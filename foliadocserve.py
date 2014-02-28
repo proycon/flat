@@ -599,7 +599,7 @@ class Root:
         cherrypy.response.headers['Content-Type'] = 'application/json'
         if self.docstore.git and (namespace,docid) in self.docstore:
             filename = self.docstore.getfilename( (namespace, docid))
-            proc = subprocess.Popen("git log " + filename, shell=True)
+            proc = subprocess.Popen("git log " + filename, stdout=subprocess.PIPE,shell=True)
             try:
                 outs, errs = proc.communicate(timeout=15)
             except:
