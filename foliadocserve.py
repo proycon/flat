@@ -590,7 +590,8 @@ def doannotation(doc, data):
         log(doc[response['returnelementid']].xmlstring())
         return response
     else:
-        return {}
+        del response['returnelementid']
+        return response
 
 
 
@@ -684,13 +685,13 @@ class Root:
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
-        if not 'log' in response:
+        if 'log' in response:
+            response['log'] += " in document " + "/".join(namespace,docid)
+        else:
             if 'returnelementid' in response:
                 response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join(namespace,docid)
             else:
                 response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join(namespace,docid)
-        else:
-            response['log'] += " in document " + "/".join(namespace,docid)
         if 'returnelementid' in response:
             self.docstore.save((namespace,docid),response['log'] )
             #set concurrency:
