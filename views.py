@@ -68,7 +68,7 @@ def index(request):
                 docid =  os.path.basename(d.replace('.folia.xml',''))
                 docs[namespace].append( (docid, datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
 
-    return render(request, 'index.html', {'docs': docs.items(), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
+    return render(request, 'index.html', {'docs': sorted(docs.items()), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION, 'namespaces': namespaces_sorted})
 
 @login_required
 def download(request, namespace, docid):
