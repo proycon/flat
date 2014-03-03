@@ -470,7 +470,7 @@ def doannotation(doc, data):
                         log(response['log'])
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
-                        log("Deletion of " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator'])
+                        response['log'] = "Deletion of " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
