@@ -625,10 +625,12 @@ function editor_oninit() {
                     loaddeclarations(data['declarations']);
                     viewer_loadmenus();
                     $('#wait').hide();
+                    $('#newdeclaration').hide();
                 }
             },
             error: function(req,err,exception) { 
                 $('#wait').hide();
+                $('#newdeclaration').hide();
                 alert("Declaration failed: " + req + " " + err + " " + exception);
             },
             dataType: "json"

@@ -1,0 +1,257 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{times}
+\usepackage{url}
+\usepackage{graphicx}
+
+\title{Error Corpus Annotation Guidelines \\ a CvE / CLST project}
+\author{Antal van den Bosch, Maarten van Gompel}
+\date{Version 1.5 \\ 26 February 2014}
+
+\newcommand{\sonar}{SoNaR}
+
+\begin{document}
+\maketitle
+
+%\tableofcontents
+\newpage
+
+\section{Introduction}
+
+This document provides guidelines for the annotation of spelling
+errors in Dutch text, using FLAT, the FoLiA Linguistic Annotation
+Tool.\footnote{\url{flat.science.ru.nl}}
+
+%We will first give some
+%general information on the annotation process and related matters.
+%Then, we will discuss the different error types and provide examples.
+
+This document is based on an earlier version written by Tanja Gaustad
+van Zaanen in 2010--2011 as part of the NWO Vici {\em Implicit
+  Linguistics} project carried out at Tilburg University
+(2006--2011). Version 1.4 of this document was the last version
+written by Tanja Gaustad van Zaanen, in February 2011. The current
+version was adapted by Antal van den Bosch to accompany a new
+annotation project commissioned by the College van Examens in
+2013--2014, carried out at Radboud University Nijmegen.
+
+The document is currently a work in progress.
+
+%\section{What is ``correct?''}
+
+%It is important to stress what we consider ``correct'' in the context
+%of this annotation project. Since we are dealing with texts from 1954
+%to today as well as with texts from the Netherlands and from Flanders,
+%there is not one correct spelling for all words. There have been some
+%spelling reforms in the last 50 years, and this needs to be taken into
+%account as well. As a general rule we would therefore like to state
+%that \textbf{all} spellings from 1954 onwards that were at some stage
+%accepted correct spellings are considered correct. If both the original
+%contained in the text and a variant are correct, we stick with the original.
+%Also, no stylistic changes are necessary as we are concentrating on the
+%spelling aspect only.
+
+%\section{General guidelines}
+
+%\begin{itemize}
+%\item We annotate errors with an error type and---if applicable---with
+%a correction.
+%\item Each error can have several error types, but only one
+%correction. The correction is placed with the first element of the
+%error. 
+%\item Text in grey can be ignored (for now). If you do find an error,
+%you can and should still correct it.
+%\item Text in black might contain errors and needs to be checked, but
+%has no suggestions. These have to be added, if the word is wrongly
+%spelt.
+%\item Text in red has to be checked. The pre-filled correction
+%needs to be checked as well and corrected if necessary.
+%\item Underlining marks words that have already been annotated by a
+%user.
+%\item A border marks words marked as problem by a user.
+%\end{itemize}
+
+\section{Error Types}
+
+We distinguish ten error categories. Each error type is now described in more detail, including examples.
+
+\begin{itemize}
+  \item non-word error
+  \item real-word confusion
+  \item split error
+  \item runon error
+  \item missing word
+  \item missing punctuation
+  \item redundant word
+  \item redundant punctuation
+  \item archaic spelling
+  \item uncertain
+\end{itemize}
+
+
+\subsection{Non-word errors}
+
+A non-word error (or typo) applies to words that are keyed in with one
+or more character errors, producing a non-existing word. Letters may
+be reversed, such as in \emph{andres} for \emph{anders}; letters may
+be missing (\emph{balonnen} for \emph{ballonnen}) or may be
+superfluous (\emph{regelement} for \emph{reglement}). 
+
+\subsection{Real-word confusions}
+
+Confusables (or real-word errors) are a difficult category of
+errors to spot and correct. This type of errors leads to the use of an
+existing (correctly spelled) word instead of the originally intended
+one. A good example of confusable are \textit{dt}-errors: In the
+sentence ``Hij bied zich aan.'' \emph{bied} should be \emph{biedt},
+but \emph{bied} is an existing word and is therefore harder to
+identify as error.  Another example is the use of \emph{de} when it
+should be \emph{het} (\emph{de bootje} for \emph{het bootje}).
+
+\subsection{Split errors}
+
+Splits occur when a space has been inserted where it should not have
+been; this is sometimes referred to as the `English disease'. For
+instance, \emph{plannen makers} instead of \emph{plannenmakers} or
+\emph{geregi streerd} for \emph{geregistreerd}.
+
+\subsection{Runon errors}
+
+Runons are the opposite of splits: here a space has been accidentally
+deleted. Examples are \emph{supergeleiderszijn} for
+\emph{supergeleiders zijn} and \emph{zein} for \emph{ze in}.
+
+\subsection{Missing word}
+
+Words sometimes go missing. In ``Zij is \_ lui om dit te doen'' a
+\emph{te} went missing in the position marked by \_.
+%It might not always be completely obvious what went
+%missing. In such a case, make an educated guess and mark it with a
+%``[Unsure]'' tag (see below for an explanation of this type of
+%tag). The correction must contain the word preceeding the missing word
+%and the missing word itself. So in the above example the correction
+%would be ``is te''. 
+
+\subsection{Missing punctuation}
+
+As with missing words, punctuation can also go missing. In ``Ik ging
+wandelen \_ ik liep verkeerd.'', a period appears to be missing in the
+position marked by \_.
+
+\subsection{Redundant word}
+
+In some cases, too many words are written: either a word occurs twice
+(one after the other), or a different extra word has been inserted.
+Examples are ``Wij gaan \underline{gaan} naar huis'' or ``Ze heeft het
+\underline{dat} maar druk''. 
+
+\subsection{Redundant punctuation}
+
+It can happen that either due to preprocessing or due to human
+failure, punctuation gets inserted in places where it doesn't belong.
+E.g. \emph{honden;eigenaren} instead of \emph{hondeneigenaren}. It is
+important to notice, however, that a hyphen (verbindingsstreep) is not
+considered punctuation in this context. The same is true for an
+apostrophe used in i.e.  plural forms in Dutch (\emph{caf\'e's}).
+
+\subsection{Archaic spelling}
+
+Archaic spelling means the use of old spelling variants of Dutch
+words, e.g.  \emph{legh} instead of \emph{leg}. As a rule of thumb,
+you can ask yourself the question: does this archaic variant have a
+modern Dutch variant that means the same and is used in (nearly) the
+same way? If yes, annotate the word. This means that a lot of fixed
+expressions (like \emph{ten behoeve van}, \emph{ter inzage}, etc.)
+will not fall into the category ``archaic''.
+
+\subsection{Unsure}
+
+The 'way out' category is ``Unsure''. This allows you to
+mark an annotation with a question mark. If you check this category,
+you should add a comment (including the word!) why you are not sure
+about your annotation.  This will allow us at a later stage to go back
+and discuss problems.
+
+You can also use this tag to temporarily mark a word as problematic
+and go back and resolve it before you save the file and move on to the
+next one.
+
+%\section{Annotation process}
+
+%The general rule for this type of annotation is that if you are stuck
+%deciding which error type an error is, you should move on and mark the
+%problematic case. You can then go back to it later or check with
+%someone else what they think. This allows for the annotation to
+%process more smoothly and more effectively. We have therefore
+%introduced an extra tag which is called ``[Unsure]''. You apply
+%it to problematic cases. 
+
+%Once you are done annotating a document, the annotation tool provides
+%you with a facility that highlights all problematic cases. You can
+%then try again or check with your colleagues or supervisor.
+
+%Eventually, a file that has been fully annotated should not contain
+%any question mark tags.
+
+\section{Workflow}
+
+\begin{enumerate}
+\item Open the FoLiA Linguistic Annotation tool
+  \texttt{http://flat.science.ru.nl} in your webbrowser (note that
+  Internet Explorer is \textbf{not} supported! Use an up-to-date version of
+  Firefox, Chrome, Opera or Safari instead). 
+\item Log in using the provided user-name and password. Make sure to select configuration
+  \emph{Valkuil Evaluation Project - Stage 1}, do not use any other
+  configuration.
+  \begin{center}
+    \includegraphics[width=11cm]{login.png}
+  \end{center}
+\item Select a document to annotate from the list of available documents.
+  \begin{center}
+    \includegraphics[width=11cm]{mydocuments.png}
+  \end{center}
+\item Click a word that needs to be annotated. An edit dialog will pop up.
+  Type the correction for the word and select the proper error type from the
+  pull-down list.
+  \begin{center}
+    \includegraphics[width=11cm]{edit1.png}
+  \end{center}
+\begin{itemize}
+  \item If the annotation spans multiple
+  words (in case of a split error), press the button ``select multiple'' and
+  click all applicable words.
+  \begin{center}
+    \includegraphics[width=11cm]{editmerge.png}
+  \end{center}
+  \item If the word(s) have to be deleted, just empty the correction text box
+    and press 'Ok'.
+  \begin{center}
+    \includegraphics[width=11cm]{editdeletion.png}
+  \end{center}
+  \item If you want to insert a new word or punctuation, click the word
+    preceding it, type a space after the existing word, even in case of
+    punctuation that would normally be attached to the word, and append the text you
+    want to have inserted. Multiple space-separated words can be inserted at
+    once.
+  \begin{center}
+    \includegraphics[width=11cm]{editinsertion.png}
+  \end{center}
+  \item If the word is a runon error, click the word and insert a space. Upon
+    pressing 'Ok', the
+    system will then ask if you intend to split the words.
+\end{itemize}
+\item The document will be automatically saved after each annotation, you can
+  at any time close and reopen the browser, or reload the page. To go back to
+  the document list and select another document to annotate, click \emph{My
+  Documents} in the top bar.
+\item Repeat from step 3 or 4.
+\end{enumerate}
+
+%If there are questions about the type of annotation, mark the
+%occurrence with a ``[Unsure]''-tag. Depending on how often you
+%applied the tag, plan a session with me where we go through all the
+%cases you weren't sure of.
+
+%\textbf{Remember: Multiple annotations per error are possible, but
+%always \underline{one} correction.}
+
+\end{document} 
