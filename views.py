@@ -54,14 +54,17 @@ def index(request):
             flat.comm.get(request, "makenamespace/" + request.user.username, False)
         except urllib2.URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
-    for namespace in namespaces['namespaces']:
+
+    namespaces_sorted = sorted([x for x in namespaces['namespaces'] if x != request.user.username])
+    namespaces_sorted.insert(0,request.user.username)
+    for namespace in namespaces_sorted:
         if flat.users.models.hasreadpermission(request.user.username, namespace):
             try:
                 r = flat.comm.get(request, '/getdocuments/' + namespace, False)
             except urllib2.URLError:
                 return HttpResponseForbidden("Unable to connect to the document server")
             docs[namespace] = []
-            for d in r['documents']:
+            for d in sorted(r['documents']):
                 docid =  os.path.basename(d.replace('.folia.xml',''))
                 docs[namespace].append( (docid, datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
 
