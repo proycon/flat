@@ -31,10 +31,12 @@ van Zaanen in 2010--2011 as part of the NWO Vici {\em Implicit
 (2006--2011). Version 1.4 of this document was the last version
 written by Tanja Gaustad van Zaanen, in February 2011. The current
 version was adapted by Antal van den Bosch to accompany a new
-annotation project commissioned by the College van Examens in
-2013--2014, carried out at Radboud University Nijmegen.
+annotation project within the Centre for Language and Speech
+Technology of Radboud University Nijmegen, commissioned by the College
+van Examens in 2013--2014.
 
-The document is currently a work in progress.
+The document is currently a work in progress. Comments and suggestions
+are welcome.
 
 %\section{What is ``correct?''}
 
@@ -72,9 +74,9 @@ The document is currently a work in progress.
 
 \section{Error Types}
 
-We distinguish ten error categories. Each error type is now described in more detail, including examples.
+We distinguish eleven error categories. Each error type is now described in more detail, including examples.
 
-\begin{itemize}
+\begin{enumerate}
   \item non-word error
   \item real-word confusion
   \item split error
@@ -83,9 +85,10 @@ We distinguish ten error categories. Each error type is now described in more de
   \item missing punctuation
   \item redundant word
   \item redundant punctuation
+  \item capitalization error
   \item archaic spelling
   \item uncertain
-\end{itemize}
+\end{enumerate}
 
 
 \subsection{Non-word errors}
@@ -106,6 +109,10 @@ sentence ``Hij bied zich aan.'' \emph{bied} should be \emph{biedt},
 but \emph{bied} is an existing word and is therefore harder to
 identify as error.  Another example is the use of \emph{de} when it
 should be \emph{het} (\emph{de bootje} for \emph{het bootje}).
+
+Confusions between punctuation tokens, such as a period that should be a
+comma or the other way around, also belong to this category. Missing
+or redundant punctuation tokens are different categories (see below).
 
 \subsection{Split errors}
 
@@ -152,6 +159,15 @@ E.g. \emph{honden;eigenaren} instead of \emph{hondeneigenaren}. It is
 important to notice, however, that a hyphen (verbindingsstreep) is not
 considered punctuation in this context. The same is true for an
 apostrophe used in i.e.  plural forms in Dutch (\emph{caf\'e's}).
+
+\subsection{Capitalization error}
+
+Capitalization errors typically involve the first letter of a word
+being incorrectly capitalized (as in {\em Ik Loop terug}) or a word
+lacking capitalization (as in {\em $\ldots$ gewonnen. hij vond dat
+  $\ldots$}). A capitalization error typically involves the first
+letter of a word, and is likely to occur in the neighborhood of a
+punctuation, or a missing or redundant punctuation.
 
 \subsection{Archaic spelling}
 
@@ -239,7 +255,7 @@ next one.
     pressing 'Ok', the
     system will then ask if you intend to split the words.
 \end{itemize}
-\item The document will be automatically saved after each annotation, you can
+\item The document will be automatically saved after each annotation. You can
   at any time close and reopen the browser, or reload the page. To go back to
   the document list and select another document to annotate, click \emph{My
   Documents} in the top bar.
