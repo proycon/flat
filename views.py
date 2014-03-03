@@ -56,7 +56,7 @@ def index(request):
             return HttpResponseForbidden("Unable to connect to the document server")
 
     namespaces_sorted = sorted([x for x in namespaces['namespaces'] if x != request.user.username])
-    namespaces_sorted = [request.user.username] +  naemspaces_sorted
+    namespaces_sorted = [request.user.username] +  namespaces_sorted
     for namespace in namespaces_sorted:
         if flat.users.models.hasreadpermission(request.user.username, namespace):
             try:
