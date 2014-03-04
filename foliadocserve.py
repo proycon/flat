@@ -442,7 +442,7 @@ def doannotation(doc, data):
                     return response
                 elif edit['editform'] == 'correction':
                     if 'insertright' in edit:
-                        response['log'] = "Right insertion (correction " + edit['correctionclass'] + ") after " + target.id +", by " + data['annotator']
+                        response['log'] = "Right insertion '" + edit['insertright'] + "' (correction " + edit['correctionclass'] + ") after " + target.id +", by " + data['annotator']
                         log(response['log'])
                         newwords = []
                         for wordtext in edit['insertright'].split(' '):
@@ -450,7 +450,7 @@ def doannotation(doc, data):
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
-                        response['log'] = "Left insertion (correction " + edit['correctionclass'] + ") before " + target.id + ", by " + data['annotator']
+                        response['log'] = "Left insertion '" + edit['insertleft'] + "' (correction " + edit['correctionclass'] + ") before " + target.id + ", by " + data['annotator']
                         log(response['log'])
                         newwords = []
                         for wordtext in edit['insertleft'].split(' '):
@@ -458,7 +458,7 @@ def doannotation(doc, data):
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'dosplit' in edit:
-                        response['log'] = "Split of " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
+                        response['log'] = "Split of " + target.id + " '"+ edit['text'] +"' (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
                         newwords = []
                         for wordtext in edit['text'].split(' '):
@@ -466,11 +466,11 @@ def doannotation(doc, data):
                         target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif edit['text']:
-                        response['log'] = "Text correction on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
+                        response['log'] = "Text correction '" + edit['text'] + "' on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
-                        log("Deletion of " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator'])
+                        response['log'] = "Deletion of " + target.id + " '" + target.text() + "' (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
