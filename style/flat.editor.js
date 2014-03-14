@@ -543,7 +543,7 @@ function editor_oninit() {
                         //Is the rightmost word the same as the original word?
                         //Then the user want to do an insertion to the left
                         } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
-                            editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].oldtext.length - 1);
+                            editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].text.length - editdata[i].oldtext.length - 1);
                             editdata[i].text = editdata[i].oldtext;
                         } else {
                             //Words are different? than the user may want to split
