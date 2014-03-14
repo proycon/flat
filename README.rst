@@ -42,50 +42,50 @@ Screenshots
 
 The login screen:
 
-.. image:: https://raw.github.com/proycon/flat/docs/login.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/login.png
     :alt: FLAT screenshot
     :align: center
 
 Document index, showing namespaces accessible to the user and the documents
 within.
 
-.. image:: https://raw.github.com/proycon/flat/docs/mydocuments.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/mydocuments.png
     :alt: FLAT screenshot
     :align: center
 
 Hovering over words reveals annotations:
 
-.. image:: https://raw.github.com/proycon/flat/docs/hover.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/hover.png
     :alt: FLAT screenshot
     :align: center
 
 A particular annotation focus can be set to highlight the most frequent
 classes in that set:
 
-.. image:: https://raw.github.com/proycon/flat/docs/highlight1.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/highlight1.png
     :alt: FLAT screenshot
     :align: center
 
-.. image:: https://raw.github.com/proycon/flat/docs/highlight2.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/highlight2.png
     :alt: FLAT screenshot
     :align: center
 
 Editing a named entity in a set for which a set definition is available:
 
-.. image:: https://raw.github.com/proycon/flat/docs/edit2.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/edit2.png
     :alt: FLAT screenshot
     :align: center
 
 Correcting a word in a spelling-annotation project:
 
-.. image:: https://raw.github.com/proycon/flat/docs/edit1.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/edit1.png
     :alt: FLAT screenshot
     :align: center
 
 
 Extensive history with limitless undo ability, git-based:
 
-.. image:: https://raw.github.com/proycon/flat/docs/history.png
+.. image:: https://raw.github.com/proycon/flat/master/docs/history.png
     :alt: FLAT screenshot
     :align: center
 
