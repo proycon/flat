@@ -18,7 +18,7 @@ in pynlpl.
 Features
 =============================================
 
-* Multi-user environment
+* Web-based, multi-user environment
 * Server-side document storage, divided into 'namespaces', by default each user
   has his own namespace. Active documents are held in memory server-side.
   Read and write permissions to access namespaces are fully configurable.
