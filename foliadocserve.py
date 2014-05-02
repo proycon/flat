@@ -383,6 +383,11 @@ def doannotation(doc, data):
                     if 'insertright' in edit:
                         response['log'] = "Right insertion after " + target.id + ", by " + data['annotator']
                         log(response['log'])
+
+                        #Undo any space=False attribute on the word we insert after, if set
+                        if isinstance(target, folia.Word) and not target.space:
+                            target.space = True
+
                         try:
                             index = target.parent.data.index(target) + 1
                         except ValueError:
@@ -400,6 +405,10 @@ def doannotation(doc, data):
                         except ValueError:
                             response['error'] = "Unable to find insertion index"
                             return response
+
+                        #undo any space=False prior to our insertion point
+                        if index > 0 and target.parent.data[index-1] and isinstance(target.parent.data[index-1], folia.Word) and not target.parent.data[index-1].space:
+                            target.parent.data[index-1].space = True
 
                         for wordtext in reversed(edit['insertleft'].split(' ')):
                             target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
@@ -433,6 +442,15 @@ def doannotation(doc, data):
                     else:
                         log("Text deletion of " + target.id + ", by " + data['annotator'])
                         log(response['log'])
+
+                        #undo any space=False prior to our deleted entry
+                        try:
+                            index = target.parent.data.index(target)
+                        except ValueError:
+                            index = 0
+                        if index > 0 and isinstance(target.parent.data[index-1], folia.Word) and not target.parent.data[index-1].space:
+                            target.parent.data[index-1].space = True
+
                         #we have a text deletion! This implies deletion of the entire structure element!
                         p = target.parent
                         p.remove(target)
@@ -442,6 +460,10 @@ def doannotation(doc, data):
                     return response
                 elif edit['editform'] == 'correction':
                     if 'insertright' in edit:
+                        #Undo any space=False attribute if set
+                        if isinstance(target, folia.Word) and not target.space:
+                            target.space = True
+
                         response['log'] = "Right insertion '" + edit['insertright'] + "' (correction " + edit['correctionclass'] + ") after " + target.id +", by " + data['annotator']
                         log(response['log'])
                         newwords = []
@@ -450,8 +472,18 @@ def doannotation(doc, data):
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                         response['returnelementid'] = target.parent.id
                     elif 'insertleft' in edit:
+
                         response['log'] = "Left insertion '" + edit['insertleft'] + "' (correction " + edit['correctionclass'] + ") before " + target.id + ", by " + data['annotator']
                         log(response['log'])
+
+                        #undo any space=False prior to our insertion point
+                        try:
+                            index = target.parent.data.index(target)
+                        except ValueError:
+                            index = 0
+                        if index > 0 and  isinstance(target.parent.data[index-1], folia.Word) and not target.parent.data[index-1].space:
+                            target.parent.data[index-1].space = True
+
                         newwords = []
                         for wordtext in edit['insertleft'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
@@ -472,6 +504,15 @@ def doannotation(doc, data):
                     else:
                         response['log'] = "Deletion of " + target.id + " '" + target.text() + "' (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
+
+                        #undo any space=False prior to our deleted entry
+                        try:
+                            index = target.parent.data.index(target)
+                        except ValueError:
+                            index = 0
+                        if index > 0 and isinstance(target.parent.data[index-1], folia.Word) and not target.parent.data[index-1].space:
+                            target.parent.data[index-1].space = True
+
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
                         p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
