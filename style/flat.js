@@ -144,6 +144,7 @@ function loaddeclarations(declarationlist) {
 }
 
 function registerhandlers() {
+    $('.F').off(); //prevent duplicates
     $('.F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
 }
 
@@ -181,8 +182,7 @@ function update(data) {
     }
     if (data.elementid) {
         //reregister handlers
-        //$('#' + valid(data.elementid)+ ' .F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
-        $('.F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+        registerhandlers();
     }
     if (function_exists(mode + '_onupdate')) {
         f = eval(mode + '_onupdate');
