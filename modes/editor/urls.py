@@ -1,5 +1,9 @@
 #from django.conf.urls import patterns, include, url
-from django.conf.urls.defaults import *
+from django import VERSION
+if VERSION[1] >= 6: #Django 1.6
+    from django.conf.urls import patterns, url, include
+else:
+    from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     # Examples:

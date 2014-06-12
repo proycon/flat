@@ -1,8 +1,13 @@
-from django.conf.urls.defaults import *
+from django import VERSION
 
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-#from django.conf.urls.static import static
+
+if VERSION[1] >= 6: #Django 1.6
+    from django.conf.urls import patterns, url, include
+    from django.conf.urls.static import static
+else:
+    from django.conf.urls.defaults import *
+
 import flat.settings as settings
 admin.autodiscover()
 
@@ -23,11 +28,13 @@ urlpatterns = patterns('',
 )
 
 if settings.DEBUG:
-    #urlpatterns += static(settings.STYLE_URL, document_root=settings.STYLE_ROOT)
-    #Django 1.3
-    urlpatterns += patterns('',
-        (r'^style/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STYLE_ROOT}),
-    )
+    if VERSION[1] >= 6: #Django 1.6
+        urlpatterns += static(settings.STYLE_URL, document_root=settings.STYLE_ROOT)
+    else:
+        #Django 1.3
+        urlpatterns += patterns('',
+            (r'^style/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STYLE_ROOT}),
+        )
 
 
 for mode, _ in settings.EDITOR_MODES:
