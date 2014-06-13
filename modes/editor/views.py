@@ -36,8 +36,6 @@ def view(request, namespace, docid):
                         return HttpResponseForbidden("Unable to connect to the document server")
                     d['docdeclarations'] = json.dumps(r['declarations'])
                     d['setdefinitions'] = json.dumps(r['setdefinitions'])
-            else:
-                return HttpResponseForbidden("Permission denied, no write access")
         return render(request, 'editor.html', d)
     else:
         return HttpResponseForbidden("Permission denied")
