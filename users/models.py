@@ -15,7 +15,10 @@ def hasreadpermission(username, namespace):
         try:
             perms = ReadPermissions.objects.get(username=username, namespace=namespace)
         except:
-            return False
+            try:
+                perms = ReadPermissions.objects.get(username=username, namespace='ALL')
+            except:
+                return False
         return True
 
 def haswritepermission(username, namespace):
@@ -25,5 +28,8 @@ def haswritepermission(username, namespace):
         try:
             perms = WritePermissions.objects.get(username=username, namespace=namespace)
         except:
-            return False
+            try:
+                perms = ReadPermissions.objects.get(username=username, namespace='ALL')
+            except:
+                return False
         return True
