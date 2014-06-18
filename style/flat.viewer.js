@@ -333,6 +333,13 @@ function setclasscolors() {
                     if ($('#' + valid(target)).hasClass('w')) {
                         $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
                     }
+                    if (($('#' + valid(target)).hasClass('s')) && (annotation.type == 'correction')) {
+                        annotation.new.forEach(function(newtarget) {
+                            if (newtarget.type == 'w') {
+                                $('#' + valid(newtarget.id)).addClass('class' + classrank[annotation.class]);
+                            }
+                        });
+                    }
                 }
             }
         });
