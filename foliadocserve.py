@@ -253,6 +253,8 @@ def getannotations(element, previouswordid = None):
         if not element.id and (folia.Attrib.ID in element.REQUIRED_ATTRIBS or folia.Attrib.ID in element.OPTIONAL_ATTRIBS):
             #span annotation elements must have an ID for the editor to work with them, let's autogenerate one:
             element.id = element.doc.data[0].generate_id(element)
+            #and add to index
+            element.doc[element.id] = element
         annotation = element.json()
         annotation['span'] = True
         annotation['targets'] = [ x.id for x in element.wrefs() ]
@@ -624,8 +626,8 @@ def doannotation(doc, data):
                     annotation.annotatortype = folia.AnnotatorType.MANUAL
                 else:
                     #delete:
+                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement).id
                     annotation.parent.remove(annotation)
-                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement)
 
 
             else:
