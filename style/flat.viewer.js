@@ -64,11 +64,26 @@ function toggleoriginal() {
             Object.keys(annotations[target]).forEach(function(annotationkey){
                 annotation = annotations[target][annotationkey];
                 if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original)) {
+                    textblob = "";
                     annotation.original.forEach(function(original){
                         if (original.text) {
-                            $('#' + valid(target) + ' span.lbl').html(original.text);
+                            if ($('#' + valid(target)).hasClass('w')) {
+                                $('#' + valid(target) + ' span.lbl').html(original.text);
+                            }
+                            if (textblob) textblob += " ";
+                            textblob += original.text;
                         }
                     });                        
+                    if (annotations[target]['self'].type == 's') {
+                        if (annotation.new.length > 0) {
+                            if ($('#' + valid(annotation.new[0].id)).hasClass('w')) {
+                                $('#' + valid(annotation.new[0].id) + ' span.lbl').html(textblob);
+                            }
+                        } else {
+                            //must be a deletion, TODO: show
+                        }
+                    }
+
                 }
             });
         });
@@ -334,11 +349,15 @@ function setclasscolors() {
                         $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
                     }
                     if (($('#' + valid(target)).hasClass('s')) && (annotation.type == 'correction')) {
-                        annotation.new.forEach(function(newtarget) {
-                            if (newtarget.type == 'w') {
-                                $('#' + valid(newtarget.id)).addClass('class' + classrank[annotation.class]);
-                            }
-                        });
+                        if (annotation.new.length == 0) {
+                            //a deletion occurred
+                        } else {
+                            annotation.new.forEach(function(newtarget) {
+                                if (newtarget.type == 'w') {
+                                    $('#' + valid(newtarget.id)).addClass('class' + classrank[annotation.class]);
+                                }
+                            });
+                        }
                     }
                 }
             }
