@@ -65,6 +65,7 @@ function toggleoriginal() {
                 annotation = annotations[target][annotationkey];
                 if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original)) {
                     textblob = "";
+                    originalid = "";
                     annotation.original.forEach(function(original){
                         if (original.text) {
                             if ($('#' + valid(target)).hasClass('w')) {
@@ -73,6 +74,7 @@ function toggleoriginal() {
                             if (textblob) textblob += " ";
                             textblob += original.text;
                         }
+                        if ((original.type == 'w') && (originalid == "")) originalid = original.id;
                     });                        
                     if (annotations[target]['self'].type == 's') {
                         if (annotation.new.length > 0) {
@@ -80,7 +82,15 @@ function toggleoriginal() {
                                 $('#' + valid(annotation.new[0].id) + ' span.lbl').html(textblob);
                             }
                         } else {
-                            //must be a deletion, TODO: show
+                            //must be a deletion, show
+                            if (annotation.previousword) {
+                                //check if the deletion has a colored class
+                                var c = '';
+                                if (classrank[annotation.class]) {
+                                    c = ' class' + classrank[annotation.class];
+                                }                                
+                                $('#' + valid(annotation.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
+                            }
                         }
                     }
 

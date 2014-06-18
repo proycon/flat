@@ -192,7 +192,7 @@ def gethtml(element):
     else:
         raise Exception("Structure element expected, got " + str(type(element)))
 
-def getannotations(element):
+def getannotations(element, previouswordid = None):
     if isinstance(element, folia.Correction):
         if not element.id:
             #annotator requires IDS on corrections, make one on the fly
@@ -230,6 +230,7 @@ def getannotations(element):
                     if not 'incorrection' in y: y['incorrection'] = []
                     y['incorrection'].append(element.id)
                     correction_suggestions.append(y)
+
         annotation = {'id': element.id ,'set': element.set, 'class': element.cls, 'type': 'correction', 'new': correction_new,'current': correction_current, 'original': correction_original, 'suggestions': correction_suggestions}
         if element.annotator:
             annotation['annotator'] = element.annotator
@@ -260,9 +261,13 @@ def getannotations(element):
         yield annotation
     if isinstance(element, folia.AbstractStructureElement) or isinstance(element, folia.AbstractAnnotationLayer) or isinstance(element, folia.AbstractSpanAnnotation) or isinstance(element, folia.Suggestion):
         for child in element:
-            for x in getannotations(child):
+            for x in getannotations(child, previouswordid):
                 assert isinstance(x, dict)
+                if previouswordid and not 'previousword' in x:
+                    x['previousword'] = previouswordid
                 yield x
+            if isinstance(child, folia.Word):
+                previouswordid = child.id
 
 def getdeclarations(doc):
     for annotationtype, set in doc.annotations:

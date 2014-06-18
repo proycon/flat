@@ -153,3 +153,7 @@ div#info div.correctionchild {
     padding-left: 10px;
 }
 
+div.deleted span.lbl {
+    text-decoration: line-through;
+    color: red;
+}
