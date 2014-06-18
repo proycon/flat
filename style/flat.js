@@ -89,7 +89,7 @@ function loadtext(annotationlist) {
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             if (annotation.targets) {
                 annotation.targets.forEach(function(target){
-                    $('#' + valid(target) + " span.lbl").html(annotation.text);
+                    if (target) $('#' + valid(target) + " span.lbl").html(annotation.text);
                 });
             }
         }

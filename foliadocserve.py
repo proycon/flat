@@ -250,7 +250,11 @@ def getannotations(element, previouswordid = None):
         assert isinstance(annotation, dict)
         yield annotation
     elif isinstance(element, folia.AbstractSpanAnnotation):
+        if not element.id and (folia.Attrib.ID in element.REQUIRED_ATTRIBS or folia.Attrib.ID in element.OPTIONAL_ATTRIBS):
+            #span annotation elements must have an ID for the editor to work with them, let's autogenerate one:
+            element.id = element.doc.data[0].generate_id(element)
         annotation = element.json()
+        annotation['span'] = True
         annotation['targets'] = [ x.id for x in element.wrefs() ]
         assert isinstance(annotation, dict)
         yield annotation
@@ -595,9 +599,9 @@ def doannotation(doc, data):
 
             elif 'id' in edit:
                 if edit['class']:
-                    response['log'] = "Editing " + Class.__name__ + " (" + edit['class'] + ") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                    response['log'] = "Editing span annotation " + Class.__name__ + " (" + edit['class'] + ") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
                 else:
-                    response['log'] = "Deleting " + Class.__name__ + " for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                    response['log'] = "Deleting span annotation " + Class.__name__ + " for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
                 log(response['log'])
                 #existing span annotation, we should have an ID
                 try:
@@ -621,6 +625,7 @@ def doannotation(doc, data):
                 else:
                     #delete:
                     annotation.parent.remove(annotation)
+                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement)
 
 
             else:
@@ -731,6 +736,8 @@ class Root:
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
         response = doannotation(doc, data)
+        if 'error' in response and response['error']:
+            log(response['error'])
         if 'log' in response:
             response['log'] += " in document " + "/".join((namespace,docid))
         else:
