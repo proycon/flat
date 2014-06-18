@@ -60,26 +60,22 @@ function toggleoriginal() {
     showoriginal = !showoriginal;
     if (showoriginal) {
         $('#toggleoriginal').addClass("on");
-        showoriginal();
+        Object.keys(annotations).forEach(function(target){
+            Object.keys(annotations[target]).forEach(function(annotationkey){
+                annotation = annotations[target][annotationkey];
+                if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original)) {
+                    annotation.original.forEach(function(original){
+                        if (original.text) {
+                            $('#' + valid(target) + ' span.lbl').html(original.text);
+                        }
+                    });                        
+                }
+            });
+        });
     } else {
         $('#toggleoriginal').removeClass("on");
         window.location.href = ''; //reload page
     }
-}
-
-function showoriginal() {
-    Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationkey){
-            annotation = annotations[target][annotationkey];
-            if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original)) {
-                annotation.original.forEach(function(original){
-                    if (original.text) {
-                        $('#' + valid(target) + ' span.lbl').html(original.text);
-                    }
-                });                        
-            }
-        });
-    });
 }
 
 function viewer_onmouseenter(element) {
