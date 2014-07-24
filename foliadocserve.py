@@ -280,7 +280,28 @@ def getdeclarations(doc):
         try:
             C = folia.ANNOTATIONTYPE2CLASS[annotationtype]
         except KeyError:
-            pasdoc[targetid]
+            pass
+        #if (issubclass(C, folia.AbstractAnnotation) or C is folia.TextContent or C is folia.Correction) and not (issubclass(C, folia.AbstractTextMarkup)): #rules out structure elements for now
+        if not issubclass(C, folia.AbstractTextMarkup) and annotationtype in folia.ANNOTATIONTYPE2XML:
+            annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
+            yield {'annotationtype': annotationtype, 'set': set}
+
+def getsetdefinitions(doc):
+    setdefs = {}
+    for annotationtype, set in doc.annotations:
+        if set in doc.setdefinitions:
+            setdefs[set] = doc.setdefinitions[set].json()
+    return setdefs
+
+def doannotation(doc, data):
+    response = {'returnelementid': None}
+    log("Received data for doannotation: "+ repr(data))
+
+    if len(data['targets']) > 1:
+        commonancestors = None
+        for targetid in data['targets']:
+            try:
+                target = doc[targetid]
             except:
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
