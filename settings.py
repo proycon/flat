@@ -149,7 +149,42 @@ CONFIGURATIONS = {
     'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
     'autodeclare': [('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml')],
     'modes': [ ('editor','Annotation Editor')],
-}}
+},
+'ner': {
+    'name': 'Named Entity Annotation Project',
+    #The default annotation focus upon loading a document, set to None to start without a focus
+    'annotationfocustype': 'entity',
+    'annotationfocusset': 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
+
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+    'allowedannotationfocus': ('entity',),
+
+
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialviewannotations': True,
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowedviewannotations': True,
+
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialeditannotations': ('t',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowededitannotations': ('t',),
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+
+    'allowaddfields': False, #boolean
+    'allowdeclare': False, #boolean
+    'editformdirect': True, #boolean
+    'editformcorrection': False, #boolean
+    'editformalternative': False, #boolean
+    'alloweditformdirect': False, #boolean
+    'alloweditformcorrection': True, #boolean
+    'alloweditformalternative': False, #boolean
+    'allowupload': False, #boolean
+    'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
+    'autodeclare': [('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')],
+    'modes': [ ('editor','Annotation Editor')],
+}
+}
 
 
 

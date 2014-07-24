@@ -126,7 +126,7 @@ function addeditforms() {
             s = s + "<option value=\"\"></option>";
             Object.keys(setdefinitions[correctionset].classes).forEach(function(cid){
                 c = setdefinitions[correctionset].classes[cid]
-                s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+                getclassesasoptions(c, ""); // will add to s
             });
             s = s + "</select>";
         } else {
@@ -147,7 +147,17 @@ function addeditforms() {
 }
 
 
-
+function getclassesasoptions(c, selected)
+    if (c.id == selected) {
+        s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+    } else {
+        s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+    }
+    Object.keys(c.subclasses).forEach(function(cid){
+        csub = c.subclasses[cid]
+        s = s + getclassesasoptions(csub, selected);
+    });
+}
 
 function showeditor(element) {
 
@@ -197,11 +207,7 @@ function showeditor(element) {
                             s = s + "<option value=\"\"></option>";
                             Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
-                                if (c.id == annotation.class) {
-                                    s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
-                                } else {
-                                    s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
-                                }
+                                getclassesasoptions(c, annotations.class); // will add to s
                             });
                             s = s + "</select>";
                         } else {
@@ -305,7 +311,7 @@ function addeditorfield(index) {
         s = s + "<option selected=\"selected\" value=\"\"></option>";
         Object.keys(setdefinitions[editoraddablefields[index].set].classes).forEach(function(cid){
             c = setdefinitions[editoraddablefields[index].set].classes[cid]
-            s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+            getclassesasoptions(c, ""); // will add to s
         });
         s = s + "</select>";
     } else {
