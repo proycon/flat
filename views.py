@@ -68,6 +68,9 @@ def index(request):
                 docid =  os.path.basename(d.replace('.folia.xml',''))
                 docs[namespace].append( (docid, datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
 
+    if not 'configuration' in request.session:
+        return logout(request)
+
     return render(request, 'index.html', {'docs': sorted(docs.items()), 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION, 'namespaces': namespaces_sorted})
 
 @login_required
