@@ -147,7 +147,7 @@ function addeditforms() {
 }
 
 
-function getclassesasoptions(c, selected)
+function getclassesasoptions(c, selected) {
     if (c.id == selected) {
         s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
     } else {
