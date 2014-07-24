@@ -254,7 +254,7 @@ def getannotations(element, previouswordid = None):
             #span annotation elements must have an ID for the editor to work with them, let's autogenerate one:
             element.id = element.doc.data[0].generate_id(element)
             #and add to index
-            element.doc[element.id] = element
+            element.doc.index[element.id] = element
         annotation = element.json()
         annotation['span'] = True
         annotation['targets'] = [ x.id for x in element.wrefs() ]
@@ -280,28 +280,7 @@ def getdeclarations(doc):
         try:
             C = folia.ANNOTATIONTYPE2CLASS[annotationtype]
         except KeyError:
-            pass
-        #if (issubclass(C, folia.AbstractAnnotation) or C is folia.TextContent or C is folia.Correction) and not (issubclass(C, folia.AbstractTextMarkup)): #rules out structure elements for now
-        if not issubclass(C, folia.AbstractTextMarkup) and annotationtype in folia.ANNOTATIONTYPE2XML:
-            annotationtype = folia.ANNOTATIONTYPE2XML[annotationtype]
-            yield {'annotationtype': annotationtype, 'set': set}
-
-def getsetdefinitions(doc):
-    setdefs = {}
-    for annotationtype, set in doc.annotations:
-        if set in doc.setdefinitions:
-            setdefs[set] = doc.setdefinitions[set].json()
-    return setdefs
-
-def doannotation(doc, data):
-    response = {'returnelementid': None}
-    log("Received data for doannotation: "+ repr(data))
-
-    if len(data['targets']) > 1:
-        commonancestors = None
-        for targetid in data['targets']:
-            try:
-                target = doc[targetid]
+            pasdoc[targetid]
             except:
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
