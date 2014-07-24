@@ -166,9 +166,9 @@ CONFIGURATIONS = {
     'allowedviewannotations': True,
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'initialeditannotations': ('t',),
+    'initialeditannotations': ('entity',),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'allowededitannotations': ('t',),
+    'allowededitannotations': ('entity',),
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
 
     'allowaddfields': False, #boolean
@@ -176,12 +176,11 @@ CONFIGURATIONS = {
     'editformdirect': True, #boolean
     'editformcorrection': False, #boolean
     'editformalternative': False, #boolean
-    'alloweditformdirect': False, #boolean
-    'alloweditformcorrection': True, #boolean
+    'alloweditformdirect': True, #boolean
+    'alloweditformcorrection': False, #boolean
     'alloweditformalternative': False, #boolean
     'allowupload': False, #boolean
-    'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
-    'autodeclare': [('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')],
+    'autodeclare': [('entity', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')],
     'modes': [ ('editor','Annotation Editor')],
 }
 }
