@@ -190,7 +190,7 @@ function showeditor(element) {
                         annotationfocusfound = true;
                     }
                 }
-                var ok = ((annotation.type != "correction") && (annotationfocusfound) || (editannotations[annotation.type+"/" + annotation.set]));
+                var ok = ((annotation.type != "correction") && ((annotationfocusfound) || (editannotations[annotation.type+"/" + annotation.set])));
                 if (ok) {
                     label = getannotationtypename(annotation.type);
                     if (annotation.set) {
@@ -252,6 +252,7 @@ function showeditor(element) {
             s = idheader + "<table>"  + s + "</table>";
             $('#editor div.body').html(s);
             if ((annotationfocus) && (!annotationfocusfound)) {
+                //the annotation focus has been found, so no field appears, add one automatically:
                 for (var i = 0; i < editoraddablefields.length; i++) {
                     if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
                         addeditorfield(i);
