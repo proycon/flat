@@ -598,6 +598,8 @@ def doannotation(doc, data):
 
                     layer.append(Class, *targets, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
+                    response['returnelementid'] = layer.ancestor(folia.AbstractStructureElement).id
+
 
                 elif 'id' in edit:
                     if edit['class']:
