@@ -327,6 +327,7 @@ def doannotation(doc, data):
             except:
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
+        commonancestor = target.ancestor(folia.AbstractStructureElement)
 
 
 
@@ -588,7 +589,7 @@ def doannotation(doc, data):
                     response['log'] = "Adding " + Class.__name__ + " (" + edit['class'] + ") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
                     log(response['log'])
 
-                    #find common ancestor of all targets
+                    #create layer on common ancestor of all targets, use existing layer if possible, make new layer if not
                     layers = doc[commonancestor].layers(annotationtype, edit['set'])
                     if len(layers) >= 1:
                         layer = layers[0]
@@ -655,7 +656,7 @@ def doannotation(doc, data):
                         response['error'] = "No existing span annotation with id " + edit['id'] + " found"
                         return response
 
-                    layer = annotation.parent() #may turn out to be another SpanAnnotation or Correction instead!
+                    layer = annotation.parent() #may turn out to be another SpanAnnotation or Correction instead! should be okay
 
                     currenttargets = annotation.wrefs()
                     if currenttargets != targets:
