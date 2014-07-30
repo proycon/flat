@@ -352,7 +352,7 @@ def doannotation(doc, data):
         log("Processing edit: "+ str(repr(edit)) )
         log("Class=" + Class.__name__ )
 
-        if issubclass(Class, folia.TextContent):
+        if issubclass(Class, folia.TextContent): ################### EDIT OF TEXT CONTENT #######################################
             #Text Content, each target will get a copy
             if len(data['targets']) > 1:
                 log("Text edit of multiple elements")
@@ -530,7 +530,8 @@ def doannotation(doc, data):
                         response['returnelementid'] = p.id
 
 
-        elif issubclass(Class, folia.AbstractTokenAnnotation):
+        elif issubclass(Class, folia.AbstractTokenAnnotation): ################### EDIT OF TOKEN ANNOTATION #######################################
+
             log("Edit of token annotation")
             #Token annotation, each target will get a copy (usually just one target)
             for targetid in data['targets']:
@@ -567,7 +568,10 @@ def doannotation(doc, data):
                     target.correct(new=Class(doc, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
 
-        elif issubclass(Class, folia.AbstractSpanAnnotation):
+        elif issubclass(Class, folia.AbstractSpanAnnotation): ################### EDIT OF SPAN ANNOTATION #######################################
+
+            log("Edit of span annotation")
+
             if edit['editform'] == 'direct':
                 targets = []
                 for targetid in data['targets']:
@@ -615,15 +619,18 @@ def doannotation(doc, data):
                         else:
                             annotation.data = targets
 
+
+
+
                     if edit['class']:
                         annotation.cls = edit['class']
                         annotation.annotator = data['annotator']
                         annotation.annotatortype = folia.AnnotatorType.MANUAL
                     else:
                         #delete:
-                        response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement).id
                         annotation.parent.remove(annotation)
 
+                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement).id
 
                 else:
                     #no ID, fail
@@ -634,8 +641,44 @@ def doannotation(doc, data):
                 response['error'] = "Only direct edit form is supported for span annotation elements at this time. Corrections and alternatives to be implemented still."
                 return response
             elif edit['editform'] == 'correction':
-                response['error'] = "Only direct edit form is supported for span annotation elements at this time. Corrections and alternatives to be implemented still."
-                return response
+                if 'id' in edit:
+                    if edit['class']:
+                        response['log'] = "Editing span annotation " + Class.__name__ + " (" + edit['class'] + ", correction " + edit['correctionclass']+") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                    else:
+                        response['log'] = "Deleting span annotation " + Class.__name__ + " (correction " + edit['correctionclass']+") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']
+                    log(response['log'])
+
+                    #existing span annotation, we should have an ID
+                    try:
+                        annotation = doc[edit['id']]
+                    except:
+                        response['error'] = "No existing span annotation with id " + edit['id'] + " found"
+                        return response
+
+                    layer = annotation.parent() #may turn out to be another SpanAnnotation or Correction instead!
+
+                    currenttargets = annotation.wrefs()
+                    if currenttargets != targets:
+                        if annotation.hasannotation(Class):
+                            response['error'] = "Unable to change the span of this annotation as there are nested span annotations embedded"
+                            return response
+                        else:
+                            annotation.data = targets
+
+                    if edit['class']:
+                        #TODO: will require extra work for dependencies and coref chains (handling of subelements)
+                        newannotation = Class(doc, *targets, cls=edit['class'], set=edit['set'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                        layer.correct(original=annotation,new=newannotation, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                    else:
+                        #delete
+                        layer.correct(original=annotation,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+
+                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement).id
+
+                else:
+                    #no ID, fail
+                    response['error'] = "Unable to edit span annotation without explicit id"
+                    return response
         else:
             response['error'] = "Unable to edit annotations of type " + Class.__name__
             return response
