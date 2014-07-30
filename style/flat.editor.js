@@ -31,7 +31,7 @@ function toggleannotationedit(annotationtype, set) {
 }
 
 function select(element) {
-    //toggles
+    //toggles selection of an element
     var found = false;
     var index = 0;
     for (var i = 0; i < edittargets.length; i++) {
@@ -58,6 +58,9 @@ function select(element) {
 }
 
 function setaddablefields() {
+    //Adds a selector in the editor for adding extra annotation types to an element (must be previously declared, $('#newdeclarationsubmit').click())
+    //To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID
+    //
     if (configuration.allowaddfields) {
         editoraddablefields_options = "";
         editoraddablefields = [];
@@ -66,6 +69,7 @@ function setaddablefields() {
             Object.keys(declarations[annotationtype]).forEach(function(set){
                 if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
                     setname = shorten(set);
+                    //check if it already exists
                     found = false;
                     editdata.forEach(function(editdataitem){
                         if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
@@ -93,6 +97,8 @@ function setaddablefields() {
 
 
 function addeditforms() {
+    
+
     //do we have a single selection?
     var selected = false;
     Object.keys(editforms).forEach(function(editform){
@@ -148,6 +154,8 @@ function addeditforms() {
 
 
 function getclassesasoptions(c, selected) {
+    //get classes pertaining to a set, from a set definition, as option elements (used in select)
+    //supports recursive classes
     if (c.id == selected) {
         s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
     } else {
@@ -160,6 +168,7 @@ function getclassesasoptions(c, selected) {
 }
 
 function showeditor(element) {
+    //show and populate the editor for a particular element
 
     if ((element) && ($(element).hasClass(view))) {
         if ((element.id)  && (annotations[element.id])) {            
@@ -293,6 +302,8 @@ function closeeditor() {
 
 
 function addeditorfield(index) {
+    //add a new field to the editor, populated by 
+    //
     if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
     } else {
