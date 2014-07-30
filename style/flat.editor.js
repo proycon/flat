@@ -164,7 +164,7 @@ function getclassesasoptions(c, selected) {
     }
     Object.keys(c.subclasses).forEach(function(cid){
         csub = c.subclasses[cid]
-        s = s + getclassesasoptions(csub, selected);
+        getclassesasoptions(csub, selected);
     });
 }
 
