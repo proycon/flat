@@ -327,7 +327,7 @@ def doannotation(doc, data):
             except:
                 response['error'] = "Target element " + targetid + " does not exist!"
                 return response
-        commonancestor = target.ancestor(folia.AbstractStructureElement)
+        commonancestor = target.ancestor(folia.AbstractStructureElement).id
 
 
 
