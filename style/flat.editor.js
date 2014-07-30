@@ -61,29 +61,30 @@ function setaddablefields() {
     //Adds a selector in the editor for adding extra annotation types to an element (must be previously declared, $('#newdeclarationsubmit').click())
     //To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID
     //
-    if (configuration.allowaddfields) {
-        editoraddablefields_options = "";
-        editoraddablefields = [];
-        Object.keys(declarations).forEach(function(annotationtype){
-            label = getannotationtypename(annotationtype);
-            Object.keys(declarations[annotationtype]).forEach(function(set){
-                if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
-                    setname = shorten(set);
-                    //check if it already exists
-                    found = false;
-                    editdata.forEach(function(editdataitem){
-                        if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
-                            found = true; 
-                            return true;
-                        }
-                    });
-                    if (!found) {
-                        editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
-                        editoraddablefields.push({'type': annotationtype, 'set': set});
+    editoraddablefields_options = "";
+    editoraddablefields = [];
+    Object.keys(declarations).forEach(function(annotationtype){
+        label = getannotationtypename(annotationtype);
+        Object.keys(declarations[annotationtype]).forEach(function(set){
+            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
+                setname = shorten(set);
+                //check if it already exists
+                found = false;
+                editdata.forEach(function(editdataitem){
+                    if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
+                        found = true; 
+                        return true;
                     }
+                });
+                if (!found) {
+                    editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
+                    editoraddablefields.push({'type': annotationtype, 'set': set});
                 }
-            });
+            }
         });
+    });
+    if (configuration.allowaddfields) {
+        //only show if we're allowed to add fields manually
         if ((editoraddablefields_options) && (!annotationfocus)) {
             $("#editoraddablefields").html(editoraddablefields_options);
             $("#editoraddfields").show();
@@ -303,7 +304,7 @@ function closeeditor() {
 
 
 function addeditorfield(index) {
-    //add a new field to the editor, populated by 
+    //add a new field to the editor, populated by setaddablefields()
     //
     if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
