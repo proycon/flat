@@ -120,3 +120,11 @@ div#newdeclaration button, div#history button {
 span.editforms form {
     display: inline;
 }
+span.editforms button {
+    min-width: 12px;
+    min-height: 12px;
+    background: #aaa;
+}
+span.editforms button.selected {
+    background: #30677c;
+}
