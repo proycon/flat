@@ -174,10 +174,10 @@ CONFIGURATIONS = {
     'allowaddfields': False, #boolean
     'allowdeclare': False, #boolean
     'editformdirect': True, #boolean
-    'editformcorrection': False, #boolean
+    'editformcorrection': True, #boolean
     'editformalternative': False, #boolean
     'alloweditformdirect': True, #boolean
-    'alloweditformcorrection': False, #boolean
+    'alloweditformcorrection': True, #boolean
     'alloweditformalternative': False, #boolean
     'allowupload': False, #boolean
     'autodeclare': [('entity', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')],
