@@ -112,7 +112,7 @@ function addeditforms() {
         }
     });
     var editformcount = 0;
-    s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
+    var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
     if (editforms.direct) {
         if ((selected == "direct") || (selected == null)) {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
@@ -133,7 +133,7 @@ function addeditforms() {
             s = s + "<option value=\"\"></option>";
             Object.keys(setdefinitions[correctionset].classes).forEach(function(cid){
                 c = setdefinitions[correctionset].classes[cid]
-                getclassesasoptions(c, ""); // will add to s
+                s = s + getclassesasoptions(c, ""); // will add to s
             });
             s = s + "</select>";
         } else {
@@ -158,14 +158,15 @@ function getclassesasoptions(c, selected) {
     //get classes pertaining to a set, from a set definition, as option elements (used in select)
     //supports recursive classes
     if (c.id == selected) {
-        s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+        var s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
     } else {
-        s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+        var s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
     }
     Object.keys(c.subclasses).forEach(function(cid){
         csub = c.subclasses[cid]
-        getclassesasoptions(csub, selected);
+        s = s + getclassesasoptions(csub, selected);
     });
+    return s
 }
 
 function showeditor(element) {
@@ -217,7 +218,7 @@ function showeditor(element) {
                             s = s + "<option value=\"\"></option>";
                             Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
-                                getclassesasoptions(c, annotations.class); // will add to s
+                                s = s + getclassesasoptions(c, annotations.class); // will add to s
                             });
                             s = s + "</select>";
                         } else {
@@ -324,7 +325,7 @@ function addeditorfield(index) {
         s = s + "<option selected=\"selected\" value=\"\"></option>";
         Object.keys(setdefinitions[editoraddablefields[index].set].classes).forEach(function(cid){
             c = setdefinitions[editoraddablefields[index].set].classes[cid]
-            getclassesasoptions(c, ""); // will add to s
+            s = s + getclassesasoptions(c, ""); // will add to s
         });
         s = s + "</select>";
     } else {
