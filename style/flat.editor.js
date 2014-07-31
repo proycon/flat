@@ -98,25 +98,25 @@ function setaddablefields() {
 
 function seteditform(index, value) {
     editdata[index].editform = value
-    if ($('editform' + index + 'direct')) {
+    if ($('#editform' + index + 'direct')) {
         if (value == 'direct') {
-            $('editform' + index + 'direct').addClass('selected');
+            $('#editform' + index + 'direct').addClass('selected');
         } else {
-            $('editform' + index + 'direct').removeClass('selected');
+            $('#editform' + index + 'direct').removeClass('selected');
         }
     }
-    if ($('editform' + index + 'correction')) {
+    if ($('#editform' + index + 'correction')) {
         if (value == 'correction') {
-            $('editform' + index + 'correction').addClass('selected');
+            $('#editform' + index + 'correction').addClass('selected');
         } else {
-            $('editform' + index + 'correction').removeClass('selected');
+            $('#editform' + index + 'correction').removeClass('selected');
         }
     }
-    if ($('editform' + index + 'alternative')) {
+    if ($('#editform' + index + 'alternative')) {
         if (value == 'alternative') {
-            $('editform' + index + 'alternative').addClass('selected');
+            $('#editform' + index + 'alternative').addClass('selected');
         } else {
-            $('editform' + index + 'alternative').removeClass('selected');
+            $('#editform' + index + 'alternative').removeClass('selected');
         }
     }
 }
