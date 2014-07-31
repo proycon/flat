@@ -117,3 +117,6 @@ div#newdeclaration button, div#history button {
     margin-top: -5px;
     background: #30677c;
 }
+span.editforms form {
+    display: inline;
+}
