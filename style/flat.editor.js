@@ -96,6 +96,9 @@ function setaddablefields() {
     }
 }
 
+function seteditform(index, value) {
+    editdata[index].editform = value
+}
 
 function addeditforms() {
     
@@ -112,20 +115,24 @@ function addeditforms() {
         }
     });
     var editformcount = 0;
-    var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\"><form>";
+    var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
     if (editforms.direct) {
         if ((selected == "direct") || (selected == null)) {
-            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
+            s += "<button id=\"editform" + editfields + "direct\" class=\"selected\" title=\"Edit Directly\">D</button>";
+            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
         } else {
-            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" /><label title=\"Edit Directly\">D</label>";
+            s += "<button id=\"editform" + editfields + "direct\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
+            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" /><label title=\"Edit Directly\">D</label>";
         }
         editformcount++;
     }
     if (editforms.correction) {
         if (selected == "correction") {
-            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" checked=\"checked\" /><label title=\"Edit as new Correction\">C</label>";
+            s += "<button id=\"editform" + editfields + "correction\" class=\"selected\" title=\"Edit as new Correction\">C</button>";
+            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" checked=\"checked\" /><label title=\"Edit as new Correction\">C</label>";
         } else {
-            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
+            s += "<button id=\"editform" + editfields + "correction\"  title=\"Edit as new Correction\" onclick=\"javascript:seteditform(" + editfields + ",'correction')\">C</button>";
+            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
         }
         correctionset = $('#editformcorrectionset').val();
         if ((setdefinitions[correctionset]) && (setdefinitions[correctionset].type == "closed")) {
@@ -143,15 +150,18 @@ function addeditforms() {
     }
     if (editforms.alternative) {
         if (selected == "alternative") {
-            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" checked=\"checked\" /><label title=\"Edit as new Alternative\">A</label>";
+            s += "<button id=\"editform" + editfields + "alternative\" class=\"selected\" title=\"Edit as new Alternative\">A</button>";
+            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" checked=\"checked\" /><label title=\"Edit as new Alternative\">A</label>";
         } else {
-            s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" /><label title=\"Edit as new Alternative\">A</label>";
+            s += "<button id=\"editform" + editfields + "alternative\"  title=\"Edit as new Alternative\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
+            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" /><label title=\"Edit as new Alternative\">A</label>";
         }
         editformcount++;
     }
-    s = s + "</form></span>";
+    s = s + "</span>";
     return [s,editformcount]
 }
+
 
 
 function getclassesasoptions(c, selected) {
@@ -537,19 +547,20 @@ function editor_oninit() {
                 editdata[i].changed = true;
             }
             if (editdata[i].changed) {
-                if ($('#editform' + i + 'correction').attr('checked')) {
-                    editdata[i].editform = 'correction';
+                //if ($('#editform' + i + 'correction').attr('checked')) {
+                if (editdata[i].editform == 'correction') {
+                    //editdata[i].editform = 'correction';
                     editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
                     editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
                     if (!editdata[i].correctionclass) {
                         alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                         return false;
                     }
-                } else if ($('#editform' + i + 'alternative').attr('checked')) {
+                } /*else if ($('#editform' + i + 'alternative').attr('checked')) {
                     editdata[i].editform = 'alternative';
                 } else {
                     editdata[i].editform = 'direct';
-                }
+                }*/
                 if (editdata[i].type == 't') {
                     if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
                         //there is a space in a token! This can mean a number
