@@ -112,7 +112,7 @@ function addeditforms() {
         }
     });
     var editformcount = 0;
-    var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
+    s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
     if (editforms.direct) {
         if ((selected == "direct") || (selected == null)) {
             s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
