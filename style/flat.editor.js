@@ -139,7 +139,7 @@ function addeditforms() {
     var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
     if (editforms.direct) {
         if ((selected == "direct") || (selected == null)) {
-            s += "<button id=\"editform" + editfields + "direct\" class=\"selected\" title=\"Edit Directly\">D</button>";
+            s += "<button id=\"editform" + editfields + "direct\" class=\"selected\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
             //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
         } else {
             s += "<button id=\"editform" + editfields + "direct\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
@@ -149,7 +149,7 @@ function addeditforms() {
     }
     if (editforms.correction) {
         if (selected == "correction") {
-            s += "<button id=\"editform" + editfields + "correction\" class=\"selected\" title=\"Edit as new Correction\">C</button>";
+            s += "<button id=\"editform" + editfields + "correction\" class=\"selected\" title=\"Edit as new Correction\" onclick=\"javascript:seteditform(" + editfields + ",'correction')\">C</button>";
             //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" checked=\"checked\" /><label title=\"Edit as new Correction\">C</label>";
         } else {
             s += "<button id=\"editform" + editfields + "correction\"  title=\"Edit as new Correction\" onclick=\"javascript:seteditform(" + editfields + ",'correction')\">C</button>";
@@ -171,7 +171,7 @@ function addeditforms() {
     }
     if (editforms.alternative) {
         if (selected == "alternative") {
-            s += "<button id=\"editform" + editfields + "alternative\" class=\"selected\" title=\"Edit as new Alternative\">A</button>";
+            s += "<button id=\"editform" + editfields + "alternative\" class=\"selected\" title=\"Edit as new Alternative\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
             //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" checked=\"checked\" /><label title=\"Edit as new Alternative\">A</label>";
         } else {
             s += "<button id=\"editform" + editfields + "alternative\"  title=\"Edit as new Alternative\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
