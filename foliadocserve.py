@@ -573,15 +573,15 @@ def doannotation(doc, data):
 
             log("Edit of span annotation")
 
-            if edit['editform'] == 'direct':
-                targets = []
-                for targetid in data['targets']:
-                    try:
-                        targets.append( doc[targetid] )
-                    except:
-                        response['error'] = "Target element " + targetid + " does not exist!"
-                        return response
+            targets = []
+            for targetid in data['targets']:
+                try:
+                    targets.append( doc[targetid] )
+                except:
+                    response['error'] = "Target element " + targetid + " does not exist!"
+                    return response
 
+            if edit['editform'] == 'direct':
                 #Span annotation, one annotation spanning all tokens
                 if edit['new']:
                     #this is a new span annotation
