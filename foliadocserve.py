@@ -658,7 +658,7 @@ def doannotation(doc, data):
                         response['error'] = "No existing span annotation with id " + edit['id'] + " found"
                         return response
 
-                    layer = annotation.parent() #may turn out to be another SpanAnnotation or Correction instead! should be okay
+                    layer = annotation.parent #may turn out to be another SpanAnnotation or Correction instead! should be okay
 
                     currenttargets = annotation.wrefs()
                     if currenttargets != targets:
