@@ -98,6 +98,27 @@ function setaddablefields() {
 
 function seteditform(index, value) {
     editdata[index].editform = value
+    if ($('editform' + index + 'direct')) {
+        if (value == 'direct') {
+            $('editform' + index + 'direct').addClass('selected');
+        } else {
+            $('editform' + index + 'direct').removeClass('selected');
+        }
+    }
+    if ($('editform' + index + 'correction')) {
+        if (value == 'correction') {
+            $('editform' + index + 'correction').addClass('selected');
+        } else {
+            $('editform' + index + 'correction').removeClass('selected');
+        }
+    }
+    if ($('editform' + index + 'alternative')) {
+        if (value == 'alternative') {
+            $('editform' + index + 'alternative').addClass('selected');
+        } else {
+            $('editform' + index + 'alternative').removeClass('selected');
+        }
+    }
 }
 
 function addeditforms() {
