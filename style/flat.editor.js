@@ -108,8 +108,14 @@ function seteditform(index, value) {
     if ($('#editform' + index + 'correction')) {
         if (value == 'correction') {
             $('#editform' + index + 'correction').addClass('selected');
+            if ($('#editform' + index + 'correctionclass')) {
+                $('#editform' + index + 'correctionclass').show();
+            }
         } else {
             $('#editform' + index + 'correction').removeClass('selected');
+            if ($('#editform' + index + 'correctionclass')) {
+                $('#editform' + index + 'correctionclass').hide();
+            }
         }
     }
     if ($('#editform' + index + 'alternative')) {
