@@ -271,6 +271,15 @@ function showeditor(element) {
                     editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
                     if (annotation.type == 't') editdataitem.text = annotation.text;
                     if (annotation.id) editdataitem.id = annotation.id;
+                    //set default edit form (seteditform will be called later
+                    //to affect the interface)
+                    if (configuration.alloweditformcorrection) {
+                        editdataitem.editform = 'correction';
+                    } else if (configuration.alloweditformdirect) {
+                        editdataitem.editform = 'direct';
+                    } else {
+                        editdataitem.editform = 'alternative';
+                    }
                     editdata.push(editdataitem);
                 }
                  
@@ -288,8 +297,12 @@ function showeditor(element) {
 
 
 
+
             s = idheader + "<table>"  + s + "</table>";
             $('#editor div.body').html(s);
+
+
+
             if ((annotationfocus) && (!annotationfocusfound)) {
                 //the annotation focus has been found, so no field appears, add one automatically:
                 for (var i = 0; i < editoraddablefields.length; i++) {
@@ -307,6 +320,9 @@ function showeditor(element) {
             }
             //configure actions and events for edit fields
             for (var i = 0; i < editfields;i++){
+                //propagate editform to interface, for each field
+                seteditform(i, editdata[i].editform);
+
                 $('select#editfield'+i).sortOptions();
                 /*$('#editfield'+i).change(function(){
                     index = 0;
