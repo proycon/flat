@@ -161,9 +161,9 @@ CONFIGURATIONS = {
 
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'initialviewannotations': ('t','entity',),
+    'initialviewannotations': ('t','entity','correction'),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'allowedviewannotations': ('t','entity',),
+    'allowedviewannotations': ('t','entity','correction'),
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'initialeditannotations': ('entity',),
