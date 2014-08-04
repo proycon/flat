@@ -640,7 +640,7 @@ function editor_oninit() {
                 editdata[0].changed = true;
                 if (editdata[0].editform == 'correction') {
                     //editdata[i].editform = 'correction';
-                    editdata[0].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+                    editdata[0].correctionclass = $('#editform0correctionclass').val().trim();
                     editdata[0].correctionset = $('#editformcorrectionset').val().trim(); 
                     if (!editdata[0].correctionclass) {
                         alert("Error (" + i + "): Annotation " + editdata[0].type + " was changed and submitted as correction, but no correction class was entered");
