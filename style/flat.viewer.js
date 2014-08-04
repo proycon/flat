@@ -305,7 +305,7 @@ function removeclasscolors(toggle) {
     $('.focustype').removeClass('focustype');
     $('.undofocustype').removeClass('undofocustype');
     if (toggle) {
-        s = "<span class=\"title\">Legend &bull; " + title + "</span>"; //text for legend
+        s = "<span class=\"title\">Legend</span>"; //text for legend
         s = s + "(<a href=\"javascript:setannotationfocus('"+ annotationfocus.type +"','" + annotationfocus.set + "')\">Show</a>)<br />";
         $('#legend').html(s);
     } else {
@@ -316,6 +316,9 @@ function removeclasscolors(toggle) {
 function setclasscolors() {
     //count class distribution
     classfreq = {};
+    var legendtitle = "";
+    var legendtype = "";
+    var legendset = "";
     Object.keys(annotations).forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationkey){
             annotation = annotations[target][annotationkey];
@@ -325,24 +328,30 @@ function setclasscolors() {
                 } else {
                     classfreq[annotation.class] = -1; //reverse for sorting later
                 }
+
+
+                legendtype = annotation.type;
+                legendset = annotation.set;
+                if (legendtitle == "") {
+                    if (annotationtypenames[legendtype]) {
+                        title = annotationtypenames[legendtype];
+                    } else {
+                        title = annotation.type;
+                    }
+                }
             }
         });
     });
 
-    if (annotationtypenames[annotation.type]) {
-        title = annotationtypenames[annotation.type];
-    } else {
-        title = annotation.type;
-    }
-    s = "<span class=\"title\">Legend &bull; " + title + "</span>"; //text for legend
+    s = "<span class=\"title\">Legend &bull; " + legendtitle + "</span>"; //text for legend
     s = s + "(<a href=\"javascript:removeclasscolors(true)\">Hide</a>)<br />";
     classrank = {}
     currentrank = 1;
     bySortedValue(classfreq, function(key, val){
         if (currentrank < 8) {
             classrank[key] = currentrank;
-            if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].classes[key])) {
-                key = setdefinitions[annotation.set].classes[key].label;
+            if ((setdefinitions[legendset]) && (setdefinitions[legendset].classes[key])) {
+                key = setdefinitions[legendset].classes[key].label;
             }
             s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + key + "</span><br />"
             currentrank++;
