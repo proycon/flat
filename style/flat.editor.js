@@ -296,6 +296,16 @@ function showeditor(element) {
             //extra fields list
             setaddablefields();
 
+            if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                //coselect other targets (just mimicks user click)
+                coselector = true;
+                annotation.targets.forEach(function(t){
+                    if (!$('#' + t).hasClass("selected")) {
+                        $('#' + t).click();
+                    }
+                });
+                coselector = false;
+            }
 
             edittargets_begin = JSON.parse(JSON.stringify(edittargets)); //deep copy, will be used for comparison on submission
 
@@ -306,7 +316,7 @@ function showeditor(element) {
 
 
             if ((annotationfocus) && (!annotationfocusfound)) {
-                //the annotation focus has been found, so no field appears, add one automatically:
+                //the annotation focus has not been found, so no field appears, add one automatically:
                 for (var i = 0; i < editoraddablefields.length; i++) {
                     if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
                         addeditorfield(i);
