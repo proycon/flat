@@ -2,7 +2,7 @@
 from socket import gethostname
 import os.path
 
-VERSION = "0.1.6"
+VERSION = "0.1.7"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -161,9 +161,9 @@ CONFIGURATIONS = {
 
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'initialviewannotations': True,
+    'initialviewannotations': ('entity',),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'allowedviewannotations': True,
+    'allowedviewannotations': ('entity',),
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'initialeditannotations': ('entity',),
