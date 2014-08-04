@@ -180,9 +180,9 @@ CONFIGURATIONS = {
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': False, #boolean
     'allowupload': False, #boolean
-    'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml',
+    'initialcorrectionset': 'https://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml',
     'autodeclare': [
-        ('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml'),
+        ('correction', 'https://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml'),
         ('entity', 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')
     ],
     'modes': [ ('editor','Annotation Editor')],
