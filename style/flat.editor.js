@@ -297,7 +297,7 @@ function showeditor(element) {
             setaddablefields();
 
 
-            edittargets_begin = edittargets;
+            edittargets_begin = JSON.parse(JSON.stringify(edittargets)); //deep copy, will be used for comparison on submission
 
 
             s = idheader + "<table>"  + s + "</table>";
