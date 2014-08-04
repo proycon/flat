@@ -287,7 +287,8 @@ function showeditor(element) {
                         coselector = true;
                         annotation.targets.forEach(function(t){
                             if (!$('#' + t).hasClass("selected")) {
-                                select( $('#' + t)[0] );
+                                var e = $('#' + t);
+                                select(e);
                             }
                         });
                         coselector = false;
