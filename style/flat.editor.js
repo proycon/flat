@@ -638,7 +638,7 @@ function editor_oninit() {
                 sendeditdata.push(editdataitem);
             }
         });
-        if ((sendeditdata.length == 0) && (edittargets != edittargets_begin)) {
+        if ((sendeditdata.length == 0) && (JSON.stringify(edittargets) == JSON.stringify(edittargets_begin))) {
             //discard
             closeeditor();
             return false;
