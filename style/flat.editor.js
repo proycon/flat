@@ -634,7 +634,7 @@ function editor_oninit() {
         }
 
 
-        if ((!changes) && (JSON.stringify(edittargets) == JSON.stringify(edittargets_begin))) {
+        if ((!changes) && (JSON.stringify(edittargets) != JSON.stringify(edittargets_begin))) {
             //we have a change in targets
             if (editfields == 1) {
                 editdata[0].changed = true;
