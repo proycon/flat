@@ -154,7 +154,7 @@ CONFIGURATIONS = {
     'name': 'Named Entity Annotation Project',
     #The default annotation focus upon loading a document, set to None to start without a focus
     'annotationfocustype': 'entity',
-    'annotationfocusset': 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
+    'annotationfocusset': 'https://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
     'allowedannotationfocus': ('entity',),
@@ -183,7 +183,7 @@ CONFIGURATIONS = {
     'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml',
     'autodeclare': [
         ('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml'),
-        ('entity', 'http://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')
+        ('entity', 'https://raw.github.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')
     ],
     'modes': [ ('editor','Annotation Editor')],
 }
