@@ -281,6 +281,17 @@ function showeditor(element) {
                         editdataitem.editform = 'alternative';
                     }
                     editdata.push(editdataitem);
+
+                    if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                        //coselect other targets (just mimicks user click)
+                        coselector = true;
+                        annotation.targets.forEach(function(t){
+                            if (!$('#' + t).hasClass("selected")) {
+                                $('#' + t).click();
+                            }
+                        });
+                        coselector = false;
+                    }
                 }
                  
             });
@@ -296,16 +307,6 @@ function showeditor(element) {
             //extra fields list
             setaddablefields();
 
-            if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
-                //coselect other targets (just mimicks user click)
-                coselector = true;
-                annotation.targets.forEach(function(t){
-                    if (!$('#' + t).hasClass("selected")) {
-                        $('#' + t).click();
-                    }
-                });
-                coselector = false;
-            }
 
             edittargets_begin = JSON.parse(JSON.stringify(edittargets)); //deep copy, will be used for comparison on submission
 
