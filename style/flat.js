@@ -169,6 +169,9 @@ function shorten(s) {
 
 function update(data) {
     //partial update
+    if (data.error) {
+        alert(data.error);
+    }
     if ((data.html) && (data.elementid)) { 
         $('#' + valid(data.elementid))[0].outerHTML = data.html;
         //$('#' + valid(data.elementid)).attr('id',"replacing");

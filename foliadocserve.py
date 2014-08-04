@@ -9,6 +9,8 @@ import json
 import random
 import datetime
 import subprocess
+import sys
+import traceback
 from copy import copy
 from collections import defaultdict
 from pynlpl.formats import folia
@@ -785,7 +787,15 @@ class Root:
         log("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,docid)))
         self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
         doc = self.docstore[(namespace,docid)]
-        response = doannotation(doc, data)
+        try:
+            response = doannotation(doc, data)
+        except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            formatted_lines = traceback.format_exc().splitlines()
+            response = {'error': "The document server returned an error: " + str(e) + " -- " + "\n".join(formatted_lines) }
+            traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
+            return json.dumps(response)
+
         if 'error' in response and response['error']:
             log(response['error'])
         if 'log' in response:
