@@ -157,18 +157,18 @@ CONFIGURATIONS = {
     'annotationfocusset': 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
-    'allowedannotationfocus': ('entity',),
+    'allowedannotationfocus': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',),
 
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'initialviewannotations': ('t','entity','correction'),
+    'initialviewannotations': ('t','entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml','correction'),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'allowedviewannotations': ('t','entity','correction'),
+    'allowedviewannotations': ('t','entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml','correction'),
 
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'initialeditannotations': ('entity',),
+    'initialeditannotations': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
-    'allowededitannotations': ('entity',),
+    'allowededitannotations': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',),
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
 
     'allowaddfields': False, #boolean
