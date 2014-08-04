@@ -334,9 +334,9 @@ function setclasscolors() {
                 legendset = annotation.set;
                 if (legendtitle == "") {
                     if (annotationtypenames[legendtype]) {
-                        title = annotationtypenames[legendtype];
+                        legendtitle = annotationtypenames[legendtype];
                     } else {
-                        title = annotation.type;
+                        legendtitle = annotation.type;
                     }
                 }
             }
