@@ -411,7 +411,7 @@ function viewer_loadmenus() {
     s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
-        if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
+        if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
             if ((configuration.initialviewannotations === true) || (configuration.initialviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialviewannotations.indexOf(annotationtype) != -1)) {
                 viewannotations[annotationtype + "/" + set] = true;
             }
