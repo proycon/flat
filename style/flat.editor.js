@@ -643,7 +643,7 @@ function editor_oninit() {
                     editdata[0].correctionclass = $('#editform0correctionclass').val().trim();
                     editdata[0].correctionset = $('#editformcorrectionset').val().trim(); 
                     if (!editdata[0].correctionclass) {
-                        alert("Error (" + i + "): Annotation " + editdata[0].type + " was changed and submitted as correction, but no correction class was entered");
+                        alert("Error (" + 0 + "): Annotation " + editdata[0].type + " was changed and submitted as correction, but no correction class was entered");
                         return false;
                     }
                 } 
