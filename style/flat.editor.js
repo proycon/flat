@@ -493,8 +493,8 @@ function editor_loadmenus() {
     s = "";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
-        if ((configuration.allowededitannotations === true) || (configuration.allowededitannotations.indexOf(annotationtype) != -1)) {
-            if ((configuration.initialeditannotations === true) || (configuration.initialeditannotations.indexOf(annotationtype) != -1)) {
+        if ((configuration.allowededitannotations === true) || (configuration.allowededitannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowededitannotations.indexOf(annotationtype) != -1)) {
+            if ((configuration.initialeditannotations === true) || (configuration.initialeditannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialeditannotations.indexOf(annotationtype) != -1)) {
                 editannotations[annotationtype + "/" + set] = true;
             }
             label = getannotationtypename(annotationtype);
