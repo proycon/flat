@@ -229,7 +229,7 @@ function showeditor(element) {
                         annotationfocusfound = true;
                     }
                 }
-                var ok = ((annotation.type != "correction") && ((annotationfocusfound) || (editannotations[annotation.type+"/" + annotation.set])));
+                var ok = (((annotation.type != "correction") && (annotationfocusfound)) || (editannotations[annotation.type+"/" + annotation.set]));
                 if (ok) {
                     label = getannotationtypename(annotation.type);
                     if (annotation.set) {
