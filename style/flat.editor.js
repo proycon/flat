@@ -286,8 +286,8 @@ function showeditor(element) {
                         //coselect other targets (just mimicks user click)
                         coselector = true;
                         annotation.targets.forEach(function(t){
-                            if (!$('#' + t).hasClass("selected")) {
-                                var e = $('#' + t);
+                            var e = document.getElementById(t);
+                            if (!$(e).hasClass("selected")) {
                                 select(e);
                             }
                         });
