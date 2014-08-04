@@ -578,18 +578,20 @@ function editor_oninit() {
     if (editforms.correction) $('#editformcorrectionsetselector').show();
 
     $('#editorsubmit').click(function(){
-
+        var changes = false;
         for (var i = 0; i < editfields;i++) { 
             if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
                 //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
                 editdata[i].class = $('#editfield' + i).val().trim();
                 editdata[i].changed = true;
+                changes = true;
             }
             if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
                 //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
                 editdata[i].oldtext = editdata[i].text;
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
                 editdata[i].changed = true;
+                changes = true;
             }
             if (editdata[i].changed) {
                 if (editdata[i].editform == 'correction') {
@@ -632,13 +634,23 @@ function editor_oninit() {
         }
 
 
+        if (!changes) && (JSON.stringify(edittargets) == JSON.stringify(edittargets_begin)) {
+            //we have a change in targets
+            if (editfields == 1) {
+                editdata[0].changed = true;
+            } else {
+                alert("Unable to determine to what annotation type the change in span pertains... Please restrict editable fields and try again");
+            }
+            changes = true;
+        }
+
         var sendeditdata = []; 
         editdata.forEach(function(editdataitem){
             if (editdataitem.changed) {
                 sendeditdata.push(editdataitem);
             }
         });
-        if ((sendeditdata.length == 0) && (JSON.stringify(edittargets) == JSON.stringify(edittargets_begin))) {
+        if ((sendeditdata.length == 0)) {
             //discard
             closeeditor();
             return false;
