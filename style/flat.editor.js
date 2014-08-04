@@ -292,10 +292,12 @@ function showeditor(element) {
             }
 
 
+
             //extra fields list
             setaddablefields();
 
 
+            edittargets_begin = edittargets;
 
 
             s = idheader + "<table>"  + s + "</table>";
@@ -590,7 +592,6 @@ function editor_oninit() {
                 editdata[i].changed = true;
             }
             if (editdata[i].changed) {
-                //if ($('#editform' + i + 'correction').attr('checked')) {
                 if (editdata[i].editform == 'correction') {
                     //editdata[i].editform = 'correction';
                     editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
@@ -599,11 +600,7 @@ function editor_oninit() {
                         alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                         return false;
                     }
-                } /*else if ($('#editform' + i + 'alternative').attr('checked')) {
-                    editdata[i].editform = 'alternative';
-                } else {
-                    editdata[i].editform = 'direct';
-                }*/
+                } 
                 if (editdata[i].type == 't') {
                     if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
                         //there is a space in a token! This can mean a number
@@ -641,7 +638,7 @@ function editor_oninit() {
                 sendeditdata.push(editdataitem);
             }
         });
-        if (sendeditdata.length == 0) {
+        if ((sendeditdata.length == 0) && (edittargets != edittargets_begin)) {
             //discard
             closeeditor();
             return false;
