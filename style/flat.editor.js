@@ -255,7 +255,7 @@ function showeditor(element) {
                             s = s + "<option value=\"\"></option>";
                             Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
-                                s = s + getclassesasoptions(c, annotations.class); // will add to s
+                                s = s + getclassesasoptions(c, annotation.class); // will add to s
                             });
                             s = s + "</select>";
                         } else {
