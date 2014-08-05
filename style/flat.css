@@ -123,6 +123,7 @@ ul#doclist>li {
 ul#doclist>li>ul {
     list-style: none;
     margin: 0px;
+    padding: 0px;
 }
 ul#doclist>li>ul>li {
     background: #eee;
