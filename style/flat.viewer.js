@@ -139,8 +139,9 @@ function getclasslabel(set, key) {
         if (setdefinitions[set].classes[key]) {
             return setdefinitions[set].classes[key].label;
         } else {
-            setdefinitions[set].classes.forEach(function(c){
-                keylabel = getclasslabel_helper(c, key);
+            if (setdefinitions[set].subclasses
+            Object.keys(setdefinitions[set].classes).forEach(function(c){
+                keylabel = getclasslabel_helper(setdefinitions[set].classes[c], key);
                 if (keylabel != key) return keylabel;
             });
         }
