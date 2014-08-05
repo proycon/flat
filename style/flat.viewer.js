@@ -129,7 +129,7 @@ function getclasslabel_helper(c, key) {
     var label = key;
     c.subclasses.forEach(function(subc){
         if (subc.id == key) {
-            label = key;
+            label = subc.label;
             return;
         }
         label = getclasslabel_helper(subc, key);
