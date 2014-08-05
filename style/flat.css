@@ -131,6 +131,8 @@ ul#doclist>li>ul>li {
     border-bottom: 1px #ddd solid;
     font-weight: normal;
     padding-left: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 #doclist span {
     float: right;
