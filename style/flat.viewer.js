@@ -140,7 +140,7 @@ function getclasslabel(set, key) {
             return setdefinitions[set].classes[key].label;
         } else {
             Object.keys(setdefinitions[set].classes).forEach(function(c){
-                keylabel = getclasslabel_helper(setdefinitions[set].classes[c], key);
+                var keylabel = getclasslabel_helper(setdefinitions[set].classes[c], key);
                 if (keylabel != key) return keylabel;
             });
         }
@@ -372,7 +372,7 @@ function setclasscolors() {
     bySortedValue(classfreq, function(key, val){
         if (currentrank < 8) {
             classrank[key] = currentrank;
-            keylabel = getclasslabel(legendset, key);
+            var keylabel = getclasslabel(legendset, key);
             s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + keylabel + "</span><br />"
             currentrank++;
         }
