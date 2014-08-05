@@ -102,12 +102,16 @@ function loadtext(annotationlist) {
 
 function loadannotations(annotationlist) {
     //load annotations in memory
+    var annotationexists = {}
+
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
             if (!(annotations[target])) annotations[target] = {};
+            if (!(annotationexists[target])) annotationexists[target] = {};
             var annotationid = getannotationid(annotation);
             annotations[target][annotationid] = annotation;
             annotations[target][annotationid].annotationid = annotationid;
+            annotationexists[target][annotationid] = true;
         });
         if ((annotation.type == "correction") && (annotation.id)) {
             corrections[annotation.id] = annotation;
@@ -129,6 +133,16 @@ function loadannotations(annotationlist) {
             }
         }
     });
+
+    //find old annotations that are no longer in the response, delete them
+    Object.keys(annotations).forEach(function(target){
+        if (annotationexists[target]) {
+            Object.keys(annotations[target]).forEach(function(annotationid){
+                if (!annotationexists[target][annotationid]) delete annotation[target][annotationid];
+            });
+        }
+    });
+
     if (function_exists(mode + '_onloadannotations')) {
         f = eval(mode + '_onloadannotations');
         f(annotationlist);
