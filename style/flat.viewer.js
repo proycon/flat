@@ -126,26 +126,33 @@ function getspantext(annotation) {
 }
 
 function getclasslabel_helper(c, key) {
+    var label = key;
     c.subclasses.forEach(function(subc){
-        if (subc.id == key) return subc.label;
-        var keylabel = getclasslabel_helper(subc, key);
-        if (keylabel != key) return keylabel;
+        if (subc.id == key) {
+            label = key;
+            return;
+        }
+        label = getclasslabel_helper(subc, key);
+        if (label != key) {
+            return;
+        }
     });
-    return key;
+    return label;
 }
 
 function getclasslabel(set, key) {
+    var label = key;
     if (setdefinitions[set]) {
         if (setdefinitions[set].classes[key]) {
             return setdefinitions[set].classes[key].label;
         } else {
             Object.keys(setdefinitions[set].classes).forEach(function(c){
-                var keylabel = getclasslabel_helper(setdefinitions[set].classes[c], key);
-                if (keylabel != key) return keylabel;
+                label = getclasslabel_helper(setdefinitions[set].classes[c], key);
+                if (label != key) return;
             });
         }
     }
-    return key;
+    return label;
 }
 
 function rendercorrection(correctionid, addlabels) {
