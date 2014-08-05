@@ -115,14 +115,24 @@ ul#doclist {
     background: white;
     color: black;
     min-height: 50px;
+    list-style: none;
 }
 ul#doclist>li {
     font-weight: bold;
+    font-size: 120%;
+}
+ul#doclist>li>ul {
+    list-style: none;
+    margin: 0px;
 }
 ul#doclist>li>ul>li {
     border-top: 1px #ddd solid;
     border-bottom: 1px #ddd solid;
     font-weight: normal;
+    padding-left: 20px;
+}
+#doclist span {
+    float: right;
 }
 a {
     color: #30677c;
