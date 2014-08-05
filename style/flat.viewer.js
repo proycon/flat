@@ -125,6 +125,26 @@ function getspantext(annotation) {
     return spantext;
 }
 
+function getclasslabel_helper(c, key) {
+    c.subclasses.forEach(function(subc){
+        if (subc.id == "key") return subc.label;
+    });
+    return key;
+}
+
+function getclasslabel(key, set) {
+    if (setdefinitions[set]) {
+        if ((setdefinitions[set].classes[key])) {
+            return setdefinitions[set].classes[key].label;
+        } else {
+            setdefinitions[set].classes.forEach(function(c){
+                keylabel = getclasslabel_helper(c, key)
+                if (keylabel != key) return keylabel;
+            });
+        }
+    }
+    return key;
+}
 
 function rendercorrection(correctionid, addlabels) {
     var s = "";
@@ -350,10 +370,10 @@ function setclasscolors() {
     bySortedValue(classfreq, function(key, val){
         if (currentrank < 8) {
             classrank[key] = currentrank;
-            if ((setdefinitions[legendset]) && (setdefinitions[legendset].classes[key])) {
-                key = setdefinitions[legendset].classes[key].label;
-            }
-            s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + key + "</span><br />"
+            if ((setdefinitions[legendset])) {
+                keylabel = getclasslabel(legendset, key);
+            } 
+            s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + keylabel + "</span><br />"
             currentrank++;
         }
     });
