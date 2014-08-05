@@ -138,7 +138,7 @@ function loadannotations(annotationlist) {
     Object.keys(annotations).forEach(function(target){
         if (annotationexists[target]) {
             Object.keys(annotations[target]).forEach(function(annotationid){
-                if (!annotationexists[target][annotationid]) delete annotation[target][annotationid];
+                if (!annotationexists[target][annotationid]) delete annotations[target][annotationid];
             });
         }
     });
