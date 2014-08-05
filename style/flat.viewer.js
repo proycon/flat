@@ -128,11 +128,13 @@ function getspantext(annotation) {
 function getclasslabel_helper(c, key) {
     c.subclasses.forEach(function(subc){
         if (subc.id == "key") return subc.label;
+        keylabel = getclasslabel_helper(subc, key)
+        if (keylabel != key) return keylabel;
     });
     return key;
 }
 
-function getclasslabel(key, set) {
+function getclasslabel(set, key) {
     if (setdefinitions[set]) {
         if ((setdefinitions[set].classes[key])) {
             return setdefinitions[set].classes[key].label;
@@ -370,9 +372,7 @@ function setclasscolors() {
     bySortedValue(classfreq, function(key, val){
         if (currentrank < 8) {
             classrank[key] = currentrank;
-            if ((setdefinitions[legendset])) {
-                keylabel = getclasslabel(legendset, key);
-            } 
+            keylabel = getclasslabel(legendset, key);
             s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + keylabel + "</span><br />"
             currentrank++;
         }
