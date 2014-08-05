@@ -53,7 +53,7 @@ div.dialog {
     margin-top: 200px;
     margin-left: auto;
     margin-right: auto;
-    width: 480px;
+    width: 50%;
     padding: 10px;
     background: #ededed;
     color: #333;
@@ -115,6 +115,14 @@ ul#doclist {
     background: white;
     color: black;
     min-height: 50px;
+}
+ul#doclist>li {
+    font-weight: bold;
+}
+ul#doclist>li>ul>li {
+    border-top: 1px #ddd solid;
+    border-bottom: 1px #ddd solid;
+    font-weight: normal;
 }
 a {
     color: #30677c;
