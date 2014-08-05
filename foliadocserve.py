@@ -348,6 +348,9 @@ def doannotation(doc, data):
 
         edit['datetime'] = datetime.datetime.now()
 
+        if not 'editform' in edit:
+            edit['editform'] = 'direct'
+
 
         if not 'set' in edit or edit['set'] == 'null':
             edit['set'] = 'undefined'
