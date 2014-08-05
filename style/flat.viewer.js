@@ -128,7 +128,7 @@ function getspantext(annotation) {
 function getclasslabel_helper(c, key) {
     c.subclasses.forEach(function(subc){
         if (subc.id == "key") return subc.label;
-        keylabel = getclasslabel_helper(subc, key)
+        keylabel = getclasslabel_helper(subc, key);
         if (keylabel != key) return keylabel;
     });
     return key;
@@ -136,7 +136,7 @@ function getclasslabel_helper(c, key) {
 
 function getclasslabel(set, key) {
     if (setdefinitions[set]) {
-        if ((setdefinitions[set].classes[key])) {
+        if (setdefinitions[set].classes[key]) {
             return setdefinitions[set].classes[key].label;
         } else {
             setdefinitions[set].classes.forEach(function(c){
