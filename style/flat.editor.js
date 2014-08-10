@@ -677,13 +677,25 @@ function editor_oninit() {
             return false;
         }
         
+        
         //sort targets in proper order
         var sortededittargets = [];
-        $('.' + view).each(function(e){
-            if (edittargets.indexOf(e.id) > -1) {
-                sortededittargets.push(e.id);
-            }
-        });
+        if (edittargets.length > 1) {
+            $('.' + view).each(function(e){
+                if (edittargets.indexOf(e.id) > -1) {
+                    sortededittargets.push(e.id);
+                }
+            });
+        
+        else {
+            sortededittargets = edittargets;
+
+        }
+
+        if (sortededittargets.length != edittarget.length) {
+            alert("Error, unable to sort targets, expected " + edittarget.length + ", got " + sortededittargets.length);
+            return;
+        }
 
 
         $('#wait').show();
@@ -694,7 +706,7 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'targets': edittargets, 'annotator': username, 'sid': sid}),
+            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'targets': sortededittargets, 'annotator': username, 'sid': sid}),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
