@@ -66,7 +66,7 @@ def index(request):
             docs[namespace] = []
             for d in sorted(r['documents']):
                 docid =  os.path.basename(d.replace('.folia.xml',''))
-                docs[namespace].append( (docid, round(os.path.getsize(d) / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
+                docs[namespace].append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
 
     if not 'configuration' in request.session:
         return logout(request)
