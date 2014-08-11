@@ -681,7 +681,7 @@ function editor_oninit() {
         //sort targets in proper order
         var sortededittargets = [];
         if (edittargets.length > 1) {
-            $('.' + view).each(function(e){
+            $('.' + view).forEach(function(e){
                 if (edittargets.indexOf(e.id) > -1) {
                     sortededittargets.push(e.id);
                 }
