@@ -691,8 +691,8 @@ function editor_oninit() {
 
         }
 
-        if (sortededittargets.length != edittarget.length) {
-            alert("Error, unable to sort targets, expected " + edittarget.length + ", got " + sortededittargets.length);
+        if (sortededittargets.length != edittargets.length) {
+            alert("Error, unable to sort targets, expected " + edittargets.length + ", got " + sortededittargets.length);
             return;
         }
 
