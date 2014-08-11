@@ -686,8 +686,7 @@ function editor_oninit() {
                     sortededittargets.push(e.id);
                 }
             });
-        
-        else {
+        } else {
             sortededittargets = edittargets;
 
         }
