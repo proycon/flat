@@ -681,9 +681,9 @@ function editor_oninit() {
         //sort targets in proper order
         var sortededittargets = [];
         if (edittargets.length > 1) {
-            $('.' + view).forEach(function(e){
-                if (edittargets.indexOf(e.id) > -1) {
-                    sortededittargets.push(e.id);
+            $('.' + view).each(function(i){
+                if (edittargets.indexOf(this.id) > -1) {
+                    sortededittargets.push(this.id);
                 }
             });
         } else {
