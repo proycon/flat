@@ -134,6 +134,9 @@ ul#doclist>li>ul>li {
     padding-top: 3px;
     padding-bottom: 3px;
 }
+ul#doclist>li>ul>li:hover {
+    background: #ddd;
+}
 #doclist span {
     float: right;
 }
