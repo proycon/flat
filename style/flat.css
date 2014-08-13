@@ -102,6 +102,9 @@ div.buttoncontainer {
     text-align: center;
     color: #cbd9de;
 }
+#topbar span.title img {
+    height: 12pt;
+}
 h3 {
     border-bottom: #30677c 1px solid;
     color: #30677c;
