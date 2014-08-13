@@ -109,11 +109,13 @@ CONFIGURATIONS = {
     'allowaddfields': True, #boolean
     'allowdeclare': True, #boolean
     'editformdirect': True, #boolean
-    'editformcorrection': False, #boolean
-    'editformalternative': False, #boolean
+    'editformcorrection': True, #boolean
+    'editformalternative': True, #boolean
+    'editformnew': True, #boolean
     'alloweditformdirect': True, #boolean
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': True, #boolean
+    'alloweditformnew': True, #boolean
     'allowupload': True, #boolean
     'modes': EDITOR_MODES,
 },
@@ -142,10 +144,12 @@ CONFIGURATIONS = {
     'editformdirect': False, #boolean
     'editformcorrection': True, #boolean
     'editformalternative': False, #boolean
+    'editformnew': False, #boolean
     'alloweditformdirect': False, #boolean
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': False, #boolean
-    'allowupload': False, #boolean
+    'alloweditformnew': False, #boolean
+    'allowupload': True, #boolean
     'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
     'autodeclare': [('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml')],
     'modes': [ ('editor','Annotation Editor')],
@@ -176,10 +180,12 @@ CONFIGURATIONS = {
     'editformdirect': True, #boolean
     'editformcorrection': True, #boolean
     'editformalternative': False, #boolean
+    'editformnew': True, #boolean
     'alloweditformdirect': True, #boolean
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': False, #boolean
-    'allowupload': False, #boolean
+    'alloweditformnew': True, #boolean
+    'allowupload': True, #boolean
     'initialcorrectionset': 'https://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml',
     'autodeclare': [
         ('correction', 'https://raw.github.com/proycon/folia/master/setdefinitions/namedentitycorrection.foliaset.xml'),

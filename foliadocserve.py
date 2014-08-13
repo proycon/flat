@@ -374,7 +374,7 @@ def doannotation(doc, data):
                         response['error'] = "Unable to merge words, they are not in the same structure element"
                         return response
 
-                if edit['editform'] == 'direct':
+                if edit['editform'] in ('direct','new'):
                     #remove all targets and insert a new one in its place
                     response['log'] = "Merging/replacing words, by " + data['annotator']
                     log(response['log'])
@@ -385,6 +385,9 @@ def doannotation(doc, data):
                     response['log'] = "Merging/replacing words (correction " + edit['correctionclass'] + "), by " + data['annotator']
                     log(response['log'])
                     ancestor.mergewords(ElementClass(doc, folia.TextContent(doc, edit['text'], set=edit['set']), generate_id_in=ancestor), *targets, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
+                elif edit['editform'] == 'alternative':
+                    raise NotImplemented
+
 
                 response['returnelementid'] = ancestor.id
             else:
@@ -396,7 +399,7 @@ def doannotation(doc, data):
 
                 log("Text edit of " + target.id)
 
-                if edit['editform'] == 'direct':
+                if edit['editform'] in ('direct','new'):
                     if 'insertright' in edit:
                         response['log'] = "Right insertion after " + target.id + ", by " + data['annotator']
                         log(response['log'])
@@ -547,7 +550,11 @@ def doannotation(doc, data):
                     response['error'] = "Target element " + targetid + " does not exist!"
                     return response
 
-                if edit['editform'] == 'direct':
+                if edit['editform'] == 'new' and edit['class']:
+                    response['log'] = "Add of " + Class.__name__ + " (" + edit['class'] + ") in " + target.id + ", by " + data['annotator']
+                    log(response['log'])
+                    target.append(Class,set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                elif edit['editform'] == 'direct':
                     if edit['class']:
                         response['log'] = "Edit of " + Class.__name__ + " (" + edit['class'] + ") in " + target.id + ", by " + data['annotator']
                         log(response['log'])
@@ -586,9 +593,9 @@ def doannotation(doc, data):
                     response['error'] = "Target element " + targetid + " does not exist!"
                     return response
 
-            if edit['editform'] == 'direct':
+            if edit['editform'] in ('direct','new'):
                 #Span annotation, one annotation spanning all tokens
-                if edit['new']:
+                if edit['new'] or edit['editform'] == 'new':
                     #this is a new span annotation
 
                     response['log'] = "Adding " + Class.__name__ + " (" + edit['class'] + ") for " + ",".join([x.id for x in targets]) + "; by " + data['annotator']

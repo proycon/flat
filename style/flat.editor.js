@@ -1,7 +1,7 @@
 editannotations = {};
 editoropen = false;
 coselector = false;
-editforms = {'direct': true, 'correction': false,'alternative': false} ;
+editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 editedelementid = null;
 
 
@@ -125,6 +125,13 @@ function seteditform(index, value) {
             $('#editform' + index + 'alternative').removeClass('selected');
         }
     }
+    if ($('#editform' + index + 'new')) {
+        if (value == 'new') {
+            $('#editform' + index + 'new').addClass('selected');
+        } else {
+            $('#editform' + index + 'new').removeClass('selected');
+        }
+    }
 }
 
 function addeditforms() {
@@ -146,20 +153,16 @@ function addeditforms() {
     if (editforms.direct) {
         if ((selected == "direct") || (selected == null)) {
             s += "<button id=\"editform" + editfields + "direct\" class=\"selected\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
-            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" checked=\"checked\" /><label title=\"Edit Directly\">D</label>";
         } else {
             s += "<button id=\"editform" + editfields + "direct\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
-            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "direct\" value=\"direct\" /><label title=\"Edit Directly\">D</label>";
         }
         editformcount++;
     }
     if (editforms.correction) {
         if (selected == "correction") {
             s += "<button id=\"editform" + editfields + "correction\" class=\"selected\" title=\"Edit as new Correction\" onclick=\"javascript:seteditform(" + editfields + ",'correction')\">C</button>";
-            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" checked=\"checked\" /><label title=\"Edit as new Correction\">C</label>";
         } else {
             s += "<button id=\"editform" + editfields + "correction\"  title=\"Edit as new Correction\" onclick=\"javascript:seteditform(" + editfields + ",'correction')\">C</button>";
-            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "correction\" value=\"correction\" /><label title=\"Edit as new Correction\">C</label>";
         }
         correctionset = $('#editformcorrectionset').val();
         if ((setdefinitions[correctionset]) && (setdefinitions[correctionset].type == "closed")) {
@@ -177,14 +180,20 @@ function addeditforms() {
     }
     if (editforms.alternative) {
         if (selected == "alternative") {
-            s += "<button id=\"editform" + editfields + "alternative\" class=\"selected\" title=\"Edit as new Alternative\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
-            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" checked=\"checked\" /><label title=\"Edit as new Alternative\">A</label>";
+            s += "<button id=\"editform" + editfields + "alternative\" class=\"selected\" title=\"Edit as new alternative annotation, the main annotation takes precedence\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
         } else {
-            s += "<button id=\"editform" + editfields + "alternative\"  title=\"Edit as new Alternative\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
-            //s += "<input type=\"radio\" name=\"editform" + editfields + "\" id=\"editform" + editfields + "alternative\" value=\"alternative\" /><label title=\"Edit as new Alternative\">A</label>";
+            s += "<button id=\"editform" + editfields + "alternative\"  title=\"Edit as new alternative annotation, the main annotation takes precedence\" onclick=\"javascript:seteditform(" + editfields + ",'alternative')\">A</button>";
         }
         editformcount++;
     }
+    if (editforms.new) {
+        if (selected == "new") {
+            s += "<button id=\"editform" + editfields + "new\" class=\"selected\" title=\"Add as new annotation, if allowed, leaving the existing one as is\" onclick=\"javascript:seteditform(" + editfields + ",'new')\">N</button>";
+        } else {
+            s += "<button id=\"editform" + editfields + "new\"  title=\"Add as new annotation, if allowed, leaving the existing one as is\" onclick=\"javascript:seteditform(" + editfields + ",'new')\">N</button>";
+        }
+    )
+    editformcount++;
     s = s + "</span>";
     return [s,editformcount]
 }

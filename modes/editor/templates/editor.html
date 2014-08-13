@@ -23,13 +23,16 @@ editforms['{{ editform }}'] = true;
 <li>Edit Forms
 <ul id="editforms">
     {% if configuration.alloweditformdirect %}
-    <li id="editformdirect"><a href="javascript:toggleeditform('direct')">Direct Edit</a></li>
+    <li id="editformdirect"><a href="javascript:toggleeditform('direct')">Direct Edit (D)</a></li>
     {% endif %}
     {% if configuration.alloweditformcorrection %}
-    <li id="editformcorrection"><a href="javascript:toggleeditform('correction')">Edit as correction</a></li>
+    <li id="editformcorrection"><a href="javascript:toggleeditform('correction')">Edit as correction (C)</a></li>
     {% endif %}
     {% if configuration.alloweditformalternative %}
-    <li id="editformalternative"><a href="javascript:toggleeditform('alternative')">Edit as alternative</a></li>
+    <li id="editformalternative"><a href="javascript:toggleeditform('alternative')">Edit as alternative (A)</a></li>
+    {% endif %}
+    {% if configuration.alloweditformnew %}
+    <li id="editformalternative"><a href="javascript:toggleeditform('new')">Add as new (N)</a></li>
     {% endif %}
 </ul>
 </li>
