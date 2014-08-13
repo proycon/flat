@@ -239,3 +239,9 @@ nav ul ul li.on {
     text-align: center;
     margin-top: 100px;
 }
+img#logo {
+    display: block;
+    width: 10%;
+    margin-left: auto;
+    margin-right: auto;
+}
