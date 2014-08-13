@@ -179,14 +179,16 @@ function rendercorrection(correctionid, addlabels) {
         }
         if (correction.original.length > 0) {
             correction.original.forEach(function(original){
-                s = s + "<tr><th>Original";
-                if (addlabels) {
-                    s = s + " " + getannotationtypename(original.type);
+                if (viewannotations[original.type+"/"+original.set]) {
+                    s = s + "<tr><th>Original";
+                    if (addlabels) {
+                        s = s + " " + getannotationtypename(original.type);
+                    }
+                    s = s + ":</th><td> ";
+                    s = s +  "<div class=\"correctionchild\">";
+                    s = s + renderannotation(original,true);
+                    s = s + "</div></td></tr>";
                 }
-                s = s + ":</th><td> ";
-                s = s +  "<div class=\"correctionchild\">";
-                s = s + renderannotation(original,true);
-                s = s + "</div></td></tr>";
             });
         }
         if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
