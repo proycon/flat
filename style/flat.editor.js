@@ -571,6 +571,7 @@ function editor_oninit() {
     editforms['direct'] = configuration.editformdirect;
     editforms['correction'] = configuration.editformcorrection;
     editforms['alternative'] = configuration.editformalternative;
+    editforms['new'] = configuration.editformnew;
 
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) $('#editform' + editform).addClass('on');

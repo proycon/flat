@@ -19,10 +19,6 @@ def view(request, namespace, docid):
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
         try:
-            d['editforms'] = settings.EDITFORMS
-        except AttributeError:
-            d['editforms'] = ['direct']
-        try:
             d['initialcorrectionset'] = settings.CONFIGURATIONS[request.session['configuration']]['initialcorrectionset']
         except:
             pass

@@ -8,10 +8,6 @@
 
 {% block js %}
 initialcorrectionset = '{{ initialcorrectionset }}';
-{% for editform in editforms %}
-editforms = {}
-editforms['{{ editform }}'] = true;
-{% endfor %}
 {% endblock %}
 
 {% block menu %}
