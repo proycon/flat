@@ -1,7 +1,7 @@
 # Django settings for flat project.
 from socket import gethostname
 import os.path
-from os import env
+from os import environ
 
 VERSION = "0.2.1"
 
@@ -42,7 +42,7 @@ if hostname == 'mhysa' or hostname == 'galactica':
     }
 elif hostname[:9] == 'applejack':
     ROOT = os.path.dirname(__file__) + '/'
-    if not ('DEV' in env) or env['DEV'] == 'false':
+    if not ('DEV' in environ) or environ['DEV'] == 'false':
         ROOT = "/var/www2/flat/live/repo/flat/"
         DATABASES = {
             'default': {
@@ -75,7 +75,7 @@ elif hostname[:9] == 'applejack':
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8024
 elif hostname[:8] == 'spitfire':
-    if not ('DEV' in env) or env['DEV'] == 'false':
+    if not ('DEV' in environ) or environ['DEV'] == 'false':
         ROOT = "/var/www2/flat/live/repo/flat/"
         DATABASES = {
             'default': {
