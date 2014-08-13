@@ -109,6 +109,11 @@ class DocStore:
         self.load(key)
         return self.data[key]
 
+    def __setitem__(self, key, value):
+        assert isinstance(key, tuple) and len(key) == 2
+        assert isinstance(value, folia.Document)
+        self.data[key] = value
+
     def __contains__(self,key):
         assert isinstance(key, tuple) and len(key) == 2
         return key in self.data
