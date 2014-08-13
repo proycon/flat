@@ -71,7 +71,7 @@ def index(request):
     if not 'configuration' in request.session:
         return logout(request)
 
-    sorteddocs = { k: docs[k] for k in namespaces_sorted }
+    sorteddocs = { k: docs[k] for k in namespaces_sorted if k in docs }
 
     return render(request, 'index.html', {'docs': sorteddocs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION, 'namespaces': namespaces_sorted})
 
