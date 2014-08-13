@@ -59,19 +59,19 @@ elif hostname[:9] == 'applejack':
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8023
     else:
-        ROOT == "/var/www2/flat/dev/repo/flat/"
+        ROOT == "/var/www2/flat/test/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
                 'NAME': 'flat',                      # Or path to database file if using sqlite3.
                 'USER': 'flat_admin',
-                'PASSWORD': open('/www/flat/dev/etc/.pw2').read().strip(),
+                'PASSWORD': open('/www/flat/test/etc/.pw2').read().strip(),
                 'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        ROOT = "/www/flat/dev/repo/flat/"
-        WORKDIR = "/www/flat/dev/writable/docroot/"
+        ROOT = "/www/flat/test/repo/flat/"
+        WORKDIR = "/www/flat/test/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8024
 elif hostname[:8] == 'spitfire':
@@ -93,19 +93,19 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_PORT = 8023
         ADMIN_MEDIA_PREFIX = '/media/'
     else:
-        ROOT == "/var/www2/flat/dev/repo/flat/"
+        ROOT == "/var/www2/flat/test/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
                 'NAME': 'flat',                      # Or path to database file if using sqlite3.
                 'USER': 'flat_user',
-                'PASSWORD': open('/var/www2/flat/dev/etc/.pw').read().strip(),
+                'PASSWORD': open('/var/www2/flat/test/etc/.pw').read().strip(),
                 'HOST': 'mysql-flat.science.ru.nl',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        ROOT = "/var/www2/flat/dev/repo/flat/"
-        WORKDIR = "/var/www2/flat/dev/writable/docroot/"
+        ROOT = "/var/www2/flat/test/repo/flat/"
+        WORKDIR = "/var/www2/flat/test/writable/docroot/"
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8024
         ADMIN_MEDIA_PREFIX = '/media/'
