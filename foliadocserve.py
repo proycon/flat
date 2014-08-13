@@ -954,9 +954,12 @@ class Root:
             log("Loading document from upload")
             doc = folia.Document(string=data)
             response['docid'] = doc.id
-        except:
-            response['error'] = "Uploaded file is no valid FoLiA Document"
-            log("error")
+        except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            formatted_lines = traceback.format_exc().splitlines()
+            traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
+            response['error'] = "Uploaded file is no valid FoLiA Document: " + str(e) + " -- " "\n".join(formatted_lines)
+            log(response['error'])
             return json.dumps(response).encode('utf-8')
 
         filename = self.docstore.getfilename( (namespace, doc.id))
