@@ -677,8 +677,6 @@ def doannotation(doc, data):
                         if annotation.hasannotation(Class):
                             response['error'] = "Unable to change the span of this annotation as there are nested span annotations embedded"
                             return response
-                        else:
-                            annotation.data = targets
 
                     if edit['class']:
                         #TODO: will require extra work for dependencies and coref chains (handling of subelements)
