@@ -192,7 +192,7 @@ function addeditforms() {
         } else {
             s += "<button id=\"editform" + editfields + "new\"  title=\"Add as new annotation, if allowed, leaving the existing one as is\" onclick=\"javascript:seteditform(" + editfields + ",'new')\">N</button>";
         }
-    )
+    }
     editformcount++;
     s = s + "</span>";
     return [s,editformcount]
