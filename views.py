@@ -95,7 +95,6 @@ def upload(request):
             if 'error' in response and response['error']:
                 return HttpResponseForbidden(response['error'])
             else:
-                response = json.loads(response)
                 docid = response['docid']
                 return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:
