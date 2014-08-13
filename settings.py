@@ -1,6 +1,7 @@
 # Django settings for flat project.
 from socket import gethostname
 import os.path
+from os import env
 
 VERSION = "0.2.1"
 
@@ -41,7 +42,8 @@ if hostname == 'mhysa' or hostname == 'galactica':
     }
 elif hostname[:9] == 'applejack':
     ROOT = os.path.dirname(__file__) + '/'
-    if ROOT == "/www/flat/live/repo/flat/":
+    if not ('DEV' in env) or env['DEV'] == 'false':
+        ROOT = "/var/www2/flat/live/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -56,7 +58,8 @@ elif hostname[:9] == 'applejack':
         WORKDIR = "/www/flat/live/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8023
-    elif ROOT == "/www/flat/dev/repo/flat/":
+    else:
+        ROOT == "/var/www2/flat/dev/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -71,11 +74,9 @@ elif hostname[:9] == 'applejack':
         WORKDIR = "/www/flat/dev/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8024
-    else:
-        raise Exception("No configuration found")
 elif hostname[:8] == 'spitfire':
-    ROOT = os.path.dirname(__file__) + '/'
-    if ROOT == "/var/www2/flat/live/repo/flat/":
+    if not ('DEV' in env) or env['DEV'] == 'false':
+        ROOT = "/var/www2/flat/live/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -91,7 +92,8 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8023
         ADMIN_MEDIA_PREFIX = '/media/'
-    elif ROOT == "/var/www2/flat/dev/repo/flat/":
+    else:
+        ROOT == "/var/www2/flat/dev/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -107,8 +109,6 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8024
         ADMIN_MEDIA_PREFIX = '/media/'
-    else:
-        raise Exception("No configuration found")
 else:
     raise Exception("I don't know where I'm running from!")
 
