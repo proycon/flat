@@ -9,6 +9,7 @@ import flat.comm
 import flat.users
 import urllib2
 import os
+import json
 
 def login(request):
     if 'username' in request.POST and 'password' in request.POST:
