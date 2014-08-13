@@ -56,9 +56,9 @@
             </nav>
             </div>
             {% if docid %}
-                <span class="title">{{ docid }}</span>
-            {% else %}
-                <span class="title">FoLiA Linguistic Annotation Tool</span>
+                <span class="title"><img src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> {{ docid }}</span>
+                {% else %}
+                <span class="title"><img src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool</span>
             {% endif %}
             <div class="right">
             <ul>
