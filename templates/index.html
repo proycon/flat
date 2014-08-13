@@ -12,7 +12,7 @@
         <label>Select file:</label> <input type="file" name="file" />
         <label>Namespace:</label> <input type="text" name="namespace" value="{{ username }}" />
         <div class="buttoncontainer">
-            <input id="uploadbutton" class="button" type="submit" value="Upload" />
+            <input id="uploadbutton" class="button" type="submit" value="Upload" onclick="$('#wait').show()" />
             <button id="cancelupload" class="button">Cancel</button>
         </div>
     </form>
@@ -33,7 +33,7 @@
         <li><strong>{{ namespace }}</strong>
         <ul>
         {% for doc, size, timestamp  in docsinnamespace %}
-        <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+        <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="$('#wait').show()">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
         {% endfor %}
         </ul></li>
     {% endfor %}
