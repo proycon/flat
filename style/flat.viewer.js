@@ -244,7 +244,7 @@ function renderannotation(annotation, norecurse) {
             //here
             if (!checkparentincorrection(annotation, correctionid)) {
                 if (corrections[correctionid]) {
-                    s = s + rendercorrection( correctionid);
+                    s = s + rendercorrection( correctionid, true);
                 } else {
                     s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
                 }
