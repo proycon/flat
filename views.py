@@ -83,14 +83,17 @@ def download(request, namespace, docid):
 def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.')
-        if 'file' in request.FILES:
+        if flat.users.models.haswritepermission(request.user.username, namespace) and 'file' in request.FILES:
             data = unicode(request.FILES['file'].read(),'utf-8')
             try:
                 response = flat.comm.postxml(request,"upload/" + namespace , data)
             except urllib2.URLError:
                 return HttpResponseForbidden("Unable to connect to the document server")
-            docid = response['docid']
-            return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
+            if 'error' in response and response['error']:
+                return HttpResponseForbidden(response['error'])
+            else:
+                docid = response['docid']
+                return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:
             return HttpResponseForbidden("Permission denied")
     else:
