@@ -958,7 +958,7 @@ class Root:
         #data =cherrypy.request.params['data']
         try:
             log("Loading document from upload")
-            doc = folia.Document(string=data)
+            doc = folia.Document(string=data,setdefinitions=self.docstore.setdefinitions, loadsetdefinitions=True)
             response['docid'] = doc.id
             self.docstore[(namespace,doc.id)] = doc
         except Exception as e:
