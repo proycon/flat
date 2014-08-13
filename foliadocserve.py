@@ -954,7 +954,7 @@ class Root:
             log("Loading document from upload")
             doc = folia.Document(string=data)
             response['docid'] = doc.id
-            self.docstore[(namespace,docid)] = doc
+            self.docstore[(namespace,doc.id)] = doc
         except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             formatted_lines = traceback.format_exc().splitlines()
