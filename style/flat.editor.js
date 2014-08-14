@@ -246,7 +246,12 @@ function showeditor(element) {
                     } else {
                         setname = "";
                     }
-                    s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                    if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                        s = s + "<tr class=\"focus\">";
+                    } else {
+                        s = s + "<tr>";
+                    }
+                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                     if (annotation.type == 't') {
                         if (annotation.class != "current") {
                             s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/><br/>Text:";
