@@ -2,15 +2,15 @@
 import os, sys
 
 #sanity check
-if not os.path.exists('/var/www2/flat/dev/repo/flat'):
+if not os.path.exists('/var/www2/flat/test/repo/flat'):
         raise Exception("Flat dir not found")
-if not os.path.exists('/var/www2/flat/dev/repo/flat/settings.py'):
+if not os.path.exists('/var/www2/flat/test/repo/flat/settings.py'):
         raise Exception("settings not found")
 
-if not '/var/www2/flat/dev/repo' in sys.path:
-    sys.path.append('/var/www2/flat/dev/repo')
-if not '/var/www2/flat/dev/repo/flat' in sys.path:
-    sys.path.append('/var/www2/flat/dev/repo/flat')
+if not '/var/www2/flat/test/repo' in sys.path:
+    sys.path.append('/var/www2/flat/test/repo')
+if not '/var/www2/flat/test/repo/flat' in sys.path:
+    sys.path.append('/var/www2/flat/test/repo/flat')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'flat.settings'
 os.environ['DEV'] = 'true'
