@@ -93,7 +93,7 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_PORT = 8023
         ADMIN_MEDIA_PREFIX = '/media/'
     else:
-        ROOT == "/var/www2/flat/test/repo/flat/"
+        ROOT = "/var/www2/flat/test/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
