@@ -546,6 +546,7 @@ function editor_oninit() {
         $('#history').hide();
     });
     $('#editorselecttarget').click(function(){
+        //toggle coselector (select multiple)
         if (coselector) {
             coselector = false;
             $(this).removeClass("selectoron");
@@ -676,6 +677,8 @@ function editor_oninit() {
                 } 
             } else {
                 alert("Unable to determine to what annotation type the change in span pertains... Please restrict editable fields and try again");
+                closeeditor();
+                return false;
             }
             changes = true;
         }
