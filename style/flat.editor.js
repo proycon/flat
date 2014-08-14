@@ -276,7 +276,7 @@ function showeditor(element) {
                         } else {
                             s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
                         }
-                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\">Select span</button><br />";
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\">Select span&gt;</button><br />";
                     }
                     editformdata = addeditforms();
                     editformcount = editformdata[1];

@@ -85,6 +85,7 @@ div.selected span.lbl {
 }
 #editor button.spanselector {
     background: #444;
+    font-size: 80%;
 }
 #editor button.selectoron {
     background: yellow;
@@ -146,4 +147,7 @@ span.editforms button {
 }
 span.editforms button.selected {
     background: #30677c;
+}
+span.text {
+    color: #7c7639;
 }
