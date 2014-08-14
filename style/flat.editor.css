@@ -41,6 +41,15 @@ div#editor td {
     font-style: italic;
     border-bottom: 1px #eee solid;
 }
+div#editor tr.focus {
+    background: #aaa;
+}
+div#editor tr.focus span.editforms button {
+    background: #ccc;
+}
+div#editor tr.focus span.editforms button.selected {
+    background: #30677c;
+}
 div#editor div#id {
     width: 100%;
     text-align: center;
