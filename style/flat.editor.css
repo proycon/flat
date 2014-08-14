@@ -45,7 +45,7 @@ div#editor tr.focus {
     background: #aaa;
 }
 div#editor tr.focus span.editforms button {
-    background: #ccc;
+    background: #777;
 }
 div#editor tr.focus span.editforms button.selected {
     background: #30677c;
