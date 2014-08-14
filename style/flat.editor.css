@@ -40,6 +40,9 @@ div#editor td {
     width: 59%
     font-style: italic;
 }
+div#editor tr {
+    border-bottom: 1px #30677c dotted;
+}
 div#editor div#id {
     width: 100%;
     text-align: center;
