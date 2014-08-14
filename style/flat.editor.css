@@ -39,9 +39,7 @@ div#editor th span.setname {
 div#editor td {
     width: 59%
     font-style: italic;
-}
-div#editor tr {
-    border-bottom: 1px #30677c dotted;
+    border-bottom: 1px #eee solid;
 }
 div#editor div#id {
     width: 100%;
