@@ -83,7 +83,9 @@ div#editor span#editoraddfields button {
 div.selected span.lbl {
     background: yellow;
 }
-
+#editor button.spanselector {
+    background: #444;
+}
 #editor button.selectoron {
     background: yellow;
     color: black;

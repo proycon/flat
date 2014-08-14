@@ -263,7 +263,6 @@ function showeditor(element) {
                         if (annotation.targets.length > 1) {
                             spantext = getspantext(annotation);
                             s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
-                            s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\">Select span</button>";
                             s  = s + "<br/>";
                         }
                         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
@@ -277,6 +276,7 @@ function showeditor(element) {
                         } else {
                             s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
                         }
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\">Select span</button><br />";
                     }
                     editformdata = addeditforms();
                     editformcount = editformdata[1];
