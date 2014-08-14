@@ -31,6 +31,9 @@ div#editor th {
     width: 39%
     font-weight: bold;
 }
+div#editor tr:hover th {
+    color: #30677c;
+}
 div#editor th span.setname {
     font-weight: normal;
     text-size: 8pt;

@@ -262,7 +262,8 @@ function showeditor(element) {
                     } else {
                         if (annotation.targets.length > 1) {
                             spantext = getspantext(annotation);
-                            s  = s + "<span class=\"text\">" + spantext + "</span><br/>";
+                            s  = s + "<span class=\"text\">" + spantext + "</span>";
+                            s  = s + "<br/>";
                         }
                         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
                             s = s + "<select id=\"editfield" + editfields + "\">";
