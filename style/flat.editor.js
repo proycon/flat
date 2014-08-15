@@ -347,7 +347,7 @@ function showeditor(element) {
 
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(function(){
-                    var i = this.id.substr(11);  //get from ID
+                    var i = parseInt(this.id.substr(12));  //get index ID (we can't reuse i from the larger scope here!!)
                     //toggle coselector (select multiple), takes care of
                     //switching off any other coselector
                     var toggleon = true;
