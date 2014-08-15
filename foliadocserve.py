@@ -829,21 +829,22 @@ class Root:
         if 'log' in response:
             response['log'] += " in document " + "/".join((namespace,docid))
         else:
-            if 'returnelementid' in response:
-                response['log'] = "Unknown edit by " + data['annotator'] + " in " + response['returnelementid'] + " in " + "/".join((namespace,docid))
+            if 'returnelementids' in response:
+                response['log'] = "Unknown edit by " + data['annotator'] + " in " + ",".join(response['returnelementids']) + " in " + "/".join((namespace,docid))
             else:
                 response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join((namespace,docid))
-        if 'returnelementid' in response:
+        if 'returnelementids' in response:
             self.docstore.save((namespace,docid),response['log'] )
             #set concurrency:
             for s in self.docstore.updateq[(namespace,docid)]:
                 if s != sid:
                     log("Scheduling update for " + s)
-                    self.docstore.updateq[(namespace,docid)][s].append(response['returnelementid'])
-            return self.getelement(namespace,docid, response['returnelementid'],sid);
+                    for eid in response['returnelementids']:
+                        self.docstore.updateq[(namespace,docid)][s].append(eid)
+            return self.getelements(namespace,docid, response['returnelementids'],sid);
         else:
             self.docstore.save((namespace,docid), response['log'])
-            return self.getelement(namespace,docid, doc.data[0].id,sid) #return all
+            return self.getelements(namespace,docid, [doc.data[0].id],sid) #return all
 
 
     def checkexpireconcurrency(self):
@@ -870,29 +871,30 @@ class Root:
 
 
     @cherrypy.expose
-    def getelement(self, namespace, docid, elementid, sid):
-        log("Returning element " + str(elementid) + " in document " + "/".join((namespace,docid)) + ", session " + sid)
-        namepace = namespace.replace('/','').replace('..','')
-        if sid[-5:] != 'NOSID':
-            self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
-            if sid in self.docstore.updateq[(namespace,docid)]:
-                try:
-                    self.docstore.updateq[(namespace,docid)][sid].remove(elementid)
-                except:
-                    pass
-        try:
-            cherrypy.response.headers['Content-Type'] = 'application/json'
-            if elementid:
-                log("Request element: "+ elementid)
-                return json.dumps({
-                    'elementid': elementid,
-                    'html': gethtml(self.docstore[(namespace,docid)][elementid]),
-                    'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
-                }).encode('utf-8')
-            else:
-                return "{}".encode('utf-8')
-        except NoSuchDocument:
-            raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
+    def getelements(self, namespace, docid, elementids, sid):
+        response = []
+        for elementid in elementids:
+            log("Returning element " + str(elementid) + " in document " + "/".join((namespace,docid)) + ", session " + sid)
+            namepace = namespace.replace('/','').replace('..','')
+            if sid[-5:] != 'NOSID':
+                self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
+                if sid in self.docstore.updateq[(namespace,docid)]:
+                    try:
+                        self.docstore.updateq[(namespace,docid)][sid].remove(elementid)
+                    except:
+                        pass
+            try:
+                cherrypy.response.headers['Content-Type'] = 'application/json'
+                if elementid:
+                    log("Request element: "+ elementid)
+                    response.append({
+                        'elementid': elementid,
+                        'html': gethtml(self.docstore[(namespace,docid)][elementid]),
+                        'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),
+                    })
+            except NoSuchDocument:
+                raise cherrypy.HTTPError(404, "Document not found: " + namespace + "/" + docid)
+        return json.dumps(response).encode('utf-8')
 
 
     @cherrypy.expose
