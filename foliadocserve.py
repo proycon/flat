@@ -628,7 +628,7 @@ def doannotation(doc, data):
                     layer.append(Class, *targets, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
                     if not layer.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
-                        response['returnelementids'] = layer.ancestor(folia.AbstractStructureElement).id
+                        response['returnelementids'].append(layer.ancestor(folia.AbstractStructureElement).id)
 
 
                 elif 'id' in edit:
@@ -664,7 +664,7 @@ def doannotation(doc, data):
                         annotation.parent.remove(annotation)
 
                     if not annotation.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
-                        response['returnelementids'] = annotation.ancestor(folia.AbstractStructureElement).id
+                        response['returnelementids'].append(annotation.ancestor(folia.AbstractStructureElement).id)
 
                 else:
                     #no ID, fail
@@ -706,7 +706,7 @@ def doannotation(doc, data):
                         layer.correct(original=annotation,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
                     if not annotation.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
-                        response['returnelementids'] = annotation.ancestor(folia.AbstractStructureElement).id
+                        response['returnelementids'].append( annotation.ancestor(folia.AbstractStructureElement).id)
 
                 else:
                     #no ID, fail
@@ -872,6 +872,7 @@ class Root:
 
     @cherrypy.expose
     def getelements(self, namespace, docid, elementids, sid):
+        assert isinstance(elementids, list) or isinstance(elementids, tuple)
         response = {'elements':[]}
         for elementid in elementids:
             log("Returning element " + str(elementid) + " in document " + "/".join((namespace,docid)) + ", session " + sid)
