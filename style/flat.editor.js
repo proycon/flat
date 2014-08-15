@@ -362,12 +362,13 @@ function showeditor(element) {
                         coselector = -1;
                     }
                     if (toggleon) {
+                        coselector = i;
+
                         //highlight all coselected elements
                         for (var j = 0; j < editdata[coselector].targets.length; j++) {
                             $('#' + editdata[coselector].targets[j]).addClass('selected');
                         }
 
-                        coselector = i;
                         $(this).addClass("selectoron");
                     }
                 });
