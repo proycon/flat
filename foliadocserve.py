@@ -872,7 +872,7 @@ class Root:
 
     @cherrypy.expose
     def getelements(self, namespace, docid, elementids, sid):
-        response = []
+        response = {'elements':[]}
         for elementid in elementids:
             log("Returning element " + str(elementid) + " in document " + "/".join((namespace,docid)) + ", session " + sid)
             namepace = namespace.replace('/','').replace('..','')
@@ -887,7 +887,7 @@ class Root:
                 cherrypy.response.headers['Content-Type'] = 'application/json'
                 if elementid:
                     log("Request element: "+ elementid)
-                    response.append({
+                    response['elements'].append({
                         'elementid': elementid,
                         'html': gethtml(self.docstore[(namespace,docid)][elementid]),
                         'annotations': tuple(getannotations(self.docstore[(namespace,docid)][elementid])),

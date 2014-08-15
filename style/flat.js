@@ -186,7 +186,7 @@ function update(data) {
     if (data.error) {
         alert(data.error);
     }
-    data.forEach(function(returnitem){
+    data.elements.forEach(function(returnitem){
         if ((returnitem.html) && (returnitem.elementid)) { 
             $('#' + valid(returnitem.elementid))[0].outerHTML = returnitem.html;
             //$('#' + valid(data.elementid)).attr('id',"replacing");
