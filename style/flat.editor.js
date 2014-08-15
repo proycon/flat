@@ -438,7 +438,7 @@ function addeditorfield(index) {
     $('#editrowplaceholder')[0].outerHTML = s;
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'class':'', 'new': true, 'changed': true };
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'class':'', 'new': true, 'changed': true };
     editdata.push(editdataitem);
     setaddablefields();
 }
