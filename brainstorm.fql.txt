@@ -1,10 +1,10 @@
 {query}:
-	FOR {$targets} IN {$documents} {action}
+	EDIT {annotationtype} [{in}] [{with}] [{as}]
+	ADD {annotationtype} [{in}} [{with}]	[{as}}
+	SELECT {annotationtype} [{in}] [{where}]
 
-{action}:
-	EDIT {annotationtype} [{with}] [{as}]
-	ADD {annotationtype} [{with}]	[{as}}
-	SELECT {annotationtype} [{where}]
+{in}:
+    IN {$documents}
 
 {as}:
 	AS ALTERNATIVE
@@ -40,7 +40,6 @@
 	CONFIDENCE=""
 	N=""
 	{add}
-
 
 
 
