@@ -692,6 +692,8 @@ function editor_oninit() {
 
         }
 
+        var queries = [];
+
 
         //gather edits that changed, and sort targets
         var sendeditdata = []; 
@@ -714,6 +716,39 @@ function editor_oninit() {
                 }
                 editdata[i].targets = sortededittargets;
                 sendeditdata.push(editdata[i]);
+                
+                //compose query  TODO....
+                var query;
+                if ((editdata[i].editform == "new") || ( editdata[i].new)) {
+                    query = "ADD";
+                } else if (editdata[i].class = "") (
+                    //deletion
+                    query = "DELETE";
+                } else {
+                    query = "EDIT";
+                }
+                query += " " +annotation.type;
+                if (editdata[i].id) {
+                    query += " ID " + editdata[i].id;
+                } else if (editdata[i].set) {
+                    query += " OF " + editdata[i].set;                    
+                }
+                if (editdata[i].editform == "correction") {
+                    query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\""
+                }
+                if (editdata[i].type == "t") {
+                    query += " WITH TEXT \"" + editdata[i].text + "\" ANNOTATOR \"" + username + "\" ANNOTATORTYPE \"manual\"";
+                    //TODO: insertleft, insertright, dosplit
+                } else if (editdata[i].class != "") {
+                    //no deletion 
+                    query += " WITH CLASS \"" + editdata[i].class + "\" ANNOTATOR \"" + username + "\" ANNOTATORTYPE \"manual\"";
+                }
+                query += " FOR";
+                sortededittargets.forEach(function(t){
+                    query += " " + t;
+                });
+                queries.push(query);
+                    
             }
         }
 
@@ -725,6 +760,8 @@ function editor_oninit() {
         
         
         $('#wait').show();
+
+    
 
 
         $.ajax({
