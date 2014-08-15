@@ -302,40 +302,8 @@ def getsetdefinitions(doc):
     return setdefs
 
 def doannotation(doc, data):
-    response = {'returnelementid': None}
+    response = {'returnelementids': []}
     log("Received data for doannotation: "+ repr(data))
-
-    if len(data['targets']) > 1:
-        commonancestors = None
-        for targetid in data['targets']:
-            try:
-                target = doc[targetid]
-            except:
-                response['error'] = "Target element " + targetid + " does not exist!"
-                return response
-            ancestors = list( ( x.id for x in target.ancestors() if isinstance(x,folia.AbstractStructureElement) and x.id ) )
-            if commonancestors is None:
-                commonancestors = copy(ancestors)
-            else:
-                removeancestors = []
-                for a in commonancestors:
-                    if not (a in ancestors):
-                        removeancestors.append(a)
-                for a in removeancestors:
-                    commonancestors.remove(a)
-        if commonancestors:
-            commonancestor = commonancestors[0]
-            log("Common ancestor as return element: "+ commonancestor )
-            response['returnelementid'] = commonancestor
-    else:
-        for targetid in data['targets']:
-            try:
-                target = doc[targetid]
-                response['returnelementid'] = target.id
-            except:
-                response['error'] = "Target element " + targetid + " does not exist!"
-                return response
-        commonancestor = target.ancestor(folia.AbstractStructureElement).id
 
 
 
@@ -350,6 +318,40 @@ def doannotation(doc, data):
         Class = folia.XML2CLASS[edit['type']]
         annotationtype = Class.ANNOTATIONTYPE
         annotation = None
+
+        if len(edit['targets']) > 1:
+            commonancestors = None
+            for targetid in edit['targets']:
+                try:
+                    target = doc[targetid]
+                except:
+                    response['error'] = "Target element " + targetid + " does not exist!"
+                    return response
+                ancestors = list( ( x.id for x in target.ancestors() if isinstance(x,folia.AbstractStructureElement) and x.id ) )
+                if commonancestors is None:
+                    commonancestors = copy(ancestors)
+                else:
+                    removeancestors = []
+                    for a in commonancestors:
+                        if not (a in ancestors):
+                            removeancestors.append(a)
+                    for a in removeancestors:
+                        commonancestors.remove(a)
+            if commonancestors:
+                commonancestor = commonancestors[0]
+                log("Common ancestor as return element: "+ commonancestor )
+                if not commonancestor in response['returnelementids']:
+                    response['returnelementids'].append(commonancestor)
+        else:
+            for targetid in edit['targets']:
+                try:
+                    target = doc[targetid]
+                    if not target.id in response['returnelementids']:
+                        response['returnelementids'].append(target.id)
+                except:
+                    response['error'] = "Target element " + targetid + " does not exist!"
+                    return response
+            commonancestor = target.ancestor(folia.AbstractStructureElement).id
 
 
         edit['datetime'] = datetime.datetime.now()
@@ -366,12 +368,12 @@ def doannotation(doc, data):
 
         if issubclass(Class, folia.TextContent): ################### EDIT OF TEXT CONTENT #######################################
             #Text Content, each target will get a copy
-            if len(data['targets']) > 1:
+            if len(edit['targets']) > 1:
                 log("Text edit of multiple elements")
                 #more than one target, this implies a merge
                 targets = []
                 ancestor = None
-                for target in data['targets']:
+                for target in edit['targets']:
                     targets.append( doc[target] )
                     if not ancestor:
                         ancestor = doc[target].ancestor(folia.AbstractStructureElement)
@@ -395,12 +397,13 @@ def doannotation(doc, data):
                     raise NotImplemented
 
 
-                response['returnelementid'] = ancestor.id
+                if not ancestor.id in response['returnelementids']:
+                    response['returnelementids'].append( ancestor.id )
             else:
                 try:
-                    target = doc[data['targets'][0]]
+                    target = doc[edit['targets'][0]]
                 except:
-                    response['error'] = "Target element " + data['targets'][0] + " does not exist!"
+                    response['error'] = "Target element " + edit['targets'][0] + " does not exist!"
                     return response
 
                 log("Text edit of " + target.id)
@@ -422,7 +425,8 @@ def doannotation(doc, data):
 
                         for wordtext in reversed(edit['insertright'].split(' ')):
                             target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
-                        response['returnelementid'] = target.parent.id
+                        if not target.parent.id in response['returnelementids']:
+                            response['returnelementids'].append( target.parent.id )
                     elif 'insertleft' in edit:
                         response['log'] = "Left insertion before " + target.id + ", by " + data['annotator']
                         log(response['log'])
@@ -438,7 +442,8 @@ def doannotation(doc, data):
 
                         for wordtext in reversed(edit['insertleft'].split(' ')):
                             target.parent.insert(index, ElementClass(doc, wordtext,generate_id_in=target.parent ) )
-                        response['returnelementid'] = target.parent.id
+                        if not target.parent.id in response['returnelementids']:
+                            response['returnelementids'].append( target.parent.id )
 
                     elif 'dosplit' in edit:
                         response['log'] = "Split of " + target.id + ", by " + data['annotator']
@@ -460,7 +465,8 @@ def doannotation(doc, data):
                         for wordtext in reversed(edit['text'].split(' ')):
                             p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ), generate_id_in=p ) )
 
-                        response['returnelementid'] = p.id
+                        if not p.id in response['returnelementids']:
+                            response['returnelementids'].append( p.id )
                     elif edit['text']:
                         response['log'] = "Text content change of " + target.id + " (" + edit['text']+"), by " + data['annotator']
                         log(response['log'])
@@ -480,7 +486,8 @@ def doannotation(doc, data):
                         #we have a text deletion! This implies deletion of the entire structure element!
                         p = target.parent
                         p.remove(target)
-                        response['returnelementid'] = p.id
+                        if not p.id in response['returnelementids']:
+                            response['returnelementids'].append( p.id )
                 elif edit['editform'] == 'alternative':
                     response['error'] = "Can not add alternative text yet, not implemented"
                     return response
@@ -496,7 +503,8 @@ def doannotation(doc, data):
                         for wordtext in edit['insertright'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertword(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
-                        response['returnelementid'] = target.parent.id
+                        if not target.parent.id in response['returnelementids']:
+                            response['returnelementids'].append(target.parent.id )
                     elif 'insertleft' in edit:
 
                         response['log'] = "Left insertion '" + edit['insertleft'] + "' (correction " + edit['correctionclass'] + ") before " + target.id + ", by " + data['annotator']
@@ -514,7 +522,8 @@ def doannotation(doc, data):
                         for wordtext in edit['insertleft'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.insertwordleft(newwords, target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
-                        response['returnelementid'] = target.parent.id
+                        if not target.parent.id in response['returnelementids']:
+                            response['returnelementids'].append(target.parent.id )
                     elif 'dosplit' in edit:
                         response['log'] = "Split of " + target.id + " '"+ edit['text'] +"' (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
@@ -522,7 +531,8 @@ def doannotation(doc, data):
                         for wordtext in edit['text'].split(' '):
                             newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
                         target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
-                        response['returnelementid'] = target.parent.id
+                        if not target.parent.id in response['returnelementids']:
+                            response['returnelementids'].append(target.parent.id )
                     elif edit['text']:
                         response['log'] = "Text correction '" + edit['text'] + "' on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
@@ -542,14 +552,15 @@ def doannotation(doc, data):
                         #we have a deletion as a correction! This implies deletion of the entire structure element!
                         p = target.ancestor(folia.AbstractStructureElement)
                         p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
-                        response['returnelementid'] = p.id
+                        if not p.id in response['returnelementids']:
+                            response['returnelementids'].append(p.id )
 
 
         elif issubclass(Class, folia.AbstractTokenAnnotation): ################### EDIT OF TOKEN ANNOTATION #######################################
 
             log("Edit of token annotation")
             #Token annotation, each target will get a copy (usually just one target)
-            for targetid in data['targets']:
+            for targetid in edit['targets']:
                 try:
                     target = doc[targetid]
                 except:
@@ -592,7 +603,7 @@ def doannotation(doc, data):
             log("Edit of span annotation")
 
             targets = []
-            for targetid in data['targets']:
+            for targetid in edit['targets']:
                 try:
                     targets.append( doc[targetid] )
                 except:
@@ -616,7 +627,8 @@ def doannotation(doc, data):
 
                     layer.append(Class, *targets, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
-                    response['returnelementid'] = layer.ancestor(folia.AbstractStructureElement).id
+                    if not layer.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
+                        response['returnelementids'] = layer.ancestor(folia.AbstractStructureElement).id
 
 
                 elif 'id' in edit:
@@ -651,7 +663,8 @@ def doannotation(doc, data):
                         #delete:
                         annotation.parent.remove(annotation)
 
-                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement).id
+                    if not annotation.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
+                        response['returnelementids'] = annotation.ancestor(folia.AbstractStructureElement).id
 
                 else:
                     #no ID, fail
@@ -692,7 +705,8 @@ def doannotation(doc, data):
                         #delete
                         layer.correct(original=annotation,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
 
-                    response['returnelementid'] = annotation.ancestor(folia.AbstractStructureElement).id
+                    if not annotation.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
+                        response['returnelementids'] = annotation.ancestor(folia.AbstractStructureElement).id
 
                 else:
                     #no ID, fail
@@ -702,12 +716,12 @@ def doannotation(doc, data):
             response['error'] = "Unable to edit annotations of type " + Class.__name__
             return response
 
-    log("Return element: " + repr(response['returnelementid']))
-    if response['returnelementid']:
-        log(doc[response['returnelementid']].xmlstring())
+    log("Return elements: " + repr(response['returnelementids']))
+    if response['returnelementids']:
+        #log(doc[response['returnelementid']].xmlstring())
         return response
     else:
-        del response['returnelementid']
+        del response['returnelementids']
         return response
 
 
