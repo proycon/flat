@@ -1,45 +1,44 @@
-{query}:
-	EDIT {annotationtype} [{in}] [{with}] [{as}]
-	ADD {annotationtype} [{in}} [{with}]	[{as}}
-	SELECT {annotationtype} [{in}] [{where}]
+targets
+type
+text
+    insertleft
+    insertright
+edit
+class
+editform
 
-{in}:
-    IN {$documents}
+correctionclass
+correctionset
 
-{as}:
-	AS ALTERNATIVE
-	AS CORRECTION [{with}]
 
-{where}:
-	WHERE ({expression})
+basic:
 
-{expression}:
-	{expression} AND {expression}
-	{expression} OR {expression}
-	ID=$value	
-	TEXT=$value
-	CLASS=$value
-	SET=$value
-	ANNOTATOR=$value
-	ANNOTATORTYPE=$value
-	HAS ({annotationtype} {where})
+IN test.xml ADD entity OF $set WITH class "" id "" FOR w1,w2,w3
+IN test.xml EDIT pos OF $set WITH class "N" FOR w1
+IN test.xml DELETE pos OF $set FOR w1
+IN text.xml EDIT t WITH text "blah" FOR w1
 
-{with}:
-	WITH ({assignments})
-	
-{assignments}
-	{assignment} {assignment}
-	{assignment}
+--
 
-{assignment}
-	TEXT=""
-	CLASS=""
-	SET=""
-	ANNOTATOR=""
-	ANNOTATORTYPE=""
-	CONFIDENCE=""
-	N=""
-	{add}
+with editforms:
+
+IN test.xml EDIT entity OF $set (AS CORRECTION OF $correctionset WITH class="wrongclass") WITH CLASS="person"
+IN test.xml EDIT entity OF $set (AS CORRECTION OF $correctionset WITH class="toolong") FOR w1,w2
+IN test.xml EDIT entity ID $id (AS CORRECTION OF $correctionset WITH class="toolong") FOR w1,w2
+IN test.xml EDIT pos OF set FOR w1 WITH class = "N" (AS CORRECTION WITH class="wrongpos" set="$correctionset")
+IN test.xml ADD pos OF $set FOR w1 WITH class = "A" (AS ALTERNATIVE)
+
+---
+
+complex:
+
+IN test.xml ADD pos OF $set WITH class="N" FOR w WHERE t WITH text "house"
+IN test.xml ADD pos OF $set WITH class="N" FOR w WHERE pos OF $set WITH class "NN"
+
+IN test.xml ADD pos OF $set WITH class="N" FOR w WHERE predecessor:t WITH text "de" AND predecessor:pos OF $set WITH class "det"
+
+IN test.xml ADD pos OF $set WITH class="N" FOR w WHERE lemma OF $set WITH class "house"
+
 
 
 
