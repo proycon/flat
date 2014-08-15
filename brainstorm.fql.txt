@@ -22,11 +22,11 @@ IN text.xml EDIT t WITH text "blah" FOR w1
 
 with editforms:
 
-IN test.xml EDIT entity OF $set AS CORRECTION OF $correctionset WITH class "wrongclass" WITH CLASS "person"
-IN test.xml EDIT entity OF $set AS CORRECTION OF $correctionset WITH class "toolong" FOR w1 w2
-IN test.xml EDIT entity ID $id AS CORRECTION OF $correctionset WITH class "toolong" FOR w1 w2
-IN test.xml EDIT pos OF set FOR w1 WITH class "N" AS CORRECTION OF $correctionset WITH class "wrongpos"
-IN test.xml ADD pos OF $set FOR w1 WITH class "A" AS ALTERNATIVE
+IN test.xml EDIT entity OF $set (AS CORRECTION OF $correctionset WITH class "wrongclass") WITH CLASS "person"
+IN test.xml EDIT entity OF $set (AS CORRECTION OF $correctionset WITH class "toolong") FOR w1 w2
+IN test.xml EDIT entity ID $id (AS CORRECTION OF $correctionset WITH class "toolong") FOR w1 w2
+IN test.xml EDIT pos OF set FOR w1 WITH class "N" (AS CORRECTION OF $correctionset WITH class "wrongpos")
+IN test.xml ADD pos OF $set FOR w1 WITH class "A" (AS ALTERNATIVE)
 
 ---
 

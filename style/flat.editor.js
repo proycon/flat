@@ -734,7 +734,7 @@ function editor_oninit() {
                     query += " OF " + editdata[i].set;                    
                 }
                 if (editdata[i].editform == "correction") {
-                    query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\""
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\")"
                 }
                 if (editdata[i].type == "t") {
                     query += " WITH TEXT \"" + editdata[i].text + "\" ANNOTATOR \"" + username + "\" ANNOTATORTYPE \"manual\"";
