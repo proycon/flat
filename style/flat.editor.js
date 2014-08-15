@@ -713,7 +713,7 @@ function editor_oninit() {
                 editdata[i].targets = sortededittargets;
                 sendeditdata.push(editdataitem);
             }
-        });
+        }
 
         if ((sendeditdata.length == 0)) {
             //discard, nothing changed
