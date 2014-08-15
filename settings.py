@@ -3,7 +3,7 @@ from socket import gethostname
 import os.path
 from os import environ
 
-VERSION = "0.2.1"
+VERSION = "0.2.3"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

@@ -1,6 +1,6 @@
 editannotations = {};
 editoropen = false;
-coselector = false;
+coselector = -1; //disabled
 editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 editedelementid = null;
 
@@ -31,30 +31,23 @@ function toggleannotationedit(annotationtype, set) {
 }
 
 function select(element) {
-    //toggles selection of an element
+    //toggles selection of an element (coselector)
     var found = false;
     var index = 0;
-    for (var i = 0; i < edittargets.length; i++) {
-        if (edittargets[i] == element.id) {
+    for (var i = 0; i < editdata[coselector].targets.length; i++) {
+        if (editdata[coselector].targets[i] == element.id) {
             index = i;
             found = true;
             break;
         }
     }
     if (found) {
-        edittargets.splice(index, 1);
+        editdata[coselector].targets.splice(index, 1);
         $(element).removeClass("selected");
     } else { 
-        edittargets.push( element.id);
+        editdata[coselector].targets.push( element.id);
         $(element).addClass("selected");
     }
-
-    //targets list
-    edittargets_options = "";
-    edittargets.forEach(function(edittarget){
-        edittargets_options = edittargets_options + "<option value=\"" + edittarget + "\">" + edittarget + "</option>";
-    });
-    $("#editortargetlist").html(edittargets_options);
 }
 
 function setaddablefields() {
@@ -227,8 +220,12 @@ function showeditor(element) {
             editedelementid = element.id;
             editfields = 0;
             editdata = [];
-            edittargets = [];
-            select(element);
+
+            //clear current selection
+            $('.selected').removeClass('selected');
+            $(element).addClass('selected');
+            //select(element);
+
             var annotationfocusfound = false;
             var editformcount = 0;
             Object.keys(annotations[element.id]).forEach(function(annotationid){
@@ -266,7 +263,7 @@ function showeditor(element) {
                             s  = s + "<br/>";
                         }
                         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
-                            s = s + "<select id=\"editfield" + editfields + "\">";
+                            s = s + "<select id=\"editfield" + editfields + "\" >";
                             s = s + "<option value=\"\"></option>";
                             Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
@@ -274,9 +271,9 @@ function showeditor(element) {
                             });
                             s = s + "</select>";
                         } else {
-                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
                         }
-                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\">Select span&gt;</button><br />";
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
                     }
                     editformdata = addeditforms();
                     editformcount = editformdata[1];
@@ -295,29 +292,23 @@ function showeditor(element) {
                         editdataitem.editform = 'direct';
                     } else {
                         editdataitem.editform = 'alternative';
-                    }
+                    }            
+                    editdata.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy)
+                    editdata.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend
                     editdata.push(editdataitem);
 
                     if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
-                        //coselect other targets (just mimicks user click)
-                        coselector = true;
-                        annotation.targets.forEach(function(t){
-                            var e = document.getElementById(t);
-                            if (!$(e).hasClass("selected")) {
-                                select(e);
-                            }
-                        });
-                        coselector = false;
+                        //highlight other targets (just mimicks user click)
+                        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+                            $('#' + editdata[coselector].targets[j]).addClass('selected');
+                        }
                     }
+
                 }
                  
             });
             s = s + "<tr id=\"editrowplaceholder\"></tr>";
-            if (edittargets.length == 1) {
-                idheader = "<div id=\"id\">" + element.id + "</div>"
-            } else {
-                idheader = "<div id=\"id\">Editing " + edittargets.length + " items!</div>"
-            }
+            idheader = "<div id=\"id\">" + element.id + "</div>"
 
 
 
@@ -325,7 +316,6 @@ function showeditor(element) {
             setaddablefields();
 
 
-            edittargets_begin = JSON.parse(JSON.stringify(edittargets)); //deep copy, will be used for comparison on submission
 
 
             s = idheader + "<table>"  + s + "</table>";
@@ -354,6 +344,33 @@ function showeditor(element) {
                 seteditform(i, editdata[i].editform);
 
                 $('select#editfield'+i).sortOptions();
+
+                $('#spanselector' + i).off(); //prevent duplicates
+                $('#spanselector' + i).click(function(){
+                    //toggle coselector (select multiple), takes care of
+                    //switching off any other coselector
+                    var toggleon = true;
+                    if (coselector > -1) {
+                        if (coselector == i) toggleon = false; //this is a toggle off action only
+
+                        $('#spanselector' + i).removeClass("selectoron");
+                        //
+                        //de-highlight all coselected elements
+                        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+                            $('#' + editdata[coselector].targets[j]).removeClass('selected');
+                        }
+                        coselector = -1;
+                    }
+                    if (toggleon) {
+                        //highlight all coselected elements
+                        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+                            $('#' + editdata[coselector].targets[j]).addClass('selected');
+                        }
+
+                        coselector = i;
+                        $(this).addClass("selectoron");
+                    }
+                });
                 /*$('#editfield'+i).change(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
@@ -380,7 +397,7 @@ function closeeditor() {
     $('#editor').hide();
     $('#wait').hide();
     editoropen = false;
-    coselector = false;
+    coselector = -1;
     $('#document .selected').removeClass("selected");
     $('#editor .selectoron').removeClass("selectoron");
 }
@@ -474,7 +491,7 @@ function revert(commithash) {
 
 function editor_onclick(element) {
     //open editor
-    if (coselector) {
+    if (coselector >= 0) {
         select(element); //toggle
     } else if (!editoropen) {
         $('#info').hide();
@@ -547,6 +564,7 @@ function editor_oninit() {
     $('#historydiscard').click(function(){
         $('#history').hide();
     });
+
     $('#editorselecttarget').click(function(){
         //toggle coselector (select multiple)
         if (coselector) {
@@ -623,6 +641,13 @@ function editor_oninit() {
                 editdata[i].changed = true;
                 changes = true;
             }
+            
+
+            if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
+                //detect changes in span, and set the changed flag
+                editdata[i].changed = true;
+            }
+
             if (editdata[i].changed) {
                 if (editdata[i].editform == 'correction') {
                     //editdata[i].editform = 'correction';
@@ -661,62 +686,42 @@ function editor_oninit() {
                     }
                 }
             }
+
         }
 
 
-        if ((!changes) && (JSON.stringify(edittargets) != JSON.stringify(edittargets_begin))) {
-            //we have a change in targets
-            if (editfields == 1) {
-                editdata[0].changed = true;
-                if (editdata[0].editform == 'correction') {
-                    //editdata[i].editform = 'correction';
-                    editdata[0].correctionclass = $('#editform0correctionclass').val().trim();
-                    editdata[0].correctionset = $('#editformcorrectionset').val().trim(); 
-                    if (!editdata[0].correctionclass) {
-                        alert("Error (" + 0 + "): Annotation " + editdata[0].type + " was changed and submitted as correction, but no correction class was entered");
-                        return false;
-                    }
-                } 
-            } else {
-                alert("Unable to determine to what annotation type the change in span pertains... Please restrict editable fields and try again");
-                closeeditor();
-                return false;
-            }
-            changes = true;
-        }
-
+        //gather edits that changed, and sort targets
         var sendeditdata = []; 
-        editdata.forEach(function(editdataitem){
-            if (editdataitem.changed) {
+        for (var i = 0; i < editfields;i++) { 
+            if (editdata[i].changed) {
+                //sort targets in proper order
+                var sortededittargets = [];
+                if (editdata[i].targets.length > 1) {
+                    $('.' + view).each(function(i){
+                        if (editdata[i].targets.indexOf(this.id) > -1) {
+                            sortededittargets.push(this.id);
+                        }
+                    });
+                } else {
+                    sortededittargets = editdata[i].targets;
+
+                }
+                if (sortededittargets.length != editdata[i].targets.length) {
+                    alert("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
+                    return;
+                }
+                editdata[i].targets = sortededittargets;
                 sendeditdata.push(editdataitem);
             }
         });
+
         if ((sendeditdata.length == 0)) {
-            //discard
+            //discard, nothing changed
             closeeditor();
             return false;
         }
         
         
-        //sort targets in proper order
-        var sortededittargets = [];
-        if (edittargets.length > 1) {
-            $('.' + view).each(function(i){
-                if (edittargets.indexOf(this.id) > -1) {
-                    sortededittargets.push(this.id);
-                }
-            });
-        } else {
-            sortededittargets = edittargets;
-
-        }
-
-        if (sortededittargets.length != edittargets.length) {
-            alert("Error, unable to sort targets, expected " + edittargets.length + ", got " + sortededittargets.length);
-            return;
-        }
-
-
         $('#wait').show();
 
 
@@ -725,7 +730,7 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'targets': sortededittargets, 'annotator': username, 'sid': sid}),
+            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'annotator': username, 'sid': sid}),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
