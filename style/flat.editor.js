@@ -433,6 +433,7 @@ function addeditorfield(index) {
     } else {
         s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
     }
+    s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
 
