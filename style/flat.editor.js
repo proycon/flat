@@ -300,7 +300,7 @@ function showeditor(element) {
                     if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         //highlight other targets (just mimicks user click)
                         for (var j = 0; j < annotation.targets.length; j++) {
-                            $('#' + annotation.targets[j]).addClass('selected');
+                            $('#' + valid(annotation.targets[j])).addClass('selected');
                         }
                     }
 
@@ -358,7 +358,7 @@ function showeditor(element) {
                         //
                         //de-highlight all coselected elements
                         for (var j = 0; j < editdata[coselector].targets.length; j++) {
-                            $('#' + editdata[coselector].targets[j]).removeClass('selected');
+                            $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
                         }
                         coselector = -1;
                     }
@@ -367,7 +367,7 @@ function showeditor(element) {
 
                         //highlight all coselected elements
                         for (var j = 0; j < editdata[coselector].targets.length; j++) {
-                            $('#' + editdata[coselector].targets[j]).addClass('selected');
+                            $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
                         }
 
                         $(this).addClass("selectoron");
