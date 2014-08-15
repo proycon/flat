@@ -278,12 +278,12 @@ function showeditor(element) {
                     editformdata = addeditforms();
                     editformcount = editformdata[1];
                     s = s + editformdata[0];
-                    //s = s + "<button id=\"editordelete" + editfields + "\">-</button>";
                     s = s + "</td></tr>";
                     editfields = editfields + 1;
                     editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
                     if (annotation.type == 't') editdataitem.text = annotation.text;
                     if (annotation.id) editdataitem.id = annotation.id;
+
                     //set default edit form (seteditform will be called later
                     //to affect the interface)
                     if (configuration.alloweditformcorrection) {
@@ -293,8 +293,8 @@ function showeditor(element) {
                     } else {
                         editdataitem.editform = 'alternative';
                     }            
-                    editdata.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy)
-                    editdata.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend
+                    editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy)
+                    editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend
                     editdata.push(editdataitem);
 
                     if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
