@@ -347,6 +347,7 @@ function showeditor(element) {
 
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(function(){
+                    var i = this.id.substr(11);  //get from ID
                     //toggle coselector (select multiple), takes care of
                     //switching off any other coselector
                     var toggleon = true;
