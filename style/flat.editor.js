@@ -706,14 +706,13 @@ function editor_oninit() {
                     });
                 } else {
                     sortededittargets = editdata[i].targets;
-
                 }
                 if (sortededittargets.length != editdata[i].targets.length) {
                     alert("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
                     return;
                 }
                 editdata[i].targets = sortededittargets;
-                sendeditdata.push(editdataitem);
+                sendeditdata.push(editdata[i]);
             }
         }
 
