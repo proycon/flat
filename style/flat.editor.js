@@ -299,8 +299,8 @@ function showeditor(element) {
 
                     if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         //highlight other targets (just mimicks user click)
-                        for (var j = 0; j < editdata[coselector].targets.length; j++) {
-                            $('#' + editdata[coselector].targets[j]).addClass('selected');
+                        for (var j = 0; j < editdataitem.targets.length; j++) {
+                            $('#' + editdataitem.targets[j]).addClass('selected');
                         }
                     }
 
