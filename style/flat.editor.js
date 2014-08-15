@@ -273,8 +273,8 @@ function showeditor(element) {
                         } else {
                             s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
                         }
-                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
                     }
+                    s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
                     editformdata = addeditforms();
                     editformcount = editformdata[1];
                     s = s + editformdata[0];
