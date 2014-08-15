@@ -762,14 +762,12 @@ function editor_oninit() {
         $('#wait').show();
 
     
-
-
         $.ajax({
             type: 'POST',
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'annotator': username, 'sid': sid}),
+            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'annotator': username, 'sid': sid, 'queries': queries}), //TODO: queries replaces edits eventually
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
