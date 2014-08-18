@@ -307,6 +307,7 @@ def getsetdefinitions(doc):
 
 
 def parseactor(words, i):
+    set = id = None
     if len(words) <= i+1:
         raise FQLParseError("Expected annotation type, got end of query")
     if words[i+1] in folia.XML2CLASS:
@@ -354,6 +355,7 @@ def parsequery(query, data = {}):
     words = []
     begin = 0
     inquote = False
+    query += ' '
     for i, c in enumerate(query):
         if c == '"':
             if not inquote:
@@ -367,6 +369,7 @@ def parsequery(query, data = {}):
             else:
                 word = query[begin:i]
             words.append(word)
+            begin = i +1
 
 
 
@@ -375,9 +378,10 @@ def parsequery(query, data = {}):
     skipwords = 0
     endclause = None
 
-    edit = {'editform':'direct'}
+    edit = {'editform':'direct', 'targets':[]}
 
     for i, word in enumerate(words):
+        print("Processing " + word,file=sys.stderr)
         if skipwords:
             skipwords = skipwords - 1
             continue
@@ -444,27 +448,29 @@ def parsequery(query, data = {}):
 
             elif mode == 'WITH':
                 assignments,skipwords = parseassignments(words, i)
+                for key, value in assignments.items():
+                    edit[key] = value
 
         elif mode == 'IN':
             try:
                 namespace, doc = word.split('/',1)
             except:
                 raise FQLParseError("Expected \"namespace/documentID\" after IN statement")
-            data[(namespace, doc)] = {}
+            data[(namespace, doc)] = []
         elif mode == 'FOR':
             edit['targets'].append(word)
         else:
             raise FQLParseError("Expected statement, got " + word)
 
 
-        if len(data) == 0:
-            raise FQLParseError("No documents specified in IN statement!")
-        if len(edit['targets']) == 0:
-            raise FQLParseError("No targets found, empty FOR statement?")
-        if not 'action' in edit or not edit['action']:
-            raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
-        if not 'type' in edit or not edit['type']:
-            raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
+    if len(data) == 0:
+        raise FQLParseError("No documents specified in IN statement!")
+    if not 'targets' in edit or len(edit['targets']) == 0:
+        raise FQLParseError("No targets found, empty FOR statement?")
+    if not 'action' in edit or not edit['action']:
+        raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
+    if not 'type' in edit or not edit['type']:
+        raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
 
     for namespace, doc in data:
         data[(namespace,doc)].append(edit)
