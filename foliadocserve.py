@@ -311,7 +311,9 @@ def parseactor(words, i):
     if len(words) <= i+1:
         raise FQLParseError("Expected annotation type, got end of query")
     if words[i+1] in folia.XML2CLASS:
-        annotationtype = folia.XML2CLASS[words[i+1]]
+        annotationtype = words[i+1]
+    else:
+        raise FQLParseError("No such annotation type: " + words[i+1])
     if len(words) > i+3:
         if words[i+2] == 'OF':
             set = words[i+3]
