@@ -380,7 +380,7 @@ def parsequery(query, data = {}):
     skipwords = 0
     endclause = None
 
-    edit = {'editform':'direct', 'targets':[]}
+    edit = {'editform':'direct', 'targets':[], 'new': False}
 
     for i, word in enumerate(words):
         print("Processing " + word,file=sys.stderr)
