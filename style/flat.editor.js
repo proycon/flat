@@ -717,11 +717,11 @@ function editor_oninit() {
                 editdata[i].targets = sortededittargets;
                 sendeditdata.push(editdata[i]);
                 
-                //compose query  TODO....
+                //compose query  
                 var query = "IN " + namespace + "/" + docid + " ";
                 if ((editdata[i].editform == "new") || ( editdata[i].new)) {
                     query += "ADD";
-                } else if ((editdata[i].class = "") || ((editdata[i].type == "t") && (editdata[i].text == ""))) {
+                } else if ((editdata[i].class == "") || ((editdata[i].type == "t") && (editdata[i].text == ""))) {
                     //deletion
                     query += "DELETE";
                 } else {
@@ -738,7 +738,15 @@ function editor_oninit() {
                 }
                 if ((editdata[i].type == "t") && (editdata[i].text != "")) {
                     query += " WITH TEXT \"" + editdata[i].text + "\"";
-                    //TODO: insertleft, insertright, dosplit
+                    if (editdata[i].insertleft) {
+                        query += " insertleft \"" + editdata[i].insertleft + "\"";
+                    }
+                    if (editdata[i].insertleft) {
+                        query += " insertright \"" + editdata[i].insertright + "\"";
+                    }
+                    if (editdata[i].dosplit) {
+                        query += " dosplit true";
+                    }
                 } else if (editdata[i].class != "") {
                     //no deletion 
                     query += " WITH CLASS \"" + editdata[i].class + "\"";

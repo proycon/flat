@@ -354,7 +354,7 @@ def parseassignments(words,i):
 def parsequery(query, data = {}):
     """Parse FQL query"""
 
-    log("Parsing FQL query " + query)
+    log("Parsing FQL query: " + query)
 
     words = []
     begin = 0
@@ -491,7 +491,7 @@ def parsequery(query, data = {}):
 
 def doannotation(doc, data):
     response = {'returnelementids': []}
-    log("Received data for doannotation: "+ repr(data))
+    #log("Received data for doannotation: "+ repr(data))
 
 
     for edit in data['edits']:
