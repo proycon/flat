@@ -721,7 +721,7 @@ function editor_oninit() {
                 var query = "IN " + namespace + "/" + docid + " ";
                 if ((editdata[i].editform == "new") || ( editdata[i].new)) {
                     query += "ADD";
-                } else if (editdata[i].class = "") || ((editdata[i].type == "t") && (editdata[i].text == "")) (
+                } else if ((editdata[i].class = "") || ((editdata[i].type == "t") && (editdata[i].text == ""))) {
                     //deletion
                     query += "DELETE";
                 } else {
