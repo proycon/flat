@@ -20,6 +20,9 @@ def fake_wait_for_occupied_port(host, port): return
 class NoSuchDocument(Exception):
     pass
 
+class FQLParseError(Exception):
+    pass
+
 
 logfile = None
 def log(msg):
@@ -301,19 +304,188 @@ def getsetdefinitions(doc):
             setdefs[set] = doc.setdefinitions[set].json()
     return setdefs
 
+
+
+def parseactor(words, i):
+    if len(words) <= i+1:
+        raise FQLParseError("Expected annotation type, got end of query")
+    if words[i+1] in folia.XML2CLASS:
+        annotationtype = folia.XML2CLASS[words[i+1]]
+    if len(words) > i+3:
+        if words[i+2] == 'OF':
+            set = words[i+3]
+        elif words[i+2] == 'ID':
+            id = words[i+3]
+        skipwords = 3
+    else:
+        skipwords = 1
+    return annotationtype, set, id, skipwords
+
+def parseassignments(words,i):
+    skipwords = 0
+    processedwords = 0
+    assignments = {}
+    for j, word in enumerate(words[i+1:]):
+        if skipwords:
+            skipwords -= 1
+            processedwords += 1
+            continue
+        if word in ['FOR']:
+            #end
+            break
+        elif word.lower() in ['class','annotator','annotatortype','id','n','text','insertleft','insertright','dosplit']:
+            type = word.lower()
+            assignments[type] = words[j+1]
+            skipwords += 1
+        elif word.lower() == 'confidence':
+            assignments['confidence'] = float(words[j+1])
+            skipwords += 1
+        else:
+            raise FQLParseError("Unknown variable in WITH statement: " + word)
+
+        processedwords += 1
+    return assignments, processedwords
+
+
+
+def parsequery(query, data = {}):
+    """Parse FQL query"""
+
+    words = []
+    begin = 0
+    inquote = False
+    for i, c in enumerate(query):
+        if c == '"':
+            if not inquote:
+                inquote = True
+                begin = i+1
+            else:
+                inquote = False
+        elif c == ' ' and not inquote:
+            if i > 1 and query[i-1] == '"':
+                word = query[begin:i-1]
+            else:
+                word = query[begin:i]
+            words.append(word)
+
+
+
+    mode = None
+    data = {}
+    skipwords = 0
+    endclause = None
+
+    edit = {'editform':'direct'}
+
+    for i, word in enumerate(words):
+        if skipwords:
+            skipwords = skipwords - 1
+            continue
+
+        if word[0] == '(' and word != "(":
+            word =  word[1:]
+            endclause = None
+            for j, w in enumerate(words[i:]):
+                if w[-1] == ')' and w[-1] != ")":
+                    endclause = i+j
+                    words[endclause] = w[:-1]
+            if endclause is None:
+                raise FQLParseError("No closing bracket found for opening bracket in word " + str(i))
+
+
+        if not (endclause is None) and i >= endclause:
+            endclause = None
+
+
+        if word in ['IN','ADD','EDIT','DELETE','WITH','FOR','AS']:
+            #end mode
+            if mode is None:
+                if word != "IN":
+                    raise FQLParseError("FQL Query must start with IN statement!")
+
+            #start new mode
+            mode = word
+            if word == "AS":
+                if endclause is None:
+                    raise FQLParseError("AS clause must be enclosed within parentheses, none found")
+
+                if words[i+1] == 'CORRECTION':
+                    edit['editform'] = 'correction'
+                    if words[i+2] == "OF":
+                        raise FQLParseError("Expected AS CORRECTION OF $set")
+                    edit['correctionset'] = words[i+3]
+                    skipwords = 3
+                    if words[i+4] == 'WITH' and endclause != i+4:
+                        skipwords = 4
+                        correction_assignments,extraskipwords = parseassignments(words, i)
+                        if 'class' in correction_assignments:
+                            edit['correctionclass'] = correction_assignments['class']
+                        skipwords += extraskipwords
+                elif words[i+1] == 'ALTERNATIVE':
+                    edit['editform'] = 'alternative'
+                    skipwords = 1
+                else:
+                    raise FQLParseError("Expected CORRECTION/ALTERNATIVE after AS")
+            elif mode in [ 'ADD','EDIT','DELETE']:
+                edit['action'] = mode
+
+                if mode == 'ADD':
+                    edit['new'] = True
+                elif mode == 'DELETE':
+                    edit['class'] = "" #empty class for deletion
+
+                actor_annotationtype, actor_set, actor_id, skipwords = parseactor(words,i)
+                if actor_annotationtype:
+                    edit['type'] = actor_annotationtype
+                if actor_set:
+                    edit['set'] = actor_set
+                if actor_id:
+                    edit['annotationid'] = actor_id
+
+            elif mode == 'WITH':
+                assignments,skipwords = parseassignments(words, i)
+
+        elif mode == 'IN':
+            try:
+                namespace, doc = word.split('/',1)
+            except:
+                raise FQLParseError("Expected \"namespace/documentID\" after IN statement")
+            data[(namespace, doc)] = {}
+        elif mode == 'FOR':
+            edit['targets'].append(word)
+        else:
+            raise FQLParseError("Expected statement, got " + word)
+
+
+        if len(data) == 0:
+            raise FQLParseError("No documents specified in IN statement!")
+        if len(edit['targets']) == 0:
+            raise FQLParseError("No targets found, empty FOR statement?")
+        if not 'action' in edit or not edit['action']:
+            raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
+        if not 'type' in edit or not edit['type']:
+            raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
+
+    for namespace, doc in data:
+        data[(namespace,doc)].append(edit)
+
+
+    return data
+
+
+
+
+
 def doannotation(doc, data):
     response = {'returnelementids': []}
     log("Received data for doannotation: "+ repr(data))
 
 
-
-    if 'elementid' in data:
-        ElementClass = folia.XML2CLASS[doc[data['elementid']].XMLTAG]
-    else:
-        ElementClass = None
-
-
     for edit in data['edits']:
+        if 'targets' in 'edit':
+            ElementClass =  folia.XML2CLASS[doc[edit['targets'][0]]] #folia.XML2CLASS[doc[data['elementid']].XMLTAG]
+        else:
+            ElementClass = None
         assert 'type' in edit
         Class = folia.XML2CLASS[edit['type']]
         annotationtype = Class.ANNOTATIONTYPE
@@ -806,45 +978,66 @@ class Root:
         else:
             return b"{}"
 
+
     @cherrypy.expose
-    def annotate(self, namespace, docid, sid):
+    def annotate(self, namespace, requestdocid, sid):
         namepace = namespace.replace('/','').replace('..','')
         cl = cherrypy.request.headers['Content-Length']
         rawbody = cherrypy.request.body.read(int(cl))
-        data = json.loads(str(rawbody,'utf-8'))
-        log("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,docid)))
-        self.docstore.lastaccess[(namespace,docid)][sid] = time.time()
-        doc = self.docstore[(namespace,docid)]
-        try:
-            response = doannotation(doc, data)
-        except Exception as e:
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            formatted_lines = traceback.format_exc().splitlines()
-            response = {'error': "The document server returned an error: " + str(e) + " -- " + "\n".join(formatted_lines) }
-            traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
-            return json.dumps(response)
+        request = json.loads(str(rawbody,'utf-8'))
+        returnresponse = {}
+        log("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,requestdocid)))
 
-        if 'error' in response and response['error']:
-            log(response['error'])
-        if 'log' in response:
-            response['log'] += " in document " + "/".join((namespace,docid))
-        else:
-            if 'returnelementids' in response:
-                response['log'] = "Unknown edit by " + data['annotator'] + " in " + ",".join(response['returnelementids']) + " in " + "/".join((namespace,docid))
+        data = {}
+        for query in request['queries']:
+            data = parsequery(query, data)
+
+        for ns, docid in data:
+            if ns != namespace:
+                raise cherrypy.HTTPError(403, "No permission to edit documents out of active namespace " + namespace)
+
+
+            if docid == requestdocid:
+                self.docstore.lastaccess[(ns,docid)][sid] = time.time()
+
+            doc = self.docstore[(ns,docid)]
+
+            annotationdata = { 'edits': data[(ns,docid)], 'annotator': request['annotator'] }
+            try:
+                response = doannotation(doc, annotationdata)
+            except Exception as e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                formatted_lines = traceback.format_exc().splitlines()
+                response = {'error': "The document server returned an error: " + str(e) + " -- " + "\n".join(formatted_lines) }
+                traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
+                return json.dumps(response)
+
+            if docid == requestdocid:
+                returnresponse = response
+
+            if 'error' in response and response['error']:
+                log(response['error'])
+            if 'log' in response:
+                response['log'] += " in document " + "/".join((ns,docid))
             else:
-                response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join((namespace,docid))
-        if 'returnelementids' in response:
-            self.docstore.save((namespace,docid),response['log'] )
+                if 'returnelementids' in response:
+                    response['log'] = "Unknown edit by " + data['annotator'] + " in " + ",".join(response['returnelementids']) + " in " + "/".join((ns,docid))
+                else:
+                    response['log'] = "Unknown edit by " + data['annotator'] + " in " + "/".join((ns,docid))
+
+            self.docstore.save((ns,docid),response['log'] )
             #set concurrency:
-            for s in self.docstore.updateq[(namespace,docid)]:
-                if s != sid:
-                    log("Scheduling update for " + s)
-                    for eid in response['returnelementids']:
-                        self.docstore.updateq[(namespace,docid)][s].append(eid)
-            return self.getelements(namespace,docid, response['returnelementids'],sid);
+            if 'returnelementids' in response:
+                for s in self.docstore.updateq[(ns,docid)]:
+                    if s != sid:
+                        log("Scheduling update for " + s)
+                        for eid in response['returnelementids']:
+                            self.docstore.updateq[(ns,docid)][s].append(eid)
+
+        if 'returnelementids' in returnresponse:
+            return self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid);
         else:
-            self.docstore.save((namespace,docid), response['log'])
-            return self.getelements(namespace,docid, [doc.data[0].id],sid) #return all
+            return self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid) #return all
 
 
     def checkexpireconcurrency(self):

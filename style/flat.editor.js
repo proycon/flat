@@ -718,14 +718,14 @@ function editor_oninit() {
                 sendeditdata.push(editdata[i]);
                 
                 //compose query  TODO....
-                var query;
+                var query = "IN " + namespace + "/" + docid + " ";
                 if ((editdata[i].editform == "new") || ( editdata[i].new)) {
-                    query = "ADD";
-                } else if (editdata[i].class = "") (
+                    query += "ADD";
+                } else if (editdata[i].class = "") || ((editdata[i].type == "t") && (editdata[i].text == "")) (
                     //deletion
-                    query = "DELETE";
+                    query += "DELETE";
                 } else {
-                    query = "EDIT";
+                    query += "EDIT";
                 }
                 query += " " +annotation.type;
                 if (editdata[i].id) {
@@ -736,12 +736,12 @@ function editor_oninit() {
                 if (editdata[i].editform == "correction") {
                     query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\")"
                 }
-                if (editdata[i].type == "t") {
-                    query += " WITH TEXT \"" + editdata[i].text + "\" ANNOTATOR \"" + username + "\" ANNOTATORTYPE \"manual\"";
+                if ((editdata[i].type == "t") && (editdata[i].text != "")) {
+                    query += " WITH TEXT \"" + editdata[i].text + "\"";
                     //TODO: insertleft, insertright, dosplit
                 } else if (editdata[i].class != "") {
                     //no deletion 
-                    query += " WITH CLASS \"" + editdata[i].class + "\" ANNOTATOR \"" + username + "\" ANNOTATORTYPE \"manual\"";
+                    query += " WITH CLASS \"" + editdata[i].class + "\"";
                 }
                 query += " FOR";
                 sortededittargets.forEach(function(t){
@@ -767,7 +767,8 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'annotator': username, 'sid': sid, 'queries': queries}), //TODO: queries replaces edits eventually
+            //data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'annotator': username, 'sid': sid, 'queries': queries}), //TODO: queries replaces edits eventually
+            data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), //TODO: queries replaces edits eventually
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
