@@ -354,6 +354,8 @@ def parseassignments(words,i):
 def parsequery(query, data = {}):
     """Parse FQL query"""
 
+    log("Parsing FQL query " + query)
+
     words = []
     begin = 0
     inquote = False
@@ -383,7 +385,6 @@ def parsequery(query, data = {}):
     edit = {'editform':'direct', 'targets':[], 'new': False}
 
     for i, word in enumerate(words):
-        print("Processing " + word,file=sys.stderr)
         if skipwords:
             skipwords = skipwords - 1
             continue
@@ -477,9 +478,10 @@ def parsequery(query, data = {}):
     if not 'type' in edit or not edit['type']:
         raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
 
+    log("  Parse result: " + repr(edit))
+
     for namespace, doc in data:
         data[(namespace,doc)].append(edit)
-
 
     return data
 
