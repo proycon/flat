@@ -1196,6 +1196,7 @@ def main():
     parser.add_argument('-d','--workdir', type=str,help="Work directory", action='store',required=True)
     parser.add_argument('-p','--port', type=int,help="Port", action='store',default=8080,required=False)
     parser.add_argument('-l','--logfile', type=str,help="Log file", action='store',default="foliadocserve.log",required=False)
+    parser.add_argument('-t',help="Test", action='store_true')
     parser.add_argument('--expirationtime', type=int,help="Expiration time in seconds, documents will be unloaded from memory after this period of inactivity", action='store',default=900,required=False)
     args = parser.parse_args()
     logfile = open(args.logfile,'w',encoding='utf-8')
@@ -1205,9 +1206,12 @@ def main():
         'server.socket_host': '0.0.0.0',
         'server.socket_port': args.port,
     })
-    cherrypy.process.servers.wait_for_occupied_port = fake_wait_for_occupied_port
+    if not args.test: cherrypy.process.servers.wait_for_occupied_port = fake_wait_for_occupied_port
     docstore = DocStore(args.workdir, args.expirationtime)
-    cherrypy.quickstart(Root(docstore,args))
+    if not args.test:
+        cherrypy.quickstart(Root(docstore,args))
+    else:
+        pass
 
 if __name__ == '__main__':
     main()
