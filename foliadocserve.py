@@ -433,10 +433,6 @@ def parsequery(query, data = {}):
             elif mode in [ 'ADD','EDIT','DELETE']:
                 edit['action'] = mode
 
-                if mode == 'ADD':
-                    edit['new'] = True
-                elif mode == 'DELETE':
-                    edit['class'] = "" #empty class for deletion
 
                 actor_annotationtype, actor_set, actor_id, skipwords = parseactor(words,i)
                 if actor_annotationtype:
@@ -446,6 +442,13 @@ def parsequery(query, data = {}):
                 if actor_id:
                     edit['annotationid'] = actor_id
 
+                if mode == 'ADD':
+                    edit['new'] = True
+                elif mode == 'DELETE':
+                    if edit['type'] is folia.TextContent:
+                        edit['text'] = "" #empty text for deletion of entire structural element!
+                    else:
+                        edit['class'] = "" #empty class for deletion of annotation
             elif mode == 'WITH':
                 assignments,skipwords = parseassignments(words, i)
                 for key, value in assignments.items():
