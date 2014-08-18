@@ -336,10 +336,10 @@ def parseassignments(words,i):
             break
         elif word.lower() in ['class','annotator','annotatortype','id','n','text','insertleft','insertright','dosplit']:
             type = word.lower()
-            assignments[type] = words[i+j+1]
+            assignments[type] = words[i+j+2]
             skipwords += 1
         elif word.lower() == 'confidence':
-            assignments['confidence'] = float(words[i+j+1])
+            assignments['confidence'] = float(words[i+j+2])
             skipwords += 1
         else:
             raise FQLParseError("Unknown variable in WITH statement: " + word)
