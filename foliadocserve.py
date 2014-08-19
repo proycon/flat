@@ -653,6 +653,8 @@ def doannotation(doc, data):
                             response['returnelementids'].append( p.id )
                     elif edit['text']:
                         response['log'] = "Text content change of " + target.id + " (" + edit['text']+"), by " + data['annotator']
+                        if not 'class' in edit:
+                            edit['class'] = 'current'
                         log(response['log'])
                         target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
