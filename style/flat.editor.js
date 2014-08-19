@@ -727,7 +727,7 @@ function editor_oninit() {
                 } else {
                     query += "EDIT";
                 }
-                query += " " +annotation.type;
+                query += " " +editdata[i].type;
                 if (editdata[i].id) {
                     query += " ID " + editdata[i].id;
                 } else if (editdata[i].set) {
