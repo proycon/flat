@@ -492,7 +492,7 @@ def doannotation(doc, data):
 
     for edit in data['edits']:
         if 'targets' in edit:
-            ElementClass =  folia.XML2CLASS[doc[edit['targets'][0]]] #folia.XML2CLASS[doc[data['elementid']].XMLTAG]
+            ElementClass =  doc[edit['targets'][0]].__class__ #folia.XML2CLASS[doc[data['elementid']].XMLTAG]
         else:
             ElementClass = folia.Word #default to word
 
