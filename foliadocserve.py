@@ -491,10 +491,11 @@ def doannotation(doc, data):
 
 
     for edit in data['edits']:
-        if 'targets' in 'edit':
+        if 'targets' in edit:
             ElementClass =  folia.XML2CLASS[doc[edit['targets'][0]]] #folia.XML2CLASS[doc[data['elementid']].XMLTAG]
         else:
-            ElementClass = None
+            ElementClass = folia.Word #default to word
+
         assert 'type' in edit
         Class = folia.XML2CLASS[edit['type']]
         annotationtype = Class.ANNOTATIONTYPE
