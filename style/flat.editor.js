@@ -767,7 +767,13 @@ function editor_oninit() {
             }
         }
 
-        if ((sendeditdata.length == 0)) {
+        if ($('#openinconsole').prop('checked')) {
+            //discard, nothing changed
+            closeeditor();
+            $('#queryinput').val(queries.join("\n"));
+            openconsole();
+            return false;
+        } else if ((sendeditdata.length == 0)) {
             //discard, nothing changed
             closeeditor();
             return false;
@@ -782,8 +788,7 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            //data: JSON.stringify( { 'elementid': editedelementid, 'edits': sendeditdata, 'annotator': username, 'sid': sid, 'queries': queries}), //TODO: queries replaces edits eventually
-            data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), //TODO: queries replaces edits eventually
+            data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -828,6 +833,36 @@ function editor_oninit() {
             },
             dataType: "json"
         });
-
     });
+
+    $('#consolesubmit').click(function(){ 
+
+        var queries = $('#queryinput').val().split("\n"); 
+
+        $('#wait').show();
+
+        $.ajax({
+            type: 'POST',
+            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+            contentType: "application/json",
+            //processData: false,
+            data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
+            success: function(data) {
+                if (data.error) {
+                    $('#wait').hide();
+                    alert("Received error from document server: " + data.error);
+                } else {
+                    editfields = 0;
+                    closeeditor();
+                    update(data);
+                }
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                alert("Editor submission failed: " + req + " " + err + " " + exception);
+            },
+            dataType: "json"
+        });
+    });
+    
 }
