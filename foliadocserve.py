@@ -449,7 +449,7 @@ def parsequery(query, data = {}):
                     else:
                         edit['class'] = "" #empty class for deletion of annotation
             elif mode == 'WITH':
-                assignments,skipwords = parseassignments(words, i)
+                assignments,skipwords = parseassignments(words, i+1)
                 for key, value in assignments.items():
                     edit[key] = value
 
