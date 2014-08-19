@@ -707,7 +707,7 @@ function editor_oninit() {
                 //sort targets in proper order
                 var sortededittargets = [];
                 if (editdata[i].targets.length > 1) {
-                    $('.' + view).each(function(i){
+                    $('.' + view).each(function(){
                         if (editdata[i].targets.indexOf(this.id) > -1) {
                             sortededittargets.push(this.id);
                         }
