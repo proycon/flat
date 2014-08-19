@@ -414,7 +414,7 @@ def parsequery(query, data = {}):
 
                 if words[i+1] == 'CORRECTION':
                     edit['editform'] = 'correction'
-                    if words[i+2] == "OF":
+                    if words[i+2] != "OF":
                         raise FQLParseError("Expected AS CORRECTION OF $set")
                     edit['correctionset'] = words[i+3]
                     skipwords = 3
