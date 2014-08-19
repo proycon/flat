@@ -371,7 +371,7 @@ def parsequery(query, data = {}):
             else:
                 inquote = False
         elif c == ' ' and not inquote:
-            i)f i > 1 and query[i-1] == '"':
+            if i > 1 and query[i-1] == '"':
                 word = query[begin:i-1]
             else:
                 word = query[begin:i]
