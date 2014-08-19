@@ -343,6 +343,9 @@ def parseassignments(words,i):
         elif word.lower() == 'confidence':
             assignments['confidence'] = float(words[i+j+2])
             skipwords += 1
+        elif word == ",":
+            processedwords += 1
+            break
         else:
             raise FQLParseError("Unknown variable in WITH statement: " + word)
 
@@ -368,7 +371,7 @@ def parsequery(query, data = {}):
             else:
                 inquote = False
         elif c == ' ' and not inquote:
-            if i > 1 and query[i-1] == '"':
+            i)f i > 1 and query[i-1] == '"':
                 word = query[begin:i-1]
             else:
                 word = query[begin:i]
@@ -389,17 +392,6 @@ def parsequery(query, data = {}):
             skipwords = skipwords - 1
             continue
 
-        if word[0] == '(' and word != "(":
-            word =  word[1:]
-            endclause = None
-            for j, w in enumerate(words[i:]):
-                if w[-1] == ')' and w[-1] != ")":
-                    endclause = i+j
-                    words[endclause] = w[:-1]
-            if endclause is None:
-                raise FQLParseError("No closing bracket found for opening bracket in word " + str(i))
-
-
         if not (endclause is None) and i >= endclause:
             endclause = None
 
@@ -413,8 +405,12 @@ def parsequery(query, data = {}):
             #start new mode
             mode = word
             if word == "AS":
+                endclause = None
+                for j in range(i+1,len(words) -1):
+                    if words[j] == ',':
+                        endclause = j - 1
                 if endclause is None:
-                    raise FQLParseError("AS clause must be enclosed within parentheses, none found")
+                    raise FQLParseError("AS clause must end in comma, detached from any words, none found")
 
                 if words[i+1] == 'CORRECTION':
                     edit['editform'] = 'correction'
@@ -422,7 +418,7 @@ def parsequery(query, data = {}):
                         raise FQLParseError("Expected AS CORRECTION OF $set")
                     edit['correctionset'] = words[i+3]
                     skipwords = 3
-                    if words[i+4] == 'WITH' and endclause != i+4:
+                    if words[i+4] == 'WITH':
                         skipwords = 4
                         correction_assignments,extraskipwords = parseassignments(words, i)
                         if 'class' in correction_assignments:
