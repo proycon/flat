@@ -1003,7 +1003,14 @@ class Root:
 
         data = {}
         for query in request['queries']:
-            data = parsequery(query, data)
+            try:
+                data = parsequery(query, data)
+            except FQLParseError as e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                formatted_lines = traceback.format_exc().splitlines()
+                response = {'error': "The FQL query could not be parsed: " + query + ". Error: " + str(e) + " -- " + "\n".join(formatted_lines) }
+                traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
+                return json.dumps(response)
 
         for ns, docid in data:
             if ns != namespace:
