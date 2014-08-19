@@ -557,6 +557,7 @@ function editor_loadmenus() {
 
 function openconsole() {
     $('#console').show();
+    $('#console').draggable();
 }
 
 function editor_oninit() {
