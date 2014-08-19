@@ -151,3 +151,8 @@ span.editforms button.selected {
 span.text {
     color: #7c7639;
 }
+#openinconsolecontainer {
+    float: left;
+    font-size: 60%;
+    color: #666;
+}
