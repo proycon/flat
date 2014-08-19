@@ -449,7 +449,7 @@ def parsequery(query, data = {}):
                     else:
                         edit['class'] = "" #empty class for deletion of annotation
             elif mode == 'WITH':
-                assignments,skipwords = parseassignments(words, i+1)
+                assignments,skipwords = parseassignments(words, i)
                 for key, value in assignments.items():
                     edit[key] = value
 
@@ -542,7 +542,10 @@ def doannotation(doc, data):
 
 
         if not 'set' in edit or edit['set'] == 'null':
-            edit['set'] = 'undefined'
+            if 'id' in edit and edit['id']:
+                edit['set'] = doc[edit['id']].set
+            else:
+                edit['set'] = 'undefined'
 
         log("Processing edit: "+ str(repr(edit)) )
         log("Class=" + Class.__name__ )
