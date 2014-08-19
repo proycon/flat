@@ -636,7 +636,7 @@ function editor_oninit() {
     $('#editorsubmit').click(function(){
         var changes = false;
         for (var i = 0; i < editfields;i++) { 
-            if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class)) {
+            if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
                 //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
                 editdata[i].class = $('#editfield' + i).val().trim();
                 editdata[i].changed = true;
