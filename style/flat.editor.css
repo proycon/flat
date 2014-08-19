@@ -106,7 +106,7 @@ div#editformcorrectionsetselector {
 #editortargets label, #editortargetlist {
     display: none;
 }
-div#newdeclaration, div#history {
+div#newdeclaration, div#history, div#console {
     position: absolute;
     display: none;
     width: 520px;
@@ -119,7 +119,7 @@ div#newdeclaration, div#history {
     text-align: left;
     left: 30%;
 }
-div#newdeclarationheader, div#historyheader {
+div#newdeclarationheader, div#historyheader, div#consoleheader {
     width:100%;
     background: #30677c;
     text-align: center;

@@ -555,7 +555,9 @@ function editor_loadmenus() {
     $('#annotationseditviewmenu').html(s);
 }
 
-
+function openconsole() {
+    $('#console').show();
+}
 
 function editor_oninit() {
     viewer_oninit();
@@ -566,6 +568,9 @@ function editor_oninit() {
     });
     $('#historydiscard').click(function(){
         $('#history').hide();
+    });
+    $('#consolediscard').click(function(){
+        $('#console').hide();
     });
 
     $('#editorselecttarget').click(function(){
