@@ -722,6 +722,8 @@ def doannotation(doc, data):
                     elif edit['text']:
                         response['log'] = "Text correction '" + edit['text'] + "' on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
                         log(response['log'])
+                        if not 'class' in edit:
+                            edit['class'] = 'current'
                         target.correct(new=folia.TextContent(doc, value=edit['text'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] ), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
                         response['log'] = "Deletion of " + target.id + " '" + target.text() + "' (correction " + edit['correctionclass']+"), by " + data['annotator']
