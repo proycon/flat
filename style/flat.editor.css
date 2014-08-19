@@ -128,7 +128,7 @@ div#newdeclarationheader, div#historyheader, div#consoleheader {
     border-radius: 5px;
     margin-top: -3px;
 }
-div#newdeclaration button, div#history button {
+div#newdeclaration button, div#history button, div#consoleheader button {
     float: right;
     margin-top: -5px;
     background: #30677c;
@@ -155,4 +155,8 @@ span.text {
     float: left;
     font-size: 60%;
     color: #666;
+}
+#console textarea {
+    width: 90%;
+    min-height: 320px;
 }
