@@ -328,7 +328,7 @@ def parseassignments(words,i):
     skipwords = 0
     processedwords = 0
     assignments = {}
-    for j, word in enumerate(words[i+1:]):
+    for j, word in enumerate(words[i:]):
         if skipwords:
             skipwords -= 1
             processedwords += 1
@@ -338,10 +338,10 @@ def parseassignments(words,i):
             break
         elif word.lower() in ['class','annotator','annotatortype','id','n','text','insertleft','insertright','dosplit']:
             type = word.lower()
-            assignments[type] = words[i+j+2]
+            assignments[type] = words[i+j+1]
             skipwords += 1
         elif word.lower() == 'confidence':
-            assignments['confidence'] = float(words[i+j+2])
+            assignments['confidence'] = float(words[i+j+1])
             skipwords += 1
         elif word == ",":
             processedwords += 1
@@ -420,7 +420,7 @@ def parsequery(query, data = {}):
                     skipwords = 3
                     if words[i+4] == 'WITH':
                         skipwords = 4
-                        correction_assignments,extraskipwords = parseassignments(words, i)
+                        correction_assignments,extraskipwords = parseassignments(words, i+5)
                         if 'class' in correction_assignments:
                             edit['correctionclass'] = correction_assignments['class']
                         skipwords += extraskipwords
