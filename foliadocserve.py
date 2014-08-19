@@ -1025,11 +1025,16 @@ class Root:
                 traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
                 return json.dumps(response)
 
+
+
+
             if docid == requestdocid:
                 returnresponse = response
 
             if 'error' in response and response['error']:
                 log(response['error'])
+                return json.dumps(response)
+
             if 'log' in response:
                 response['log'] += " in document " + "/".join((ns,docid))
             else:
