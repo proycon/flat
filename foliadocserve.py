@@ -1108,7 +1108,7 @@ class Root:
                         pass
             try:
                 cherrypy.response.headers['Content-Type'] = 'application/json'
-                if elementid:
+                if elementid and elementid in self.docstore[(namespace,docid)]:
                     log("Request element: "+ elementid)
                     response['elements'].append({
                         'elementid': elementid,
