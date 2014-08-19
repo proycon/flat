@@ -443,7 +443,7 @@ def parsequery(query, data = {}):
                 if actor_set:
                     edit['set'] = actor_set
                 if actor_id:
-                    edit['annotationid'] = actor_id
+                    edit['id'] = actor_id
 
                 if mode == 'ADD':
                     edit['new'] = True
