@@ -92,7 +92,7 @@ class DocStore:
         doc = self[key]
         if key[0] == "testflat":
             #No need to save the document, instead we run our tests:
-            test(doc, key[1])
+            return test(doc, key[1])
             #doc.save("/tmp/testflat.xml") #we do a dummy save and never overwrite the original
         else:
             log("Saving " + self.getfilename(key) + " - " + message)
@@ -1062,7 +1062,11 @@ class Root:
                 else:
                     response['log'] = "Unknown edit by " + request['annotator'] + " in " + "/".join((ns,docid))
 
-            self.docstore.save((ns,docid),response['log'] )
+            if ns == "flattest":
+                testresult = self.docstore.save((ns,docid),response['log'] )
+            else:
+                self.docstore.save((ns,docid),response['log'] )
+                testresult = None
             #set concurrency:
             if 'returnelementids' in response:
                 for s in self.docstore.updateq[(ns,docid)]:
@@ -1072,9 +1076,9 @@ class Root:
                             self.docstore.updateq[(ns,docid)][s].append(eid)
 
         if 'returnelementids' in returnresponse:
-            return self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid);
+            return self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid, testresult)
         else:
-            return self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid) #return all
+            return self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid, testresult) #return all
 
 
     def checkexpireconcurrency(self):
@@ -1101,9 +1105,13 @@ class Root:
 
 
     @cherrypy.expose
-    def getelements(self, namespace, docid, elementids, sid):
+    def getelements(self, namespace, docid, elementids, sid, testresult=None):
         assert isinstance(elementids, list) or isinstance(elementids, tuple)
         response = {'elements':[]}
+        if testresult:
+            response['teststatus'] = bool(testresult[0])
+            response['testmessage'] = testresult[1]
+
         for elementid in elementids:
             log("Returning element " + str(elementid) + " in document " + "/".join((namespace,docid)) + ", session " + sid)
             namepace = namespace.replace('/','').replace('..','')
@@ -1227,7 +1235,10 @@ class Root:
 
 def test(doc, testname):
     #perform test
-    pass
+    teststatus = True
+    testmessage = ""
+    #TODO
+    return teststatus, testmessage
 
 
 def main():
