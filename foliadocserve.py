@@ -1237,7 +1237,12 @@ def test(doc, testname):
     #perform test
     teststatus = True
     testmessage = ""
-    #TODO
+    if testname == "textchange":
+        #TODO
+        pass
+    else:
+        teststatus = False
+        testmessage = "No such test: " + testname
     return teststatus, testmessage
 
 
