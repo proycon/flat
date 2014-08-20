@@ -1237,7 +1237,10 @@ def test(doc, testname):
     #perform test
     teststatus = True
     testmessage = ""
-    if testname == "textchange":
+    if testname == "init":
+        #first test only loads document, doesn't really test anything else
+        teststatus = isinstance(doc, folia.Document)
+    elif testname == "textchange":
         #TODO
         pass
     else:
