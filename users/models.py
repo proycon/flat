@@ -15,7 +15,7 @@ class WritePermissions(models.Model):
         return self.username + " may write to " + self.namespace
 
 def hasreadpermission(username, namespace):
-    if username == namespace:
+    if username == namespace or namespace == "testflat":
         return True
     else:
         try:
@@ -28,7 +28,7 @@ def hasreadpermission(username, namespace):
         return True
 
 def haswritepermission(username, namespace):
-    if username == namespace:
+    if username == namespace or namespace == "testflat":
         return True
     else:
         try:
