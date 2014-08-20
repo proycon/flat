@@ -1,61 +1,218 @@
-<?xml version='1.0' encoding='utf-8'?>
-<FoLiA xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://ilk.uvt.nl/folia" xml:id="untitleddoc" version="0.10.0" generator="pynlpl.formats.folia-v0.10.0.44">
+<?xml version="1.0" encoding="UTF-8"?>
+<FoLiA xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://ilk.uvt.nl/folia" xml:id="untitleddoc" generator="libfolia-v0.11" version="0.10.0">
   <metadata type="native">
     <annotations>
-      <token-annotation annotator="ucto" datetime="2014-02-25T22:45:15" annotatortype="auto" set="tokconfig-nl"/>
+      <token-annotation annotator="ucto" annotatortype="auto" datetime="2014-02-25T22:45:15" set="tokconfig-nl"/>
+      <pos-annotation annotator="frog-mbpos-1.0" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"/>
+      <lemma-annotation annotator="frog-mblem-1.1" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-mblem-nl"/>
+      <chunking-annotation annotator="frog-chunker-1.0" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-chunker-nl"/>
+      <entity-annotation annotator="frog-mwu-1.0" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-mwu-nl"/>
+      <entity-annotation annotator="frog-ner-1.0" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-ner-nl"/>
       <correction-annotation set="http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml"/>
+      <morphological-annotation annotator="frog-mbma-1.0" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-mbma-nl"/>
+      <dependency-annotation annotator="frog-depparse-1.0" annotatortype="auto" set="http://ilk.uvt.nl/folia/sets/frog-depparse-nl"/>
     </annotations>
   </metadata>
   <text xml:id="untitleddoc.text">
-    <p xml:id="untitleddoc.p.1">
-      <t>&lt;BSA03- 3b&gt;</t>
-      <s xml:id="untitleddoc.p.1.s.1">
-        <t>&lt;BSA03- 3b&gt;</t>
-        <w xml:id="untitleddoc.p.1.s.1.w.1" class="UNKNOWN" space="no">
-          <t>&lt;</t>
-        </w>
-        <w xml:id="untitleddoc.p.1.s.1.w.2" class="STRING-NUMBER" space="no">
-          <t>BSA03</t>
-        </w>
-        <w xml:id="untitleddoc.p.1.s.1.w.3" class="PUNCTUATION">
-          <t>-</t>
-        </w>
-        <w xml:id="untitleddoc.p.1.s.1.w.4" class="NUMBER-STRING" space="no">
-          <t>3b</t>
-        </w>
-        <w xml:id="untitleddoc.p.1.s.1.w.5" class="UNKNOWN">
-          <t>&gt;</t>
-        </w>
-      </s>
-    </p>
     <p xml:id="untitleddoc.p.2">
       <t>duizenden snoepjes en een enge nacht, 11-12-2008</t>
       <s xml:id="untitleddoc.p.2.s.1">
         <t>duizenden snoepjes en een enge nacht, 11-12-2008</t>
         <w xml:id="untitleddoc.p.2.s.1.w.1" class="WORD">
           <t>duizenden</t>
+          <pos class="N(soort,mv,basis)" confidence="0.909091" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+          </pos>
+          <lemma class="duizend"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">duizend</t>
+            </morpheme>
+            <morpheme>
+              <t offset="7">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.2" class="WORD">
           <t>snoepjes</t>
+          <pos class="N(soort,mv,dim)" confidence="0.999008" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="dim" subset="graad"/>
+          </pos>
+          <lemma class="snoep"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">snoep</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">je</t>
+            </morpheme>
+            <morpheme>
+              <t offset="7">s</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.3" class="WORD">
           <t>en</t>
+          <pos class="VG(neven)" confidence="0.999194" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">en</t>
+            </morpheme>
+          </morphology>
+          <lemma class="en"/>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.4" class="WORD">
           <t>een</t>
+          <pos class="LID(onbep,stan,agr)" confidence="0.995147" head="LID">
+            <feat class="onbep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="agr" subset="npagr"/>
+          </pos>
+          <lemma class="een"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">een</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.5" class="WORD">
           <t>enge</t>
+          <pos class="ADJ(prenom,basis,met-e,stan)" confidence="0.998739" head="ADJ">
+            <feat class="prenom" subset="positie"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="met-e" subset="buiging"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="eng"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">eng</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">e</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.6" class="WORD" space="no">
           <t>nacht</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.999633" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="nacht"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">nacht</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.7" class="PUNCTUATION">
           <t>,</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">,</t>
+            </morpheme>
+          </morphology>
+          <lemma class=","/>
         </w>
         <w xml:id="untitleddoc.p.2.s.1.w.8" class="DATE">
           <t>11-12-2008</t>
+          <pos class="SPEC(symb)" confidence="1" head="SPEC">
+            <feat class="symb" subset="spectype"/>
+          </pos>
+          <lemma class="11-12-2008"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">11-12-2008</t>
+            </morpheme>
+          </morphology>
         </w>
+        <chunking xml:id="untitleddoc.p.2.s.1.chunking.1">
+          <chunk xml:id="untitleddoc.p.2.s.1.chunking.1.chunk.1" class="NP" confidence="0.699097">
+            <wref id="untitleddoc.p.2.s.1.w.1" t="duizenden"/>
+            <wref id="untitleddoc.p.2.s.1.w.2" t="snoepjes"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.2.s.1.chunking.1.chunk.2" class="CONJP" confidence="0.993665">
+            <wref id="untitleddoc.p.2.s.1.w.3" t="en"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.2.s.1.chunking.1.chunk.3" class="NP" confidence="0.937836">
+            <wref id="untitleddoc.p.2.s.1.w.4" t="een"/>
+            <wref id="untitleddoc.p.2.s.1.w.5" t="enge"/>
+            <wref id="untitleddoc.p.2.s.1.w.6" t="nacht"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.2.s.1.chunking.1.chunk.4" class="NP" confidence="0.646472">
+            <wref id="untitleddoc.p.2.s.1.w.8" t="11-12-2008"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.2.s.1.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.2.s.1.dependencies.1">
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.1" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.3" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.1" t="duizenden"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.2" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.1" t="duizenden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.2" t="snoepjes"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.3" class="det">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.6" t="nacht"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.4" t="een"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.4" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.6" t="nacht"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.5" t="enge"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.5" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.3" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.6" t="nacht"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.6" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.6" t="nacht"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.7" t=","/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.2.s.1.dependencies.1.dependency.7" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.2.s.1.w.6" t="nacht"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.2.s.1.w.8" t="11-12-2008"/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
     </p>
     <p xml:id="untitleddoc.p.3">
@@ -64,558 +221,4168 @@
         <t>toen me ouders weg reden met de auto belde ik snel janna.</t>
         <w xml:id="untitleddoc.p.3.s.1.w.1" class="WORD">
           <t>toen</t>
+          <pos class="BW()" confidence="0.751908" head="BW"/>
+          <lemma class="toen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">toen</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.2" class="WORD">
           <t>me</t>
+          <pos class="VNW(bez,det,dial)" confidence="1" head="VNW">
+            <feat class="bez" subset="vwtype"/>
+            <feat class="det" subset="pdtype"/>
+            <feat class="dial" subset="dial"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">me</t>
+            </morpheme>
+          </morphology>
+          <lemma class="me"/>
+          <alt auth="no">
+            <lemma class="mijn"/>
+          </alt>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.3" class="WORD">
           <t>ouders</t>
+          <pos class="N(soort,mv,basis)" confidence="0.999533" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+          </pos>
+          <lemma class="ouder"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ouder</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">s</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.4" class="WORD">
           <t>weg</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="1" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="weg"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">weg</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.5" class="WORD">
           <t>reden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.666667" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="rijden"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">rijed</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">e</t>
+            </morpheme>
+            <morpheme>
+              <t offset="6">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.6" class="WORD">
           <t>met</t>
+          <pos class="VZ(init)" confidence="0.99982" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="met"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">met</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.7" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.999643" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
+          <lemma class="de"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.8" class="WORD">
           <t>auto</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.99922" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="auto"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">auto</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.9" class="WORD">
           <t>belde</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.999007" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="bellen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">bel</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">de</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.10" class="WORD">
           <t>ik</t>
+          <pos class="VNW(pers,pron,nomin,vol,1,ev)" confidence="0.999857" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+          </pos>
+          <lemma class="ik"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ik</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.11" class="WORD">
           <t>snel</t>
+          <pos class="ADJ(vrij,basis,zonder)" confidence="0.992106" head="ADJ">
+            <feat class="vrij" subset="positie"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="snel"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">snel</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.12" class="WORD" space="no">
           <t>janna</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.272605" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="janna"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">janna</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.13" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <lemma class="."/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.1.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.1" class="SBAR" confidence="0.517529">
+            <wref id="untitleddoc.p.3.s.1.w.1" t="toen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.2" class="NP" confidence="0.642754">
+            <wref id="untitleddoc.p.3.s.1.w.2" t="me"/>
+            <wref id="untitleddoc.p.3.s.1.w.3" t="ouders"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.3" class="VP" confidence="0.552632">
+            <wref id="untitleddoc.p.3.s.1.w.4" t="weg"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.4" class="NP" confidence="0.833333">
+            <wref id="untitleddoc.p.3.s.1.w.5" t="reden"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.5" class="PP" confidence="0.996616">
+            <wref id="untitleddoc.p.3.s.1.w.6" t="met"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.6" class="NP" confidence="0.999028">
+            <wref id="untitleddoc.p.3.s.1.w.7" t="de"/>
+            <wref id="untitleddoc.p.3.s.1.w.8" t="auto"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.7" class="VP" confidence="0.999671">
+            <wref id="untitleddoc.p.3.s.1.w.9" t="belde"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.8" class="NP" confidence="0.991326">
+            <wref id="untitleddoc.p.3.s.1.w.10" t="ik"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.9" class="ADVP" confidence="0.913043">
+            <wref id="untitleddoc.p.3.s.1.w.11" t="snel"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.1.chunking.1.chunk.10" class="VP" confidence="1">
+            <wref id="untitleddoc.p.3.s.1.w.12" t="janna"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.1.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.1.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.1" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.5" t="reden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.1" t="toen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.2" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.3" t="ouders"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.2" t="me"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.3" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.5" t="reden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.3" t="ouders"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.4" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.5" t="reden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.4" t="weg"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.5" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.5" t="reden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.6" t="met"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.6" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.8" t="auto"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.7" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.7" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.9" t="belde"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.8" t="auto"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.8" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.6" t="met"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.9" t="belde"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.9" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.9" t="belde"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.10" t="ik"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.10" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.12" t="janna"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.11" t="snel"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.11" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.9" t="belde"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.12" t="janna"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.1.dependencies.1.dependency.12" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.1.w.12" t="janna"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.1.w.13" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.2">
         <t>we hadden afgesproken dat zei bij kwam slapen.</t>
         <w xml:id="untitleddoc.p.3.s.2.w.1" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.2" class="WORD">
           <t>hadden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.999066" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="hebben"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">heb</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">den</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.3" class="WORD">
           <t>afgesproken</t>
+          <pos class="WW(vd,vrij,zonder)" confidence="0.994872" head="WW">
+            <feat class="vd" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="afspreken"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">af</t>
+            </morpheme>
+            <morpheme>
+              <t offset="2">ge</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">spreek</t>
+            </morpheme>
+            <morpheme>
+              <t offset="10">en</t>
+            </morpheme>
+          </morphology>
+          <alt auth="no">
+            <morphology>
+              <morpheme>
+                <t offset="0">afgesprok</t>
+              </morpheme>
+              <morpheme>
+                <t offset="9">en</t>
+              </morpheme>
+            </morphology>
+          </alt>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.4" class="WORD">
           <t>dat</t>
+          <pos class="VG(onder)" confidence="0.951031" head="VG">
+            <feat class="onder" subset="conjtype"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">dat</t>
+            </morpheme>
+          </morphology>
+          <lemma class="dat"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.5" class="WORD">
-          <correction xml:id="untitleddoc.p.3.s.2.w.5.correction.1" annotator="proycon" datetime="2014-02-28T13:03:55" annotatortype="manual" class="confusion">
+          <correction xml:id="untitleddoc.p.3.s.2.w.5.correction.1" annotator="proycon" annotatortype="manual" class="confusion" datetime="2014-02-28T13:03:55">
             <new>
-              <t datetime="2014-02-28T13:03:55" annotatortype="manual" annotator="proycon">zij</t>
+              <t annotator="proycon" annotatortype="manual" datetime="2014-02-28T13:03:55">zij</t>
             </new>
             <original auth="no">
-              <t class="original">zei</t>
+              <t>zei</t>
             </original>
           </correction>
+          <pos class="VNW(pers,pron,nomin,vol,3p,mv)" confidence="0.875" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="3p" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="zij"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">zij</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.6" class="WORD">
           <t>bij</t>
+          <pos class="VZ(fin)" confidence="0.8" head="VZ">
+            <feat class="fin" subset="vztype"/>
+          </pos>
+          <lemma class="bij"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">bij</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.7" class="WORD">
           <t>kwam</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.999622" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="komen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kom</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.8" class="WORD" space="no">
           <t>slapen</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.9127" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="slapen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">slaap</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.2.w.9" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <entities xml:id="untitleddoc.p.3.s.2.entities.1"/>
+        <chunking xml:id="untitleddoc.p.3.s.2.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.2.chunking.1.chunk.1" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.2.w.1" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.2.chunking.1.chunk.2" class="VP" confidence="0.903981">
+            <wref id="untitleddoc.p.3.s.2.w.2" t="hadden"/>
+            <wref id="untitleddoc.p.3.s.2.w.3" t="afgesproken"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.2.chunking.1.chunk.3" class="SBAR" confidence="0.988889">
+            <wref id="untitleddoc.p.3.s.2.w.4" t="dat"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.2.chunking.1.chunk.4" class="NP" confidence="0.919244">
+            <wref id="untitleddoc.p.3.s.2.w.5" t="zij"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.2.chunking.1.chunk.5" class="PP" confidence="0.967742">
+            <wref id="untitleddoc.p.3.s.2.w.6" t="bij"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.2.chunking.1.chunk.6" class="VP" confidence="0.986692">
+            <wref id="untitleddoc.p.3.s.2.w.7" t="kwam"/>
+            <wref id="untitleddoc.p.3.s.2.w.8" t="slapen"/>
+          </chunk>
+        </chunking>
+        <dependencies xml:id="untitleddoc.p.3.s.2.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.2" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.1" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.2" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.2" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.3" t="afgesproken"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.3" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.2" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.4" t="dat"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.4" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.7" t="kwam"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.5" t="zij"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.5" class="svp">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.7" t="kwam"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.6" t="bij"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.6" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.4" t="dat"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.7" t="kwam"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.7" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.7" t="kwam"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.8" t="slapen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.2.dependencies.1.dependency.8" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.2.w.8" t="slapen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.2.w.9" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.3">
         <t>me ouders wisten het niet want die gingen 3dagen naar texel!</t>
         <w xml:id="untitleddoc.p.3.s.3.w.1" class="WORD">
           <t>me</t>
+          <pos class="VNW(bez,det,dial)" confidence="1" head="VNW">
+            <feat class="bez" subset="vwtype"/>
+            <feat class="det" subset="pdtype"/>
+            <feat class="dial" subset="dial"/>
+          </pos>
+          <lemma class="me"/>
+          <alt auth="no">
+            <lemma class="mijn"/>
+          </alt>
+          <morphology>
+            <morpheme>
+              <t offset="0">me</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.2" class="WORD">
           <t>ouders</t>
+          <pos class="N(soort,mv,basis)" confidence="0.999533" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+          </pos>
+          <lemma class="ouder"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ouder</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">s</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.3" class="WORD">
           <t>wisten</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998744" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="weten"/>
+          <alt auth="no">
+            <lemma class="wissen"/>
+          </alt>
+          <morphology>
+            <morpheme>
+              <t offset="0">weet</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
+          <alt auth="no">
+            <morphology>
+              <morpheme>
+                <t offset="0">wis</t>
+              </morpheme>
+              <morpheme>
+                <t offset="3">ten</t>
+              </morpheme>
+            </morphology>
+          </alt>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.4" class="WORD">
           <t>het</t>
+          <pos class="VNW(pers,pron,stan,red,3,ev,onz)" confidence="0.981297" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="3" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="onz" subset="genus"/>
+          </pos>
+          <lemma class="het"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">het</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.5" class="WORD">
           <t>niet</t>
+          <pos class="BW()" confidence="0.999918" head="BW"/>
+          <lemma class="niet"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">niet</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.6" class="WORD">
           <t>want</t>
+          <pos class="VG(neven)" confidence="0.998782" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <lemma class="want"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">want</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.7" class="WORD">
           <t>die</t>
+          <pos class="VNW(aanw,pron,stan,vol,3,getal)" confidence="0.944444" head="VNW">
+            <feat class="aanw" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="3" subset="persoon"/>
+            <feat class="getal" subset="getal"/>
+          </pos>
+          <lemma class="die"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">die</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.8" class="WORD">
           <t>gingen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998639" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">gaan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.9" class="NUMBER-STRING">
           <t>3dagen</t>
+          <pos class="ADJ(nom,basis,met-e,mv-n)" confidence="0.4167" head="ADJ">
+            <feat class="nom" subset="positie"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="met-e" subset="buiging"/>
+            <feat class="mv-n" subset="getal-n"/>
+          </pos>
+          <lemma class="3dagen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">3dagen</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.10" class="WORD">
           <t>naar</t>
+          <pos class="VZ(init)" confidence="0.970603" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="naar"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">naar</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.11" class="WORD" space="no">
           <t>texel</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.65457" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="texel"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">t</t>
+            </morpheme>
+            <morpheme>
+              <t offset="1">exel</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.3.w.12" class="PUNCTUATION">
           <t>!</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">!</t>
+            </morpheme>
+          </morphology>
+          <lemma class="!"/>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.3.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.1" class="NP" confidence="0.642754">
+            <wref id="untitleddoc.p.3.s.3.w.1" t="me"/>
+            <wref id="untitleddoc.p.3.s.3.w.2" t="ouders"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.2" class="VP" confidence="0.999671">
+            <wref id="untitleddoc.p.3.s.3.w.3" t="wisten"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.3" class="NP" confidence="0.978723">
+            <wref id="untitleddoc.p.3.s.3.w.4" t="het"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.4" class="ADVP" confidence="0.871763">
+            <wref id="untitleddoc.p.3.s.3.w.5" t="niet"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.5" class="CONJP" confidence="0.946429">
+            <wref id="untitleddoc.p.3.s.3.w.6" t="want"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.6" class="NP" confidence="0.928571">
+            <wref id="untitleddoc.p.3.s.3.w.7" t="die"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.7" class="VP" confidence="0.964286">
+            <wref id="untitleddoc.p.3.s.3.w.8" t="gingen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.8" class="NP" confidence="1">
+            <wref id="untitleddoc.p.3.s.3.w.9" t="3dagen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.9" class="PP" confidence="0.976744">
+            <wref id="untitleddoc.p.3.s.3.w.10" t="naar"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.3.chunking.1.chunk.10" class="NP" confidence="1">
+            <wref id="untitleddoc.p.3.s.3.w.11" t="texel"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.3.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.3.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.1" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.2" t="ouders"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.1" t="me"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.2" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.3" t="wisten"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.2" t="ouders"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.3" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.6" t="want"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.3" t="wisten"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.4" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.3" t="wisten"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.4" t="het"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.5" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.3" t="wisten"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.5" t="niet"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.6" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.8" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.7" t="die"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.7" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.6" t="want"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.8" t="gingen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.8" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.8" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.9" t="3dagen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.9" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.9" t="3dagen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.10" t="naar"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.10" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.10" t="naar"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.11" t="texel"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.3.dependencies.1.dependency.11" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.3.w.11" t="texel"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.3.w.12" t="!"/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.4">
         <t>en me broertje was bij een vriend gaan slapen.</t>
         <w xml:id="untitleddoc.p.3.s.4.w.1" class="WORD">
           <t>en</t>
+          <pos class="VG(neven)" confidence="0.999194" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">en</t>
+            </morpheme>
+          </morphology>
+          <lemma class="en"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.2" class="WORD">
           <t>me</t>
+          <pos class="VNW(pr,pron,obl,red,1,ev)" confidence="0.97477" head="VNW">
+            <feat class="pr" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="obl" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">me</t>
+            </morpheme>
+          </morphology>
+          <lemma class="me"/>
+          <alt auth="no">
+            <lemma class="mij"/>
+          </alt>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.3" class="WORD">
           <t>broertje</t>
+          <pos class="N(soort,ev,dim,onz,stan)" confidence="0.998951" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="dim" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="broer"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">broer</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">tje</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.4" class="WORD">
           <t>was</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.99654" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="zijn"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">zijn</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.5" class="WORD">
           <t>bij</t>
+          <pos class="VZ(init)" confidence="0.997868" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="bij"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">bij</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.6" class="WORD">
           <t>een</t>
+          <pos class="LID(onbep,stan,agr)" confidence="0.999038" head="LID">
+            <feat class="onbep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="agr" subset="npagr"/>
+          </pos>
+          <lemma class="een"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">een</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.7" class="WORD">
           <t>vriend</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.996997" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="vriend"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">vriend</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.8" class="WORD">
           <t>gaan</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.714286" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ga</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.9" class="WORD" space="no">
           <t>slapen</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.996299" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="slapen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">slaap</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.4.w.10" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <entities xml:id="untitleddoc.p.3.s.4.entities.1"/>
+        <chunking xml:id="untitleddoc.p.3.s.4.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.4.chunking.1.chunk.1" class="PP" confidence="1">
+            <wref id="untitleddoc.p.3.s.4.w.1" t="en"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.4.chunking.1.chunk.2" class="NP" confidence="0.93249">
+            <wref id="untitleddoc.p.3.s.4.w.2" t="me"/>
+            <wref id="untitleddoc.p.3.s.4.w.3" t="broertje"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.4.chunking.1.chunk.3" class="VP" confidence="0.957307">
+            <wref id="untitleddoc.p.3.s.4.w.4" t="was"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.4.chunking.1.chunk.4" class="PP" confidence="0.973941">
+            <wref id="untitleddoc.p.3.s.4.w.5" t="bij"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.4.chunking.1.chunk.5" class="NP" confidence="0.995483">
+            <wref id="untitleddoc.p.3.s.4.w.6" t="een"/>
+            <wref id="untitleddoc.p.3.s.4.w.7" t="vriend"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.4.chunking.1.chunk.6" class="VP" confidence="0.991525">
+            <wref id="untitleddoc.p.3.s.4.w.8" t="gaan"/>
+            <wref id="untitleddoc.p.3.s.4.w.9" t="slapen"/>
+          </chunk>
+        </chunking>
+        <dependencies xml:id="untitleddoc.p.3.s.4.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.1" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.3" t="broertje"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.2" t="me"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.2" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.1" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.3" t="broertje"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.3" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.4" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.5" t="bij"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.4" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.7" t="vriend"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.6" t="een"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.5" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.5" t="bij"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.7" t="vriend"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.6" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.5" t="bij"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.8" t="gaan"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.7" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.8" t="gaan"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.9" t="slapen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.4.dependencies.1.dependency.8" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.4.w.9" t="slapen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.4.w.10" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.5">
         <t>tegen de tijd dat janna eindelijk bij mij was.</t>
         <w xml:id="untitleddoc.p.3.s.5.w.1" class="WORD">
           <t>tegen</t>
+          <pos class="VZ(init)" confidence="0.997583" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="tegen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">tegen</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.2" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.999146" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <lemma class="de"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.3" class="WORD">
           <t>tijd</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.999884" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="tijd"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">tijd</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.4" class="WORD">
           <t>dat</t>
+          <pos class="VNW(aanw,pron,stan,vol,3o,ev)" confidence="0.489745" head="VNW">
+            <feat class="aanw" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="3o" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+          </pos>
+          <lemma class="dat"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">dat</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.5" class="WORD">
           <t>janna</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.423635" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="janna"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">janna</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.6" class="WORD">
           <t>eindelijk</t>
+          <pos class="ADJ(vrij,basis,zonder)" confidence="0.99701" head="ADJ">
+            <feat class="vrij" subset="positie"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="eindelijk"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">eind</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">elijk</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.7" class="WORD">
           <t>bij</t>
+          <pos class="VZ(init)" confidence="0.858769" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="bij"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">bij</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.8" class="WORD">
           <t>mij</t>
+          <pos class="VNW(pr,pron,obl,vol,1,ev)" confidence="0.99809" head="VNW">
+            <feat class="pr" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="obl" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+          </pos>
+          <lemma class="mij"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">mij</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.9" class="WORD" space="no">
           <t>was</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.994815" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="zijn"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">zijn</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.5.w.10" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.5.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.1" class="PP" confidence="0.929095">
+            <wref id="untitleddoc.p.3.s.5.w.1" t="tegen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.2" class="NP" confidence="0.831149">
+            <wref id="untitleddoc.p.3.s.5.w.2" t="de"/>
+            <wref id="untitleddoc.p.3.s.5.w.3" t="tijd"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.3" class="SBAR" confidence="0.488872">
+            <wref id="untitleddoc.p.3.s.5.w.4" t="dat"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.4" class="NP" confidence="0.803212">
+            <wref id="untitleddoc.p.3.s.5.w.5" t="janna"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.5" class="ADVP" confidence="0.981439">
+            <wref id="untitleddoc.p.3.s.5.w.6" t="eindelijk"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.6" class="PP" confidence="0.888889">
+            <wref id="untitleddoc.p.3.s.5.w.7" t="bij"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.7" class="NP" confidence="0.973451">
+            <wref id="untitleddoc.p.3.s.5.w.8" t="mij"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.5.chunking.1.chunk.8" class="VP" confidence="0.957307">
+            <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.5.entities.1"/>
+        <entities xml:id="untitleddoc.p.3.s.5.entities.2">
+          <entity xml:id="untitleddoc.p.3.s.5.entities.2.entity.1" set="http://ilk.uvt.nl/folia/sets/frog-mwu-nl">
+            <wref id="untitleddoc.p.3.s.5.w.1" t="tegen"/>
+            <wref id="untitleddoc.p.3.s.5.w.2" t="de"/>
+          </entity>
+        </entities>
+        <dependencies xml:id="untitleddoc.p.3.s.5.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.1" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.1" t="tegen"/>
+              <wref id="untitleddoc.p.3.s.5.w.2" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.2" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.3" t="tijd"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.3" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.4" t="dat"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.4" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.5" t="janna"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.5" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.6" t="eindelijk"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.6" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.7" t="bij"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.7" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.7" t="bij"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.8" t="mij"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.5.dependencies.1.dependency.8" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.5.w.9" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.5.w.10" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.6">
         <t>was het 3 uur we gingen naar de kruitvat om wat snoep te kopen.</t>
         <w xml:id="untitleddoc.p.3.s.6.w.1" class="WORD">
           <t>was</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.99656" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="zijn"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">zijn</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.2" class="WORD">
           <t>het</t>
+          <pos class="LID(bep,stan,evon)" confidence="0.923077" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="evon" subset="npagr"/>
+          </pos>
+          <lemma class="het"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">het</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.3" class="NUMBER">
           <t>3</t>
+          <pos class="TW(hoofd,vrij)" confidence="1" head="TW">
+            <feat class="hoofd" subset="numtype"/>
+            <feat class="vrij" subset="positie"/>
+          </pos>
+          <lemma class="3"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">3</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.4" class="WORD">
           <t>uur</t>
+          <pos class="N(soort,ev,basis,onz,stan)" confidence="0.999731" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="uur"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">uur</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.5" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.6" class="WORD">
           <t>gingen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998639" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">gaan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.7" class="WORD">
           <t>naar</t>
+          <pos class="VZ(init)" confidence="0.999754" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="naar"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">naar</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.8" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.993277" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <lemma class="de"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.9" class="WORD">
           <t>kruitvat</t>
+          <pos class="N(soort,ev,basis,onz,stan)" confidence="0.875" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="kruitvat"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kruit</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">vat</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.10" class="WORD">
           <t>om</t>
+          <pos class="VZ(init)" confidence="0.957447" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="om"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">om</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.11" class="WORD">
           <t>wat</t>
+          <pos class="VNW(onbep,pron,stan,vol,3o,ev)" confidence="1" head="VNW">
+            <feat class="onbep" subset="lwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="3o" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+          </pos>
+          <lemma class="wat"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">wat</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.12" class="WORD">
           <t>snoep</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.621622" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="snoep"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">snoep</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.13" class="WORD">
           <t>te</t>
+          <pos class="VZ(init)" confidence="0.999928" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">te</t>
+            </morpheme>
+          </morphology>
+          <lemma class="te"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.14" class="WORD" space="no">
           <t>kopen</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.999652" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="kopen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">koop</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.6.w.15" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.6.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.1" class="VP" confidence="0.957307">
+            <wref id="untitleddoc.p.3.s.6.w.1" t="was"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.2" class="NP" confidence="0.477352">
+            <wref id="untitleddoc.p.3.s.6.w.2" t="het"/>
+            <wref id="untitleddoc.p.3.s.6.w.3" t="3"/>
+            <wref id="untitleddoc.p.3.s.6.w.4" t="uur"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.3" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.6.w.5" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.4" class="VP" confidence="0.964286">
+            <wref id="untitleddoc.p.3.s.6.w.6" t="gingen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.5" class="PP" confidence="0.980088">
+            <wref id="untitleddoc.p.3.s.6.w.7" t="naar"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.6" class="NP" confidence="0.982289">
+            <wref id="untitleddoc.p.3.s.6.w.8" t="de"/>
+            <wref id="untitleddoc.p.3.s.6.w.9" t="kruitvat"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.7" class="PP" confidence="0.921239">
+            <wref id="untitleddoc.p.3.s.6.w.10" t="om"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.8" class="NP" confidence="0.661511">
+            <wref id="untitleddoc.p.3.s.6.w.11" t="wat"/>
+            <wref id="untitleddoc.p.3.s.6.w.12" t="snoep"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.6.chunking.1.chunk.9" class="VP" confidence="0.527144">
+            <wref id="untitleddoc.p.3.s.6.w.13" t="te"/>
+            <wref id="untitleddoc.p.3.s.6.w.14" t="kopen"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.6.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.6.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.1" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.4" t="uur"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.2" t="het"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.2" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.4" t="uur"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.3" t="3"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.3" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.1" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.4" t="uur"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.4" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.6" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.5" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.5" class="ld">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.6" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.7" t="naar"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.6" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.9" t="kruitvat"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.8" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.7" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.7" t="naar"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.9" t="kruitvat"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.8" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.9" t="kruitvat"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.10" t="om"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.9" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.12" t="snoep"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.11" t="wat"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.10" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.10" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.12" t="snoep"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.11" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.10" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.13" t="te"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.12" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.13" t="te"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.14" t="kopen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.6.dependencies.1.dependency.13" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.6.w.14" t="kopen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.6.w.15" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.7">
         <t>we hadden wel 20 kilo snoep gekocht en gingen naar huis.</t>
         <w xml:id="untitleddoc.p.3.s.7.w.1" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.2" class="WORD">
           <t>hadden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998698" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="hebben"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">heb</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">den</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.3" class="WORD">
           <t>wel</t>
+          <pos class="BW()" confidence="0.999831" head="BW"/>
+          <lemma class="wel"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">wel</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.4" class="NUMBER">
           <t>20</t>
+          <pos class="TW(hoofd,prenom,stan)" confidence="0.95" head="TW">
+            <feat class="hoofd" subset="numtype"/>
+            <feat class="prenom" subset="positie"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="20"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">20</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.5" class="WORD">
           <t>kilo</t>
+          <pos class="N(soort,ev,basis,genus,stan)" confidence="1" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="genus" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="kilo"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kilo</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.6" class="WORD">
           <t>snoep</t>
+          <pos class="N(soort,ev,basis,genus,stan)" confidence="1" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="genus" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="snoep"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">snoep</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.7" class="WORD">
           <t>gekocht</t>
+          <pos class="WW(vd,vrij,zonder)" confidence="0.997335" head="WW">
+            <feat class="vd" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="kopen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ge</t>
+            </morpheme>
+            <morpheme>
+              <t offset="2">koop</t>
+            </morpheme>
+            <morpheme>
+              <t offset="6">t</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.8" class="WORD">
           <t>en</t>
+          <pos class="VG(neven)" confidence="0.999194" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <lemma class="en"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.9" class="WORD">
           <t>gingen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998639" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">gaan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.10" class="WORD">
           <t>naar</t>
+          <pos class="VZ(init)" confidence="0.994083" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="naar"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">naar</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.11" class="WORD" space="no">
           <t>huis</t>
+          <pos class="N(soort,ev,basis,onz,stan)" confidence="0.996553" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="huis"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">huis</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.7.w.12" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <lemma class="."/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
         </w>
+        <entities xml:id="untitleddoc.p.3.s.7.entities.1"/>
+        <chunking xml:id="untitleddoc.p.3.s.7.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.1" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.7.w.1" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.2" class="VP" confidence="0.903981">
+            <wref id="untitleddoc.p.3.s.7.w.2" t="hadden"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.3" class="ADVP" confidence="0.924731">
+            <wref id="untitleddoc.p.3.s.7.w.3" t="wel"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.4" class="NP" confidence="0.387911">
+            <wref id="untitleddoc.p.3.s.7.w.4" t="20"/>
+            <wref id="untitleddoc.p.3.s.7.w.5" t="kilo"/>
+            <wref id="untitleddoc.p.3.s.7.w.6" t="snoep"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.5" class="VP" confidence="0.9">
+            <wref id="untitleddoc.p.3.s.7.w.7" t="gekocht"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.6" class="CONJP" confidence="0.992771">
+            <wref id="untitleddoc.p.3.s.7.w.8" t="en"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.7" class="VP" confidence="0.964286">
+            <wref id="untitleddoc.p.3.s.7.w.9" t="gingen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.8" class="PP" confidence="0.980088">
+            <wref id="untitleddoc.p.3.s.7.w.10" t="naar"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.7.chunking.1.chunk.9" class="NP" confidence="1">
+            <wref id="untitleddoc.p.3.s.7.w.11" t="huis"/>
+          </chunk>
+        </chunking>
+        <dependencies xml:id="untitleddoc.p.3.s.7.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.2" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.1" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.2" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.8" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.2" t="hadden"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.3" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.7" t="gekocht"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.3" t="wel"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.4" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.5" t="kilo"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.4" t="20"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.5" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.6" t="snoep"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.5" t="kilo"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.6" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.3" t="wel"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.6" t="snoep"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.7" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.2" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.7" t="gekocht"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.8" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.8" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.9" t="gingen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.9" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.9" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.10" t="naar"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.10" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.10" t="naar"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.11" t="huis"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.7.dependencies.1.dependency.11" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.7.w.11" t="huis"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.7.w.12" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.8">
         <t>het was al 6 uur toen we terug kwamen.</t>
         <w xml:id="untitleddoc.p.3.s.8.w.1" class="WORD">
           <t>het</t>
+          <pos class="VNW(pers,pron,stan,red,3,ev,onz)" confidence="0.990625" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="3" subset="persoon"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="onz" subset="genus"/>
+          </pos>
+          <lemma class="het"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">het</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.2" class="WORD">
           <t>was</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.99656" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="zijn"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">zijn</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.3" class="WORD">
           <t>al</t>
+          <pos class="BW()" confidence="0.90383" head="BW"/>
+          <lemma class="al"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">al</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.4" class="NUMBER">
           <t>6</t>
+          <pos class="TW(hoofd,prenom,stan)" confidence="0.594595" head="TW">
+            <feat class="hoofd" subset="numtype"/>
+            <feat class="prenom" subset="positie"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="6"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">6</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.5" class="WORD">
           <t>uur</t>
+          <pos class="N(soort,ev,basis,onz,stan)" confidence="0.999731" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="uur"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">uur</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.6" class="WORD">
           <t>toen</t>
+          <pos class="VG(onder)" confidence="0.9631" head="VG">
+            <feat class="onder" subset="conjtype"/>
+          </pos>
+          <lemma class="toen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">toen</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.7" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.8" class="WORD">
           <t>terug</t>
+          <pos class="BW()" confidence="0.999011" head="BW"/>
+          <lemma class="terug"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">terug</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.9" class="WORD" space="no">
           <t>kwamen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.999559" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="komen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kom</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.8.w.10" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <entities xml:id="untitleddoc.p.3.s.8.entities.1"/>
+        <chunking xml:id="untitleddoc.p.3.s.8.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.8.chunking.1.chunk.1" class="NP" confidence="1">
+            <wref id="untitleddoc.p.3.s.8.w.1" t="het"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.8.chunking.1.chunk.2" class="VP" confidence="0.957307">
+            <wref id="untitleddoc.p.3.s.8.w.2" t="was"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.8.chunking.1.chunk.3" class="NP" confidence="0.916849">
+            <wref id="untitleddoc.p.3.s.8.w.3" t="al"/>
+            <wref id="untitleddoc.p.3.s.8.w.4" t="6"/>
+            <wref id="untitleddoc.p.3.s.8.w.5" t="uur"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.8.chunking.1.chunk.4" class="SBAR" confidence="0.909091">
+            <wref id="untitleddoc.p.3.s.8.w.6" t="toen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.8.chunking.1.chunk.5" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.8.w.7" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.8.chunking.1.chunk.6" class="VP" confidence="0.974684">
+            <wref id="untitleddoc.p.3.s.8.w.9" t="kwamen"/>
+          </chunk>
+        </chunking>
+        <dependencies xml:id="untitleddoc.p.3.s.8.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.2" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.1" t="het"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.2" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.2" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.3" t="al"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.3" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.5" t="uur"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.4" t="6"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.4" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.2" t="was"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.5" t="uur"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.5" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.5" t="uur"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.6" t="toen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.6" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.9" t="kwamen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.7" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.7" class="pc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.9" t="kwamen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.8" t="terug"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.8" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.6" t="toen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.9" t="kwamen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.8.dependencies.1.dependency.9" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.8.w.9" t="kwamen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.8.w.10" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.9">
         <t>en we gingen friet halen bij cafetaria de beek.</t>
         <w xml:id="untitleddoc.p.3.s.9.w.1" class="WORD">
           <t>en</t>
+          <pos class="VG(neven)" confidence="0.999194" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">en</t>
+            </morpheme>
+          </morphology>
+          <lemma class="en"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.2" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.3" class="WORD">
           <t>gingen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998639" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">gaan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.4" class="WORD">
           <t>friet</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.878049" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="friet"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">friet</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.5" class="WORD">
           <t>halen</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.962025" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="halen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">haal</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.6" class="WORD">
           <t>bij</t>
+          <pos class="VZ(init)" confidence="0.995378" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="bij"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">bij</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.7" class="WORD">
           <t>cafetaria</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.995885" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="cafetaria"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">cafetaria</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.8" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.999665" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <lemma class="de"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.9" class="WORD" space="no">
           <t>beek</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.998077" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="beek"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">beek</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.9.w.10" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <lemma class="."/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.9.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.1" class="PP" confidence="1">
+            <wref id="untitleddoc.p.3.s.9.w.1" t="en"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.2" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.9.w.2" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.3" class="VP" confidence="0.964286">
+            <wref id="untitleddoc.p.3.s.9.w.3" t="gingen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.4" class="NP" confidence="0.999851">
+            <wref id="untitleddoc.p.3.s.9.w.4" t="friet"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.5" class="VP" confidence="1">
+            <wref id="untitleddoc.p.3.s.9.w.5" t="halen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.6" class="PP" confidence="0.973941">
+            <wref id="untitleddoc.p.3.s.9.w.6" t="bij"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.7" class="NP" confidence="0.999725">
+            <wref id="untitleddoc.p.3.s.9.w.7" t="cafetaria"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.9.chunking.1.chunk.8" class="NP" confidence="0.909004">
+            <wref id="untitleddoc.p.3.s.9.w.8" t="de"/>
+            <wref id="untitleddoc.p.3.s.9.w.9" t="beek"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.9.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.9.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.3" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.2" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.2" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.5" t="halen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.4" t="friet"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.3" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.3" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.5" t="halen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.4" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.5" t="halen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.6" t="bij"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.5" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.6" t="bij"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.7" t="cafetaria"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.6" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.9" t="beek"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.8" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.7" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.3" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.9" t="beek"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.9.dependencies.1.dependency.8" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.9.w.9" t="beek"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.9.w.10" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.10">
         <t>toen we de friet op hadden.</t>
         <w xml:id="untitleddoc.p.3.s.10.w.1" class="WORD">
           <t>toen</t>
+          <pos class="VG(onder)" confidence="0.9631" head="VG">
+            <feat class="onder" subset="conjtype"/>
+          </pos>
+          <lemma class="toen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">toen</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.10.w.2" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.10.w.3" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.998534" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <lemma class="de"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.10.w.4" class="WORD">
           <t>friet</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.830189" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="friet"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">friet</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.10.w.5" class="WORD">
           <t>op</t>
+          <pos class="VZ(fin)" confidence="0.822917" head="VZ">
+            <feat class="fin" subset="vztype"/>
+          </pos>
+          <lemma class="op"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">op</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.10.w.6" class="WORD" space="no">
           <t>hadden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.997768" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="hebben"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">heb</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">den</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.10.w.7" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.10.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.10.chunking.1.chunk.1" class="SBAR" confidence="0.517529">
+            <wref id="untitleddoc.p.3.s.10.w.1" t="toen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.10.chunking.1.chunk.2" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.10.w.2" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.10.chunking.1.chunk.3" class="NP" confidence="0.96412">
+            <wref id="untitleddoc.p.3.s.10.w.3" t="de"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.10.chunking.1.chunk.4" class="NP" confidence="0.999851">
+            <wref id="untitleddoc.p.3.s.10.w.4" t="friet"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.10.chunking.1.chunk.5" class="PP" confidence="0.75">
+            <wref id="untitleddoc.p.3.s.10.w.5" t="op"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.10.chunking.1.chunk.6" class="VP" confidence="0.903981">
+            <wref id="untitleddoc.p.3.s.10.w.6" t="hadden"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.10.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.10.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.10.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.10.w.6" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.10.w.2" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.10.dependencies.1.dependency.2" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.10.w.4" t="friet"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.10.w.3" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.10.dependencies.1.dependency.3" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.10.w.6" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.10.w.4" t="friet"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.10.dependencies.1.dependency.4" class="svp">
+            <hd>
+              <wref id="untitleddoc.p.3.s.10.w.6" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.10.w.5" t="op"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.10.dependencies.1.dependency.5" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.10.w.1" t="toen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.10.w.6" t="hadden"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.10.dependencies.1.dependency.6" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.10.w.6" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.10.w.7" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.11">
         <t>gingen we een horhor film kijken.</t>
         <w xml:id="untitleddoc.p.3.s.11.w.1" class="WORD">
           <t>gingen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998639" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">gaan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.11.w.2" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.11.w.3" class="WORD">
           <t>een</t>
+          <pos class="LID(onbep,stan,agr)" confidence="0.995147" head="LID">
+            <feat class="onbep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="agr" subset="npagr"/>
+          </pos>
+          <lemma class="een"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">een</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.11.w.4" class="WORD">
           <t>horhor</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.835813" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="horhor"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">hor</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">hor</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.11.w.5" class="WORD">
           <t>film</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.998813" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="film"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">film</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.11.w.6" class="WORD" space="no">
           <t>kijken</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.884211" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="kijken"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kijk</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.11.w.7" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <lemma class="."/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.11.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.11.chunking.1.chunk.1" class="VP" confidence="0.964286">
+            <wref id="untitleddoc.p.3.s.11.w.1" t="gingen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.11.chunking.1.chunk.2" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.11.w.2" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.11.chunking.1.chunk.3" class="NP" confidence="0.715701">
+            <wref id="untitleddoc.p.3.s.11.w.3" t="een"/>
+            <wref id="untitleddoc.p.3.s.11.w.4" t="horhor"/>
+            <wref id="untitleddoc.p.3.s.11.w.5" t="film"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.11.chunking.1.chunk.4" class="VP" confidence="0.997227">
+            <wref id="untitleddoc.p.3.s.11.w.6" t="kijken"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.11.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.11.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.11.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.11.w.1" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.11.w.2" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.11.dependencies.1.dependency.2" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.11.w.4" t="horhor"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.11.w.3" t="een"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.11.dependencies.1.dependency.3" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.11.w.1" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.11.w.4" t="horhor"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.11.dependencies.1.dependency.4" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.11.w.6" t="kijken"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.11.w.5" t="film"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.11.dependencies.1.dependency.5" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.11.w.1" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.11.w.6" t="kijken"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.11.dependencies.1.dependency.6" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.11.w.6" t="kijken"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.11.w.7" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.12">
         <t>en gingen pas om 4uur s’ochtens naar bed, hadden al 19 kilo snoep op.</t>
         <w xml:id="untitleddoc.p.3.s.12.w.1" class="WORD">
           <t>en</t>
+          <pos class="VG(neven)" confidence="0.999194" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <lemma class="en"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.2" class="WORD">
           <t>gingen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998639" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="gaan"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">gaan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.3" class="WORD">
           <t>pas</t>
+          <pos class="BW()" confidence="0.960396" head="BW"/>
+          <lemma class="pas"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">pas</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.4" class="WORD">
           <t>om</t>
+          <pos class="VZ(init)" confidence="0.957341" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="om"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">om</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.5" class="NUMBER-STRING">
           <t>4uur</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.473772" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="4uur"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">4uur</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.6" class="QUOTE-COMPOUND">
           <t>s’ochtens</t>
+          <pos class="N(soort,mv,basis)" confidence="0.535278" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+          </pos>
+          <lemma class="s'ochtens"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">s'ochtens</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.7" class="WORD">
           <t>naar</t>
+          <pos class="VZ(init)" confidence="0.982213" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="naar"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">naar</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.8" class="WORD" space="no">
           <t>bed</t>
+          <pos class="N(soort,ev,basis,onz,stan)" confidence="0.999486" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="bed"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">bed</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.9" class="PUNCTUATION">
           <t>,</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">,</t>
+            </morpheme>
+          </morphology>
+          <lemma class=","/>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.10" class="WORD">
           <t>hadden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.999066" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="hebben"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">heb</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">den</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.11" class="WORD">
           <t>al</t>
+          <pos class="BW()" confidence="0.90383" head="BW"/>
+          <lemma class="al"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">al</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.12" class="NUMBER">
           <t>19</t>
+          <pos class="TW(hoofd,prenom,stan)" confidence="0.8" head="TW">
+            <feat class="hoofd" subset="numtype"/>
+            <feat class="prenom" subset="positie"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="19"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">19</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.13" class="WORD">
           <t>kilo</t>
+          <pos class="N(soort,ev,basis,genus,stan)" confidence="1" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="genus" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="kilo"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kilo</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.14" class="WORD">
           <t>snoep</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.621622" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="snoep"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">snoep</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.15" class="WORD" space="no">
           <t>op</t>
+          <pos class="VZ(fin)" confidence="0.978474" head="VZ">
+            <feat class="fin" subset="vztype"/>
+          </pos>
+          <lemma class="op"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">op</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.12.w.16" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.12.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.1" class="PP" confidence="1">
+            <wref id="untitleddoc.p.3.s.12.w.1" t="en"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.2" class="VP" confidence="0.964286">
+            <wref id="untitleddoc.p.3.s.12.w.2" t="gingen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.3" class="ADVP" confidence="0.826087">
+            <wref id="untitleddoc.p.3.s.12.w.3" t="pas"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.4" class="PP" confidence="0.984127">
+            <wref id="untitleddoc.p.3.s.12.w.4" t="om"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.5" class="NP" confidence="0.259038">
+            <wref id="untitleddoc.p.3.s.12.w.5" t="4uur"/>
+            <wref id="untitleddoc.p.3.s.12.w.6" t="s’ochtens"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.6" class="PP" confidence="0.99005">
+            <wref id="untitleddoc.p.3.s.12.w.7" t="naar"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.7" class="NP" confidence="1">
+            <wref id="untitleddoc.p.3.s.12.w.8" t="bed"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.8" class="VP" confidence="0.903981">
+            <wref id="untitleddoc.p.3.s.12.w.10" t="hadden"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.9" class="ADVP" confidence="1">
+            <wref id="untitleddoc.p.3.s.12.w.11" t="al"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.10" class="NP" confidence="0.676208">
+            <wref id="untitleddoc.p.3.s.12.w.12" t="19"/>
+            <wref id="untitleddoc.p.3.s.12.w.13" t="kilo"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.12.chunking.1.chunk.11" class="NP" confidence="0.714286">
+            <wref id="untitleddoc.p.3.s.12.w.14" t="snoep"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.12.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.12.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.1" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.1" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.2" t="gingen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.2" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.2" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.3" t="pas"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.3" class="ld">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.2" t="gingen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.4" t="om"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.4" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.4" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.5" t="4uur"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.5" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.4" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.6" t="s’ochtens"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.6" class="body">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.4" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.7" t="naar"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.7" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.7" t="naar"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.8" t="bed"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.8" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.8" t="bed"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.9" t=","/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.9" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.13" t="kilo"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.11" t="al"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.10" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.13" t="kilo"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.12" t="19"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.11" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.10" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.13" t="kilo"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.12" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.13" t="kilo"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.14" t="snoep"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.13" class="svp">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.10" t="hadden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.15" t="op"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.12.dependencies.1.dependency.14" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.12.w.15" t="op"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.12.w.16" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.13">
         <t>we konden allebei niet slapen van de horhor film,en hoorden enge geluiden.</t>
         <w xml:id="untitleddoc.p.3.s.13.w.1" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.2" class="WORD">
           <t>konden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998744" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="kunnen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kan</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">den</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.3" class="WORD">
           <t>allebei</t>
+          <pos class="VNW(onbep,det,stan,vrij,zonder)" confidence="0.985653" head="VNW">
+            <feat class="onbep" subset="lwtype"/>
+            <feat class="det" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="allebei"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">allebei</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.4" class="WORD">
           <t>niet</t>
+          <pos class="BW()" confidence="0.999918" head="BW"/>
+          <lemma class="niet"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">niet</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.5" class="WORD">
           <t>slapen</t>
+          <pos class="WW(inf,vrij,zonder)" confidence="0.8" head="WW">
+            <feat class="inf" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="slapen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">slaap</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.6" class="WORD">
           <t>van</t>
+          <pos class="VZ(init)" confidence="0.998982" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="van"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">van</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.7" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.981886" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <lemma class="de"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.8" class="WORD">
           <t>horhor</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="1" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="horhor"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">hor</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">hor</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.9" class="WORD" space="no">
           <t>film</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.999633" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="film"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">film</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.10" class="PUNCTUATION" space="no">
           <t>,</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">,</t>
+            </morpheme>
+          </morphology>
+          <lemma class=","/>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.11" class="WORD">
           <t>en</t>
+          <pos class="VG(neven)" confidence="0.999194" head="VG">
+            <feat class="neven" subset="conjtype"/>
+          </pos>
+          <lemma class="en"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.12" class="WORD">
           <t>hoorden</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998744" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="horen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">hoor</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">den</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.13" class="WORD">
           <t>enge</t>
+          <pos class="ADJ(prenom,basis,met-e,stan)" confidence="0.999143" head="ADJ">
+            <feat class="prenom" subset="positie"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="met-e" subset="buiging"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="eng"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">eng</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">e</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.14" class="WORD" space="no">
           <t>geluiden</t>
+          <pos class="N(soort,mv,basis)" confidence="0.999588" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+          </pos>
+          <lemma class="geluid"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ge</t>
+            </morpheme>
+            <morpheme>
+              <t offset="2">luid</t>
+            </morpheme>
+            <morpheme>
+              <t offset="6">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.13.w.15" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <chunking xml:id="untitleddoc.p.3.s.13.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.1" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.13.w.1" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.2" class="VP" confidence="0.894118">
+            <wref id="untitleddoc.p.3.s.13.w.2" t="konden"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.3" class="ADVP" confidence="0.842105">
+            <wref id="untitleddoc.p.3.s.13.w.3" t="allebei"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.4" class="ADVP" confidence="0.933333">
+            <wref id="untitleddoc.p.3.s.13.w.4" t="niet"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.5" class="VP" confidence="0.367816">
+            <wref id="untitleddoc.p.3.s.13.w.5" t="slapen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.6" class="PP" confidence="0.961005">
+            <wref id="untitleddoc.p.3.s.13.w.6" t="van"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.7" class="NP" confidence="0.799724">
+            <wref id="untitleddoc.p.3.s.13.w.7" t="de"/>
+            <wref id="untitleddoc.p.3.s.13.w.8" t="horhor"/>
+            <wref id="untitleddoc.p.3.s.13.w.9" t="film"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.8" class="CONJP" confidence="0.995215">
+            <wref id="untitleddoc.p.3.s.13.w.11" t="en"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.9" class="VP" confidence="0.999047">
+            <wref id="untitleddoc.p.3.s.13.w.12" t="hoorden"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.13.chunking.1.chunk.10" class="NP" confidence="0.999557">
+            <wref id="untitleddoc.p.3.s.13.w.13" t="enge"/>
+            <wref id="untitleddoc.p.3.s.13.w.14" t="geluiden"/>
+          </chunk>
+        </chunking>
+        <entities xml:id="untitleddoc.p.3.s.13.entities.1"/>
+        <dependencies xml:id="untitleddoc.p.3.s.13.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.1" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.2" t="konden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.1" t="we"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.2" class="predm">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.2" t="konden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.3" t="allebei"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.3" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.5" t="slapen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.4" t="niet"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.4" class="vc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.2" t="konden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.5" t="slapen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.5" class="pc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.5" t="slapen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.6" t="van"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.6" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.8" t="horhor"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.7" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.7" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.6" t="van"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.8" t="horhor"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.8" class="app">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.8" t="horhor"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.9" t="film"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.9" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.9" t="film"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.10" t=","/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.10" class="pc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.5" t="slapen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.11" t="en"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.11" class="cnj">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.11" t="en"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.12" t="hoorden"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.12" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.14" t="geluiden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.13" t="enge"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.13" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.2" t="konden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.14" t="geluiden"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.13.dependencies.1.dependency.14" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.13.w.14" t="geluiden"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.13.w.15" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.14">
         <t>de volgende dag verliep het zelfde alleen kwamen me ouders die avond om 11 uur thuis!</t>
         <w xml:id="untitleddoc.p.3.s.14.w.1" class="WORD">
           <t>de</t>
+          <pos class="LID(bep,stan,rest)" confidence="0.981886" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">de</t>
+            </morpheme>
+          </morphology>
+          <lemma class="de"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.2" class="WORD">
           <t>volgende</t>
+          <pos class="WW(od,prenom,met-e)" confidence="0.923077" head="WW">
+            <feat class="od" subset="wvorm"/>
+            <feat class="prenom" subset="positie"/>
+            <feat class="met-e" subset="buiging"/>
+          </pos>
+          <lemma class="volgen"/>
+          <alt auth="no">
+            <lemma class="volgend"/>
+          </alt>
+          <morphology>
+            <morpheme>
+              <t offset="0">volg</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">end</t>
+            </morpheme>
+            <morpheme>
+              <t offset="7">e</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.3" class="WORD">
           <t>dag</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.999163" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="dag"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">dag</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.4" class="WORD">
           <t>verliep</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.997655" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <lemma class="verlopen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ver</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">loop</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.5" class="WORD">
           <t>het</t>
+          <pos class="LID(bep,stan,evon)" confidence="0.924242" head="LID">
+            <feat class="bep" subset="lwtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="evon" subset="npagr"/>
+          </pos>
+          <lemma class="het"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">het</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.6" class="WORD">
           <t>zelfde</t>
+          <pos class="ADJ(prenom,basis,zonder)" confidence="0.6" head="ADJ">
+            <feat class="prenom" subset="positie"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="zelfde"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">zelfde</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.7" class="WORD">
           <t>alleen</t>
+          <pos class="BW()" confidence="0.998732" head="BW"/>
+          <lemma class="alleen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">alleen</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.8" class="WORD">
           <t>kwamen</t>
+          <pos class="WW(pv,verl,mv)" confidence="0.998744" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="mv" subset="pvagr"/>
+          </pos>
+          <lemma class="komen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">kom</t>
+            </morpheme>
+            <morpheme>
+              <t offset="3">en</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.9" class="WORD">
           <t>me</t>
+          <pos class="VNW(bez,det,dial)" confidence="1" head="VNW">
+            <feat class="bez" subset="vwtype"/>
+            <feat class="det" subset="pdtype"/>
+            <feat class="dial" subset="dial"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">me</t>
+            </morpheme>
+          </morphology>
+          <lemma class="me"/>
+          <alt auth="no">
+            <lemma class="mijn"/>
+          </alt>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.10" class="WORD">
           <t>ouders</t>
+          <pos class="N(soort,mv,basis)" confidence="0.999533" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="mv" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+          </pos>
+          <lemma class="ouder"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ouder</t>
+            </morpheme>
+            <morpheme>
+              <t offset="5">s</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.11" class="WORD">
           <t>die</t>
+          <pos class="VNW(aanw,det,stan,prenom,zonder,rest)" confidence="0.5" head="VNW">
+            <feat class="aanw" subset="vwtype"/>
+            <feat class="det" subset="pdtype"/>
+            <feat class="stan" subset="naamval"/>
+            <feat class="prenom" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+            <feat class="rest" subset="npagr"/>
+          </pos>
+          <lemma class="die"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">die</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.12" class="WORD">
           <t>avond</t>
+          <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.9988" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="zijd" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="avond"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">avond</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.13" class="WORD">
           <t>om</t>
+          <pos class="VZ(init)" confidence="0.957341" head="VZ">
+            <feat class="init" subset="vztype"/>
+          </pos>
+          <lemma class="om"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">om</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.14" class="NUMBER">
           <t>11</t>
+          <pos class="TW(hoofd,prenom,stan)" confidence="0.5" head="TW">
+            <feat class="hoofd" subset="numtype"/>
+            <feat class="prenom" subset="positie"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="11"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">11</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.15" class="WORD">
           <t>uur</t>
+          <pos class="N(soort,ev,basis,onz,stan)" confidence="0.999731" head="N">
+            <feat class="soort" subset="ntype"/>
+            <feat class="ev" subset="getal"/>
+            <feat class="basis" subset="graad"/>
+            <feat class="onz" subset="genus"/>
+            <feat class="stan" subset="naamval"/>
+          </pos>
+          <lemma class="uur"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">uur</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.16" class="WORD" space="no">
           <t>thuis</t>
+          <pos class="BW()" confidence="0.992945" head="BW"/>
+          <lemma class="thuis"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">thuis</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.14.w.17" class="PUNCTUATION">
           <t>!</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <lemma class="!"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">!</t>
+            </morpheme>
+          </morphology>
         </w>
+        <entities xml:id="untitleddoc.p.3.s.14.entities.1"/>
+        <chunking xml:id="untitleddoc.p.3.s.14.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.1" class="NP" confidence="0.652228">
+            <wref id="untitleddoc.p.3.s.14.w.1" t="de"/>
+            <wref id="untitleddoc.p.3.s.14.w.2" t="volgende"/>
+            <wref id="untitleddoc.p.3.s.14.w.3" t="dag"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.2" class="VP" confidence="0.999671">
+            <wref id="untitleddoc.p.3.s.14.w.4" t="verliep"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.3" class="ADJP" confidence="1">
+            <wref id="untitleddoc.p.3.s.14.w.5" t="het"/>
+            <wref id="untitleddoc.p.3.s.14.w.6" t="zelfde"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.4" class="ADVP" confidence="0.567185">
+            <wref id="untitleddoc.p.3.s.14.w.7" t="alleen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.5" class="VP" confidence="0.974684">
+            <wref id="untitleddoc.p.3.s.14.w.8" t="kwamen"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.6" class="NP" confidence="0.666751">
+            <wref id="untitleddoc.p.3.s.14.w.9" t="me"/>
+            <wref id="untitleddoc.p.3.s.14.w.10" t="ouders"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.7" class="NP" confidence="0.740782">
+            <wref id="untitleddoc.p.3.s.14.w.11" t="die"/>
+            <wref id="untitleddoc.p.3.s.14.w.12" t="avond"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.8" class="PP" confidence="0.921239">
+            <wref id="untitleddoc.p.3.s.14.w.13" t="om"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.9" class="NP" confidence="0.939497">
+            <wref id="untitleddoc.p.3.s.14.w.14" t="11"/>
+            <wref id="untitleddoc.p.3.s.14.w.15" t="uur"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.14.chunking.1.chunk.10" class="ADVP" confidence="0.818182">
+            <wref id="untitleddoc.p.3.s.14.w.16" t="thuis"/>
+          </chunk>
+        </chunking>
+        <dependencies xml:id="untitleddoc.p.3.s.14.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.1" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.3" t="dag"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.1" t="de"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.2" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.3" t="dag"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.2" t="volgende"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.3" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.4" t="verliep"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.3" t="dag"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.4" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.7" t="alleen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.6" t="zelfde"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.5" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.8" t="kwamen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.7" t="alleen"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.6" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.10" t="ouders"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.9" t="me"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.7" class="su">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.8" t="kwamen"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.10" t="ouders"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.8" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.12" t="avond"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.11" t="die"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.9" class="mod">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.12" t="avond"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.13" t="om"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.10" class="det">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.15" t="uur"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.14" t="11"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.11" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.13" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.15" t="uur"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.12" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.13" t="om"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.16" t="thuis"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.14.dependencies.1.dependency.13" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.14.w.16" t="thuis"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.14.w.17" t="!"/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
       <s xml:id="untitleddoc.p.3.s.15">
         <t>we voelde ons betrapt.</t>
         <w xml:id="untitleddoc.p.3.s.15.w.1" class="WORD">
           <t>we</t>
+          <pos class="VNW(pers,pron,nomin,red,1,mv)" confidence="0.99917" head="VNW">
+            <feat class="pers" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="nomin" subset="naamval"/>
+            <feat class="red" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="we"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">we</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.15.w.2" class="WORD">
           <t>voelde</t>
+          <pos class="WW(pv,verl,ev)" confidence="0.997655" head="WW">
+            <feat class="pv" subset="wvorm"/>
+            <feat class="verl" subset="pvtijd"/>
+            <feat class="ev" subset="pvagr"/>
+          </pos>
+          <morphology>
+            <morpheme>
+              <t offset="0">voel</t>
+            </morpheme>
+            <morpheme>
+              <t offset="4">de</t>
+            </morpheme>
+          </morphology>
+          <lemma class="voelen"/>
         </w>
         <w xml:id="untitleddoc.p.3.s.15.w.3" class="WORD">
           <t>ons</t>
+          <pos class="VNW(pr,pron,obl,vol,1,mv)" confidence="0.711167" head="VNW">
+            <feat class="pr" subset="vwtype"/>
+            <feat class="pron" subset="pdtype"/>
+            <feat class="obl" subset="naamval"/>
+            <feat class="vol" subset="status"/>
+            <feat class="1" subset="persoon"/>
+            <feat class="mv" subset="getal"/>
+          </pos>
+          <lemma class="ons"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">ons</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.15.w.4" class="WORD" space="no">
           <t>betrapt</t>
+          <pos class="WW(vd,vrij,zonder)" confidence="0.666667" head="WW">
+            <feat class="vd" subset="wvorm"/>
+            <feat class="vrij" subset="positie"/>
+            <feat class="zonder" subset="buiging"/>
+          </pos>
+          <lemma class="betrappen"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">be</t>
+            </morpheme>
+            <morpheme>
+              <t offset="2">trap</t>
+            </morpheme>
+            <morpheme>
+              <t offset="6">t</t>
+            </morpheme>
+          </morphology>
         </w>
         <w xml:id="untitleddoc.p.3.s.15.w.5" class="PUNCTUATION">
           <t>.</t>
+          <pos class="LET()" confidence="1" head="LET"/>
+          <morphology>
+            <morpheme>
+              <t offset="0">.</t>
+            </morpheme>
+          </morphology>
+          <lemma class="."/>
         </w>
+        <entities xml:id="untitleddoc.p.3.s.15.entities.1"/>
+        <chunking xml:id="untitleddoc.p.3.s.15.chunking.1">
+          <chunk xml:id="untitleddoc.p.3.s.15.chunking.1.chunk.1" class="NP" confidence="0.988347">
+            <wref id="untitleddoc.p.3.s.15.w.1" t="we"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.15.chunking.1.chunk.2" class="VP" confidence="0.979716">
+            <wref id="untitleddoc.p.3.s.15.w.2" t="voelde"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.15.chunking.1.chunk.3" class="NP" confidence="0.978102">
+            <wref id="untitleddoc.p.3.s.15.w.3" t="ons"/>
+          </chunk>
+          <chunk xml:id="untitleddoc.p.3.s.15.chunking.1.chunk.4" class="VP" confidence="0.989011">
+            <wref id="untitleddoc.p.3.s.15.w.4" t="betrapt"/>
+          </chunk>
+        </chunking>
+        <dependencies xml:id="untitleddoc.p.3.s.15.dependencies.1">
+          <dependency xml:id="untitleddoc.p.3.s.15.dependencies.1.dependency.1" class="obj1">
+            <hd>
+              <wref id="untitleddoc.p.3.s.15.w.4" t="betrapt"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.15.w.3" t="ons"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.15.dependencies.1.dependency.2" class="predc">
+            <hd>
+              <wref id="untitleddoc.p.3.s.15.w.2" t="voelde"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.15.w.4" t="betrapt"/>
+            </dep>
+          </dependency>
+          <dependency xml:id="untitleddoc.p.3.s.15.dependencies.1.dependency.3" class="punct">
+            <hd>
+              <wref id="untitleddoc.p.3.s.15.w.4" t="betrapt"/>
+            </hd>
+            <dep>
+              <wref id="untitleddoc.p.3.s.15.w.5" t="."/>
+            </dep>
+          </dependency>
+        </dependencies>
       </s>
     </p>
   </text>
 </FoLiA>
+
