@@ -73,11 +73,14 @@ class DocStore:
 
     def getfilename(self, key):
         assert isinstance(key, tuple) and len(key) == 2
-        return self.workdir + '/' + key[0] + '/' + key[1] + '.folia.xml'
+        if key[0] == "testflat":
+            return self.workdir + '/testflat/testflat.folia.xml'
+        else:
+            return self.workdir + '/' + key[0] + '/' + key[1] + '.folia.xml'
 
     def load(self,key):
         filename = self.getfilename(key)
-        if not key in self:
+        if not key in self or key[0] == "testflat":  #(test document is always reloaded, we want a clean one every time)
             if not os.path.exists(filename):
                 raise NoSuchDocument
             log("Loading " + filename)
@@ -87,14 +90,19 @@ class DocStore:
 
     def save(self, key, message = "unspecified change"):
         doc = self[key]
-        log("Saving " + self.getfilename(key) + " - " + message)
-        doc.save()
-        if self.git:
-            log("Doing git commit for " + self.getfilename(key) + " - " + message)
-            os.chdir(self.workdir)
-            r = os.system("git add " + self.getfilename(key) + " && git commit -m \"" + message + "\"")
-            if r != 0:
-                log("Error during git add/commit of " + self.getfilename(key))
+        if key[0] == "testflat":
+            #No need to save the document, instead we run our tests:
+            test(doc, key[1])
+            #doc.save("/tmp/testflat.xml") #we do a dummy save and never overwrite the original
+        else:
+            log("Saving " + self.getfilename(key) + " - " + message)
+            doc.save()
+            if self.git:
+                log("Doing git commit for " + self.getfilename(key) + " - " + message)
+                os.chdir(self.workdir)
+                r = os.system("git add " + self.getfilename(key) + " && git commit -m \"" + message + "\"")
+                if r != 0:
+                    log("Error during git add/commit of " + self.getfilename(key))
 
 
     def unload(self, key, save=True):
@@ -1217,6 +1225,9 @@ class Root:
         return json.dumps(response).encode('utf-8')
 
 
+def test(doc, testname):
+    #perform test
+    pass
 
 
 def main():
