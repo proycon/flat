@@ -80,7 +80,7 @@ class DocStore:
 
     def load(self,key):
         filename = self.getfilename(key)
-        if not key in self or key[0] == "testflat":  #(test document is always reloaded, we want a clean one every time)
+        if not key in self or key == ("testflat","init"):
             if not os.path.exists(filename):
                 raise NoSuchDocument
             log("Loading " + filename)
