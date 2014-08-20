@@ -1,0 +1,621 @@
+<?xml version='1.0' encoding='utf-8'?>
+<FoLiA xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://ilk.uvt.nl/folia" xml:id="untitleddoc" version="0.10.0" generator="pynlpl.formats.folia-v0.10.0.44">
+  <metadata type="native">
+    <annotations>
+      <token-annotation annotator="ucto" datetime="2014-02-25T22:45:15" annotatortype="auto" set="tokconfig-nl"/>
+      <correction-annotation set="http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml"/>
+    </annotations>
+  </metadata>
+  <text xml:id="untitleddoc.text">
+    <p xml:id="untitleddoc.p.1">
+      <t>&lt;BSA03- 3b&gt;</t>
+      <s xml:id="untitleddoc.p.1.s.1">
+        <t>&lt;BSA03- 3b&gt;</t>
+        <w xml:id="untitleddoc.p.1.s.1.w.1" class="UNKNOWN" space="no">
+          <t>&lt;</t>
+        </w>
+        <w xml:id="untitleddoc.p.1.s.1.w.2" class="STRING-NUMBER" space="no">
+          <t>BSA03</t>
+        </w>
+        <w xml:id="untitleddoc.p.1.s.1.w.3" class="PUNCTUATION">
+          <t>-</t>
+        </w>
+        <w xml:id="untitleddoc.p.1.s.1.w.4" class="NUMBER-STRING" space="no">
+          <t>3b</t>
+        </w>
+        <w xml:id="untitleddoc.p.1.s.1.w.5" class="UNKNOWN">
+          <t>&gt;</t>
+        </w>
+      </s>
+    </p>
+    <p xml:id="untitleddoc.p.2">
+      <t>duizenden snoepjes en een enge nacht, 11-12-2008</t>
+      <s xml:id="untitleddoc.p.2.s.1">
+        <t>duizenden snoepjes en een enge nacht, 11-12-2008</t>
+        <w xml:id="untitleddoc.p.2.s.1.w.1" class="WORD">
+          <t>duizenden</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.2" class="WORD">
+          <t>snoepjes</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.3" class="WORD">
+          <t>en</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.4" class="WORD">
+          <t>een</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.5" class="WORD">
+          <t>enge</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.6" class="WORD" space="no">
+          <t>nacht</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.7" class="PUNCTUATION">
+          <t>,</t>
+        </w>
+        <w xml:id="untitleddoc.p.2.s.1.w.8" class="DATE">
+          <t>11-12-2008</t>
+        </w>
+      </s>
+    </p>
+    <p xml:id="untitleddoc.p.3">
+      <t>toen me ouders weg reden met de auto belde ik snel janna. we hadden afgesproken dat zei bij kwam slapen. me ouders wisten het niet want die gingen 3dagen naar texel! en me broertje was bij een vriend gaan slapen. tegen de tijd dat janna eindelijk bij mij was. was het 3 uur we gingen naar de kruitvat om wat snoep te kopen. we hadden wel 20 kilo snoep gekocht en gingen naar huis. het was al 6 uur toen we terug kwamen. en we gingen friet halen bij cafetaria de beek. toen we de friet op hadden. gingen we een horhor film kijken. en gingen pas om 4uur s’ochtens naar bed, hadden al 19 kilo snoep op. we konden allebei niet slapen van de horhor film,en hoorden enge geluiden. de volgende dag verliep het zelfde alleen kwamen me ouders die avond om 11 uur thuis! we voelde ons betrapt.</t>
+      <s xml:id="untitleddoc.p.3.s.1">
+        <t>toen me ouders weg reden met de auto belde ik snel janna.</t>
+        <w xml:id="untitleddoc.p.3.s.1.w.1" class="WORD">
+          <t>toen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.2" class="WORD">
+          <t>me</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.3" class="WORD">
+          <t>ouders</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.4" class="WORD">
+          <t>weg</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.5" class="WORD">
+          <t>reden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.6" class="WORD">
+          <t>met</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.7" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.8" class="WORD">
+          <t>auto</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.9" class="WORD">
+          <t>belde</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.10" class="WORD">
+          <t>ik</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.11" class="WORD">
+          <t>snel</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.12" class="WORD" space="no">
+          <t>janna</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.13" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.2">
+        <t>we hadden afgesproken dat zei bij kwam slapen.</t>
+        <w xml:id="untitleddoc.p.3.s.2.w.1" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.2" class="WORD">
+          <t>hadden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.3" class="WORD">
+          <t>afgesproken</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.4" class="WORD">
+          <t>dat</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.5" class="WORD">
+          <correction xml:id="untitleddoc.p.3.s.2.w.5.correction.1" annotator="proycon" datetime="2014-02-28T13:03:55" annotatortype="manual" class="confusion">
+            <new>
+              <t datetime="2014-02-28T13:03:55" annotatortype="manual" annotator="proycon">zij</t>
+            </new>
+            <original auth="no">
+              <t class="original">zei</t>
+            </original>
+          </correction>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.6" class="WORD">
+          <t>bij</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.7" class="WORD">
+          <t>kwam</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.8" class="WORD" space="no">
+          <t>slapen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.2.w.9" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.3">
+        <t>me ouders wisten het niet want die gingen 3dagen naar texel!</t>
+        <w xml:id="untitleddoc.p.3.s.3.w.1" class="WORD">
+          <t>me</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.2" class="WORD">
+          <t>ouders</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.3" class="WORD">
+          <t>wisten</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.4" class="WORD">
+          <t>het</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.5" class="WORD">
+          <t>niet</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.6" class="WORD">
+          <t>want</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.7" class="WORD">
+          <t>die</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.8" class="WORD">
+          <t>gingen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.9" class="NUMBER-STRING">
+          <t>3dagen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.10" class="WORD">
+          <t>naar</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.11" class="WORD" space="no">
+          <t>texel</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.3.w.12" class="PUNCTUATION">
+          <t>!</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.4">
+        <t>en me broertje was bij een vriend gaan slapen.</t>
+        <w xml:id="untitleddoc.p.3.s.4.w.1" class="WORD">
+          <t>en</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.2" class="WORD">
+          <t>me</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.3" class="WORD">
+          <t>broertje</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.4" class="WORD">
+          <t>was</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.5" class="WORD">
+          <t>bij</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.6" class="WORD">
+          <t>een</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.7" class="WORD">
+          <t>vriend</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.8" class="WORD">
+          <t>gaan</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.9" class="WORD" space="no">
+          <t>slapen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.4.w.10" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.5">
+        <t>tegen de tijd dat janna eindelijk bij mij was.</t>
+        <w xml:id="untitleddoc.p.3.s.5.w.1" class="WORD">
+          <t>tegen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.2" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.3" class="WORD">
+          <t>tijd</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.4" class="WORD">
+          <t>dat</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.5" class="WORD">
+          <t>janna</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.6" class="WORD">
+          <t>eindelijk</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.7" class="WORD">
+          <t>bij</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.8" class="WORD">
+          <t>mij</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.9" class="WORD" space="no">
+          <t>was</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.5.w.10" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.6">
+        <t>was het 3 uur we gingen naar de kruitvat om wat snoep te kopen.</t>
+        <w xml:id="untitleddoc.p.3.s.6.w.1" class="WORD">
+          <t>was</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.2" class="WORD">
+          <t>het</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.3" class="NUMBER">
+          <t>3</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.4" class="WORD">
+          <t>uur</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.5" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.6" class="WORD">
+          <t>gingen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.7" class="WORD">
+          <t>naar</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.8" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.9" class="WORD">
+          <t>kruitvat</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.10" class="WORD">
+          <t>om</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.11" class="WORD">
+          <t>wat</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.12" class="WORD">
+          <t>snoep</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.13" class="WORD">
+          <t>te</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.14" class="WORD" space="no">
+          <t>kopen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.6.w.15" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.7">
+        <t>we hadden wel 20 kilo snoep gekocht en gingen naar huis.</t>
+        <w xml:id="untitleddoc.p.3.s.7.w.1" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.2" class="WORD">
+          <t>hadden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.3" class="WORD">
+          <t>wel</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.4" class="NUMBER">
+          <t>20</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.5" class="WORD">
+          <t>kilo</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.6" class="WORD">
+          <t>snoep</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.7" class="WORD">
+          <t>gekocht</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.8" class="WORD">
+          <t>en</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.9" class="WORD">
+          <t>gingen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.10" class="WORD">
+          <t>naar</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.11" class="WORD" space="no">
+          <t>huis</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.7.w.12" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.8">
+        <t>het was al 6 uur toen we terug kwamen.</t>
+        <w xml:id="untitleddoc.p.3.s.8.w.1" class="WORD">
+          <t>het</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.2" class="WORD">
+          <t>was</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.3" class="WORD">
+          <t>al</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.4" class="NUMBER">
+          <t>6</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.5" class="WORD">
+          <t>uur</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.6" class="WORD">
+          <t>toen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.7" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.8" class="WORD">
+          <t>terug</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.9" class="WORD" space="no">
+          <t>kwamen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.8.w.10" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.9">
+        <t>en we gingen friet halen bij cafetaria de beek.</t>
+        <w xml:id="untitleddoc.p.3.s.9.w.1" class="WORD">
+          <t>en</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.2" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.3" class="WORD">
+          <t>gingen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.4" class="WORD">
+          <t>friet</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.5" class="WORD">
+          <t>halen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.6" class="WORD">
+          <t>bij</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.7" class="WORD">
+          <t>cafetaria</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.8" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.9" class="WORD" space="no">
+          <t>beek</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.9.w.10" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.10">
+        <t>toen we de friet op hadden.</t>
+        <w xml:id="untitleddoc.p.3.s.10.w.1" class="WORD">
+          <t>toen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.10.w.2" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.10.w.3" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.10.w.4" class="WORD">
+          <t>friet</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.10.w.5" class="WORD">
+          <t>op</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.10.w.6" class="WORD" space="no">
+          <t>hadden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.10.w.7" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.11">
+        <t>gingen we een horhor film kijken.</t>
+        <w xml:id="untitleddoc.p.3.s.11.w.1" class="WORD">
+          <t>gingen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.11.w.2" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.11.w.3" class="WORD">
+          <t>een</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.11.w.4" class="WORD">
+          <t>horhor</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.11.w.5" class="WORD">
+          <t>film</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.11.w.6" class="WORD" space="no">
+          <t>kijken</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.11.w.7" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.12">
+        <t>en gingen pas om 4uur s’ochtens naar bed, hadden al 19 kilo snoep op.</t>
+        <w xml:id="untitleddoc.p.3.s.12.w.1" class="WORD">
+          <t>en</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.2" class="WORD">
+          <t>gingen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.3" class="WORD">
+          <t>pas</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.4" class="WORD">
+          <t>om</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.5" class="NUMBER-STRING">
+          <t>4uur</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.6" class="QUOTE-COMPOUND">
+          <t>s’ochtens</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.7" class="WORD">
+          <t>naar</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.8" class="WORD" space="no">
+          <t>bed</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.9" class="PUNCTUATION">
+          <t>,</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.10" class="WORD">
+          <t>hadden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.11" class="WORD">
+          <t>al</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.12" class="NUMBER">
+          <t>19</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.13" class="WORD">
+          <t>kilo</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.14" class="WORD">
+          <t>snoep</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.15" class="WORD" space="no">
+          <t>op</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.12.w.16" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.13">
+        <t>we konden allebei niet slapen van de horhor film,en hoorden enge geluiden.</t>
+        <w xml:id="untitleddoc.p.3.s.13.w.1" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.2" class="WORD">
+          <t>konden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.3" class="WORD">
+          <t>allebei</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.4" class="WORD">
+          <t>niet</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.5" class="WORD">
+          <t>slapen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.6" class="WORD">
+          <t>van</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.7" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.8" class="WORD">
+          <t>horhor</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.9" class="WORD" space="no">
+          <t>film</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.10" class="PUNCTUATION" space="no">
+          <t>,</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.11" class="WORD">
+          <t>en</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.12" class="WORD">
+          <t>hoorden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.13" class="WORD">
+          <t>enge</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.14" class="WORD" space="no">
+          <t>geluiden</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.13.w.15" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.14">
+        <t>de volgende dag verliep het zelfde alleen kwamen me ouders die avond om 11 uur thuis!</t>
+        <w xml:id="untitleddoc.p.3.s.14.w.1" class="WORD">
+          <t>de</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.2" class="WORD">
+          <t>volgende</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.3" class="WORD">
+          <t>dag</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.4" class="WORD">
+          <t>verliep</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.5" class="WORD">
+          <t>het</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.6" class="WORD">
+          <t>zelfde</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.7" class="WORD">
+          <t>alleen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.8" class="WORD">
+          <t>kwamen</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.9" class="WORD">
+          <t>me</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.10" class="WORD">
+          <t>ouders</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.11" class="WORD">
+          <t>die</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.12" class="WORD">
+          <t>avond</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.13" class="WORD">
+          <t>om</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.14" class="NUMBER">
+          <t>11</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.15" class="WORD">
+          <t>uur</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.16" class="WORD" space="no">
+          <t>thuis</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.14.w.17" class="PUNCTUATION">
+          <t>!</t>
+        </w>
+      </s>
+      <s xml:id="untitleddoc.p.3.s.15">
+        <t>we voelde ons betrapt.</t>
+        <w xml:id="untitleddoc.p.3.s.15.w.1" class="WORD">
+          <t>we</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.15.w.2" class="WORD">
+          <t>voelde</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.15.w.3" class="WORD">
+          <t>ons</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.15.w.4" class="WORD" space="no">
+          <t>betrapt</t>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.15.w.5" class="PUNCTUATION">
+          <t>.</t>
+        </w>
+      </s>
+    </p>
+  </text>
+</FoLiA>
