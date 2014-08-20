@@ -1169,7 +1169,7 @@ class Root:
 
     @cherrypy.expose
     def getnamespaces(self):
-        namespaces = [ x for x in os.listdir(self.docstore.workdir) ]
+        namespaces = [ x for x in os.listdir(self.docstore.workdir) if x != "testflat" and x[0] != "." ]
         return json.dumps({
                 'namespaces': namespaces
         })
