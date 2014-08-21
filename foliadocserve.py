@@ -93,6 +93,7 @@ class DocStore:
         doc = self[key]
         if key[0] == "testflat":
             #No need to save the document, instead we run our tests:
+            doc.save("/tmp/testflat.xml")
             return test(doc, key[1])
         else:
             log("Saving " + self.getfilename(key) + " - " + message)
@@ -824,7 +825,7 @@ def doannotation(doc, data):
                     else:
                         layer = doc[commonancestor].append(folia.ANNOTATIONTYPE2LAYERCLASS[annotationtype])
 
-                    layer.append(Class, *targets, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                    layer.append(Class, *targets, set=edit['set'], cls=edit['class'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], generate_id_in=doc[commonancestor])
 
                     if not layer.ancestor(folia.AbstractStructureElement).id in response['returnelementids']:
                         response['returnelementids'].append(layer.ancestor(folia.AbstractStructureElement).id)
@@ -1270,6 +1271,11 @@ def test(doc, testname):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].text(),"het", testmessage + "Testing text", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].pos(),"LID(onbep,stan,rest)", testmessage + "Testing pos class", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].lemma(),"het", testmessage + "Testing lemma class", testresult)
+        elif testname == "addentity":
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].cls,"per", testmessage + "Testing presence of new entity", testresult)
+            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.1.entity.1'].wrefs()),2, testmessage + "Testing span size", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.1.w.12' , testmessage + "Testing order (1/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].wrefs(1).id, 'untitleddoc.p.3.s.1.w.12b' , testmessage + "Testing order (2/2)", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

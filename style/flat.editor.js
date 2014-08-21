@@ -208,6 +208,34 @@ function getclassesasoptions(c, selected) {
     return s
 }
 
+function spanselector_click(){
+    var i = parseInt(this.id.substr(12));  //get index ID (we can't reuse i from the larger scope here!!)
+    //toggle coselector (select multiple), takes care of
+    //switching off any other coselector
+    var toggleon = true;
+    if (coselector > -1) {
+        if (coselector == i) toggleon = false; //this is a toggle off action only
+
+        $('#spanselector' + i).removeClass("selectoron");
+        //
+        //de-highlight all coselected elements
+        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+            $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
+        }
+        coselector = -1;
+    }
+    if (toggleon) {
+        coselector = i;
+
+        //highlight all coselected elements
+        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+            $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
+        }
+
+        $(this).addClass("selectoron");
+    }
+}
+
 function showeditor(element) {
     //show and populate the editor for a particular element
 
@@ -346,33 +374,8 @@ function showeditor(element) {
                 $('select#editfield'+i).sortOptions();
 
                 $('#spanselector' + i).off(); //prevent duplicates
-                $('#spanselector' + i).click(function(){
-                    var i = parseInt(this.id.substr(12));  //get index ID (we can't reuse i from the larger scope here!!)
-                    //toggle coselector (select multiple), takes care of
-                    //switching off any other coselector
-                    var toggleon = true;
-                    if (coselector > -1) {
-                        if (coselector == i) toggleon = false; //this is a toggle off action only
-
-                        $('#spanselector' + i).removeClass("selectoron");
-                        //
-                        //de-highlight all coselected elements
-                        for (var j = 0; j < editdata[coselector].targets.length; j++) {
-                            $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
-                        }
-                        coselector = -1;
-                    }
-                    if (toggleon) {
-                        coselector = i;
-
-                        //highlight all coselected elements
-                        for (var j = 0; j < editdata[coselector].targets.length; j++) {
-                            $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
-                        }
-
-                        $(this).addClass("selectoron");
-                    }
-                });
+                $('#spanselector' + i).click(spanselector_click);
+                
                 /*$('#editfield'+i).change(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
@@ -436,6 +439,9 @@ function addeditorfield(index) {
     s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
+
+    $('#spanselector' + editfields).off(); //prevent duplicates
+    $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
     editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'class':'', 'new': true, 'changed': true };

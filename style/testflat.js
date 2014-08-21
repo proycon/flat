@@ -48,6 +48,7 @@ globalassert = "";;
 
 
 QUnit.asyncTest("textchange", function(assert){
+    //tests text change
     testinit("textchange",assert);
     $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
     $('#editfield1text').val("mijn"); 
@@ -57,6 +58,7 @@ QUnit.asyncTest("textchange", function(assert){
 
 
 QUnit.asyncTest("textmerge", function(assert){
+    //tests text change (two words merge to one)
     testinit("textmerge",assert);
     $(valid('#untitleddoc.p.3.s.1.w.5')).trigger('click');
     $('#spanselector1').trigger('click');
@@ -68,6 +70,8 @@ QUnit.asyncTest("textmerge", function(assert){
 });
 
 QUnit.asyncTest("multiannotchange", function(assert){
+    //test the annotation of multiple types at once
+    //tests basic token annotation
     testinit("multiannotchange",assert);
     $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
     $('#editfield1text').val("het"); 
@@ -76,6 +80,30 @@ QUnit.asyncTest("multiannotchange", function(assert){
     $('#editform2direct').trigger('click'); 
     $('#editfield3').val("het");  //lemma
     $('#editform3direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("addentity", function(assert){
+    //tests adding new fields
+    //tests span selection (deliberately selected out of order)
+
+    testinit("addentity",assert);
+    $(valid('#untitleddoc.p.3.s.1.w.12b')).trigger('click');
+    //selected named entity to add
+    $('#editoraddablefields').prop('selectedIndex',4); //corresponds to NER as long as teh declarations don't change
+    $('#editoraddablefields').trigger('change');
+    $('#editoraddfield').trigger('click'); //click add button
+
+    //fill new field:
+    $('#editfield2').prop('selectedIndex',5); //corresponds to person as long as the set definition doesn't change
+    $('#editfield2').trigger('change'); 
+
+    //select span
+    $('#spanselector2').trigger('click'); 
+    $(valid('#untitleddoc.p.3.s.1.w.12')).trigger('click');
+    $('#spanselector2').trigger('click'); 
+    
+
     $('#editorsubmit').trigger('click'); 
 });
 
@@ -93,6 +121,10 @@ function testeval(data) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
+    } else if (testname == "addentity") {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on first word");
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on second word");
+
     }
 
     QUnit.start(); //continue (for asynchronous tests)
