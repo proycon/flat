@@ -1116,7 +1116,7 @@ class Root:
         assert isinstance(elementids, list) or isinstance(elementids, tuple)
         response = {'elements':[]}
         if testresult:
-            response['teststatus'] = bool(testresult[0])
+            response['testresult'] = bool(testresult[0])
             response['testmessage'] = testresult[1]
 
         for elementid in elementids:
@@ -1239,15 +1239,15 @@ class Root:
         self.docstore.save((namespace,doc.id), "Initial upload")
         return json.dumps(response).encode('utf-8')
 
-def testequal(value, reference, testmessage,teststatus=True):
+def testequal(value, reference, testmessage,testresult=True):
     if value == reference:
         testmessage = testmessage + ": Ok!\n"
-        if teststatus:
-            teststatus = True
+        if testresult:
+            testresult = True
     else:
         testmessage = testmessage + ": Failed! Value \"" + str(value) + "\" does not match reference \"" + str(reference) + "\"\n"
-        teststatus = False
-    return teststatus, testmessage
+        testresult = False
+    return testresult, testmessage
 
 
 def test(doc, testname):
@@ -1255,22 +1255,22 @@ def test(doc, testname):
 
     #load clean document
     #perform test
-    teststatus = True #must start as True for chaining
+    testresult = True #must start as True for chaining
     testmessage = ""
     try:
         if testname == "textchange":
-            teststatus, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text change", teststatus);
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text change", testresult);
         else:
-            teststatus = False
+            testresult = False
             testmessage += "No such test: " + testname
     except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             formatted_lines = traceback.format_exc().splitlines()
-            teststatus = False
+            testresult = False
             testmessage += "Test raised Exception in backend: " + str(e) + " -- " "\n".join(formatted_lines)
 
 
-    return (teststatus, testmessage)
+    return (testresult, testmessage)
 
 
 def main():
