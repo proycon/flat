@@ -26,6 +26,11 @@ function testbackend(testname,username,sid,queries) {
     });
 }
 
+function testinit(name, assert) {
+    testname = name;
+    globalassert = assert;
+}
+
 
 function testtext(elementselector, reference) {
     globalassert.equal($(valid(elementselector)).text().trim(), reference);
@@ -39,9 +44,10 @@ globalassert = "";;
 
 //Tests - First stage
 
+
+
 QUnit.asyncTest("textchange", function(assert){
-    expect(2);
-    testname = "textchange";
+    testinit("textchange",assert);
     $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
     $('#editfield1text').val("mijn"); 
     $('#editform1direct').trigger('click'); 
