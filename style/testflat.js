@@ -32,8 +32,9 @@ function testinit(name, assert) {
 }
 
 
-function testtext(elementselector, reference) {
-    globalassert.equal($(valid(elementselector)).text().trim(), reference);
+function testtext(elementselector, reference, message="") {
+    if (message == "") message = "Testing whether of " + elementselector + " is \"" + message + "\"";
+    globalassert.equal($(valid(elementselector)).text().trim(), reference, message);
 }
 
 //we want tests in the order defined here
