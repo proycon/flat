@@ -14,8 +14,8 @@ def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
             doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
-        except urllib2.URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
+        except urllib2.URLError as e:
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
         try:
@@ -28,8 +28,8 @@ def view(request, namespace, docid):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     try:
                         r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
-                    except urllib2.URLError:
-                        return HttpResponseForbidden("Unable to connect to the document server")
+                    except urllib2.URLError as e:
+                        return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
                     d['docdeclarations'] = json.dumps(r['declarations'])
                     d['setdefinitions'] = json.dumps(r['setdefinitions'])
         return render(request, 'editor.html', d)
@@ -44,8 +44,8 @@ def annotate(request,namespace, docid):
                 d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
             else: #older django
                 d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.raw_post_data)
-        except urllib2.URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
+        except urllib2.URLError as e:
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
@@ -59,8 +59,8 @@ def declare(request,namespace, docid):
                 d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
             else:
                 d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.raw_post_data)
-        except urllib2.URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
+        except urllib2.URLError as e:
+             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
@@ -73,8 +73,8 @@ def history(request,namespace, docid):
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
             else:
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
-        except urllib2.URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
+        except urllib2.URLError as e:
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         return HttpResponse(json.dumps(d), mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
@@ -87,8 +87,8 @@ def revert(request,namespace, docid, commithash):
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
             else:
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
-        except urllib2.URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
+        except urllib2.URLError as e:
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         return HttpResponse("{}", mimetype='application/json') #no content, client will do a full reload
     else:
         return HttpResponseForbidden("Permission denied, no write access")
