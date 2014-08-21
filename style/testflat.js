@@ -56,6 +56,29 @@ QUnit.asyncTest("textchange", function(assert){
 });
 
 
+QUnit.asyncTest("textmerge", function(assert){
+    testinit("textmerge",assert);
+    $(valid('#untitleddoc.p.3.s.1.w.5')).trigger('click');
+    $('#spanselector1').trigger('click');
+    $(valid('#untitleddoc.p.3.s.1.w.4')).trigger('click');
+    $('#spanselector1').trigger('click');
+    $('#editfield1text').val("wegreden"); 
+    $('#editform1direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("multiannotchange", function(assert){
+    testinit("multiannotchange",assert);
+    $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
+    $('#editfield1text').val("het"); 
+    $('#editform1direct').trigger('click'); 
+    $('#editfield2text').val("LID(onbep,stan,rest)");  //pos
+    $('#editform2direct').trigger('click'); 
+    $('#editfield3text').val("het");  //lemma
+    $('#editform3direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
 // TESTS -- Second stage
 
 function testeval(data) {
@@ -64,6 +87,12 @@ function testeval(data) {
 
     if (testname == "textchange") {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
+    } else if (testname == "textmerge") {
+        testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
+    } else if (testname == "multiannotchange") {
+        testtext('#untitleddoc.p.3.s.6.w.8', "het");
+        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
+        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
     }
 
     QUnit.start(); //continue (for asynchronous tests)

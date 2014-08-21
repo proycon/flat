@@ -1088,6 +1088,7 @@ class Root:
             result = self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid, testresult) #return all
         if namespace == "testflat":
             #unload the document, we want a fresh copy every time
+            log("Unloading test document")
             del self.docstore.data[(namespace,"testflat")]
         return result
 
@@ -1263,7 +1264,13 @@ def test(doc, testname):
     testmessage = ""
     try:
         if testname == "textchange":
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text change", testresult);
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text", testresult)
+        elif testname == "textmerge":
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.14'].text(),"wegreden", testmessage + "Testing text", testresult)
+        elif testname == "multiannotchange":
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].text(),"het", testmessage + "Testing text", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].pos(),"LID(onbep,stan,rest)", testmessage + "Testing pos class", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].lemma(),"het", testmessage + "Testing lemma class", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname
