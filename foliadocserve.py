@@ -663,14 +663,14 @@ def doannotation(doc, data):
 
                         if not p.id in response['returnelementids']:
                             response['returnelementids'].append( p.id )
-                    elif edit['text']:
+                    elif 'text' in edit and edit['text']:
                         response['log'] = "Text content change of " + target.id + " (" + edit['text']+"), by " + data['annotator']
                         if not 'class' in edit:
                             edit['class'] = 'current'
                         log(response['log'])
                         target.replace(Class,value=edit['text'], set=edit['set'], cls=edit['class'],annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does append if no replacable found
                     else:
-                        log("Text deletion of " + target.id + ", by " + data['annotator'])
+                        response['log'] = "Text deletion of " + target.id + ", by " + data['annotator']
                         log(response['log'])
 
                         #undo any space=False prior to our deleted entry
@@ -1276,6 +1276,8 @@ def test(doc, testname):
             testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.1.entity.1'].wrefs()),2, testmessage + "Testing span size", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.1.w.12' , testmessage + "Testing order (1/2)", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].wrefs(1).id, 'untitleddoc.p.3.s.1.w.12b' , testmessage + "Testing order (2/2)", testresult)
+        elif testname == "worddelete":
+            testresult, testmessage = testequal('untitleddoc.p.3.s.8.w.10' in doc,False, testmessage + "Testing absence of element in index", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

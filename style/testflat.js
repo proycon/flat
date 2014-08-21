@@ -103,6 +103,16 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     $('#editorsubmit').trigger('click'); 
 });
 
+
+QUnit.asyncTest("Word deletion", function(assert){
+    testinit("worddelete",assert);
+    $(valid('#untitleddoc.p.3.s.8.w.10')).trigger('click');
+    $('#editfield1text').val(""); 
+    $('#editform1direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+
 // TESTS -- Second stage
 
 function testeval(data) {
@@ -120,6 +130,8 @@ function testeval(data) {
     } else if (testname == "addentity") {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on first word");
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on second word");
+    } else if (testname == "worddelete") {
+        globalassert.equal($('#untitleddoc.p.3.s.8.w.10').length, 0, "Test if word is removed from interface");
 
     }
 
