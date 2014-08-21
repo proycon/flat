@@ -1067,7 +1067,7 @@ class Root:
                 else:
                     response['log'] = "Unknown edit by " + request['annotator'] + " in " + "/".join((ns,docid))
 
-            if ns == "flattest":
+            if ns == "testflat":
                 testresult = self.docstore.save((ns,docid),response['log'] )
                 log("Test result: ", repr(testresult))
             else:
