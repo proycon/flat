@@ -1237,17 +1237,25 @@ class Root:
 def test(doc, testname):
     log("Running test " + testname)
     #perform test
-    teststatus = True
+    teststatus = False
     testmessage = ""
-    if testname == "init":
-        #first test only loads document, doesn't really test anything else
-        teststatus = isinstance(doc, folia.Document)
-    elif testname == "textchange":
-        #TODO
-        pass
-    else:
-        teststatus = False
-        testmessage = "No such test: " + testname
+    try:
+        if testname == "init":
+            #first test only loads document, doesn't really test anything else
+            teststatus = isinstance(doc, folia.Document)
+            testmessage = ""
+        elif testname == "textchange":
+            teststatus = (doc['untitleddoc.p.3.s.1.w.2'].text() == "mijn")
+            testmessage = "Testing text change"
+        else:
+            teststatus = False
+            testmessage = "No such test: " + testname
+    except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            formatted_lines = traceback.format_exc().splitlines()
+            teststatus = False
+            testmessage = "Test raised Exception in backend: " + str(e) + " -- " "\n".join(formatted_lines)
+
     return teststatus, testmessage
 
 
