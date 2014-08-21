@@ -693,7 +693,11 @@ function editor_oninit() {
                             //the original token into new ones:
                             //
                             //ask user if he wants to split the token into two
-                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
+                            if (namespace == "testflat") {
+                                editdata[i].dosplit = true; //no need to task for confirmation in test mode
+                            } else {
+                                editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
+                            }
                         
                         }
                         

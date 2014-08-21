@@ -1277,7 +1277,9 @@ def test(doc, testname):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.1.w.12' , testmessage + "Testing order (1/2)", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].wrefs(1).id, 'untitleddoc.p.3.s.1.w.12b' , testmessage + "Testing order (2/2)", testresult)
         elif testname == "worddelete":
-            testresult, testmessage = testequal('untitleddoc.p.3.s.8.w.10' in doc,False, testmessage + "Testing absence of element in index", testresult)
+            testresult, testmessage = testequal('untitleddoc.p.3.s.8.w.10' in doc,False, testmessage + "Testing absence of word in index", testresult)
+        elif testname == "wordsplit":
+            testresult, testmessage = testequal('untitleddoc.p.3.s.12.w.5' in doc,False, testmessage + "Testing absence of original word in index", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

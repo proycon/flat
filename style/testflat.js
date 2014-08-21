@@ -112,6 +112,13 @@ QUnit.asyncTest("Word deletion", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
+QUnit.asyncTest("Word split", function(assert){
+    testinit("wordsplit",assert);
+    $(valid('#untitleddoc.p.3.s.12.w.5')).trigger('click');
+    $('#editfield1text').val("4 uur"); 
+    $('#editform1direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
 
 // TESTS -- Second stage
 
@@ -131,7 +138,9 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on first word");
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on second word");
     } else if (testname == "worddelete") {
-        globalassert.equal($('#untitleddoc.p.3.s.8.w.10').length, 0, "Test if word is removed from interface");
+        globalassert.equal($(valid('#untitleddoc.p.3.s.8.w.10')).length, 0, "Test if word is removed from interface");
+    } else if (testname == "wordsplit") {
+        globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
 
     }
 
