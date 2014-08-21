@@ -72,9 +72,9 @@ QUnit.asyncTest("multiannotchange", function(assert){
     $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
     $('#editfield1text').val("het"); 
     $('#editform1direct').trigger('click'); 
-    $('#editfield2text').val("LID(onbep,stan,rest)");  //pos
+    $('#editfield2').val("LID(onbep,stan,rest)");  //pos
     $('#editform2direct').trigger('click'); 
-    $('#editfield3text').val("het");  //lemma
+    $('#editfield3').val("het");  //lemma
     $('#editform3direct').trigger('click'); 
     $('#editorsubmit').trigger('click'); 
 });
