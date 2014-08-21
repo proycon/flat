@@ -1035,7 +1035,7 @@ class Root:
                 self.docstore.lastaccess[(ns,docid)][sid] = time.time()
 
             if ns == "testflat":
-                doc = self.doc.load((ns,docid), True) #force reload upon every annoation
+                doc = self.docstore.load((ns,docid), True) #force reload upon every annoation
             else:
                 doc = self.docstore[(ns,docid)]
 
