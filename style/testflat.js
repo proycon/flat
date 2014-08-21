@@ -58,7 +58,7 @@ QUnit.asyncTest("textchange", function(assert){
 // TESTS -- Second stage
 
 function testeval(data) {
-    if (data.testresult  == "") data.testmessage = "ok";
+    if (data.testmessage  == "") data.testmessage = "ok";
     globalassert.ok(data.testresult, "Backend test: " + data.testmessage ) 
 
     if (testname == "textchange") {
