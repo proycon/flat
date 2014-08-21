@@ -1239,30 +1239,35 @@ class Root:
         self.docstore.save((namespace,doc.id), "Initial upload")
         return json.dumps(response).encode('utf-8')
 
+def testequal(value, reference, testmessage,teststatus=True):
+    if value == reference:
+        testmessage = testmessage + ": Ok!\n"
+        if teststatus:
+            teststatus = True
+    else:
+        testmessage = testmessage + ": Failed! Value \"" + str(value) + "\" does not match reference \"" + str(reference) + "\"\n"
+        teststatus = False
+    return teststatus, testmessage
+
 
 def test(doc, testname):
     log("Running test " + testname)
 
     #load clean document
     #perform test
-    teststatus = False
+    teststatus = True #must start as True for chaining
     testmessage = ""
     try:
-        if testname == "init":
-            #first test only loads document, doesn't really test anything else
-            teststatus = isinstance(doc, folia.Document)
-            testmessage = ""
-        elif testname == "textchange":
-            teststatus = (doc['untitleddoc.p.3.s.1.w.2'].text() == "mijn")
-            testmessage = "Testing text change"
+        if testname == "textchange":
+            teststatus, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text change", teststatus);
         else:
             teststatus = False
-            testmessage = "No such test: " + testname
+            testmessage += "No such test: " + testname
     except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             formatted_lines = traceback.format_exc().splitlines()
             teststatus = False
-            testmessage = "Test raised Exception in backend: " + str(e) + " -- " "\n".join(formatted_lines)
+            testmessage += "Test raised Exception in backend: " + str(e) + " -- " "\n".join(formatted_lines)
 
 
     return (teststatus, testmessage)
