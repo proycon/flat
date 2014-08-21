@@ -1069,7 +1069,7 @@ class Root:
 
             if ns == "testflat":
                 testresult = self.docstore.save((ns,docid),response['log'] )
-                log("Test result: ", repr(testresult))
+                log("Test result: " +str(repr(testresult)))
             else:
                 self.docstore.save((ns,docid),response['log'] )
                 testresult = None
