@@ -47,8 +47,7 @@ globalassert = "";;
 
 
 
-QUnit.asyncTest("textchange", function(assert){
-    //tests text change
+QUnit.asyncTest("Text Change", function(assert){
     testinit("textchange",assert);
     $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
     $('#editfield1text').val("mijn"); 
@@ -57,8 +56,7 @@ QUnit.asyncTest("textchange", function(assert){
 });
 
 
-QUnit.asyncTest("textmerge", function(assert){
-    //tests text change (two words merge to one)
+QUnit.asyncTest("Text Change (Merging multiple words)", function(assert){
     testinit("textmerge",assert);
     $(valid('#untitleddoc.p.3.s.1.w.5')).trigger('click');
     $('#spanselector1').trigger('click');
@@ -69,9 +67,7 @@ QUnit.asyncTest("textmerge", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
-QUnit.asyncTest("multiannotchange", function(assert){
-    //test the annotation of multiple types at once
-    //tests basic token annotation
+QUnit.asyncTest("Changing Text and multiple token annotations at once", function(assert){
     testinit("multiannotchange",assert);
     $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
     $('#editfield1text').val("het"); 
@@ -83,7 +79,7 @@ QUnit.asyncTest("multiannotchange", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
-QUnit.asyncTest("addentity", function(assert){
+QUnit.asyncTest("Adding a new span annotation, out of order selection", function(assert){
     //tests adding new fields
     //tests span selection (deliberately selected out of order)
 
