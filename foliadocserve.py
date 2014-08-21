@@ -82,6 +82,7 @@ class DocStore:
         filename = self.getfilename(key)
         if not key in self or key == ("testflat","init"):
             if not os.path.exists(filename):
+                log("File not found: " + filename)
                 raise NoSuchDocument
             log("Loading " + filename)
             self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions, loadsetdefinitions=True)
@@ -1234,6 +1235,7 @@ class Root:
 
 
 def test(doc, testname):
+    log("Running test " + testname)
     #perform test
     teststatus = True
     testmessage = ""
