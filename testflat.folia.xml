@@ -216,7 +216,7 @@
       </s>
     </p>
     <p xml:id="untitleddoc.p.3">
-      <t>toen me ouders weg reden met de auto belde ik snel janna. we hadden afgesproken dat zei bij kwam slapen. me ouders wisten het niet want die gingen 3dagen naar texel! en me broertje was bij een vriend gaan slapen. tegen de tijd dat janna eindelijk bij mij was. was het 3 uur we gingen naar de kruitvat om wat snoep te kopen. we hadden wel 20 kilo snoep gekocht en gingen naar huis. het was al 6 uur toen we terug kwamen. en we gingen friet halen bij cafetaria de beek. toen we de friet op hadden. gingen we een horhor film kijken. en gingen pas om 4uur s’ochtens naar bed, hadden al 19 kilo snoep op. we konden allebei niet slapen van de horhor film,en hoorden enge geluiden. de volgende dag verliep het zelfde alleen kwamen me ouders die avond om 11 uur thuis! we voelde ons betrapt.</t>
+      <t>toen me ouders weg reden met de auto belde ik snel Janna Janssen. we hadden afgesproken dat zei bij kwam slapen. me ouders wisten het niet want die gingen 3dagen naar texel! en me broertje was bij een vriend gaan slapen. tegen de tijd dat janna eindelijk bij mij was. was het 3 uur we gingen naar de kruitvat om wat snoep te kopen. we hadden wel 20 kilo snoep gekocht en gingen naar huis. het was al 6 uur toen we terug kwamen. en we gingen friet halen bij cafetaria de beek. toen we de friet op hadden. gingen we een horhor film kijken. en gingen pas om 4uur s’ochtens naar bed, hadden al 19 kilo snoep op. we konden allebei niet slapen van de horhor film,en hoorden enge geluiden. de volgende dag verliep het zelfde alleen kwamen me ouders die avond om 11 uur thuis! we voelde ons betrapt.</t>
       <s xml:id="untitleddoc.p.3.s.1">
         <t>toen me ouders weg reden met de auto belde ik snel janna.</t>
         <w xml:id="untitleddoc.p.3.s.1.w.1" class="WORD">
@@ -389,8 +389,8 @@
             </morpheme>
           </morphology>
         </w>
-        <w xml:id="untitleddoc.p.3.s.1.w.12" class="WORD" space="no">
-          <t>janna</t>
+        <w xml:id="untitleddoc.p.3.s.1.w.12" class="WORD">
+          <t>Janna</t>
           <pos class="N(soort,ev,basis,zijd,stan)" confidence="0.272605" head="N">
             <feat class="soort" subset="ntype"/>
             <feat class="ev" subset="getal"/>
@@ -398,12 +398,10 @@
             <feat class="zijd" subset="genus"/>
             <feat class="stan" subset="naamval"/>
           </pos>
-          <lemma class="janna"/>
-          <morphology>
-            <morpheme>
-              <t offset="0">janna</t>
-            </morpheme>
-          </morphology>
+          <lemma class="Janna"/>
+        </w>
+        <w xml:id="untitleddoc.p.3.s.1.w.12b" class="WORD" space="no">
+          <t>Janssen</t>
         </w>
         <w xml:id="untitleddoc.p.3.s.1.w.13" class="PUNCTUATION">
           <t>.</t>
