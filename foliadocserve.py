@@ -1280,6 +1280,14 @@ def test(doc, testname):
             testresult, testmessage = testequal('untitleddoc.p.3.s.8.w.10' in doc,False, testmessage + "Testing absence of word in index", testresult)
         elif testname == "wordsplit":
             testresult, testmessage = testequal('untitleddoc.p.3.s.12.w.5' in doc,False, testmessage + "Testing absence of original word in index", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.18'].text(),"4", testmessage + "Testing new word (1/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.17'].text(),"uur", testmessage + "Testing new word (2/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.18'].next().id,"untitleddoc.p.3.s.12.w.17", testmessage + "Testing order (1/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.4'].next().id,"untitleddoc.p.3.s.12.w.18", testmessage + "Testing order (2/2)", testresult)
+        elif testname == "wordinsertionright":
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.1'].text(),"en", testmessage + "Testing original word", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.17'].text(),"we", testmessage + "Testing new word", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.1'].next().id,"untitleddoc.p.3.s.12.w.17", testmessage + "Testing order", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

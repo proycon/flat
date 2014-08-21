@@ -120,6 +120,14 @@ QUnit.asyncTest("Word split", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
+QUnit.asyncTest("Word insertion to the right", function(assert){
+    testinit("wordinsertionright",assert);
+    $(valid('#untitleddoc.p.3.s.12.w.1')).trigger('click');
+    $('#editfield1text').val("en we"); 
+    $('#editform1direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
 // TESTS -- Second stage
 
 function testeval(data) {
@@ -143,7 +151,9 @@ function testeval(data) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.17')).length, 1, "Checking presence of new words (1/2)");
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.18')).length, 1, "Checking presence of new words (1/2)");
-
+    } else if (testname == "wordinsertionright") {
+        testtext('#untitleddoc.p.3.s.12.w.1',"en")
+        testtext('#untitleddoc.p.3.s.12.w.17',"we")
     }
 
     QUnit.start(); //continue (for asynchronous tests)
