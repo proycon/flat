@@ -391,7 +391,6 @@ def parsequery(query, data = {}):
 
 
     mode = None
-    data = {}
     skipwords = 0
     endclause = None
 
@@ -468,7 +467,8 @@ def parsequery(query, data = {}):
                 namespace, doc = word.split('/',1)
             except:
                 raise FQLParseError("Expected \"namespace/documentID\" after IN statement")
-            data[(namespace, doc)] = []
+            if not (namespace,doc) in data:
+                data[(namespace, doc)] = []
         elif mode == 'FOR':
             edit['targets'].append(word)
         else:
@@ -497,7 +497,7 @@ def parsequery(query, data = {}):
 
 def doannotation(doc, data):
     response = {'returnelementids': []}
-    #log("Received data for doannotation: "+ repr(data))
+    log("Received " + str(len(data['edits'])) + " edits")
 
 
     for edit in data['edits']:
@@ -1026,6 +1026,8 @@ class Root:
                 traceback.print_tb(exc_traceback, limit=50, file=sys.stderr)
                 return json.dumps(response)
 
+
+
         for ns, docid in data:
             if ns != namespace:
                 raise cherrypy.HTTPError(403, "No permission to edit documents out of active namespace " + namespace)
@@ -1034,10 +1036,7 @@ class Root:
             if docid == requestdocid:
                 self.docstore.lastaccess[(ns,docid)][sid] = time.time()
 
-            if ns == "testflat":
-                doc = self.docstore.load((ns,docid), True) #force reload upon every annoation
-            else:
-                doc = self.docstore[(ns,docid)]
+            doc = self.docstore[(ns,docid)]
 
             annotationdata = { 'edits': data[(ns,docid)], 'annotator': request['annotator'] }
             try:
