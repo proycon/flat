@@ -783,29 +783,32 @@ function editor_oninit() {
         
         $('#wait').show();
 
-    
-        $.ajax({
-            type: 'POST',
-            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
-            contentType: "application/json",
-            //processData: false,
-            data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
-            success: function(data) {
-                if (data.error) {
+        if (namespace != "testflat") {  //tests will be handled by different ajax submission  
+            $.ajax({
+                type: 'POST',
+                url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+                contentType: "application/json",
+                //processData: false,
+                data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
+                success: function(data) {
+                    if (data.error) {
+                        $('#wait').hide();
+                        alert("Received error from document server: " + data.error);
+                    } else {
+                        editfields = 0;
+                        closeeditor();
+                        update(data);
+                    }
+                },
+                error: function(req,err,exception) { 
                     $('#wait').hide();
-                    alert("Received error from document server: " + data.error);
-                } else {
-                    editfields = 0;
-                    closeeditor();
-                    update(data);
-                }
-            },
-            error: function(req,err,exception) { 
-                $('#wait').hide();
-                alert("Editor submission failed: " + req + " " + err + " " + exception);
-            },
-            dataType: "json"
-        });
+                    alert("Editor submission failed: " + req + " " + err + " " + exception);
+                },
+                dataType: "json"
+            });
+        } else {
+            testbackend(docid, username, sid, queries);
+        }
     });
 
     $('#newdeclarationsubmit').click(function(){
