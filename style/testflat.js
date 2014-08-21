@@ -62,9 +62,8 @@ QUnit.asyncTest("init", function(assert) {
             testeval({'testresult': false, 'testmessage': "Editor submission failed: " + req + " " + err + " " + exception});
         },
         dataType: "json"
-    )};
+    });
     
-
 });
 
 
@@ -73,6 +72,7 @@ QUnit.asyncTest("init", function(assert) {
 function testeval(data) {
     if (data.testmessage == "") data.testmessage = "ok";
     globalassert.ok(data.testresult, "Backend test: " + data.testmessage ) 
+
     if (testname == "init") {
         //doesn't do much
         globalassert.ok(annotations.length > 0, "Annotations obtained");
