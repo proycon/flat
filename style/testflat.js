@@ -33,7 +33,7 @@ function testinit(name, assert) {
 
 
 function testtext(elementselector, reference, message="") {
-    if (message == "") message = "Testing whether of " + elementselector + " is \"" + reference + "\"";
+    if (message == "") message = "Testing whether text of " + elementselector + " is \"" + reference + "\"";
     globalassert.equal($(valid(elementselector)).text().trim(), reference, message);
 }
 

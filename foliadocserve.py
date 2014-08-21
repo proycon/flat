@@ -1083,9 +1083,13 @@ class Root:
                             self.docstore.updateq[(ns,docid)][s].append(eid)
 
         if 'returnelementids' in returnresponse:
-            return self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid, testresult)
+            result =  self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid, testresult)
         else:
-            return self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid, testresult) #return all
+            result = self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid, testresult) #return all
+        if namespace == "testflat":
+            #unload the document, we want a fresh copy every time
+            del self.docstore.data[(namespace,"testflat")]
+        return result
 
 
     def checkexpireconcurrency(self):
