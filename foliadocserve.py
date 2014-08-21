@@ -94,7 +94,6 @@ class DocStore:
         if key[0] == "testflat":
             #No need to save the document, instead we run our tests:
             return test(doc, key[1])
-            #doc.save("/tmp/testflat.xml") #we do a dummy save and never overwrite the original
         else:
             log("Saving " + self.getfilename(key) + " - " + message)
             doc.save()
@@ -1065,9 +1064,11 @@ class Root:
 
             if ns == "flattest":
                 testresult = self.docstore.save((ns,docid),response['log'] )
+                log("Test result: ", repr(testresult))
             else:
                 self.docstore.save((ns,docid),response['log'] )
                 testresult = None
+
             #set concurrency:
             if 'returnelementids' in response:
                 for s in self.docstore.updateq[(ns,docid)]:
@@ -1256,7 +1257,7 @@ def test(doc, testname):
             teststatus = False
             testmessage = "Test raised Exception in backend: " + str(e) + " -- " "\n".join(formatted_lines)
 
-    return teststatus, testmessage
+    return (teststatus, testmessage)
 
 
 def main():
