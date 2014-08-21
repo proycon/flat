@@ -27,6 +27,9 @@ function testbackend(testname,username,sid,queries) {
 }
 
 
+function testtext(elementselector, reference) {
+    globalassert.equal($(valid(elementselector)).text().trim(), reference);
+}
 
 //we want tests in the order defined here
 //our tests are run sequentially
@@ -36,27 +39,13 @@ globalassert = "";;
 
 //Tests - First stage
 
-QUnit.asyncTest("init", function(assert) {
+QUnit.asyncTest("textchange", function(assert){
     expect(2);
-    testname = "init";
-    globalassert = assert;
-     
-
-    //no need to POST anything, so no editor submit, we just do a GET
-    $.ajax({
-        type: 'GET',
-        url: "/editor/testflat/"+ testname + "/",
-        success: function(data) {
-            $('#wait').hide();
-            testeval({'testresult': true, 'testmessage': "Init succeeded"});
-        },
-        error: function(req,err,exception) { 
-            $('#wait').hide();
-            testeval({'testresult': false, 'testmessage': "Editor submission failed: " + req + " " + err + " " + exception});
-        },
-        dataType: "html"
-    });
-    
+    testname = "textchange";
+    $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
+    $('#editfield1text').val("mijn"); 
+    $('#editform1direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
 });
 
 
@@ -66,9 +55,9 @@ function testeval(data) {
     if (data.testmessage == "") data.testmessage = "ok";
     globalassert.ok(data.testresult, "Backend test: " + data.testmessage ) 
 
-    if (testname == "init") {
-        //doesn't do much
-        globalassert.ok(annotations.length > 0, "Annotations obtained");
+    if (testname == "textchange") {
+        testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
     }
+
     QUnit.start(); //continue (for asynchronous tests)
 }
