@@ -37,7 +37,7 @@ globalassert = "";;
 //Tests - First stage
 
 QUnit.asyncTest("init", function(assert) {
-    expect(1);
+    expect(2);
     testname = "init";
     globalassert = assert;
      
@@ -47,21 +47,14 @@ QUnit.asyncTest("init", function(assert) {
         type: 'GET',
         url: "/editor/testflat/"+ testname + "/",
         success: function(data) {
-            if (data.error) {
-                $('#wait').hide();
-                testeval({'testresult': false, 'testmessage': data.error});
-            } else {
-                editfields = 0;
-                closeeditor();
-                update(data);
-                testeval(data);
-            }
+            $('#wait').hide();
+            testeval({'testresult': true, 'testmessage': "Init succeeded"});
         },
         error: function(req,err,exception) { 
             $('#wait').hide();
             testeval({'testresult': false, 'testmessage': "Editor submission failed: " + req + " " + err + " " + exception});
         },
-        dataType: "json"
+        dataType: "html"
     });
     
 });
