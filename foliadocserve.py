@@ -73,20 +73,20 @@ class DocStore:
 
     def getfilename(self, key):
         assert isinstance(key, tuple) and len(key) == 2
-        if key[0] == "testflat":
-            return self.workdir + '/testflat/testflat.folia.xml'
-        else:
-            return self.workdir + '/' + key[0] + '/' + key[1] + '.folia.xml'
+        return self.workdir + '/' + key[0] + '/' + key[1] + '.folia.xml'
 
-    def load(self,key):
+    def load(self,key, forcereload=False):
+        if key[0] == "testflat": key = ("testflat", "testflat")
         filename = self.getfilename(key)
-        if not key in self or key == ("testflat","init"):
+        if not key in self or forcereload:
             if not os.path.exists(filename):
                 log("File not found: " + filename)
                 raise NoSuchDocument
             log("Loading " + filename)
             self.data[key] = folia.Document(file=filename, setdefinitions=self.setdefinitions, loadsetdefinitions=True)
             self.lastchange[key] = time.time()
+        return self.data[key]
+
 
 
     def save(self, key, message = "unspecified change"):
@@ -117,6 +117,8 @@ class DocStore:
 
     def __getitem__(self, key):
         assert isinstance(key, tuple) and len(key) == 2
+        if key[0] == "testflat":
+            key = ("testflat","testflat")
         self.load(key)
         return self.data[key]
 
@@ -1032,7 +1034,10 @@ class Root:
             if docid == requestdocid:
                 self.docstore.lastaccess[(ns,docid)][sid] = time.time()
 
-            doc = self.docstore[(ns,docid)]
+            if ns == "testflat":
+                doc = self.doc.load((ns,docid, True) #force reload upon every annoation
+            else:
+                doc = self.docstore[(ns,docid)]
 
             annotationdata = { 'edits': data[(ns,docid)], 'annotator': request['annotator'] }
             try:
@@ -1237,6 +1242,8 @@ class Root:
 
 def test(doc, testname):
     log("Running test " + testname)
+
+    #load clean document
     #perform test
     teststatus = False
     testmessage = ""
@@ -1256,6 +1263,7 @@ def test(doc, testname):
             formatted_lines = traceback.format_exc().splitlines()
             teststatus = False
             testmessage = "Test raised Exception in backend: " + str(e) + " -- " "\n".join(formatted_lines)
+
 
     return (teststatus, testmessage)
 

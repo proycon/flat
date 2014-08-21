@@ -724,7 +724,12 @@ function editor_oninit() {
                 sendeditdata.push(editdata[i]);
                 
                 //compose query  
-                var query = "IN " + namespace + "/" + docid + " ";
+                var query = "";
+                if (namespace == "testflat") {
+                    query += "IN testflat/" + testname + " ";
+                } else {
+                    query += "IN " + namespace + "/" + docid + " ";
+                }
                 if ((editdata[i].editform == "new") || ( editdata[i].new)) {
                     query += "ADD";
                 } else if ((editdata[i].class == "") || ((editdata[i].type == "t") && (editdata[i].text == ""))) {
