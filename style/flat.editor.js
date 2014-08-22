@@ -730,6 +730,10 @@ function editor_oninit() {
                     alert("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
                     return;
                 }
+                if (sortededittargets.length == 0) {
+                    alert("Error, no targets for action");
+                    return;
+                }
                 editdata[i].targets = sortededittargets;
                 sendeditdata.push(editdata[i]);
                 

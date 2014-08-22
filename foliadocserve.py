@@ -1296,10 +1296,17 @@ def test(doc, testname, testmessage = ""):
         elif testname == "newoverlapspan":
             testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.1'].wrefs()),2, testmessage + "Testing original span size", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.8' , testmessage + "Testing original entity", testresult)
-            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.2'].wrefs()),3, testmessage + "Testing extra span size", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.2'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing extra entity", testresult)
+            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.1.entity.2'].wrefs()),3, testmessage + "Testing extra span size", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1.entity.2'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing extra entity", testresult)
         elif testname == "spandeletion":
             testresult, testmessage = testequal('untitleddoc.p.3.s.9.entity.1' in doc,False, testmessage + "Testing absence of entity in index", testresult)
+        elif testname == "tokenannotationdeletion":
+            exceptionraised = False
+            try:
+                doc['untitleddoc.p.3.s.8.w.4'].lemma()
+            except folia.NoSuchAnnotation:
+                exceptionraised = True
+            testresult, testmessage = testequal(exceptionraised,True, testmessage + "Testing absence of lemma", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname
