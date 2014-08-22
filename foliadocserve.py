@@ -644,19 +644,16 @@ def doannotation(doc, data):
                     elif 'dosplit' in edit:
                         response['log'] = "Split of " + target.id + ", by " + data['annotator']
                         log(response['log'])
+
+                        p = target.parent
+
                         try:
-                            index = target.parent.data.index(target)
+                            index = p.data.index(target)
                         except ValueError:
                             response['error'] = "Unable to find insertion index"
                             return response
 
-                        p = target.parent
-                        index = -1
-                        for i, w in enumerate(target.data):
-                            if w is target:
-                                index = i
-                        if index > -1:
-                            p.remove(target)
+                        p.remove(p.data[index])
 
                         for wordtext in reversed(edit['text'].split(' ')):
                             p.insert(index, ElementClass(doc, folia.TextContent(doc, value=wordtext ), generate_id_in=p ) )
@@ -1056,7 +1053,7 @@ class Root:
                 returnresponse = response
 
             if 'error' in response and response['error']:
-                log(response['error'])
+                log("ERROR: " + response['error'])
                 return json.dumps(response)
 
             if 'log' in response:
@@ -1083,9 +1080,9 @@ class Root:
                             self.docstore.updateq[(ns,docid)][s].append(eid)
 
         if 'returnelementids' in returnresponse:
-            result =  self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid, testresult)
+            result =  self.getelements(namespace,requestdocid, returnresponse['returnelementids'],sid, testresult, {'queries': request['queries']})
         else:
-            result = self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid, testresult) #return all
+            result = self.getelements(namespace,requestdocid, [self.docstore[(namespace,requestdocid)].data[0].id],sid, testresult,{'queries': request['queries']}) #return all
         if namespace == "testflat":
             #unload the document, we want a fresh copy every time
             log("Unloading test document")
@@ -1117,9 +1114,9 @@ class Root:
 
 
     @cherrypy.expose
-    def getelements(self, namespace, docid, elementids, sid, testresult=None):
+    def getelements(self, namespace, docid, elementids, sid, testresult=None, response = {}):
         assert isinstance(elementids, list) or isinstance(elementids, tuple)
-        response = {'elements':[]}
+        response['elements'] = []
         if testresult:
             response['testresult'] = bool(testresult[0])
             response['testmessage'] = testresult[1]
@@ -1255,13 +1252,12 @@ def testequal(value, reference, testmessage,testresult=True):
     return testresult, testmessage
 
 
-def test(doc, testname):
+def test(doc, testname, testmessage = ""):
     log("Running test " + testname)
 
     #load clean document
     #perform test
     testresult = True #must start as True for chaining
-    testmessage = ""
     try:
         if testname == "textchange":
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text", testresult)

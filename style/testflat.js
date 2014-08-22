@@ -132,7 +132,13 @@ QUnit.asyncTest("Word insertion to the right", function(assert){
 
 function testeval(data) {
     if (data.testmessage  == "") data.testmessage = "ok";
-    globalassert.ok(data.testresult, "Backend test: " + data.testmessage ) 
+
+    if (data.queries) {
+        globalassert.ok(data.testresult, "Backend Queries: " + data.queries.join(" -- ") );
+    } else {
+        globalassert.ok(false, "Backend did not return queries!");
+    }
+    globalassert.ok(data.testresult, "Backend Test: " + data.testmessage.replace("\n"," -- " ) );
 
     if (testname == "textchange") {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
