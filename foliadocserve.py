@@ -1284,6 +1284,15 @@ def test(doc, testname, testmessage = ""):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.1'].text(),"en", testmessage + "Testing original word", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.17'].text(),"we", testmessage + "Testing new word", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.1'].next().id,"untitleddoc.p.3.s.12.w.17", testmessage + "Testing order", testresult)
+        elif testname == "wordinsertionleft":
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.13.w.12'].text(),"hoorden", testmessage + "Testing original word", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.13.w.16'].text(),"we", testmessage + "Testing new word", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.13.w.16'].next().id,"untitleddoc.p.3.s.13.w.12", testmessage + "Testing order", testresult)
+        elif testname == "spanchange":
+            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.1'].wrefs()),3, testmessage + "Testing span size", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing order (1/3)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(1).id, 'untitleddoc.p.3.s.9.w.8' , testmessage + "Testing order (2/3)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(2).id, 'untitleddoc.p.3.s.9.w.9' , testmessage + "Testing order (3/3)", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

@@ -128,6 +128,24 @@ QUnit.asyncTest("Word insertion to the right", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
+
+QUnit.asyncTest("Word insertion to the left", function(assert){
+    testinit("wordinsertionleft",assert);
+    $(valid('#untitleddoc.p.3.s.13.w.12')).trigger('click');
+    $('#editfield1text').val("we hoorden"); 
+    $('#editform1direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("Span change", function(assert){
+    testinit("spanchange",assert);
+    $(valid('#untitleddoc.p.3.s.9.w.9')).trigger('click');
+    $('#spanselector8').trigger('click'); 
+    $(valid('#untitleddoc.p.3.s.9.w.7')).trigger('click');
+    $('#spanselector8').trigger('click'); 
+    $('#editform8direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
 // TESTS -- Second stage
 
 function testeval(data) {
@@ -160,6 +178,12 @@ function testeval(data) {
     } else if (testname == "wordinsertionright") {
         testtext('#untitleddoc.p.3.s.12.w.1',"en")
         testtext('#untitleddoc.p.3.s.12.w.17',"we")
+    } else if (testname == "wordinsertionleft") {
+        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
+        testtext('#untitleddoc.p.3.s.13.w.16',"we")
+    } else if (testname == "spanchange") {
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
     }
 
     QUnit.start(); //continue (for asynchronous tests)
