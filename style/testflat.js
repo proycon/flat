@@ -162,8 +162,8 @@ QUnit.asyncTest("Span change", function(assert){
 QUnit.asyncTest("Deletion of token annotation", function(assert){
     testinit("tokenannotationdeletion",assert);
     $(valid('#untitleddoc.p.3.s.8.w.4')).trigger('click');
-    $('#editfield1').val(""); 
-    $('#editform1direct').trigger('click'); 
+    $('#editfield3').val(""); 
+    $('#editform3direct').trigger('click'); 
     $('#editorsubmit').trigger('click'); 
 });
 
