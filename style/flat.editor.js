@@ -715,6 +715,7 @@ function editor_oninit() {
         var sendeditdata = []; 
         for (var i = 0; i < editfields;i++) { 
             if (editdata[i].changed) {
+                if (editdata[i].new) editdata[i].editform = "new";
                 //sort targets in proper order
                 var sortededittargets = [];
                 if (editdata[i].targets.length > 1) {
@@ -744,43 +745,54 @@ function editor_oninit() {
                 } else {
                     query += "IN " + namespace + "/" + docid + " ";
                 }
-                if ((editdata[i].editform == "new") || ( editdata[i].new)) {
-                    query += "ADD";
-                } else if ((editdata[i].class == "") || ((editdata[i].type == "t") && (editdata[i].text == ""))) {
-                    //deletion
-                    query += "DELETE";
-                } else {
-                    query += "EDIT";
-                }
-                query += " " +editdata[i].type;
-                if (editdata[i].id) {
-                    query += " ID " + editdata[i].id;
-                } else if (editdata[i].set) {
-                    query += " OF " + editdata[i].set;                    
-                }
-                if (editdata[i].editform == "correction") {
-                    query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\" ,"
-                } else if (editdata[i].editform == "alternative") {
-                    query += " AS ALTERNATIVE ,"
-                }
-                if ((editdata[i].type == "t") && (editdata[i].text != "")) {
-                    query += " WITH TEXT \"" + editdata[i].text + "\"";
-                    //the following three are a bit ad-hoc and should be replaced by better mechanisms later
-                    if (editdata[i].insertleft) { 
-                        query += " insertleft \"" + editdata[i].insertleft + "\"";
-                    } else if (editdata[i].insertright) {
-                        query += " insertright \"" + editdata[i].insertright + "\"";
-                    } else if (editdata[i].dosplit) {
-                        query += " dosplit true";
+                if ((editdata[i].type == "t") && (editdata[i].text == "")) {
+                    //deletion of text implies deletion of word
+                    if (sortededittargets.length > 1) {
+                        alert("Can't delete multiple words at once");
+                        return;
                     }
-                } else if (editdata[i].class != "") {
-                    //no deletion 
-                    query += " WITH CLASS \"" + editdata[i].class + "\"";
+                    query += "DELETE w ID " + sortededittargets[0];
+                } else {
+
+                    if ((editdata[i].editform == "new")) {
+                        query += "ADD";
+                    } else if (editdata[i].class == "") {
+                        //deletion
+                        query += "DELETE";
+                    } else {
+                        query += "EDIT";
+                    }
+                    query += " " +editdata[i].type;
+                    if ((editdata[i].id) && ( editdata[i].editform != "new")) {
+                        query += " ID " + editdata[i].id;
+                    } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
+                        query += " OF " + editdata[i].set;                    
+                    }
+                    if (editdata[i].editform == "correction") {
+                        query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\" ,"
+                    } else if (editdata[i].editform == "alternative") {
+                        query += " AS ALTERNATIVE ,"
+                    }
+                    if ((editdata[i].type == "t") && (editdata[i].text != "")) {
+                        query += " WITH TEXT \"" + editdata[i].text + "\"";
+                        if (editdata[i].insertleft) { 
+                            query += " INSERTLEFT \"" + editdata[i].insertleft + "\"";
+                        } else if (editdata[i].insertright) {
+                            query += " INSERTRIGHT \"" + editdata[i].insertright + "\"";
+                        } else if (editdata[i].dosplit) {
+                            query += " SPLIT";
+                        } else if (editdata[i].targets.length > 1) {
+                            query += " MERGE";
+                        }
+                    } else if (editdata[i].class != "") {
+                        //no deletion 
+                        query += " WITH CLASS \"" + editdata[i].class + "\"";
+                    }
+                    query += " FOR";
+                    sortededittargets.forEach(function(t){
+                        query += " " + t;
+                    });
                 }
-                query += " FOR";
-                sortededittargets.forEach(function(t){
-                    query += " " + t;
-                });
                 queries.push(query);
                     
             }

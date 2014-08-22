@@ -185,7 +185,7 @@ function testeval(data) {
     if (data.queries) {
         globalassert.ok(data.testresult, "Backend Queries: " + data.queries.join(" -- ") );
     } else {
-        globalassert.ok(false, "Backend did not return queries!");
+        globalassert.ok(false, "Backend did not return queries! This probably means an exception occurred in the backend!");
     }
     globalassert.ok(data.testresult, "Backend Test: " + data.testmessage.replace("\n"," -- " ) );
 

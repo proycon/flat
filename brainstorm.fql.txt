@@ -18,19 +18,34 @@ IN $namespace/$docid EDIT pos OF $set WITH class "N" FOR w1
 IN $namespace/$docid DELETE pos OF $set FOR w1
 IN $namespace/$docid EDIT t WITH text "blah" FOR w1
 
+IN $namespace/$docid ADD w WITH $id FOR s1
+IN $namespace/$docid DELETE w ID $id FOR s1
+
 --
 
 with editforms:
 
-IN $namespace/$docid EDIT entity OF $set (AS CORRECTION OF $correctionset WITH class "wrongclass") WITH CLASS "person"
-IN $namespace/$docid EDIT entity OF $set (AS CORRECTION OF $correctionset WITH class "toolong") FOR w1 w2
-IN $namespace/$docid EDIT entity ID $id (AS CORRECTION OF $correctionset WITH class "toolong") FOR w1 w2
-IN $namespace/$docid EDIT pos OF set FOR w1 WITH class "N" (AS CORRECTION OF $correctionset WITH class "wrongpos")
-IN $namespace/$docid ADD pos OF $set FOR w1 WITH class "A" (AS ALTERNATIVE)
+IN $namespace/$docid EDIT entity OF $set AS CORRECTION OF $correctionset WITH class "wrongclass" , WITH CLASS "person"
+IN $namespace/$docid EDIT entity OF $set AS CORRECTION OF $correctionset WITH class "toolong" , FOR w1 w2
+IN $namespace/$docid EDIT entity ID $id AS CORRECTION OF $correctionset WITH class "toolong" , FOR w1 w2
+IN $namespace/$docid EDIT pos OF set FOR w1 WITH class "N" AS CORRECTION OF $correctionset WITH class "wrongpos"
+IN $namespace/$docid ADD pos OF $set FOR w1 WITH class "A" AS ALTERNATIVE
 
 ---
 
-complex:
+multi-queries (automatically decomposed into simpler ones)
+
+IN $namespace/$docid ADD w WITH id $id ( ADD t WITH TEXT "house" ; ADD pos OF $set WITH class "noun" ) FOR s1
+    -->
+        IN $namespace/$docid ADD w WITH FOR s1
+        IN $namespace/$docid ADD t WITH TEXT "house" FOR $wordid
+        IN $namespace/$docid ADD pos OF $set WITH CLASS "noun" FOR $wordid
+
+IN $namespace/$docid ADD w ( ADD t WITH TEXT "house" ; ADD pos OF $set WITH class "noun" ) FOR s1
+
+---
+
+selectors:
 
 IN $namespace/$docid ADD pos OF $set WITH class "N" FOR w WHERE t WITH text "house"
 IN $namespace/$docid ADD pos OF $set WITH class "N" FOR w WHERE pos OF $set WITH class "NN"
@@ -41,6 +56,20 @@ IN $namespace/$docid ADD pos OF $set WITH class "N" FOR w WHERE lemma OF $set WI
 
 
 
+
+IN testflat/wordsplit EDIT w WITH 
+
+TEXT "4 uur" SPLITWORDS FOR untitleddoc.p.3.s.12.w.5
+
+
+
+
+
+
+IN testflat/wordsplit EDIT t WITH TEXT "4 uur" SPLIT FOR untitleddoc.p.3.s.12.w.5
+IN testflat/wordsplit EDIT t WITH TEXT "meenemen" MERGE FOR untitleddoc.p.3.s.12.w.5 untitleddoc.p.3.s.12.w.6
+IN testflat/wordsplit EDIT t WITH TEXT "uur" INSERTLEFT "4" FOR untitleddoc.p.3.s.12.w.5
+IN testflat/wordsplit EDIT t WITH TEXT "4" INSERTRIGHT "uur" FOR untitleddoc.p.3.s.12.w.5
 
 
 
