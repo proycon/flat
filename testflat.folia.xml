@@ -2753,6 +2753,12 @@
             </dep>
           </dependency>
         </dependencies>
+        <entities>
+          <dependency xml:id="untitleddoc.p.3.s.9.entities.1.entity.1" class="loc" set="http://ilk.uvt.nl/folia/sets/frog-ner-nl">
+              <wref id="untitleddoc.p.3.s.9.w.8" t="de"/>
+              <wref id="untitleddoc.p.3.s.9.w.9" t="beek"/>
+          </dependency>
+        </entities>
       </s>
       <s xml:id="untitleddoc.p.3.s.10">
         <t>toen we de friet op hadden.</t>
