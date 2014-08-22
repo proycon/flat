@@ -446,7 +446,7 @@ def parsequery(query, data = {}):
                 else:
                     raise FQLParseError("Expected CORRECTION/ALTERNATIVE after AS")
             elif mode in [ 'ADD','EDIT','DELETE']:
-                edit['action'] = mode
+                edit['action'] = mode.lower()
 
 
                 actor_annotationtype, actor_set, actor_id, skipwords = parseactor(words,i)
@@ -484,10 +484,11 @@ def parsequery(query, data = {}):
 
     if len(data) == 0:
         raise FQLParseError("No documents specified in IN statement!")
-    if not 'targets' in edit or len(edit['targets']) == 0:
-        raise FQLParseError("No targets found, empty FOR statement?")
     if not 'action' in edit or not edit['action']:
         raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
+    if not 'targets' in edit or len(edit['targets']) == 0:
+        if not 'id' in edit['actor']:
+            raise FQLParseError("No targets found (no FOR statement?), but no ID was provided either on the actor")
     if not 'type' in edit['actor'] or not edit['actor']['type']:
         raise FQLParseError("Expected action statement EDIT, ADD or DELETE")
 
@@ -508,14 +509,13 @@ def doannotation(doc, data):
 
 
     for edit in data['edits']:
-        if 'targets' in edit:
+        if 'targets' in edit and edit['targets']:
             ElementClass =  doc[edit['targets'][0]].__class__ #folia.XML2CLASS[doc[data['elementid']].XMLTAG]
         else:
             ElementClass = folia.Word #default to word
 
 
         assert 'action' in edit
-        edit['action'] = edit['action'].lower()
         assert 'targets' in edit
         assert 'actor' in edit
         assert 'assignments' in edit
@@ -553,7 +553,7 @@ def doannotation(doc, data):
                 log("Common ancestor as return element: "+ commonancestor )
                 if not commonancestor in response['returnelementids']:
                     response['returnelementids'].append(commonancestor)
-        else:
+        elif edit['targets']:
             for targetid in edit['targets']:
                 try:
                     target = doc[targetid]
@@ -563,6 +563,8 @@ def doannotation(doc, data):
                     response['error'] = "Target element " + targetid + " does not exist!"
                     return response
             commonancestor = target.ancestor(folia.AbstractStructureElement).id
+        else:
+            commonancestor = doc.data[0]
 
 
 
