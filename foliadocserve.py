@@ -793,8 +793,8 @@ def doannotation(doc, data):
                             target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                             if not target.parent.id in response['returnelementids']:
                                 response['returnelementids'].append(target.parent.id )
-                        elif edit['text']:
-                            response['log'] = "Text correction '" + edit['text'] + "' on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
+                        elif edit['assignments']['text']:
+                            response['log'] = "Text correction '" + edit['assignments']['text'] + "' on " + target.id + " (correction " + edit['correctionclass']+"), by " + data['annotator']
                             log(response['log'])
                             if not 'class' in edit['assignments']:
                                 edit['assignments']['class'] = 'current'
@@ -1370,6 +1370,8 @@ def test(doc, testname, testmessage = ""):
             except folia.NoSuchAnnotation:
                 exceptionraised = True
             testresult, testmessage = testequal(exceptionraised,True, testmessage + "Testing absence of lemma", testresult)
+        elif testname == "correction_textchange":
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

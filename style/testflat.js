@@ -176,6 +176,15 @@ QUnit.asyncTest("Span deletion", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
+QUnit.asyncTest("[As correction] Text Change", function(assert){
+    testinit("correction_textchange",assert);
+    $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
+    $('#editfield1text').val("mijn"); 
+    $('#editform1correction').trigger('click'); 
+    $('#editform1correctionclass').prop('selectedIndex',1); 
+    $('#editform1correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
 
 // TESTS -- Second stage
 
@@ -220,6 +229,8 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1.entity.2"].class, "org", "Finding second entity");
     } else if (testname == "spandeletion") {
     } else if (testname == "tokenannotationdeletion") {
+    } else if (testname == "correction_textchange") {
+        testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
     }
 
     QUnit.start(); //continue (for asynchronous tests)
