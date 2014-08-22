@@ -761,13 +761,12 @@ function editor_oninit() {
                 }
                 if ((editdata[i].type == "t") && (editdata[i].text != "")) {
                     query += " WITH TEXT \"" + editdata[i].text + "\"";
-                    if (editdata[i].insertleft) {
+                    //the following three are a bit ad-hoc and should be replaced by better mechanisms later
+                    if (editdata[i].insertleft) { 
                         query += " insertleft \"" + editdata[i].insertleft + "\"";
-                    }
-                    if (editdata[i].insertleft) {
+                    } else if (editdata[i].insertright) {
                         query += " insertright \"" + editdata[i].insertright + "\"";
-                    }
-                    if (editdata[i].dosplit) {
+                    } else if (editdata[i].dosplit) {
                         query += " dosplit true";
                     }
                 } else if (editdata[i].class != "") {
