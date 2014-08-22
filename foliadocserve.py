@@ -1298,6 +1298,8 @@ def test(doc, testname, testmessage = ""):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.8' , testmessage + "Testing original entity", testresult)
             testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.2'].wrefs()),3, testmessage + "Testing extra span size", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.2'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing extra entity", testresult)
+        elif testname == "spandeletion":
+            testresult, testmessage = testequal('untitleddoc.p.3.s.9.entity.1' in doc,False, testmessage + "Testing absence of entity in index", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname

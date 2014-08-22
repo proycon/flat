@@ -150,8 +150,8 @@ QUnit.asyncTest("Span change", function(assert){
 QUnit.asyncTest("Adding new overlapping span", function(assert){
     testinit("newoverlapspan",assert);
     $(valid('#untitleddoc.p.3.s.9.w.8')).trigger('click');
-    $('#editfield2').prop('selectedIndex',4); //corresponds to organisation as long as the set definition doesn't change
-    $('#editfield2').trigger('change'); 
+    $('#editfield6').prop('selectedIndex',4); //corresponds to organisation as long as the set definition doesn't change
+    $('#editfield6').trigger('change'); 
     $('#spanselector6').trigger('click'); 
     $(valid('#untitleddoc.p.3.s.9.w.7')).trigger('click');
     $(valid('#untitleddoc.p.3.s.9.w.8')).trigger('click');
@@ -160,6 +160,16 @@ QUnit.asyncTest("Adding new overlapping span", function(assert){
     $('#editform6new').trigger('click'); 
     $('#editorsubmit').trigger('click'); 
 });
+
+QUnit.asyncTest("Span deletion", function(assert){
+    testinit("spandeletion",assert);
+    $(valid('#untitleddoc.p.3.s.9.w.9')).trigger('click');
+    $('#editfield8').prop('selectedIndex',0); //corresponds to empty class, implies deletion
+    $('#editfield8').trigger('change'); 
+    $('#editform8direct').trigger('click'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
 
 // TESTS -- Second stage
 
@@ -202,6 +212,7 @@ function testeval(data) {
     } else if (testname == "newoverlapspan") {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding first entity");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.2"].class, "org", "Finding second entity");
+    } else if (testname == "spandeletion") {
     }
 
     QUnit.start(); //continue (for asynchronous tests)
