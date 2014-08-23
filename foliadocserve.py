@@ -1182,7 +1182,6 @@ class Root:
 
 
 
-    @cherrypy.expose
     def getelements(self, namespace, docid, elementids, sid, testresult=None, response = {}):
         assert isinstance(elementids, list) or isinstance(elementids, tuple)
         response['elements'] = []
@@ -1215,16 +1214,25 @@ class Root:
 
 
     @cherrypy.expose
+    def getelement(self, namespace, docid, elementid, sid):
+        return self.getelements(namespace, docid, [elementid], sid)
+
+    @cherrypy.expose
     def poll(self, namespace, docid, sid):
-        cherrypy.log("Poll from session " + sid + " for " + "/".join((namespace,docid)))
+        if namespace == "testflat":
+            return "{}" #no polling for testflat
+
         self.checkexpireconcurrency()
         if sid in self.docstore.updateq[(namespace,docid)]:
             ids = self.docstore.updateq[(namespace,docid)][sid]
-            log("Returning IDs after poll: " + repr(ids))
             self.docstore.updateq[(namespace,docid)][sid] = []
-            return json.dumps({'update': ids})
+            if ids:
+                cherrypy.log("Succesful poll from session " + sid + " for " + "/".join((namespace,docid)) + ", returning IDs: " + " ".join(ids))
+                return self.getelements(namespace,docid, ids, sid)
+            else:
+                return "{}"
         else:
-            return json.dumps({})
+            return "{}"
 
 
 

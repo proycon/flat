@@ -433,11 +433,7 @@ function viewer_ontimer() {
         data: {'sid': sid },
         url: "/viewer/" + namespace + "/"+ docid + "/poll/",
         success: function(data) {
-            if (data.update) {
-                data.update.forEach(function(d){
-                    update(d);
-                });
-            }
+            update(data);
         },
         dataType: "json"
     });

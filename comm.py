@@ -5,7 +5,7 @@ import flat.settings as settings
 import json
 import pycurl
 
-def get( request, url, usesid=True):
+def get( request, url, usesid=True, parsejson=True):
     if 'sid' in request.GET:
         sid = request.session.session_key + '_' + request.GET['sid']
     elif usesid:
@@ -18,11 +18,17 @@ def get( request, url, usesid=True):
     f.close()
     if contents and contents[0] == '{':
         #assume this is json
-        return json.loads(contents)
+        if parsejson:
+            return json.loads(contents)
+        else:
+            return contents
     elif contents:
         return contents
     else:
-        return None
+        if parsejson:
+            return None
+        else:
+            return ""
 
 def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):

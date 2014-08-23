@@ -11,5 +11,9 @@ urlpatterns = patterns('',
     url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/annotate/?$', 'flat.modes.editor.views.annotate', name='annotate'),
     url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/declare/?$', 'flat.modes.editor.views.declare', name='declare'),
     url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/history/?$', 'flat.modes.editor.views.history', name='history'),
-    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/revert/(?P<commithash>[a-f0-9]*)/?$', 'flat.modes.editor.views.revert', name='revert')
+    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/revert/(?P<commithash>[a-f0-9]*)/?$', 'flat.modes.editor.views.revert', name='revert'),
+
+    #redeclare viewer stuff:
+    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/poll/?$', 'flat.modes.viewer.views.poll', name='poll'),
+    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/(?P<elementid>[\w\-\.]+)/?$', 'flat.modes.viewer.views.subview', name='subview'),
 )

@@ -46,15 +46,10 @@ def view(request, namespace, docid):
 def subview(request, namespace, docid, elementid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/') #handles sid
+            e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/',True, False) #  True, False =  handles sid, does not parse json
         except urllib2.URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
-        d = {
-                'elementid': elementid,
-                'html': e['html'],
-                'annotations': json.dumps(e['annotations']),
-        }
-        return HttpResponse(json.dumps(d), mimetype='application/json')
+        return HttpResponse(e, mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied")
 
@@ -62,22 +57,10 @@ def subview(request, namespace, docid, elementid):
 def poll(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/') #handles sid
+            r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', True, False) #True, False = handles sid, does not parse json
         except urllib2.URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
-        d = []
-        if len(r) > 0:
-            for elementid in r:
-                try:
-                    e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/')
-                except urllib2.URLError:
-                    return HttpResponseForbidden("Unable to connect to the document server")
-                d.append({
-                        'elementid': elementid,
-                        'html': e['html'],
-                        'annotations': json.dumps(e['annotations']),
-                })
-        return HttpResponse(json.dumps(d), mimetype='application/json')
+        return HttpResponse(r, mimetype='application/json')
     else:
         return HttpResponseForbidden("Permission denied")
 

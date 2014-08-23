@@ -186,27 +186,29 @@ function update(data) {
     if (data.error) {
         alert(data.error);
     }
-    data.elements.forEach(function(returnitem){
-        if ((returnitem.html) && (returnitem.elementid)) { 
-            $('#' + valid(returnitem.elementid))[0].outerHTML = returnitem.html;
-            //$('#' + valid(data.elementid)).attr('id',"replacing");
-            //$('#replacing').html("...");
-            //$('#replacing').after(data.html);
-            //$('#replacing').remove();
-        }
-        if (returnitem.annotations) {
-            loadtext(returnitem.annotations);
-            loadannotations(returnitem.annotations);
-        }
-        if (returnitem.elementid) {
-            //reregister handlers
-            registerhandlers();
-        }
-        if (function_exists(mode + '_onupdate')) {
-            f = eval(mode + '_onupdate');
-            f(returnitem);
-        }
-    });
+    if (data.elements) {
+        data.elements.forEach(function(returnitem){
+            if ((returnitem.html) && (returnitem.elementid)) { 
+                $('#' + valid(returnitem.elementid))[0].outerHTML = returnitem.html;
+                //$('#' + valid(data.elementid)).attr('id',"replacing");
+                //$('#replacing').html("...");
+                //$('#replacing').after(data.html);
+                //$('#replacing').remove();
+            }
+            if (returnitem.annotations) {
+                loadtext(returnitem.annotations);
+                loadannotations(returnitem.annotations);
+            }
+            if (returnitem.elementid) {
+                //reregister handlers
+                registerhandlers();
+            }
+            if (function_exists(mode + '_onupdate')) {
+                f = eval(mode + '_onupdate');
+                f(returnitem);
+            }
+        });
+    }
 }
 
 

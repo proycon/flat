@@ -29,6 +29,18 @@ function testbackend(testname,username,sid,queries) {
 function testinit(name, assert) {
     testname = name;
     globalassert = assert;
+    update({ 'elements': ['untitleddoc.text'] });
+    updateready = false;
+    $.ajax({
+        type: 'GET',
+        data: {'sid': sid },
+        async: false, //important here!! does not continue until ajax is all done
+        url: "/viewer/" + namespace + "/"+ docid + "/untitleddoc.text/",
+        success: function(data) {
+            update(data);
+        },
+        dataType: "json"
+    });
 }
 
 
@@ -234,7 +246,6 @@ QUnit.asyncTest("[As correction] Word split", function(assert){
 
 QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     testinit("correction_wordinsertionright",assert);
-    $(valid('#untitleddoc.p.3.s.12.w.1')).trigger('click');
     $('#editfield1text').val("en we"); 
     $('#editform1correction').trigger('click'); 
     $('#editform1correctionclass').prop('selectedIndex',11); 
@@ -253,6 +264,16 @@ QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
+QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
+    testinit("correction_tokenannotationdeletion",assert);
+    $(valid('#untitleddoc.p.3.s.8.w.4')).trigger('click');
+    $('#editfield3').val(""); 
+    $('#editform3correction').trigger('click'); 
+    $('#editform3correctionclass').prop('selectedIndex',11); 
+    $('#editform3correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
 QUnit.asyncTest("[As correction] Span change", function(assert){
     testinit("correction_spanchange",assert);
     $(valid('#untitleddoc.p.3.s.9.w.9')).trigger('click');
@@ -265,15 +286,6 @@ QUnit.asyncTest("[As correction] Span change", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
-QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
-    testinit("correction_tokenannotationdeletion",assert);
-    $(valid('#untitleddoc.p.3.s.8.w.4')).trigger('click');
-    $('#editfield3').val(""); 
-    $('#editform3correction').trigger('click'); 
-    $('#editform3correctionclass').prop('selectedIndex',11); 
-    $('#editform3correctionclass').trigger('change'); 
-    $('#editorsubmit').trigger('click'); 
-});
 
 QUnit.asyncTest("[As correction] Span deletion", function(assert){
     testinit("correction_spandeletion",assert);
