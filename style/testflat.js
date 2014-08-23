@@ -201,7 +201,7 @@ QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function
     $('#editorsubmit').trigger('click'); 
 });
 
-QUnit.asyncTest("[As Correction] Changing token annotation", function(assert){
+QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
     testinit("correction_tokenannotationchange",assert);
     $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
     $('#editfield2').val("LID(onbep,stan,rest)");  //pos
@@ -212,6 +212,79 @@ QUnit.asyncTest("[As Correction] Changing token annotation", function(assert){
 });
 
 
+QUnit.asyncTest("[As correction] Word deletion", function(assert){
+    testinit("correction_worddelete",assert);
+    $(valid('#untitleddoc.p.3.s.8.w.10')).trigger('click');
+    $('#editfield1text').val(""); 
+    $('#editform1correction').trigger('click'); 
+    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("[As correction] Word split", function(assert){
+    testinit("correction_wordsplit",assert);
+    $(valid('#untitleddoc.p.3.s.12.w.5')).trigger('click');
+    $('#editfield1text').val("4 uur"); 
+    $('#editform1correction').trigger('click'); 
+    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
+    testinit("correction_wordinsertionright",assert);
+    $(valid('#untitleddoc.p.3.s.12.w.1')).trigger('click');
+    $('#editfield1text').val("en we"); 
+    $('#editform1correction').trigger('click'); 
+    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+
+QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
+    testinit("correction_wordinsertionleft",assert);
+    $(valid('#untitleddoc.p.3.s.13.w.12')).trigger('click');
+    $('#editfield1text').val("we hoorden"); 
+    $('#editform1correction').trigger('click'); 
+    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("[As correction] Span change", function(assert){
+    testinit("correction_spanchange",assert);
+    $(valid('#untitleddoc.p.3.s.9.w.9')).trigger('click');
+    $('#spanselector8').trigger('click'); 
+    $(valid('#untitleddoc.p.3.s.9.w.7')).trigger('click');
+    $('#spanselector8').trigger('click'); 
+    $('#editform8correction').trigger('click'); 
+    $('#editform8correctionclass').prop('selectedIndex',11); 
+    $('#editform8correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
+    testinit("correction_tokenannotationdeletion",assert);
+    $(valid('#untitleddoc.p.3.s.8.w.4')).trigger('click');
+    $('#editfield3').val(""); 
+    $('#editform3correction').trigger('click'); 
+    $('#editform3correctionclass').prop('selectedIndex',11); 
+    $('#editform3correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+QUnit.asyncTest("[As correction] Span deletion", function(assert){
+    testinit("correction_spandeletion",assert);
+    $(valid('#untitleddoc.p.3.s.9.w.9')).trigger('click');
+    $('#editfield8').prop('selectedIndex',0); //corresponds to empty class, implies deletion
+    $('#editfield8').trigger('change'); 
+    $('#editform8correction').trigger('click'); 
+    $('#editform8correctionclass').prop('selectedIndex',11); 
+    $('#editform8correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
 
 // TESTS -- Second stage
 
