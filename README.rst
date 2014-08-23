@@ -35,6 +35,20 @@ Features
 * Supports FoLiA Set Definitions
 * Supports Token Annotation and Span Annotation
 
+============================================
+Architecture
+============================================
+
+The FLAT architecture consists of three layers:
+
+* The FoLiA Document Server
+* The FLAT server
+* The user-interface
+
+At the far back-end is the FoLiA Document Server, which loads the requested FoLiA documents, and passes these as JSON and HTML to the middle layer, the FLAT server, this layer in turn passes edits formulated in FoLiA Query Language to the Document Server. The user-interface is a modern web-application interacting with the FLAT server and translates interface actions to FoLiA Query Language.
+
+The FoLiA Document Server is written in Python with CherryPy and acts as a RESTful webservice. The FLAT server is written in Python using the Django framework. The user interface is written using javascript with jquery.
+
 
 =============================================
 Screenshots
