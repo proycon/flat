@@ -764,6 +764,9 @@ function editor_oninit() {
                         return;
                     }
                     query += "DELETE w ID " + sortededittargets[0];
+                    if (editdata[i].editform == "correction") {
+                        query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\""
+                    }
                 } else {
 
                     if ((editdata[i].editform == "new")) {

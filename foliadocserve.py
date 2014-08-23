@@ -425,8 +425,8 @@ def parsequery(query, data = {}):
                 for j in range(i+1,len(words) -1):
                     if words[j] == ',':
                         endclause = j - 1
-                if endclause is None:
-                    raise FQLParseError("AS clause must end in comma, detached from any words, none found")
+                #if endclause is None:
+                #    raise FQLParseError("AS clause must end in comma, detached from any words, none found")
 
                 if words[i+1] == 'CORRECTION':
                     edit['editform'] = 'correction'
@@ -788,8 +788,9 @@ def doannotation(doc, data):
                             response['log'] = "Split of " + target.id + " '"+ edit['assignments']['text'] +"' (correction " + edit['correctionclass']+"), by " + data['annotator']
                             log(response['log'])
                             newwords = []
+                            if not 'set' in edit['assignments']: edit['assignments']['set'] = edit['actor']['set']
                             for wordtext in edit['assignments']['text'].split(' '):
-                                newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['set']), generate_id_in=target.parent ) )
+                                newwords.append( ElementClass(doc, folia.TextContent(doc, wordtext, set=edit['assignments']['set']), generate_id_in=target.parent ) )
                             target.parent.splitword(target, *newwords, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'] )
                             if not target.parent.id in response['returnelementids']:
                                 response['returnelementids'].append(target.parent.id )
@@ -1373,14 +1374,15 @@ def test(doc, testname, testmessage = ""):
                 exceptionraised = True
             testresult, testmessage = testequal(exceptionraised,True, testmessage + "Testing absence of lemma", testresult)
         elif testname in  ("correction_worddelete"):
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.8.w.10'].parent.__class__ is folia.Original,True, testmessage + "Testing whether original word is now under original in correction", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.8.correction.1'].original(0).id, 'untitleddoc.p.3.s.8.w.10',  testmessage + "Testing whether original word is now under original in correction", testresult)
         elif testname in ( "correction_wordsplit"):
             #entity ID will be different!
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.5'].parent.__class__ is folia.Original,True, testmessage + "Testing whether original word is now under original in correction", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.18'].text(),"4", testmessage + "Testing new word (1/2)", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.17'].text(),"uur", testmessage + "Testing new word (2/2)", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.18'].next().id,"untitleddoc.p.3.s.12.w.17", testmessage + "Testing order (1/2)", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.4'].next().id,"untitleddoc.p.3.s.12.w.18", testmessage + "Testing order (2/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.correction.1'].original(0).id, 'untitleddoc.p.3.s.12.w.5',  testmessage + "Testing whether original word is now under original in correction", testresult)
+
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.17'].text(),"4", testmessage + "Testing new word (1/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.18'].text(),"uur", testmessage + "Testing new word (2/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.17'].next().id,"untitleddoc.p.3.s.12.w.18", testmessage + "Testing order (1/2)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.12.w.4'].next().id,"untitleddoc.p.3.s.12.w.17", testmessage + "Testing order (2/2)", testresult)
         elif testname in ( "correction_wordinsertionright", "correction_wordinsertionleft"):
             pass
         elif testname in ("correction_spanchange"):
