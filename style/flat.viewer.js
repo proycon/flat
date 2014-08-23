@@ -428,16 +428,17 @@ function viewer_onupdate() {
 }
 
 function viewer_ontimer() {
-    $.ajax({
-        type: 'GET',
-        data: {'sid': sid },
-        url: "/viewer/" + namespace + "/"+ docid + "/poll/",
-        success: function(data) {
-            update(data);
-        },
-        dataType: "json"
-    });
-
+    if (namespace != "testflat") { //no polling for tests 
+        $.ajax({
+            type: 'GET',
+            data: {'sid': sid },
+            url: "/viewer/" + namespace + "/"+ docid + "/poll/",
+            success: function(data) {
+                update(data);
+            },
+            dataType: "json"
+        });
+    }
 }
 
 function viewer_loadmenus() {

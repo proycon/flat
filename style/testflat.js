@@ -246,6 +246,7 @@ QUnit.asyncTest("[As correction] Word split", function(assert){
 
 QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     testinit("correction_wordinsertionright",assert);
+    $(valid('#untitleddoc.p.3.s.12.w.1')).trigger('click');
     $('#editfield1text').val("en we"); 
     $('#editform1correction').trigger('click'); 
     $('#editform1correctionclass').prop('selectedIndex',11); 

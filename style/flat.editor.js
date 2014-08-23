@@ -3,6 +3,7 @@ editoropen = false;
 coselector = -1; //disabled
 editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 editedelementid = null;
+editfields = 0;
 
 
 function toggleeditform(editform) {
