@@ -961,7 +961,7 @@ def doannotation(doc, data):
                     if edit['assignments']['class']:
                         #TODO: will require extra work for dependencies and coref chains (handling of subelements)
                         newannotation = Class(doc, *targets, cls=edit['assignments']['class'], set=edit['assignments']['set'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
-                        layer.correct(original=annotation,new=newannotation, set=edit['assignments']['correctionset'], cls=edit['assignments']['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                        layer.correct(original=annotation,new=newannotation, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
                         #delete
                         layer.correct(original=annotation,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
