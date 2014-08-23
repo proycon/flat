@@ -34,7 +34,7 @@ def login(request):
             # Return an 'invalid login' error message.
             return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION} )
     else:
-        return render(request, 'login.html',{"configurations":settings.CONFIGURATIONS})
+        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS})
 
 
 def logout(request):
