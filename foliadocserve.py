@@ -1326,10 +1326,12 @@ def test(doc, testname, testmessage = ""):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.2'].text(),"mijn", testmessage + "Testing text", testresult)
         elif testname in ( "textmerge","correction_textmerge"):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.w.14'].text(),"wegreden", testmessage + "Testing text", testresult)
-        elif testname in ("multiannotchange", "correction_multiannotchange"):
+        elif testname in ("multiannotchange"):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].text(),"het", testmessage + "Testing text", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].pos(),"LID(onbep,stan,rest)", testmessage + "Testing pos class", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].lemma(),"het", testmessage + "Testing lemma class", testresult)
+        elif testname in ("correction_tokenannotationchange"):
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.6.w.8'].pos(),"LID(onbep,stan,rest)", testmessage + "Testing pos class", testresult)
         elif testname in ("addentity", "correction_addentity"):
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.1.entity.1'].cls,"per", testmessage + "Testing presence of new entity", testresult)
             testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.1.entity.1'].wrefs()),2, testmessage + "Testing span size", testresult)

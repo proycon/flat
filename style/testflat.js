@@ -182,7 +182,7 @@ QUnit.asyncTest("[As correction] Text Change", function(assert){
     $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
     $('#editfield1text').val("mijn"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',2); 
+    $('#editform1correctionclass').prop('selectedIndex',11); 
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -196,10 +196,23 @@ QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function
     $('#spanselector1').trigger('click');
     $('#editfield1text').val("wegreden"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',2); 
+    $('#editform1correctionclass').prop('selectedIndex',11); 
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
+
+QUnit.asyncTest("[As Correction] Changing token annotation", function(assert){
+    testinit("correction_tokenannotationchange",assert);
+    $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
+    $('#editfield2').val("LID(onbep,stan,rest)");  //pos
+    $('#editform2correction').trigger('click'); 
+    $('#editform2correctionclass').prop('selectedIndex',11); 
+    $('#editform2correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
+
+
+
 // TESTS -- Second stage
 
 function testeval(data) {
@@ -216,7 +229,7 @@ function testeval(data) {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
     } else if ((testname == "textmerge")|| (testname == "correction_textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
-    } else if ((testname == "multiannotchange") || (testname == "correction_multiannotchange")) {
+    } else if ((testname == "multiannotchange") ) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
@@ -248,10 +261,13 @@ function testeval(data) {
     if (testname == "correction_textchange") {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["t/undefined"]['incorrection'][0], "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
-    }
-    if (testname == "correction_textmerge") {
+    } else if (testname == "correction_textmerge") {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.14']["t/undefined"]['incorrection'][0], "untitleddoc.p.3.s.1.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations['untitleddoc.p.3.s.1']["untitleddoc.p.3.s.1.correction.1"].class, "uncertain", "Checking correction and its class");
+    } else if ((testname == "correction_tokenannotationchange") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
+        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
+        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
     }
 
     QUnit.start(); //continue (for asynchronous tests)

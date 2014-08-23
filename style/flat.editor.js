@@ -375,6 +375,18 @@ function showeditor(element) {
 
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(spanselector_click);
+
+                //sort correctionclass
+                if ($('select#editform' + i + 'correctionclass')) {
+                    var options = $('#editform' + i + 'correctionclass option')
+                    var arr = options.map(function(_, o) { return { t: $(o).text(), v: o.value , s: $(o).attr('selected')}; }).get();
+                    arr.sort(function(o1, o2) { return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0; });
+                    options.each(function(i, o) {
+                        o.value = arr[i].v;
+                        $(o).text(arr[i].t);
+                        $(o).attr('selected', arr[i].s);
+                    });
+                }
                 
                 /*$('#editfield'+i).change(function(){
                     index = 0;
