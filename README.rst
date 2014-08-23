@@ -30,7 +30,7 @@ Features
   installation
 * Displays and retains document structure (divisions, paragraphs, sentence, lists, etc) 
 * Support for corrections, of text or linguistic annotations, and alternative annotations. Corrections are never mere substitutes, originals are always preserved!
-* Spelling corrections such, runons and splits, insertions and deletions are
+* Spelling corrections for runons, splits, insertions and deletions are
   supported.
 * Supports FoLiA Set Definitions
 * Supports Token Annotation and Span Annotation
