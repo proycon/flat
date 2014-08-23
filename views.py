@@ -29,10 +29,10 @@ def login(request):
                     return redirect("/")
             else:
                 # Return a 'disabled account' error message
-                return render(request, 'login.html', {'error': "This account is disabled","configurations":settings.CONFIGURATIONS , 'version': settings.VERSION} )
+                return render(request, 'login.html', {'error': "This account is disabled","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS , 'version': settings.VERSION} )
         else:
             # Return an 'invalid login' error message.
-            return render(request, 'login.html', {'error': "Invalid username or password","configurations":settings.CONFIGURATIONS, 'version': settings.VERSION} )
+            return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION} )
     else:
         return render(request, 'login.html',{"configurations":settings.CONFIGURATIONS})
 

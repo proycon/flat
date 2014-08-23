@@ -12,7 +12,11 @@
     <label>Password:</label> <input type="password" name="password" /><br/>
     <label>Configuration:</label> <select name="configuration">
         {% for confname, conf in configurations.items %}
+        {% if confname == defaultconfiguration %}
+        <option value="{{ confname }}" selected="selected">{{ conf.name }}</option>
+        {% else %}
         <option value="{{ confname }}">{{ conf.name }}</option>
+        {% endif %}
         {% endfor %}
     </select></br>
     <div class="buttoncontainer">

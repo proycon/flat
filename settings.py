@@ -125,6 +125,8 @@ EDITOR_MODES = [
 
 DEFAULTMODE = 'editor'
 
+DEFAULTCONFIGURATION = 'full'
+
 CONFIGURATIONS = {
 'full':{
     'name': "Full Editor",
