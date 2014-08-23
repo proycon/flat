@@ -853,7 +853,8 @@ def doannotation(doc, data):
                         response['log'] = "Deletion of " + Class.__name__ + " (" + edit['assignments']['class'] + "), as correction, in " + target.id + ", by " + data['annotator']
                         log(response['log'])
                         log("Calling correct")
-                        raise NotImplementedError #TODO!
+                        target.correct(original=target.annotation(Class, edit['actor']['set']), set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+
 
 
         elif issubclass(Class, folia.AbstractSpanAnnotation): ################### EDIT OF SPAN ANNOTATION #######################################
