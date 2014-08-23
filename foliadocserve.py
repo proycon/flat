@@ -620,14 +620,18 @@ def doannotation(doc, data):
                 if not p.id in response['returnelementids']:
                     response['returnelementids'].append( p.id )
             elif edit['editform'] == 'correction':
-                if ElementClass is folia.Word:
-                    #we have a deletion as a correction!
-                    p = target.ancestor(folia.AbstractStructureElement)
-                    p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
-                    if not p.id in response['returnelementids']:
-                        response['returnelementids'].append(p.id )
+                #we have a deletion as a correction!
+                if Class is folia.Word:
+                    if isinstance(target, folia.Word):
+                        p = target.ancestor(folia.AbstractStructureElement)
+                        p.deleteword(target,set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime']) #does correction
                 else:
-                    raise NotImplementedError
+                    #probably a span annotation
+                    p = target.parent
+                    p.correct(original=target, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+
+                if not p.id in response['returnelementids']:
+                    response['returnelementids'].append(p.id )
 
         elif issubclass(Class, folia.TextContent): ################### EDIT OF TEXT CONTENT #######################################
             #Text Content, each target will get a copy
