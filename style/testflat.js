@@ -176,16 +176,30 @@ QUnit.asyncTest("Span deletion", function(assert){
     $('#editorsubmit').trigger('click'); 
 });
 
+
 QUnit.asyncTest("[As correction] Text Change", function(assert){
     testinit("correction_textchange",assert);
     $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
     $('#editfield1text').val("mijn"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',1); 
+    $('#editform1correctionclass').prop('selectedIndex',2); 
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
 
+
+QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function(assert){
+    testinit("correction_textmerge",assert);
+    $(valid('#untitleddoc.p.3.s.1.w.5')).trigger('click');
+    $('#spanselector1').trigger('click');
+    $(valid('#untitleddoc.p.3.s.1.w.4')).trigger('click');
+    $('#spanselector1').trigger('click');
+    $('#editfield1text').val("wegreden"); 
+    $('#editform1correction').trigger('click'); 
+    $('#editform1correctionclass').prop('selectedIndex',2); 
+    $('#editform1correctionclass').trigger('change'); 
+    $('#editorsubmit').trigger('click'); 
+});
 // TESTS -- Second stage
 
 function testeval(data) {
@@ -198,39 +212,46 @@ function testeval(data) {
     }
     globalassert.ok(data.testresult, "Backend Test: " + data.testmessage.replace("\n"," -- " ) );
 
-    if (testname == "textchange") {
+    if ((testname == "textchange") || (testname == "correction_textchange")) {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
-    } else if (testname == "textmerge") {
+    } else if ((testname == "textmerge")|| (testname == "correction_textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
-    } else if (testname == "multiannotchange") {
+    } else if ((testname == "multiannotchange") || (testname == "correction_multiannotchange")) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
-    } else if (testname == "addentity") {
+    } else if ((testname == "addentity") || (testname == "correction_addentity")) {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on first word");
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on second word");
-    } else if (testname == "worddelete") {
+    } else if ((testname == "worddelete") ||  (testname == "correction_worddelete")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.8.w.10')).length, 0, "Test if word is removed from interface");
-    } else if (testname == "wordsplit") {
+    } else if ((testname == "wordsplit") ||(testname == "correction_wordsplit")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.17')).length, 1, "Checking presence of new words (1/2)");
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.18')).length, 1, "Checking presence of new words (1/2)");
-    } else if (testname == "wordinsertionright") {
+    } else if ((testname == "wordinsertionright") || (testname == "correction_wordinsertionright"))  {
         testtext('#untitleddoc.p.3.s.12.w.1',"en")
         testtext('#untitleddoc.p.3.s.12.w.17',"we")
-    } else if (testname == "wordinsertionleft") {
+    } else if ((testname == "wordinsertionleft") || (testname == "correction_wordinsertionleft")) {
         testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
         testtext('#untitleddoc.p.3.s.13.w.16',"we")
-    } else if (testname == "spanchange") {
+    } else if ((testname == "spanchange") || (testname == "correction_spanchange")) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
-    } else if (testname == "newoverlapspan") {
+    } else if ((testname == "newoverlapspan") || (testname == "correction_newoverlapspan")) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding first entity");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1.entity.2"].class, "org", "Finding second entity");
-    } else if (testname == "spandeletion") {
-    } else if (testname == "tokenannotationdeletion") {
-    } else if (testname == "correction_textchange") {
-        testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
+    } else if ((testname == "spandeletion")  || (testname == "correction_spandeletion")) {
+    } else if ((testname == "tokenannotationdeletion")  ||(testname == "correction_tokenannotationdeletion")) {
+    } 
+
+    if (testname == "correction_textchange") {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["t/undefined"]['incorrection'][0], "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
+    }
+    if (testname == "correction_textmerge") {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.14']["t/undefined"]['incorrection'][0], "untitleddoc.p.3.s.1.correction.1", "Checking if annotation is in correction");
+        globalassert.equal(annotations['untitleddoc.p.3.s.1']["untitleddoc.p.3.s.1.correction.1"].class, "uncertain", "Checking correction and its class");
     }
 
     QUnit.start(); //continue (for asynchronous tests)
