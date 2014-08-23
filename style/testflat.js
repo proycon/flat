@@ -321,12 +321,12 @@ function testeval(data) {
     } else if ((testname == "wordinsertionleft") || (testname == "correction_wordinsertionleft")) {
         testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
         testtext('#untitleddoc.p.3.s.13.w.16',"we")
-    } else if ((testname == "spanchange") || (testname == "correction_spanchange")) {
+    } else if ((testname == "spanchange") ) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
     } else if ((testname == "newoverlapspan") || (testname == "correction_newoverlapspan")) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding first entity");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1.entity.2"].class, "org", "Finding second entity");
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.2"].class, "org", "Finding second entity");
     } else if ((testname == "spandeletion")  || (testname == "correction_spandeletion")) {
     } else if ((testname == "tokenannotationdeletion")  ||(testname == "correction_tokenannotationdeletion")) {
     } 
@@ -341,6 +341,9 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
+    } else if ((testname == "correction_spanchange") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.2"].class, "loc", "Finding named entity on original word");
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.2"].class, "loc", "Finding named entity on new word");
     }
 
     QUnit.start(); //continue (for asynchronous tests)

@@ -960,7 +960,7 @@ def doannotation(doc, data):
 
                     if edit['assignments']['class']:
                         #TODO: will require extra work for dependencies and coref chains (handling of subelements)
-                        newannotation = Class(doc, *targets, cls=edit['assignments']['class'], set=edit['assignments']['set'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
+                        newannotation = Class(doc, *targets, cls=edit['assignments']['class'], set=edit['assignments']['set'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'], generate_id_in=layer.parent )
                         layer.correct(original=annotation,new=newannotation, set=edit['correctionset'], cls=edit['correctionclass'], annotator=data['annotator'], annotatortype=folia.AnnotatorType.MANUAL, datetime=edit['datetime'])
                     else:
                         #delete
@@ -1362,8 +1362,8 @@ def test(doc, testname, testmessage = ""):
         elif testname in ( "newoverlapspan", "correction_newoverlapspan"):
             testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.1'].wrefs()),2, testmessage + "Testing original span size", testresult)
             testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.8' , testmessage + "Testing original entity", testresult)
-            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.1.entity.2'].wrefs()),3, testmessage + "Testing extra span size", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1.entity.2'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing extra entity", testresult)
+            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.2'].wrefs()),3, testmessage + "Testing extra span size", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.2'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing extra entity", testresult)
         elif testname in ( "spandeletion"):
             testresult, testmessage = testequal('untitleddoc.p.3.s.9.entity.1' in doc,False, testmessage + "Testing absence of entity in index", testresult)
         elif testname in ( "tokenannotationdeletion", "correction_tokenannotationdeletion"):
@@ -1386,13 +1386,13 @@ def test(doc, testname, testmessage = ""):
         elif testname in ( "correction_wordinsertionright", "correction_wordinsertionleft"):
             pass
         elif testname in ("correction_spanchange"):
-            #entity ID will be different!
-            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.1'].wrefs()),3, testmessage + "Testing span size", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing order (1/3)", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(1).id, 'untitleddoc.p.3.s.9.w.8' , testmessage + "Testing order (2/3)", testresult)
-            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.1'].wrefs(2).id, 'untitleddoc.p.3.s.9.w.9' , testmessage + "Testing order (3/3)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.correction.1'].original(0).id, 'untitleddoc.p.3.s.9.entity.1',  testmessage + "Testing whether original span is now under original in correction", testresult)
+            testresult, testmessage = testequal(len(doc['untitleddoc.p.3.s.9.entity.2'].wrefs()),3, testmessage + "Testing span size", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.2'].wrefs(0).id, 'untitleddoc.p.3.s.9.w.7' , testmessage + "Testing order (1/3)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.2'].wrefs(1).id, 'untitleddoc.p.3.s.9.w.8' , testmessage + "Testing order (2/3)", testresult)
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.entity.2'].wrefs(2).id, 'untitleddoc.p.3.s.9.w.9' , testmessage + "Testing order (3/3)", testresult)
         elif testname in ( "correction_spandeletion"):
-            pass
+            testresult, testmessage = testequal(doc['untitleddoc.p.3.s.9.correction.1'].original(0).id, 'untitleddoc.p.3.s.9.entity.1',  testmessage + "Testing whether original span is now under original in correction", testresult)
         else:
             testresult = False
             testmessage += "No such test: " + testname
