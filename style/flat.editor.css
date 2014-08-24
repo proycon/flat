@@ -31,6 +31,7 @@ div#editor th {
     width: 39%;
     font-weight: bold;
     overflow: hidden;
+    max-width: 200px;
 }
 div#editor tr:hover th {
     color: #30677c;
