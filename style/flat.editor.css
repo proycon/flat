@@ -28,10 +28,10 @@ div#editor table {
     width: 100%;
 }
 div#editor th {
-    width: 200px;
+    width: 150px;
     font-weight: bold;
     overflow: hidden;
-    max-width: 200px;
+    max-width: 150px;
 }
 div#editor tr:hover th {
     color: #30677c;
