@@ -28,7 +28,7 @@ div#editor table {
     width: 100%;
 }
 div#editor th {
-    width: 39%;
+    width: 200px;
     font-weight: bold;
     overflow: hidden;
     max-width: 200px;

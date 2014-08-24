@@ -436,8 +436,13 @@ function addeditorfield(index) {
         setname = "";
     }
 
-
-    s =  "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+    s = "";
+    if ((annotationfocus) && (annotationfocus.type == editoraddablefields[index].type) && (annotationfocus.set == editoraddablefields[index].set)) {
+        s = s + "<tr class=\"focus\">";
+    } else {
+        s = s + "<tr>";
+    }
+    s =  s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
     if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
         s = s + "<select id=\"editfield" + editfields + "\">";
         s = s + "<option selected=\"selected\" value=\"\"></option>";
