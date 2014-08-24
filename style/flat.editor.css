@@ -28,8 +28,9 @@ div#editor table {
     width: 100%;
 }
 div#editor th {
-    width: 39%
+    width: 39%;
     font-weight: bold;
+    overflow: hidden;
 }
 div#editor tr:hover th {
     color: #30677c;
