@@ -1082,6 +1082,11 @@ class Root:
         returnresponse = {}
         log("Annotation action - Renewing session " + sid + " for " + "/".join((namespace,requestdocid)))
 
+        if len(request['queries']) == 0:
+            response = {'error': "No queries passed"}
+            return json.dumps(response)
+
+
         data = {}
         for query in request['queries']:
             try:
