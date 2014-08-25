@@ -827,13 +827,13 @@ function editor_oninit() {
             $('#queryinput').val(queries.join("\n"));
             openconsole();
             return false;
-        } else if ((sendeditdata.length == 0)) {
+        } else if ((queries.length == 0)) {
             //discard, nothing changed
             closeeditor();
             return false;
         }
         
-        
+ 
         $('#wait').show();
 
         if (namespace != "testflat") {  //tests will be handled by different ajax submission  
