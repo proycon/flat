@@ -462,7 +462,7 @@ function addeditorfield(index) {
     $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'class':'', 'new': true, 'changed': true };
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid], 'class':'', 'new': true, 'changed': true };
     editdata.push(editdataitem);
     setaddablefields();
 }
@@ -764,6 +764,7 @@ function editor_oninit() {
                     query += "IN " + namespace + "/" + docid + " ";
                 }
                 if ((editdata[i].type == "t") && (editdata[i].text == "")) {
+                    if (editdata[i].editform == "new") continue;
                     //deletion of text implies deletion of word
                     if (sortededittargets.length > 1) {
                         alert("Can't delete multiple words at once");
@@ -777,6 +778,7 @@ function editor_oninit() {
 
                     if ((editdata[i].editform == "new")) {
                         query += "ADD";
+                        if (editdata[i].class == "") continue;
                     } else if (editdata[i].class == "") {
                         //deletion
                         query += "DELETE";
