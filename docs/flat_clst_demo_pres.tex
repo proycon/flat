@@ -1,0 +1,114 @@
+\documentclass[xcolor=table,10pt,t]{beamer}
+\title{FLAT}
+\subtitle{FoLiA Linguistic Annotation Tool}
+\date{\today}
+\author{Maarten van Gompel}
+%% Use the official themes as much as possible
+%\usetheme[official=false,department=clst]{ruhuisstijl}
+%\usetheme[official=false]{ruhuisstijl}
+\usetheme[official=true,department=clst]{ruhuisstijl}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+        \begin{figure}
+          \includegraphics[height=2cm]{logo.png}
+        \end{figure}
+        \vspace{2.5cm}
+      \includegraphics[justify=left,width=5cm]{lama-logo-transparent.png}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Introduction (1/2)}
+  \begin{block}{What is FLAT?}
+      \begin{itemize}
+        \item \textbf{F}oLiA \textbf{L}inguistic \textbf{A}nnotation \textbf{T}ool
+        \item A web-based tool for linguistic annotation of language resources
+        \item Many different annotation types
+        \item Flat is anything but ``flat'', it deals with deeply nested data
+          and retains document structure.
+        \item Aims to be a fully-featured annotation environment for FoLiA
+          documents (currently in an early beta stage!)
+      \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Introduction (2/2)}
+  \begin{block}{What is FoLiA?}
+    \begin{itemize}
+      \item \textbf{F}ormat for \textbf{Li}nguistic \textbf{A}nnotation
+      \item An XML-based file format for storing and exchanging language
+        resources
+      \item Generic paradigm independent of language or label set
+      \item Single format for all
+      \item Implemented in many tools \emph{(ucto,frog,
+        ucto,pynlpl,ticcl,folia-tools)}
+      \item Used in many projects \emph{(SoNaR500, Nederlab, DutchSemCor, Basilex,
+        OpenSoNaR)}
+      \item Funded by CLARIN-NL
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Notable Features}
+  \begin{block}{ }
+    \begin{itemize}
+      \item Modern \textbf{web-based} interface
+      \item \textbf{Multi-user} environment
+      \item Download and upload FoLiA XML documents
+      \item \textbf{Concurrency} (multiple users may edit the same document similtaneously)
+      \item Storage model with [git] \textbf{versioning control} (unlimited undo operations)
+      \item Full \textbf{annotator information}: who annotated what and when?
+      \item Layered, retains \textbf{document structure}
+      \item Annotations may pertain to single tokens or span over multiple
+        (span annotation)
+      \item Support for \textbf{corrections} of either text or linguistic annotations. Corrections are never mere substitutes, originals are always preserved!
+      \item Support for alternative annotations.
+      \item Introduces FoLiA Query Language for automated and batch editing
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Visualisation of annotations on hover}
+  \begin{figure}
+        \includegraphics[height=6cm]{hover.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Global visualisation of classes}
+  \begin{figure}
+        \includegraphics[width=15cm]{highlight2.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Editor}
+  \begin{figure}
+        \includegraphics[height=6cm]{edit2.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Demo}
+  \begin{block}{}
+      \begin{itemize}
+        \item Demo: \url{http://flat.science.ru.nl}
+        \item Source: \url{https://github.com/proycon/flat}
+        \item FoLiA website: \url{http://proycon.github.io/folia}
+      \end{itemize}
+
+      \medskip
+        \begin{figure}
+          \includegraphics[height=3cm]{logo.png}
+        \end{figure}
+  \end{block}
+\end{frame}
+
+
+
+\end{document}
