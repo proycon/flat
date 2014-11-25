@@ -247,5 +247,5 @@ img#logo {
     margin-top: 25px;
 }
 span.helptext {
-    display: box;
+    display: block;
 }
