@@ -42,6 +42,21 @@ def logout(request):
     django.contrib.auth.logout(request)
     return redirect("/login")
 
+
+def register(request):
+    if request.method == 'POST':
+        form = django.contrib.auth.forms.UserCreationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            return HttpResponseRedirect("/login/")
+    else:
+        form = django.contrib.auth.forms.UserCreationForm()
+    return render(request, "registration/register.html", {
+        'form': form,
+    })
+
+
+
 @login_required
 def index(request):
     docs = {}
