@@ -51,7 +51,7 @@ def register(request):
             return HttpResponseRedirect("/login/")
     else:
         form = django.contrib.auth.forms.UserCreationForm()
-    return render(request, "registration/register.html", {
+    return render(request, "register.html", {
         'form': form,
     })
 
