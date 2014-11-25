@@ -246,3 +246,6 @@ img#logo {
     margin-right: auto;
     margin-top: 25px;
 }
+span.helptext {
+    display: box;
+}
