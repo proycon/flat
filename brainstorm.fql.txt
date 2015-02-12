@@ -78,5 +78,19 @@ IN testflat/wordsplit EDIT t WITH TEXT "4" INSERTRIGHT "uur" FOR untitleddoc.p.3
 
 
 
+IN $namespace/$docid SELECT pos OF $set WHERE class "v" 
+
+
+IN $namespace/$docid EDIT pos OF $set WITH class "n" WHERE class="v" FOR w WHERE text="fly" 
+IN $namespace/$docid EDIT pos OF $set WITH class "n" WHERE class="v" FOR w WHERE text="fly"
+
+
+
+IN $namespace/$docid SELECT pos OF $set  WHERE class "v" FOR w WHERE t WITH text "fly" 
+
+
+
+IN $namespace/$docid EDIT pos OF $set WITH class "n" WHERE class "v" 
+
 
 
