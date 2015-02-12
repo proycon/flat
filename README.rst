@@ -49,6 +49,17 @@ At the far back-end is the FoLiA Document Server, which loads the requested FoLi
 
 The FoLiA Document Server is written in Python with CherryPy and acts as a RESTful webservice. The FLAT server is written in Python using the Django framework. The user interface is written using javascript with jquery.
 
+============================================
+Dependencies
+============================================
+
+FLAT runs on Python 3 and used these libraries. They can easily be installed
+using ``pip``, as long as you have the Python development package installed
+that matches your Python version number (e.g. ``python3.X-dev`` or ``python3.X-devel``).
+
+* numypy
+* cherrypy
+* pynlpl
 
 =============================================
 Screenshots
