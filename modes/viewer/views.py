@@ -31,7 +31,7 @@ def getcontext(request,namespace,docid, doc):
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
+            doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR text", setdefinitions=True,declarations=True) #get the entire document with meta information
         except urllib2.URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         d = getcontext(request,namespace,docid, doc)
@@ -40,13 +40,11 @@ def view(request, namespace, docid):
         return HttpResponseForbidden("Permission denied")
 
 
-
-
 @login_required
 def subview(request, namespace, docid, elementid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            e = flat.comm.get(request, '/getelement/' + namespace + '/' + docid + '/' + elementid + '/',True, False) #  True, False =  handles sid, does not parse json
+            e = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR \"" + elementid + "\"", False) # False =  do not parse json
         except urllib2.URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(e, mimetype='application/json')

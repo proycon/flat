@@ -5,6 +5,35 @@ import flat.settings as settings
 import json
 import pycurl
 
+
+def query(request, query, parsejson=True, **extradata):
+    if 'sid' in request.GET:
+        sid = request.session.session_key + '_' + request.GET['sid']
+    elif usesid:
+        sid = request.session.session_key + '_NOSID'
+    data = {'query':query}
+    if usesid:
+        data['sid'] = sid
+    for key, value in extradata.items():
+        data[key] = value
+    f = urlopen("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/query/",data=data) #or opener.open()
+    contents = f.read()
+    f.close()
+    if contents and contents[0] in ('{','['):
+        #assume this is json
+        if parsejson:
+            return json.loads(contents)
+        else:
+            return contents
+    elif contents:
+        return contents
+    else:
+        if parsejson:
+            return None
+        else:
+            return ""
+
+
 def get( request, url, usesid=True, parsejson=True):
     if 'sid' in request.GET:
         sid = request.session.session_key + '_' + request.GET['sid']

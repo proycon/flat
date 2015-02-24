@@ -92,7 +92,7 @@ def index(request):
 
 @login_required
 def download(request, namespace, docid):
-    data = flat.comm.get(request, '/getdocxml/' +namespace + '/' + docid + '/',False)
+    data = flat.comm.query(request, "USE " + namespace + "/" + docid + " GET",False)
     return HttpResponse(data, mimetype='text/xml')
 
 
