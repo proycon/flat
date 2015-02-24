@@ -61,7 +61,7 @@ def register(request):
 def index(request):
     docs = {}
     try:
-        namespaces = flat.comm.get(request, '/getnamespaces/', False)
+        namespaces = flat.comm.get(request, '/namespaces/', False)
     except urllib2.URLError:
         return HttpResponseForbidden("Unable to connect to the document server")
     if not request.user.username in namespaces['namespaces']:
@@ -75,7 +75,7 @@ def index(request):
     for namespace in namespaces_sorted:
         if flat.users.models.hasreadpermission(request.user.username, namespace):
             try:
-                r = flat.comm.get(request, '/getdocuments/' + namespace, False)
+                r = flat.comm.get(request, '/documents/' + namespace, False)
             except urllib2.URLError:
                 return HttpResponseForbidden("Unable to connect to the document server")
             docs[namespace] = []
