@@ -24,7 +24,7 @@ setup(
     author_email = "proycon@anaproy.nl",
     description = ("Flat is a web-based linguistic annotation environment based around the FoLiA format (http://proycon.github.io/folia), a rich XML-based format for linguistic annotation. Flat allows users to view annotated FoLiA documents and enrich these documents with new annotations, a wide variety of linguistic annotation types is supported through the FoLiA paradigm."),
     license = "GPL",
-    keywords = "flat linguistic annotation nlp computational)inguistics folia annotator web",
+    keywords = "flat linguistic annotation nlp computationa_linguistics folia annotator web",
     url = "https://github.com/proycon/flat",
     packages=['flat','flat.modes','flat.modes.structureeditor','flat.modes.viewer','flat.modes.editor','flat.users'],
     long_description=read('README.md'),
