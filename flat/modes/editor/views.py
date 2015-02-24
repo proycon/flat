@@ -9,13 +9,14 @@ import flat.users
 import flat.modes.viewer.views
 import json
 
+
 @login_required
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            doc = flat.comm.get(request, '/getdoc/' + namespace + '/' + docid + '/')
-        except urllib2.URLError as e:
-            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
+            doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR text", setdefinitions=True,declarations=True) #get the entire document with meta information
+        except urllib2.URLError:
+            return HttpResponseForbidden("Unable to connect to the document server")
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
         try:
@@ -27,7 +28,7 @@ def view(request, namespace, docid):
             if flat.users.models.haswritepermission(request.user.username, namespace):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     try:
-                        r = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', {'annotationtype': annotationtype, 'set': set} )
+                        r = flat.comm.query(request, "USE " + namespace + "/" + docid + " DECLARE " + annotationtype + " OF " + set)
                     except urllib2.URLError as e:
                         return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
                     d['docdeclarations'] = json.dumps(r['declarations'])
