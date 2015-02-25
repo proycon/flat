@@ -59,7 +59,7 @@ def subview(request, namespace, docid, elementid):
 def poll(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', True, False) #True, False = handles sid, does not parse json
+            r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', False)
         except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(r, mimetype='application/json')
