@@ -40,11 +40,13 @@ def view(request, namespace, docid):
 @login_required
 def annotate(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
+        if hasattr(request, 'body'):
+            data = json.loads(request.body)
+        else: #older django
+            data = json.loads(request.raw_post_data)
+        query = "\n".join(data['queries'])
         try:
-            if hasattr(request, 'body'):
-                d = flat.comm.query(request, request.body)
-            else: #older django
-                d = flat.comm.query(request, request.raw_post_data)
+            d = flat.comm.query(request, query)
         except urllib2.URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         return HttpResponse(json.dumps(d), mimetype='application/json')
@@ -52,19 +54,6 @@ def annotate(request,namespace, docid):
         return HttpResponseForbidden("Permission denied, no write access")
 
 
-@login_required
-def declare(request,namespace, docid):
-    if flat.users.models.haswritepermission(request.user.username, namespace):
-        try:
-            if hasattr(request, 'body'):
-                d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.body)
-            else:
-                d = flat.comm.postjson(request, '/declare/' +namespace + '/' + docid + '/', request.raw_post_data)
-        except urllib2.URLError as e:
-             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
-        return HttpResponse(json.dumps(d), mimetype='application/json')
-    else:
-        return HttpResponseForbidden("Permission denied, no write access")
 
 @login_required
 def history(request,namespace, docid):

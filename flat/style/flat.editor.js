@@ -857,7 +857,7 @@ function editor_oninit() {
                 url: "/editor/" + namespace + "/"+ docid + "/annotate/",
                 contentType: "application/json",
                 //processData: false,
-                data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
+                data: JSON.stringify( { 'sid': sid, 'queries': queries}), 
                 success: function(data) {
                     if (data.error) {
                         $('#wait').hide();
@@ -881,12 +881,14 @@ function editor_oninit() {
 
     $('#newdeclarationsubmit').click(function(){
         $('#wait').show();
+        queries = [];
+        queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val();
         $.ajax({
             type: 'POST',
-            url: "/editor/" + namespace + "/"+ docid + "/declare/",
+            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'annotationtype': $('#newdeclarationannotationtype').val(), 'set': $('#newdeclarationset').val(),'sid': sid }),
+            data: JSON.stringify( { 'sid': sid, 'queries': queries}), 
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -918,7 +920,7 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
+            data: JSON.stringify( { 'sid': sid, 'queries': queries}), 
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
