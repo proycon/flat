@@ -2,13 +2,14 @@
 from socket import gethostname
 import os.path
 from os import environ
+import flat
 
 VERSION = "0.3"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__)) + "/"
+BASE_DIR = os.path.dirname(os.path.dirname(flat.__file__)) + "/"
 
 ADMINS = (
     ('Maarten van Gompel', 'proycon@anaproy.nl'),

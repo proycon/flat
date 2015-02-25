@@ -1,0 +1,3 @@
+pynlpl >= 0.7.0
+foliadocserve >= 0.2.0
+Django >= 1.5

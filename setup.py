@@ -18,7 +18,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "Flat",
+    name = "FoLiA-Linguistic-Annotation-Tool",
     version = "0.2",
     author = "Maarten van Gompel",
     author_email = "proycon@anaproy.nl",
@@ -41,5 +41,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     package_data = {'flat':['templates/*.html','style/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'] },
-    install_requires=['lxml >= 2.2','pynlpl >= 0.7.0','foliadocserve >= 0.2','Django >= 1.5']
+    install_requires=['pynlpl >= 0.7.0','foliadocserve >= 0.2','Django >= 1.5']
 )

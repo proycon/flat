@@ -50,16 +50,38 @@ At the far back-end is the FoLiA Document Server, which loads the requested FoLi
 The FoLiA Document Server is written in Python with CherryPy and acts as a RESTful webservice. The FLAT server is written in Python using the Django framework. The user interface is written using javascript with jquery.
 
 ============================================
-Dependencies
+Installation
 ============================================
 
 FLAT runs on Python 3 (the document server requires Python 3, the rest will
-also work on Python 2) and uses these libraries. They can easily be installed
-using ``pip``:
+also work on Python 2) and uses these libraries. 
 
-* pynlpl (https://github.com/proycon/pynlpl)
-* django 
-* cherrypy
+FLAT can be installed through the Python Package Index::
+
+    $ pip install FoLiA-Linguistic-Annotation-Tool
+
+Or from the cloned git repository::
+
+    $ pip install -r requires.txt    #(to install the dependencies)
+    $ python3 setup.py install
+
+You may need ``sudo`` for a global installation.
+ 
+The following dependencies will be pulled in automatically if you follow either
+of the above steps::
+
+ * foliadocserve (https://github.com/proycon/foliadocserve)
+ * pynlpl (https://github.com/proycon/pynlpl)
+ * django 
+
+Copy and edit the ``settings.py`` that comes with FLAT, and add a configuration for your
+system.
+
+The development server can be started as follows (with the default settings,
+adapt for your own settings module)::
+
+    $ django-admin runserver --settings flat.settings
+
 
 =============================================
 Screenshots
