@@ -31,7 +31,7 @@ DATABASES = {
     }
 }
 
-if hostname == 'mhysa' or hostname == 'galactica':
+if hostname == 'mhysa' or hostname == 'caprica':
     ROOT = "/home/proycon/work/flat/"
     WORKDIR = "/home/proycon/work/flat/tmpworkdir/"
     FOLIADOCSERVE_HOST = '127.0.0.1'
