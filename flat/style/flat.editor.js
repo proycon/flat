@@ -882,7 +882,7 @@ function editor_oninit() {
     $('#newdeclarationsubmit').click(function(){
         $('#wait').show();
         queries = [];
-        queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val();
+        queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());
         $.ajax({
             type: 'POST',
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
