@@ -42,9 +42,9 @@ def annotate(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
         try:
             if hasattr(request, 'body'):
-                d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.body)
+                d = flat.comm.query(request, request.body)
             else: #older django
-                d = flat.comm.postjson(request, '/annotate/' +namespace + '/' + docid + '/', request.raw_post_data)
+                d = flat.comm.query(request, request.raw_post_data)
         except urllib2.URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
         return HttpResponse(json.dumps(d), mimetype='application/json')

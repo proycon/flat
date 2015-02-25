@@ -697,12 +697,12 @@ function editor_oninit() {
                         //of things
                         
                         //Is the leftmost word the same as the original word?
-                        //Then the user want to do an insertion to the right
+                        //Then the user wants to do an insertion to the right
                         if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
                             editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
                             editdata[i].text = editdata[i].oldtext;
                         //Is the rightmost word the same as the original word?
-                        //Then the user want to do an insertion to the left
+                        //Then the user wants to do an insertion to the left
                         } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
                             editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].text.length - editdata[i].oldtext.length - 1);
                             editdata[i].text = editdata[i].oldtext;
@@ -759,9 +759,9 @@ function editor_oninit() {
                 //compose query  
                 var query = "";
                 if (namespace == "testflat") {
-                    query += "IN testflat/" + testname + " ";
+                    query += "USE testflat/" + testname + " ";
                 } else {
-                    query += "IN " + namespace + "/" + docid + " ";
+                    query += "USE " + namespace + "/" + docid + " ";
                 }
                 if ((editdata[i].type == "t") && (editdata[i].text == "")) {
                     if (editdata[i].editform == "new") continue;
@@ -772,7 +772,7 @@ function editor_oninit() {
                     }
                     query += "DELETE w ID " + sortededittargets[0];
                     if (editdata[i].editform == "correction") {
-                        query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\""
+                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\")"
                     }
                 } else {
 
@@ -782,6 +782,18 @@ function editor_oninit() {
                     } else if (editdata[i].class == "") {
                         //deletion
                         query += "DELETE";
+                    } else if ((editdata[i].type == "t") && (editdata[i].text != "")) {
+                        if (editdata[i].insertleft) { 
+                            query += "PREPEND"; 
+                        } else if (editdata[i].insertright) {
+                            query += "APPEND"; 
+                        } else if (editdata[i].dosplit) {
+                            query += "SUBSTITUTE"; 
+                        } else if (editdata[i].targets.length > 1) {
+                            query += "SUBSTITUTE"; 
+                        } else {
+                            query += "EDIT";
+                        }
                     } else {
                         query += "EDIT";
                     }
@@ -791,30 +803,33 @@ function editor_oninit() {
                     } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
                         query += " OF " + editdata[i].set;                    
                     }
-                    if (editdata[i].editform == "correction") {
-                        query += " AS CORRECTION OF " + editdata[i].correctionset + " WITH CLASS \"" + editdata[i].correctionclass + "\" ,"
-                    } else if (editdata[i].editform == "alternative") {
-                        query += " AS ALTERNATIVE ,"
-                    }
                     if ((editdata[i].type == "t") && (editdata[i].text != "")) {
-                        query += " WITH TEXT \"" + editdata[i].text + "\"";
+                        query += " WITH text \"" + editdata[i].text + "\"";
                         if (editdata[i].insertleft) { 
-                            query += " INSERTLEFT \"" + editdata[i].insertleft + "\"";
+                            query += " INSERTLEFT \"" + editdata[i].insertleft + "\""; //TODO: REDO FOR NEW FQL!!
                         } else if (editdata[i].insertright) {
-                            query += " INSERTRIGHT \"" + editdata[i].insertright + "\"";
+                            query += " INSERTRIGHT \"" + editdata[i].insertright + "\""; //TODO: REDO FOR NEW FQL!!
                         } else if (editdata[i].dosplit) {
-                            query += " SPLIT";
+                            query += " SPLIT"; //TODO: REDO FOR NEW FQL!!
                         } else if (editdata[i].targets.length > 1) {
-                            query += " MERGE";
+                            query += " MERGE"; //TODO: REDO FOR NEW FQL!!
                         }
                     } else if (editdata[i].class != "") {
                         //no deletion 
-                        query += " WITH CLASS \"" + editdata[i].class + "\"";
+                        query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\"";
+                    }
+                    if (editdata[i].editform == "correction") {
+                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\")";
+                    } else if (editdata[i].editform == "alternative") {
+                        query += " (AS ALTERNATIVE)"
                     }
                     query += " FOR";
+                    var forids = "";
                     sortededittargets.forEach(function(t){
-                        query += " " + t;
+                        if (forids) forids += " ,"
+                        forids += " ID " + t;
                     });
+                    query += forids;
                 }
                 queries.push(query);
                     
