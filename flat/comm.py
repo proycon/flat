@@ -16,12 +16,15 @@ def query(request, query, parsejson=True, **extradata):
     data = {'query':query}
     if 'sid' in request.GET:
         data['sid'] = request.session.session_key + '_' + request.GET['sid']
-    elif usesid:
+    else:
         data['sid'] = request.session.session_key + '_NOSID'
     for key, value in extradata.items():
-        data[key] = value
+        if isinstance(value, bool):
+            data[key] = int(value)
+        else:
+            data[key] = value
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/query/")
-    f = urlopen(docservereq,data) #or opener.open()
+    f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
     else:
@@ -81,7 +84,7 @@ def postjson( request, url, data):
     req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
     req.add_header('x-sessionid', sid)
     req.add_header('Content-Type', 'application/json')
-    f = urlopen(req, data)
+    f = urlopen(req, urlencode(data).encode('utf-8'))
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
     else:

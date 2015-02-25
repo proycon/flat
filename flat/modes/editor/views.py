@@ -18,7 +18,7 @@ import json
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
-            doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR text", setdefinitions=True,declarations=True) #get the entire document with meta information
+            doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT ALL FORMAT flat", setdefinitions=True,declarations=True) #get the entire document with meta information
         except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
