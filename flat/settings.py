@@ -8,6 +8,8 @@ VERSION = "0.3"
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__)) + "/"
+
 ADMINS = (
     ('Maarten van Gompel', 'proycon@anaproy.nl'),
 )
@@ -32,7 +34,6 @@ DATABASES = {
 }
 
 if hostname == 'mhysa' or hostname == 'caprica':
-    ROOT = "/home/proycon/work/flat/"
     WORKDIR = "/home/proycon/work/flat/tmpworkdir/"
     FOLIADOCSERVE_HOST = '127.0.0.1'
     FOLIADOCSERVE_PORT = 8080
@@ -41,9 +42,7 @@ if hostname == 'mhysa' or hostname == 'caprica':
         'NAME': 'db',                      # Or path to database file if using sqlite3.
     }
 elif hostname[:9] == 'applejack':
-    ROOT = os.path.dirname(__file__) + '/'
     if not ('DEV' in environ) or environ['DEV'] == 'false':
-        ROOT = "/var/www2/flat/live/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -54,12 +53,10 @@ elif hostname[:9] == 'applejack':
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        ROOT = "/www/flat/live/repo/flat/"
         WORKDIR = "/www/flat/live/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8023
     else:
-        ROOT == "/var/www2/flat/test/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -70,13 +67,11 @@ elif hostname[:9] == 'applejack':
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        ROOT = "/www/flat/test/repo/flat/"
         WORKDIR = "/www/flat/test/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8024
 elif hostname[:8] == 'spitfire':
     if not ('DEV' in environ) or environ['DEV'] == 'false':
-        ROOT = "/var/www2/flat/live/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -87,13 +82,11 @@ elif hostname[:8] == 'spitfire':
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        ROOT = "/var/www2/flat/live/repo/flat/"
         WORKDIR = "/var/www2/flat/live/writable/docroot/"
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8023
         ADMIN_MEDIA_PREFIX = '/media/'
     else:
-        ROOT = "/var/www2/flat/test/repo/flat/"
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -104,7 +97,6 @@ elif hostname[:8] == 'spitfire':
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        ROOT = "/var/www2/flat/test/repo/flat/"
         WORKDIR = "/var/www2/flat/test/writable/docroot/"
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8024
@@ -277,7 +269,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ROOT + 'usermedia/' #not used
+MEDIA_ROOT = BASE_DIR + 'usermedia/' #not used
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -288,13 +280,13 @@ MEDIA_URL = 'http://flat.science.ru.nl/usermedia/' #not used
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ROOT + 'static/'
+STATIC_ROOT = BASE_DIR + '/flat/static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
-STYLE_ROOT = ROOT + 'style/'
+STYLE_ROOT = BASE_DIR + '/flat/style/'
 STYLE_URL = '/style/'
 
 # Additional locations of static files
@@ -302,7 +294,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    ROOT + 'style/',
+    BASE_DIR + '/flat/style/',
 )
 
 
@@ -345,14 +337,13 @@ TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    ROOT + 'templates/'
+    BASE_DIR + 'flat/templates/'
 ]
 for mode,_ in EDITOR_MODES:
-    if os.path.isdir(ROOT + '/modes/' + mode + '/templates/'):
-        TEMPLATE_DIRS.append(ROOT + '/modes/' + mode + '/templates/')
+    if os.path.isdir(BASE_DIR + '/flat/modes/' + mode + '/templates/'):
+        TEMPLATE_DIRS.append(BASE_DIR + '/flat/modes/' + mode + '/templates/')
 
 TEMPLATE_DIRS = tuple(TEMPLATE_DIRS)
-
 
 INSTALLED_APPS = [
     'django.contrib.auth',

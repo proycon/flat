@@ -40,6 +40,6 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    package_data = {'flat':['templates/*.html'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'] },
+    package_data = {'flat':['templates/*.html','style/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'] },
     install_requires=['lxml >= 2.2','pynlpl >= 0.7.0','foliadocserve >= 0.2','Django >= 1.5']
 )
