@@ -1,6 +1,12 @@
-from urllib import urlencode
-from urllib2 import urlopen, Request
-from StringIO import StringIO
+import sys
+if sys.version < '3':
+    from urllib import urlencode
+    from urllib2 import urlopen, Request
+    from StringIO import StringIO
+else:
+    from urllib.parse import urlencode
+    from urllib.request import urlopen, Request
+    from io import BytesIO as StringIO
 import flat.settings as settings
 import json
 import pycurl

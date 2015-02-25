@@ -27,7 +27,7 @@ setup(
     keywords = "flat linguistic annotation nlp computational_linguistics folia annotator web",
     url = "https://github.com/proycon/flat",
     packages=['flat','flat.modes','flat.modes.structureeditor','flat.modes.viewer','flat.modes.editor','flat.users'],
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Text Processing :: Linguistic",
@@ -40,6 +40,6 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    package_data = {'flat':['templates'], 'flat.modes.structureeditor':['templates'],  'flat.modes.viewer':['templates'], 'flat.modes.editor':['templates'] },
+    package_data = {'flat':['templates/*.html'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'] },
     install_requires=['lxml >= 2.2','pynlpl >= 0.7.0','foliadocserve >= 0.2','Django >= 1.5']
 )

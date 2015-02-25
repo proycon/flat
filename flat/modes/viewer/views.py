@@ -6,7 +6,11 @@ import flat.settings as settings
 import flat.comm
 import flat.users
 import json
-import urllib2
+import sys
+if sys.version < '3':
+    from urllib2 import URLError
+else:
+    from urllib.error import URLError
 
 def getcontext(request,namespace,docid, doc):
     return {
@@ -32,7 +36,7 @@ def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
             doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR text", setdefinitions=True,declarations=True) #get the entire document with meta information
-        except urllib2.URLError:
+        except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         d = getcontext(request,namespace,docid, doc)
         return render(request, 'viewer.html', d)
@@ -45,7 +49,7 @@ def subview(request, namespace, docid, elementid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
             e = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR \"" + elementid + "\"", False) # False =  do not parse json
-        except urllib2.URLError:
+        except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(e, mimetype='application/json')
     else:
@@ -56,7 +60,7 @@ def poll(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         try:
             r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', True, False) #True, False = handles sid, does not parse json
-        except urllib2.URLError:
+        except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
         return HttpResponse(r, mimetype='application/json')
     else:

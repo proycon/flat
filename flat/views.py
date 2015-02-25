@@ -7,7 +7,11 @@ import datetime
 import flat.settings as settings
 import flat.comm
 import flat.users
-import urllib2
+import sys
+if sys.version < '3':
+    from urllib2 import URLError
+else:
+    from urllib.error import URLError
 import os
 
 def login(request):
@@ -62,12 +66,12 @@ def index(request):
     docs = {}
     try:
         namespaces = flat.comm.get(request, '/namespaces/', False)
-    except urllib2.URLError:
+    except URLError:
         return HttpResponseForbidden("Unable to connect to the document server")
     if not request.user.username in namespaces['namespaces']:
         try:
             flat.comm.get(request, "makenamespace/" + request.user.username, False)
-        except urllib2.URLError:
+        except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
 
     namespaces_sorted = sorted([x for x in namespaces['namespaces'] if x != request.user.username])
@@ -76,7 +80,7 @@ def index(request):
         if flat.users.models.hasreadpermission(request.user.username, namespace):
             try:
                 r = flat.comm.get(request, '/documents/' + namespace, False)
-            except urllib2.URLError:
+            except URLError:
                 return HttpResponseForbidden("Unable to connect to the document server")
             docs[namespace] = []
             for d in sorted(r['documents']):
@@ -104,7 +108,7 @@ def upload(request):
             data = unicode(request.FILES['file'].read(),'utf-8')
             try:
                 response = flat.comm.postxml(request,"upload/" + namespace , data)
-            except urllib2.URLError:
+            except URLError:
                 return HttpResponseForbidden("Unable to connect to the document server")
             if 'error' in response and response['error']:
                 return HttpResponseForbidden(response['error'])
