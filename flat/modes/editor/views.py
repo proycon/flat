@@ -44,16 +44,22 @@ def view(request, namespace, docid):
 @login_required
 def annotate(request,namespace, docid):
     if flat.users.models.haswritepermission(request.user.username, namespace):
-        if hasattr(request, 'body'):
-            data = json.loads(request.body)
-        else: #older django
-            data = json.loads(request.raw_post_data)
+        if sys.version < '3':
+            if hasattr(request, 'body'):
+                data = json.loads(unicode(request.body,'utf-8'))
+            else: #older django
+                data = json.loads(unicode(request.raw_post_data,'utf-8'))
+        else:
+            if hasattr(request, 'body'):
+                data = json.loads(str(request.body,'utf-8'))
+            else: #older django
+                data = json.loads(str(request.raw_post_data,'utf-8'))
         query = "\n".join(data['queries'])
         try:
             d = flat.comm.query(request, query)
         except URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
-        return HttpResponse(json.dumps(d), mimetype='application/json')
+        return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
 
@@ -69,7 +75,7 @@ def history(request,namespace, docid):
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
         except URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
-        return HttpResponse(json.dumps(d), mimetype='application/json')
+        return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
 
@@ -83,6 +89,6 @@ def revert(request,namespace, docid, commithash):
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
         except URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
-        return HttpResponse("{}", mimetype='application/json') #no content, client will do a full reload
+        return HttpResponse("{}", content_type='application/json') #no content, client will do a full reload
     else:
         return HttpResponseForbidden("Permission denied, no write access")

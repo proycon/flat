@@ -830,6 +830,7 @@ function editor_oninit() {
                         forids += " ID " + t;
                     });
                     query += forids;
+                    query += " FORMAT flat RETURN target";
                 }
                 queries.push(query);
                     

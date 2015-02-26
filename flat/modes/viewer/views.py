@@ -51,7 +51,7 @@ def subview(request, namespace, docid, elementid):
             e = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT FOR \"" + elementid + "\" FORMAT flat", False) # False =  do not parse json
         except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
-        return HttpResponse(e, mimetype='application/json')
+        return HttpResponse(e, content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied")
 
@@ -62,7 +62,7 @@ def poll(request, namespace, docid):
             r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', False)
         except URLError:
             return HttpResponseForbidden("Unable to connect to the document server")
-        return HttpResponse(r, mimetype='application/json')
+        return HttpResponse(r, content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied")
 
