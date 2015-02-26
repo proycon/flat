@@ -29,7 +29,7 @@ def query(request, query, parsejson=True, **extradata):
         else:
             data[key] = value
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/query/")
-    setsid(docsservereq, getsid(request))
+    setsid(docservereq, getsid(request))
     f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
