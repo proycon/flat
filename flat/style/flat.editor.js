@@ -473,6 +473,7 @@ function showhistory() {
         type: 'GET',
         url: "/editor/" + namespace + "/"+ docid + "/history/",
         contentType: "application/json",
+        headers: {'X-sessionid': sid },
         //processData: false,
         success: function(data) {
             $('#wait').hide();
@@ -503,6 +504,7 @@ function revert(commithash) {
         type: 'GET',
         url: "/editor/" + namespace + "/"+ docid + "/revert/" + commithash,
         contentType: "application/json",
+        headers: {'X-sessionid': sid },
         //processData: false,
         success: function(data) {
             location.reload();
@@ -858,7 +860,8 @@ function editor_oninit() {
                 url: "/editor/" + namespace + "/"+ docid + "/annotate/",
                 contentType: "application/json",
                 //processData: false,
-                data: JSON.stringify( { 'sid': sid, 'queries': queries}), 
+                headers: {'X-sessionid': sid },
+                data: JSON.stringify( { 'queries': queries}), 
                 success: function(data) {
                     if (data.error) {
                         $('#wait').hide();
@@ -889,7 +892,8 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'sid': sid, 'queries': queries}), 
+            headers: {'X-sessionid': sid },
+            data: JSON.stringify( { 'queries': queries}), 
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -921,7 +925,8 @@ function editor_oninit() {
             url: "/editor/" + namespace + "/"+ docid + "/annotate/",
             contentType: "application/json",
             //processData: false,
-            data: JSON.stringify( { 'sid': sid, 'queries': queries}), 
+            headers: {'X-sessionid': sid },
+            data: JSON.stringify( { 'queries': queries}), 
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();

@@ -12,18 +12,24 @@ import json
 import pycurl
 
 
+def getsid(request):
+    if 'X-sessionid' in request.META:
+        return request.session.session_key + '_' + request.GET['sid']
+    else:
+        return request.session.session_key + '_NOSID'
+
+def setsid(request, sid):
+    request.add_header('X-sessionid', sid)
+
 def query(request, query, parsejson=True, **extradata):
     data = {'query':query}
-    if 'sid' in request.GET:
-        data['sid'] = request.session.session_key + '_' + request.GET['sid']
-    else:
-        data['sid'] = request.session.session_key + '_NOSID'
     for key, value in extradata.items():
         if isinstance(value, bool):
             data[key] = int(value)
         else:
             data[key] = value
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/query/")
+    setsid(docsservereq, getsid(request))
     f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
@@ -45,14 +51,10 @@ def query(request, query, parsejson=True, **extradata):
             return ""
 
 
+
 def get( request, url, parsejson=True):
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
-    if 'sid' in request.GET:
-        sid = request.session.session_key + '_' + request.GET['sid']
-        docservereq.add_header('x-sessionid', sid)
-    else:
-        sid = request.session.session_key + '_NOSID'
-        docservereq.add_header('x-sessionid', sid)
+    setsid(docsservereq, getsid(request))
     f = urlopen(docservereq)
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
@@ -76,15 +78,10 @@ def get( request, url, parsejson=True):
 def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
         data = json.dumps(data)
-        sid = request.session.session_key + '_NOSID'
-    else:
-        data = json.loads(data)
-        data['sid'] = sid = request.session.session_key + '_' + str(data['sid'])
-        data = json.dumps(data)
-    req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
-    req.add_header('x-sessionid', sid)
-    req.add_header('Content-Type', 'application/json')
-    f = urlopen(req, urlencode(data).encode('utf-8'))
+    docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
+    setsid(docsservereq, getsid(request))
+    docservereq.add_header('Content-Type', 'application/json')
+    f = urlopen(docservereq, urlencode(data).encode('utf-8'))
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
     else:

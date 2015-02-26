@@ -431,7 +431,7 @@ function viewer_ontimer() {
     if (namespace != "testflat") { //no polling for tests 
         $.ajax({
             type: 'GET',
-            data: {'sid': sid },
+            headers: {'X-sessionid': sid },
             url: "/viewer/" + namespace + "/"+ docid + "/poll/",
             success: function(data) {
                 update(data);
