@@ -54,7 +54,7 @@ def query(request, query, parsejson=True, **extradata):
 
 def get( request, url, parsejson=True):
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
-    setsid(docsservereq, getsid(request))
+    setsid(docservereq, getsid(request))
     f = urlopen(docservereq)
     if sys.version < '3':
         contents = unicode(f.read(),'utf-8')
@@ -79,7 +79,7 @@ def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
         data = json.dumps(data)
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
-    setsid(docsservereq, getsid(request))
+    setsid(docservereq, getsid(request))
     docservereq.add_header('Content-Type', 'application/json')
     f = urlopen(docservereq, urlencode(data).encode('utf-8'))
     if sys.version < '3':
