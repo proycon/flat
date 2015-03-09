@@ -759,6 +759,7 @@ function editor_oninit() {
                 sendeditdata.push(editdata[i]);
                 
                 //compose query  
+                var substitute = false;
                 var query = "";
                 if (namespace == "testflat") {
                     query += "USE testflat/" + testname + " ";
@@ -774,10 +775,9 @@ function editor_oninit() {
                     }
                     query += "DELETE w ID " + sortededittargets[0];
                     if (editdata[i].editform == "correction") {
-                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\")"
+                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     }
                 } else {
-
                     if ((editdata[i].editform == "new")) {
                         query += "ADD";
                         if (editdata[i].class == "") continue;
@@ -790,45 +790,75 @@ function editor_oninit() {
                         } else if (editdata[i].insertright) {
                             query += "APPEND"; 
                         } else if (editdata[i].dosplit) {
-                            query += "SUBSTITUTE"; 
-                        } else if (editdata[i].targets.length > 1) {
-                            query += "SUBSTITUTE"; 
+                            substitute = true;
+                        } else if (editdata[i].targets.length > 1) { //merge
+                            substitute = true;
                         } else {
                             query += "EDIT";
                         }
                     } else {
                         query += "EDIT";
                     }
-                    query += " " +editdata[i].type;
-                    if ((editdata[i].id) && ( editdata[i].editform != "new")) {
-                        query += " ID " + editdata[i].id;
-                    } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                        query += " OF " + editdata[i].set;                    
-                    }
-                    if ((editdata[i].type == "t") && (editdata[i].text != "")) {
-                        query += " WITH text \"" + editdata[i].text + "\"";
-                        if (editdata[i].insertleft) { 
-                            query += " INSERTLEFT \"" + editdata[i].insertleft + "\""; //TODO: REDO FOR NEW FQL!!
-                        } else if (editdata[i].insertright) {
-                            query += " INSERTRIGHT \"" + editdata[i].insertright + "\""; //TODO: REDO FOR NEW FQL!!
-                        } else if (editdata[i].dosplit) {
-                            query += " SPLIT"; //TODO: REDO FOR NEW FQL!!
-                        } else if (editdata[i].targets.length > 1) {
-                            query += " MERGE"; //TODO: REDO FOR NEW FQL!!
+                    if (!substitute) {
+                        if (editdata[i].insertright) { //APPEND
+                            query += " " +editdata[i].type;
+                            if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
+                                query += " OF " + editdata[i].set;                    
+                            }
+                            if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
+                                query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+";
+                            }
+                        } else if (editdata[i].insertright) { //PREPEND
+                            query += " " +editdata[i].type;
+                            if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
+                                query += " OF " + editdata[i].set;                    
+                            }
+                            if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
+                                query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+";
+                            }
+                        } else { //normal behaviour
+                            query += " " +editdata[i].type;
+                            if ((editdata[i].id) && ( editdata[i].editform != "new")) {
+                                query += " ID " + editdata[i].id;
+                            } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
+                                query += " OF " + editdata[i].set;                    
+                            }
+                            if ((editdata[i].type == "t") && (editdata[i].text != "")) {
+                                query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            } else if (editdata[i].class != "") {
+                                //no deletion 
+                                query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            }
                         }
-                    } else if (editdata[i].class != "") {
-                        //no deletion 
-                        query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\"";
+                    } else { //substitute
+                        if (editdata[i].dosplit) {
+                            parts = editdata[i].text.split(" ");
+                            for (var j = 0; j < parts.length; j++) { //SPLIT
+                                if (j > 0) query += " ";
+                                query += "SUBSTITUTE w WITH text \"" + parts[j] + "\""
+                            }
+                        } else if (editdata[i].targets.length > 1) { //MERGE
+                            query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
+                        }
                     }
                     if (editdata[i].editform == "correction") {
-                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\")";
+                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     } else if (editdata[i].editform == "alternative") {
                         query += " (AS ALTERNATIVE)"
                     }
                     query += " FOR";
+                    if (substitute) query += " SPAN"
                     var forids = "";
                     sortededittargets.forEach(function(t){
-                        if (forids) forids += " ,"
+                        if (forids) {
+                            if (substitute) {
+                                forids += " &"
+                            } else {
+                                forids += " ,"
+                            }
+                        }
                         forids += " ID " + t;
                     });
                     query += forids;
