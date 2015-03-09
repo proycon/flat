@@ -807,7 +807,6 @@ function editor_oninit() {
                             }
                             if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
                                 query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-";
                             }
                         } else if (editdata[i].insertright) { //PREPEND
                             query += " " +editdata[i].type;
@@ -816,7 +815,6 @@ function editor_oninit() {
                             }
                             if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
                                 query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-";
                             }
                         } else { //normal behaviour
                             query += " " +editdata[i].type;
