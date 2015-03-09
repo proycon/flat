@@ -20,7 +20,7 @@ def view(request, namespace, docid):
         try:
             doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT ALL FORMAT flat", setdefinitions=True,declarations=True) #get the entire document with meta information
         except URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
+            return HttpResponseForbidden("Unable to connect to the document server [editor/view]")
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'editor'
         try:
@@ -34,7 +34,7 @@ def view(request, namespace, docid):
                     try:
                         r = flat.comm.query(request, "USE " + namespace + "/" + docid + " DECLARE " + annotationtype + " OF " + set)
                     except URLError as e:
-                        return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
+                        return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/view]")
                     d['docdeclarations'] = json.dumps(r['declarations'])
                     d['setdefinitions'] = json.dumps(r['setdefinitions'])
         return render(request, 'editor.html', d)
@@ -58,7 +58,7 @@ def annotate(request,namespace, docid):
         try:
             d = flat.comm.query(request, query)
         except URLError as e:
-            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/annotate]")
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
@@ -74,7 +74,7 @@ def history(request,namespace, docid):
             else:
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
         except URLError as e:
-            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/history]")
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
@@ -88,7 +88,7 @@ def revert(request,namespace, docid, commithash):
             else:
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
         except URLError as e:
-            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason)
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/revert]")
         return HttpResponse("{}", content_type='application/json') #no content, client will do a full reload
     else:
         return HttpResponseForbidden("Permission denied, no write access")

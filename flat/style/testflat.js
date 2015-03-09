@@ -6,7 +6,8 @@ function testbackend(testname,username,sid,queries) {
         url: "/editor/testflat/"+ testname + "/annotate/",
         contentType: "application/json",
         //processData: false,
-        data: JSON.stringify( { 'annotator': username, 'sid': sid, 'queries': queries}), 
+        headers: {'X-sessionid': sid },
+        data: JSON.stringify( { 'queries': queries}), 
         success: function(data) {
             if (data.error) {
                 $('#wait').hide();
@@ -33,7 +34,7 @@ function testinit(name, assert) {
     updateready = false;
     $.ajax({
         type: 'GET',
-        data: {'sid': sid },
+        headers: {'X-sessionid': sid },
         async: false, //important here!! does not continue until ajax is all done
         url: "/viewer/" + namespace + "/"+ docid + "/untitleddoc.text/",
         success: function(data) {
@@ -302,7 +303,7 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
 // TESTS -- Second stage
 
 function testeval(data) {
-    if (data.testmessage  == "") data.testmessage = "ok";
+    if (data.testmessage == "") data.testmessage = "ok";
 
     if (data.queries) {
         globalassert.ok(data.testresult, "Backend Queries: " + data.queries.join(" -- ") );
