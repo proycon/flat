@@ -170,7 +170,7 @@ function addeditforms() {
         if ((setdefinitions[correctionset]) && (setdefinitions[correctionset].type == "closed")) {
             s = s + "<select id=\"editform" + editfields + "correctionclass\">";
             s = s + "<option value=\"\"></option>";
-            Object.keys(setdefinitions[correctionset].classes).forEach(function(cid){
+            setdefinitions[correctionset].classorder.forEach(function(cid){
                 c = setdefinitions[correctionset].classes[cid]
                 s = s + getclassesasoptions(c, ""); // will add to s
             });
@@ -294,7 +294,7 @@ function showeditor(element) {
                         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
                             s = s + "<select id=\"editfield" + editfields + "\" >";
                             s = s + "<option value=\"\"></option>";
-                            Object.keys(setdefinitions[annotation.set].classes).forEach(function(cid){
+                            setdefinitions[annotation.set].classorder.forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid]
                                 s = s + getclassesasoptions(c, annotation.class); // will add to s
                             });
@@ -446,7 +446,7 @@ function addeditorfield(index) {
     if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
         s = s + "<select id=\"editfield" + editfields + "\">";
         s = s + "<option selected=\"selected\" value=\"\"></option>";
-        Object.keys(setdefinitions[editoraddablefields[index].set].classes).forEach(function(cid){
+        setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
             c = setdefinitions[editoraddablefields[index].set].classes[cid]
             s = s + getclassesasoptions(c, ""); // will add to s
         });

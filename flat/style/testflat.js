@@ -99,7 +99,7 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     testinit("addentity",assert);
     $(valid('#untitleddoc.p.3.s.1.w.12b')).trigger('click');
     //selected named entity to add
-    $('#editoraddablefields').prop('selectedIndex',4); //corresponds to NER as long as teh declarations don't change
+    $('#editoraddablefields').prop('selectedIndex',4); //corresponds to NER as long as the declarations don't change
     $('#editoraddablefields').trigger('change');
     $('#editoraddfield').trigger('click'); //click add button
 
@@ -321,8 +321,15 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
     } else if ((testname == "addentity") || (testname == "correction_addentity")) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on first word");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b']["untitleddoc.p.3.s.1.entity.1"].class, "per", "Finding named entity on second word");
+        var e = null;
+        for (var key in annotations['untitleddoc.p.3.s.1.w.12']) {
+            if (annotations['untitleddoc.p.3.s.1.w.12'][key].type == "entity") {
+                e = annotations['untitleddoc.p.3.s.1.w.12'][key];
+                break;
+            }
+        }
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12'][e.id].class, "per", "Finding named entity on first word");
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b'][e.id].class, "per", "Finding named entity on second word");
     } else if ((testname == "worddelete") ||  (testname == "correction_worddelete")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.8.w.10')).length, 0, "Test if word is removed from interface");
     } else if ((testname == "wordsplit") ||(testname == "correction_wordsplit")) {
