@@ -766,6 +766,7 @@ function editor_oninit() {
                 } else {
                     query += "USE " + namespace + "/" + docid + " ";
                 }
+                var isspan = annotationtypespan[editdata[i].type];
                 if ((editdata[i].type == "t") && (editdata[i].text == "")) {
                     if (editdata[i].editform == "new") continue;
                     //deletion of text implies deletion of word
@@ -846,21 +847,29 @@ function editor_oninit() {
                     } else if (editdata[i].editform == "alternative") {
                         query += " (AS ALTERNATIVE)"
                     }
-                    query += " FOR";
-                    if (substitute) query += " SPAN"
-                    var forids = "";
-                    sortededittargets.forEach(function(t){
-                        if (forids) {
-                            if (substitute) {
-                                forids += " &"
-                            } else {
-                                forids += " ,"
+                    if (sortededittargets.length > 0) {
+                        query += " FOR";
+                        if ((substitute) || (isspan)) query += " SPAN"
+                        var forids = "";
+                        sortededittargets.forEach(function(t){
+                            if (forids) {
+                                if ((substitute) || (isspan)) {
+                                    forids += " &"
+                                } else {
+                                    forids += " ,"
+                                }
                             }
-                        }
-                        forids += " ID " + t;
-                    });
-                    query += forids;
-                    query += " FORMAT flat RETURN target";
+                            forids += " ID " + t;
+                        });
+                        query += forids;
+                    }
+                    if (substitute) {
+                        query += " FORMAT flat RETURN ancestor-focus";
+                    } else if (isspan) {
+                        query += " FORMAT flat RETURN ancestor-target";
+                    } else {
+                        query += " FORMAT flat RETURN target";
+                    }
                 }
                 queries.push(query);
                     

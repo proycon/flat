@@ -16,6 +16,24 @@ annotationtypenames = {
     'dependency': 'Dependency',
     'coreferencechain': 'Coreference',
 }
+annotationtypespan = {
+    'pos': false,
+    'lemma': false,
+    't': false,
+    'w': false,
+    's': false,
+    'p': false,
+    'div': false,
+    'entity': true,
+    'su': true,
+    'chunk': true,
+    'sense': true,
+    'semrole': true,
+    'correction': true,
+    'errordetection': false,
+    'dependency': true,
+    'coreferencechain': true,
+}
 sid = ((Math.random() * 1e9) | 0); //session id
 
 function getannotationtypename(t) {
