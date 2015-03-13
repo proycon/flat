@@ -760,6 +760,7 @@ function editor_oninit() {
                 
                 //compose query  
                 var substitute = false;
+                var returntype = "target";
                 var query = "";
                 if (namespace == "testflat") {
                     query += "USE testflat/" + testname + " ";
@@ -767,6 +768,7 @@ function editor_oninit() {
                     query += "USE " + namespace + "/" + docid + " ";
                 }
                 var isspan = annotationtypespan[editdata[i].type];
+                if (isspan) returntype = "ancestor-target";
                 if ((editdata[i].type == "t") && (editdata[i].text == "")) {
                     if (editdata[i].editform == "new") continue;
                     //deletion of text implies deletion of word
@@ -788,12 +790,16 @@ function editor_oninit() {
                         query += "DELETE";
                     } else if ((editdata[i].type == "t") && (editdata[i].text != "")) {
                         if (editdata[i].insertleft) { 
+                            returntype = "ancestor-focus";
                             query += "PREPEND"; 
                         } else if (editdata[i].insertright) {
+                            returntype = "ancestor-focus";
                             query += "APPEND"; 
                         } else if (editdata[i].dosplit) {
+                            returntype = "ancestor-focus";
                             substitute = true;
                         } else if (editdata[i].targets.length > 1) { //merge
+                            returntype = "ancestor-focus";
                             substitute = true;
                         } else {
                             query += "EDIT";
@@ -803,18 +809,12 @@ function editor_oninit() {
                     }
                     if (!substitute) {
                         if (editdata[i].insertright) { //APPEND
-                            query += " " +editdata[i].type;
-                            if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                                query += " OF " + editdata[i].set;                    
-                            }
+                            query += " w";
                             if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
                                 query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
-                        } else if (editdata[i].insertright) { //PREPEND
-                            query += " " +editdata[i].type;
-                            if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                                query += " OF " + editdata[i].set;                    
-                            }
+                        } else if (editdata[i].insertleft) { //PREPEND
+                            query += " w"; 
                             if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
                                 query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
@@ -864,13 +864,7 @@ function editor_oninit() {
                         });
                         query += forids;
                     }
-                    if (substitute) {
-                        query += " FORMAT flat RETURN ancestor-focus";
-                    } else if (isspan) {
-                        query += " FORMAT flat RETURN ancestor-target";
-                    } else {
-                        query += " FORMAT flat RETURN target";
-                    }
+                    query += " FORMAT flat RETURN " + returntype;
                 }
                 queries.push(query);
                     
