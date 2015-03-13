@@ -346,8 +346,20 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
     } else if ((testname == "newoverlapspan") || (testname == "correction_newoverlapspan")) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding first entity");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.2"].class, "org", "Finding second entity");
+        var e = null;
+        var e2 = null;
+        for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
+            if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
+                if (e != null) {
+                    e2 = annotations['untitleddoc.p.3.s.9.w.9'][key];
+                    break;
+                } else {
+                    e = annotations['untitleddoc.p.3.s.9.w.9'][key];
+                }
+            }
+        }
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9'][e.id].class, "loc", "Finding first entity");
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9'][e2.id].class, "org", "Finding second entity");
     } else if ((testname == "spandeletion")  || (testname == "correction_spandeletion")) {
     } else if ((testname == "tokenannotationdeletion")  ||(testname == "correction_tokenannotationdeletion")) {
     } 
