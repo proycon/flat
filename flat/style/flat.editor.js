@@ -760,6 +760,7 @@ function editor_oninit() {
                 
                 //compose query  
                 var substitute = false;
+                var add = false;
                 var returntype = "target";
                 var query = "";
                 if (namespace == "testflat") {
@@ -784,6 +785,7 @@ function editor_oninit() {
                 } else {
                     if ((editdata[i].editform == "new")) {
                         query += "ADD";
+                        add = true;
                         if (editdata[i].class == "") continue;
                     } else if (editdata[i].class == "") {
                         //deletion
@@ -843,7 +845,7 @@ function editor_oninit() {
                             query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
                         }
                     }
-                    if (isspan && editdata[i].id) {
+                    if (isspan && editdata[i].id && !add) {
                         //we edit a span annotation, edittargets reflects the new span:
                         if (sortededittargets.length > 0) {
                             query += " RESPAN ";
@@ -866,7 +868,7 @@ function editor_oninit() {
                         query += " (AS ALTERNATIVE)"
                     }
 
-                    if (!(isspan && editdata[i].id)) { //only if we're not editing an existing span annotation 
+                    if (!(isspan && editdata[i].id & !add)) { //only if we're not editing an existing span annotation 
                         //set target expression
                         if (sortededittargets.length > 0) {
                             query += " FOR";
