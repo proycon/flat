@@ -778,6 +778,7 @@ function editor_oninit() {
                     if (editdata[i].editform == "correction") {
                         query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     }
+                    query += " FORMAT flat RETURN ancestor-focus";
                 } else {
                     if ((editdata[i].editform == "new")) {
                         query += "ADD";
