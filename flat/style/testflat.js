@@ -403,8 +403,34 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_spanchange") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.2"].class, "loc", "Finding named entity on original word");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.2"].class, "loc", "Finding named entity on new word");
+        var e = null;
+        for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
+            if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
+                e = annotations['untitleddoc.p.3.s.9.w.9'][key];
+                break;
+            }
+        }
+        if (e) {
+            globalassert.ok("Finding named entity on original word");
+            globalassert.equal(e.class, "loc", "Checking class of named entity on original word");
+        } else {
+            globalassert.ok(false, "Finding named entity on original word");
+        }
+
+        var e = null;
+        for (var key in annotations['untitleddoc.p.3.s.9.w.7']) {
+            if (annotations['untitleddoc.p.3.s.9.w.7'][key].type == "entity") {
+                e = annotations['untitleddoc.p.3.s.9.w.7'][key];
+                break;
+            }
+        }
+        if (e) {
+            globalassert.ok("Finding named entity on new word");
+            globalassert.equal(e.class, "loc", "Checking class of named entity on new word");
+        } else {
+            globalassert.ok(false, "Finding named entity on new word");
+        }
+
     }
 
     QUnit.start(); //continue (for asynchronous tests)

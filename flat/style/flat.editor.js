@@ -869,7 +869,7 @@ function editor_oninit() {
                         query += " (AS ALTERNATIVE)"
                     }
 
-                    if (!(isspan && editdata[i].id & (action == "EDIT"))) { //only if we're not editing an existing span annotation 
+                    if (!(isspan && editdata[i].id && (action == "EDIT"))) { //only if we're not editing an existing span annotation 
                         //set target expression
                         if (sortededittargets.length > 0) {
                             query += " FOR";
