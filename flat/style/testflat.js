@@ -303,7 +303,7 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
 
 function findcorrectionbytext(text) {
     for (var key in annotations) {
-        if ((annotations[key]["t/undefined"]) && (annotations[key]["t/undefined"].incorrection)  && (annotations[key]["t/undefined"].text == text)) return annotations[key]['self'].id;
+        if ((annotations[key]["t/undefined"]) && (annotations[key]["t/undefined"].incorrection) && (annotations[key]["t/undefined"].incorrection.length == 1)  && (annotations[key]["t/undefined"].text == text)) return annotations[key]['self'].id;
     }
     return null;
 }
@@ -344,16 +344,30 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b'][e.id].class, "per", "Finding named entity on second word");
     } else if ((testname == "worddelete") ||  (testname == "correction_worddelete")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.8.w.10')).length, 0, "Test if word is removed from interface");
-    } else if ((testname == "wordsplit") ||(testname == "correction_wordsplit")) {
+    } else if ((testname == "wordsplit")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.17')).length, 1, "Checking presence of new words (1/2)");
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.18')).length, 1, "Checking presence of new words (1/2)");
-    } else if ((testname == "wordinsertionright") || (testname == "correction_wordinsertionright"))  {
+    } else if ((testname == "correction_wordsplit")) {
+        globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
+        id = findcorrectionbytext("4")
+        globalassert.equal($(valid('#' + id )).length, 1, "Checking presence of new words (1/2)");
+        id = findcorrectionbytext("uur")
+        globalassert.equal($(valid('#'+ id )).length, 1, "Checking presence of new words (1/2)");
+    } else if ((testname == "wordinsertionright"))  {
         testtext('#untitleddoc.p.3.s.12.w.1',"en")
         testtext('#untitleddoc.p.3.s.12.w.17',"we")
-    } else if ((testname == "wordinsertionleft") || (testname == "correction_wordinsertionleft")) {
+    } else if ((testname == "wordinsertionleft")) {
         testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
         testtext('#untitleddoc.p.3.s.13.w.16',"we")
+    } else if ((testname == "correction_wordinsertionright"))  {
+        id = findcorrectionbytext("we")
+        testtext('#untitleddoc.p.3.s.12.w.1',"en")
+        testtext('#' + id,"we")
+    } else if ((testname == "correction_wordinsertionleft"))  {
+        id = findcorrectionbytext("we")
+        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
+        testtext('#' + id,"we")
     } else if ((testname == "spanchange") ) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
