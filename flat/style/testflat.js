@@ -195,7 +195,7 @@ QUnit.asyncTest("[As correction] Text Change", function(assert){
     $(valid('#untitleddoc.p.3.s.1.w.2')).trigger('click');
     $('#editfield1text').val("mijn"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -209,7 +209,7 @@ QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function
     $('#spanselector1').trigger('click');
     $('#editfield1text').val("wegreden"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -219,7 +219,7 @@ QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
     $(valid('#untitleddoc.p.3.s.6.w.8')).trigger('click');
     $('#editfield2').val("LID(onbep,stan,rest)");  //pos
     $('#editform2correction').trigger('click'); 
-    $('#editform2correctionclass').prop('selectedIndex',11); 
+    $('#editform2correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform2correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -230,7 +230,7 @@ QUnit.asyncTest("[As correction] Word deletion", function(assert){
     $(valid('#untitleddoc.p.3.s.8.w.10')).trigger('click');
     $('#editfield1text').val(""); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -240,7 +240,7 @@ QUnit.asyncTest("[As correction] Word split", function(assert){
     $(valid('#untitleddoc.p.3.s.12.w.5')).trigger('click');
     $('#editfield1text').val("4 uur"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').prop('selectedIndex',12); 
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -250,7 +250,7 @@ QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     $(valid('#untitleddoc.p.3.s.12.w.1')).trigger('click');
     $('#editfield1text').val("en we"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -261,7 +261,7 @@ QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     $(valid('#untitleddoc.p.3.s.13.w.12')).trigger('click');
     $('#editfield1text').val("we hoorden"); 
     $('#editform1correction').trigger('click'); 
-    $('#editform1correctionclass').prop('selectedIndex',11); 
+    $('#editform1correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform1correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -271,7 +271,7 @@ QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert)
     $(valid('#untitleddoc.p.3.s.8.w.4')).trigger('click');
     $('#editfield3').val(""); 
     $('#editform3correction').trigger('click'); 
-    $('#editform3correctionclass').prop('selectedIndex',11); 
+    $('#editform3correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform3correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -283,7 +283,7 @@ QUnit.asyncTest("[As correction] Span change", function(assert){
     $(valid('#untitleddoc.p.3.s.9.w.7')).trigger('click');
     $('#spanselector8').trigger('click'); 
     $('#editform8correction').trigger('click'); 
-    $('#editform8correctionclass').prop('selectedIndex',11); 
+    $('#editform8correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform8correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
@@ -295,10 +295,18 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
     $('#editfield8').prop('selectedIndex',0); //corresponds to empty class, implies deletion
     $('#editfield8').trigger('change'); 
     $('#editform8correction').trigger('click'); 
-    $('#editform8correctionclass').prop('selectedIndex',11); 
+    $('#editform8correctionclass').prop('selectedIndex',12);  //corresponds to uncertain, as long as the set definition doesn't change
     $('#editform8correctionclass').trigger('change'); 
     $('#editorsubmit').trigger('click'); 
 });
+
+
+function findcorrectionbytext(text) {
+    for (var key in annotations) {
+        if ((annotations[key]["t/undefined"]) && (annotations[key]["t/undefined"].incorrection)  && (annotations[key]["t/undefined"].text == text)) return annotations[key]['self'].id;
+    }
+    return null;
+}
 
 // TESTS -- Second stage
 
@@ -314,8 +322,12 @@ function testeval(data) {
 
     if ((testname == "textchange") || (testname == "correction_textchange")) {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
-    } else if ((testname == "textmerge")|| (testname == "correction_textmerge")) {
+    } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
+    } else if ((testname == "correction_textmerge")) {
+        id = findcorrectionbytext("wegreden")
+        globalassert.notEqual(id,null,"Testing whether correction found (by text)")
+        testtext('#' + id, "wegreden");
     } else if ((testname == "multiannotchange") ) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
@@ -368,8 +380,10 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["t/undefined"]['incorrection'][0], "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if (testname == "correction_textmerge") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.14']["t/undefined"]['incorrection'][0], "untitleddoc.p.3.s.1.correction.1", "Checking if annotation is in correction");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1']["untitleddoc.p.3.s.1.correction.1"].class, "uncertain", "Checking correction and its class");
+        id = findcorrectionbytext("wegreden")
+        globalassert.equal(annotations[id]["t/undefined"]['incorrection'].length,1, "Checking if annotation is in correction");
+        corr_id = annotations[id]["t/undefined"]['incorrection'][0];
+        globalassert.equal(annotations['untitleddoc.p.3.s.1'][corr_id].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_tokenannotationchange") ) {
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"].class, "LID(onbep,stan,rest)", "Testing POS class");
         globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");

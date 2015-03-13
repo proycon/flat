@@ -759,8 +759,7 @@ function editor_oninit() {
                 sendeditdata.push(editdata[i]);
                 
                 //compose query  
-                var substitute = false;
-                var add = false;
+                var action = "";
                 var returntype = "target";
                 var query = "";
                 if (namespace == "testflat") {
@@ -777,6 +776,7 @@ function editor_oninit() {
                         alert("Can't delete multiple words at once");
                         return;
                     }
+                    action = "DELETE";
                     query += "DELETE w ID " + sortededittargets[0];
                     if (editdata[i].editform == "correction") {
                         query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
@@ -784,32 +784,33 @@ function editor_oninit() {
                     returntype = "ancestor-focus";
                 } else {
                     if ((editdata[i].editform == "new")) {
-                        query += "ADD";
-                        add = true;
+                        action = "ADD";
                         if (editdata[i].class == "") continue;
                     } else if (editdata[i].class == "") {
                         //deletion
-                        query += "DELETE";
+                        action = "DELETE";
+                        returntype = "ancestor-focus";
                     } else if ((editdata[i].type == "t") && (editdata[i].text != "")) {
                         if (editdata[i].insertleft) { 
                             returntype = "ancestor-focus";
-                            query += "PREPEND"; 
+                            action = "PREPEND";
                         } else if (editdata[i].insertright) {
                             returntype = "ancestor-focus";
-                            query += "APPEND"; 
+                            action = "APPEND";
                         } else if (editdata[i].dosplit) {
                             returntype = "ancestor-focus";
-                            substitute = true;
+                            action = "SUBSTITUTE";
                         } else if (editdata[i].targets.length > 1) { //merge
                             returntype = "ancestor-focus";
-                            substitute = true;
+                            action = "SUBSTITUTE";
                         } else {
-                            query += "EDIT";
+                            action = "EDIT";
                         }
                     } else {
-                        query += "EDIT";
+                        action = "EDIT";
                     }
-                    if (!substitute) {
+                    if (action != "SUBSTITUTE") {
+                        query += action;
                         if (editdata[i].insertright) { //APPEND (insertion)
                             query += " w";
                             if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
@@ -845,14 +846,14 @@ function editor_oninit() {
                             query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
                         }
                     }
-                    if (isspan && editdata[i].id && !add) {
+                    if (isspan && editdata[i].id && (action == "EDIT")) {
                         //we edit a span annotation, edittargets reflects the new span:
                         if (sortededittargets.length > 0) {
                             query += " RESPAN ";
                             var forids = "";
                             sortededittargets.forEach(function(t){
                                 if (forids) {
-                                        forids += " &"
+                                        forids += " &";
                                 }
                                 forids += " ID " + t;
                             });
@@ -868,15 +869,15 @@ function editor_oninit() {
                         query += " (AS ALTERNATIVE)"
                     }
 
-                    if (!(isspan && editdata[i].id & !add)) { //only if we're not editing an existing span annotation 
+                    if (!(isspan && editdata[i].id & (action == "EDIT"))) { //only if we're not editing an existing span annotation 
                         //set target expression
                         if (sortededittargets.length > 0) {
                             query += " FOR";
-                            if ((substitute) || (isspan)) query += " SPAN"
+                            if ((action == "SUBSTITUTE") || (isspan)) query += " SPAN";
                             var forids = "";
                             sortededittargets.forEach(function(t){
                                 if (forids) {
-                                    if ((substitute) || (isspan)) {
+                                    if ((action == "SUBSTITUTE") || (isspan)) {
                                         forids += " &"
                                     } else {
                                         forids += " ,"
