@@ -767,7 +767,7 @@ function editor_oninit() {
                 } else {
                     query += "USE " + namespace + "/" + docid + " ";
                 }
-                var isspan = annotationtypespan[editdata[i].type];
+                var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
                 if (isspan) returntype = "ancestor-target";
                 if ((editdata[i].type == "t") && (editdata[i].text == "")) {
                     if (editdata[i].editform == "new") continue;
@@ -780,7 +780,7 @@ function editor_oninit() {
                     if (editdata[i].editform == "correction") {
                         query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     }
-                    query += " FORMAT flat RETURN ancestor-focus";
+                    returntype = "ancestor-focus";
                 } else {
                     if ((editdata[i].editform == "new")) {
                         query += "ADD";
@@ -808,12 +808,12 @@ function editor_oninit() {
                         query += "EDIT";
                     }
                     if (!substitute) {
-                        if (editdata[i].insertright) { //APPEND
+                        if (editdata[i].insertright) { //APPEND (insertion)
                             query += " w";
                             if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
                                 query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
-                        } else if (editdata[i].insertleft) { //PREPEND
+                        } else if (editdata[i].insertleft) { //PREPEND (insertion)
                             query += " w"; 
                             if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
                                 query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
@@ -843,29 +843,53 @@ function editor_oninit() {
                             query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
                         }
                     }
+                    if (isspan && editdata[i].id) {
+                        //we edit a span annotation, edittargets reflects the new span:
+                        if (sortededittargets.length > 0) {
+                            query += " RESPAN ";
+                            var forids = "";
+                            sortededittargets.forEach(function(t){
+                                if (forids) {
+                                        forids += " &"
+                                }
+                                forids += " ID " + t;
+                            });
+                            query += forids;
+                        }
+                        returntype = "ancestor-focus";
+                    }
+
+                    //set AS expression
                     if (editdata[i].editform == "correction") {
                         query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     } else if (editdata[i].editform == "alternative") {
                         query += " (AS ALTERNATIVE)"
                     }
-                    if (sortededittargets.length > 0) {
-                        query += " FOR";
-                        if ((substitute) || (isspan)) query += " SPAN"
-                        var forids = "";
-                        sortededittargets.forEach(function(t){
-                            if (forids) {
-                                if ((substitute) || (isspan)) {
-                                    forids += " &"
-                                } else {
-                                    forids += " ,"
+
+                    if (!(isspan && editdata[i].id)) { //only if we're not editing an existing span annotation 
+                        //set target expression
+                        if (sortededittargets.length > 0) {
+                            query += " FOR";
+                            if ((substitute) || (isspan)) query += " SPAN"
+                            var forids = "";
+                            sortededittargets.forEach(function(t){
+                                if (forids) {
+                                    if ((substitute) || (isspan)) {
+                                        forids += " &"
+                                    } else {
+                                        forids += " ,"
+                                    }
                                 }
-                            }
-                            forids += " ID " + t;
-                        });
-                        query += forids;
+                                forids += " ID " + t;
+                            });
+                            query += forids;
+                        }
                     }
-                    query += " FORMAT flat RETURN " + returntype;
+                    
                 }
+                //set format and return type
+                query += " FORMAT flat RETURN " + returntype;
+
                 queries.push(query);
                     
             }
