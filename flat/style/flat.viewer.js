@@ -429,7 +429,7 @@ function viewer_onupdate() {
 
 function viewer_ontimer() {
     if (namespace != "testflat") { //no polling for tests 
-       /* $.ajax({
+       $.ajax({
             type: 'GET',
             headers: {'X-sessionid': sid },
             url: "/viewer/" + namespace + "/"+ docid + "/poll/",
@@ -437,7 +437,7 @@ function viewer_ontimer() {
                 update(data);
             },
             dataType: "json"
-        }); */ //TODO: reenable polling
+        }); 
     }
 }
 
