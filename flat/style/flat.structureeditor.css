@@ -82,6 +82,7 @@ div.head {
     font-size: 120%;
     font-weight: bold;
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 div.head>.sinfo {
     background: black;
