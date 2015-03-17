@@ -3,6 +3,7 @@
 }
 .F:hover {
     border: 2px solid #666;
+    cursor: pointer;
 }
 .F {
     border: 2px solid transparent;
@@ -50,7 +51,7 @@ div.p:hover {
     border: 2px solid #746b22;
 }
 
-div.s, div.w, div.part, div.morpheme {
+div.s, div.w, div.part, div.s div.quote, div.p div.quote, div.morpheme {
     display: inline;
 }
 div.s>.sinfo {
@@ -61,22 +62,27 @@ div.s:hover {
     border: 2px solid #b2bbcd;
 }
 
-div.s>div.quote, div.p>div.quote {
-    display: inline;
+div.br {
+    height: 2px;
 }
 
+div.w {
+    margin: 0px;
+    border: 1px solid transparent;
+}
 div.w>.sinfo {
     background: #2a8044;
     color: black;
 }
 div.w:hover {
     background: #97b5a0;
-    border: 2px solid #2a8044;
+    border: 1px solid #2a8044;
 }
 
 div.head {
     font-size: 120%;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 div.head>.sinfo {
     background: black;

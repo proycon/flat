@@ -1,4 +1,6 @@
-
+.F:hover {
+    cursor: pointer;
+}
 div.div, div.p {
     display: block;
     margin-bottom: 5px;
