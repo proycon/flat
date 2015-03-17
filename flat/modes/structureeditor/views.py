@@ -18,7 +18,7 @@ def view(request, namespace, docid):
             return HttpResponseForbidden("Unable to connect to the document server [viewer/view]")
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'structureeditor'
-        return render(request, 'viewer.html', d)
+        return render(request, 'structureeditor.html', d)
     else:
         return HttpResponseForbidden("Permission denied")
 
