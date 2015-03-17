@@ -1,99 +1,82 @@
-.F {
-    border: 2px solid #666;
-    margin: 5px;
-    padding: 0px;
-    width: 96%;
-}
-.F>.hb {
-    display: block;
+.sinfo {
     background: #666;
-    width: 100%;
+}
+.F:hover {
+    border: 2px solid #666;
+}
+.F {
+    border: 2px solid transparent;
+    margin: 2px;
+    padding: 0px;
+    width: 90%;
+    border: 2px transparent solid;
+}
+
+div.F>.sinfo {
+    display:none;
+}
+
+div.F:hover>.sinfo {
+    position: absolute;
+    display: block;
     min-height: 16px;
+    margin-top: -16px;
     color: white;
     font-family: monospace;
     font-weight: bold;
     font-size: 9px;
 }
-.slot {
-    display: block;
-    background: #eee;
-    min-width: 25px;
-    min-height: 25px;
-    color: #eee;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-}
-.slot:hover {
-    background: #bbb;
-    color: #333;
-    cursor: pointer;
-}
-div.s .slot {
-    display: inline-block;
-    min-width: 5px;
-    min-height: 20px;
-}
-
-div.s .slot:hover {
-    display: inline-block;
-    min-width: 25px;
-    min-height: 25px;
-}
 
 div.div {
     display: block;
     margin-bottom: 5px;
-    border: 2px solid #742222;
 }
-div.div>.hb {
+div.div>.sinfo {
     background: #742222
+}
+div.div:hover {
+    border: 2px solid #742222;
 }
 
 div.p {
     display: block;
     margin-bottom: 5px;
-    border: 2px solid #746b22;
 }
-div.p>.hb {
+div.p>.sinfo {
     background: #746b22;
+}
+div.p:hover {
+    border: 2px solid #746b22;
 }
 
 div.s {
-    display: block;
-    border: 2px solid #272274;
+    display: inline-block;
 }
-div.s>.hb {
+div.s>.sinfo {
     background: #272274;
+}
+div.s:hover {
+    border: 2px solid #272274;
 }
 
 div.w {
     display: inline-block;
     width: auto;
-    border: 2px solid #b9d8d9;
 }
-div.w>.hb {
-    background: #b9d8d9;
+div.w>.sinfo {
+    background: #2a8044;
     color: black;
+}
+div.w:hover {
+    border: 2px solid #2a8044;
 }
 
 div.head {
     font-size: 120%;
     font-weight: bold;
-    border: 2px solid black;
 }
-div.head>.hb {
+div.head>.sinfo {
     background: black;
-}
-.hb .id {
-    display; inline;
-    color: #ddd;
-    font-size: 8px;
-    font-weight: normal;    
-    font-style: normal;
-}
-.w>.hb>.id {
-    display: none;
 }
 
 span.lbl {
@@ -101,3 +84,12 @@ span.lbl {
     padding: 0;
     margin: 0;
 }
+
+
+div.text {
+    padding-top: 10px;
+}
+div.text:hover {
+    border: 2px solid transparent;
+}
+

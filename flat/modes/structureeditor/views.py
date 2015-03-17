@@ -8,15 +8,20 @@ import flat.users
 import flat.modes.viewer.views
 import json
 
+
 @login_required
 def view(request, namespace, docid):
     if flat.users.models.hasreadpermission(request.user.username, namespace):
-        doc = flat.comm.get(request, '/getdoc/'+namespace + '/' + docid + '/')
+        try:
+            doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT ALL FORMAT flat", setdefinitions=True,declarations=True) #get the entire document with meta information
+        except URLError:
+            return HttpResponseForbidden("Unable to connect to the document server [viewer/view]")
         d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
         d['mode'] = 'structureeditor'
-        return render(request, 'structureeditor.html', d)
+        return render(request, 'viewer.html', d)
     else:
         return HttpResponseForbidden("Permission denied")
+
 
 #@login_required
 #def annotate(request,namespace, docid):

@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 import flat.settings as settings
 import flat.comm
 import flat.users
+import flat.modes.viewer.views
 import json
 import sys
 if sys.version < '3':
