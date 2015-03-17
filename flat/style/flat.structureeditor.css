@@ -20,12 +20,13 @@ div.F:hover>.sinfo {
     position: absolute;
     display: block;
     min-height: 16px;
-    margin-top: -16px;
+    left: 0px;
     color: white;
     font-family: monospace;
     font-weight: bold;
     font-size: 9px;
 }
+
 
 div.div {
     display: block;
@@ -49,25 +50,27 @@ div.p:hover {
     border: 2px solid #746b22;
 }
 
-div.s {
-    display: inline-block;
+div.s, div.w, div.part, div.morpheme {
+    display: inline;
 }
 div.s>.sinfo {
     background: #272274;
 }
 div.s:hover {
-    border: 2px solid #272274;
+    background: #b2bbcd;
+    border: 2px solid #b2bbcd;
 }
 
-div.w {
-    display: inline-block;
-    width: auto;
+div.s>div.quote, div.p>div.quote {
+    display: inline;
 }
+
 div.w>.sinfo {
     background: #2a8044;
     color: black;
 }
 div.w:hover {
+    background: #97b5a0;
     border: 2px solid #2a8044;
 }
 
