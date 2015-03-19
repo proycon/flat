@@ -270,6 +270,7 @@ function showinfo(element) {
                         } else {
                             setname = "";
                         }
+                        if (setname == "undefined") setname = "";
                         s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                         s = s + renderannotation(annotation);
                         s = s + "</td></tr>";
