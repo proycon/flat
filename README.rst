@@ -69,10 +69,10 @@ You may need ``sudo`` for a global installation, but we recommend installation
 in ``virtualenv``.
  
 The following dependencies will be pulled in automatically if you follow either
-of the above steps::
+of the above steps:
 
 * foliadocserve (https://github.com/proycon/foliadocserve)
-* pynlpl (https://github.com/proycon/pynlpl)
+* pynlpl (https://github.com/proycon/pynlpl) (contains the FoLiA and FQL library)
 * django 
 
 Copy the ``settings.py`` that comes with FLAT (or grab it from
