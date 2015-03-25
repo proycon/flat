@@ -1,5 +1,5 @@
 *****************************************
-FLAT - FoLiA Linguistic Annotatation Tool
+FLAT - FoLiA Linguistic Annotation Tool
 *****************************************
 
 Flat is a web-based linguistic annotation environment based around the FoLiA
