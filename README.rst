@@ -58,9 +58,9 @@ FLAT distinguishes several **modes**, between which the user can switch to get
 another take of a document with different editing abilities. There are
 currently two modes available, and a third one under construction:
 
-* Viewer - Views a documents and its annotations, no editing abilities
-* Editor - Main editing environment for linguistic annotation
-* Structure Editor - Editing environment for document structure *(rudimentary version, not done)*
+* **Viewer** - Views a document and its annotations, no editing abilities
+* **Editor** - Main editing environment for linguistic annotation
+* **Structure Editor** - Editing environment for document structure *(rudimentary version, not done)*
 
 In the viewer and editor mode, users may set an **annotation focus**, i.e. an
 annotation type that they want to visualise or edit. All instances of that
@@ -76,10 +76,10 @@ editing of multiple annotation types at once rather than just the annotation
 focus.
 
 FoLiA distinguishes itself from some other annotation formats by explicitly
-providing support for corrections (on annotations, including text) and
-alternative annotations. In FLAT these are called *edit forms*, as they are
-differnt forms of editing, the user can select which form he wants to use when
-performing an annotation.
+providing support for **corrections** (on any annotation type, including text)
+and **alternative annotations**. In FLAT these are categorized as **edit
+forms**, as they are different forms of editing; the user can select which form
+he wants to use when performing an annotation.
 
 The site administrator can configure in great detail what options the user has
 available and what defaults are selected (for annotation focus for instance),
