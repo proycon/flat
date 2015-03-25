@@ -2,9 +2,9 @@
 FLAT - FoLiA Linguistic Annotation Tool
 *****************************************
 
-Flat is a web-based linguistic annotation environment based around the FoLiA
+FLAT is a web-based linguistic annotation environment based around the FoLiA
 format (http://proycon.github.io/folia), a rich XML-based format for linguistic
-annotation. Flat allows users to view annotated FoLiA documents and enrich
+annotation. FLAT allows users to view annotated FoLiA documents and enrich
 these documents with new annotations, a wide variety of linguistic annotation
 types is supported through the FoLiA paradigm. It is a document-centric tool
 that fully preserves and visualises document structure.
