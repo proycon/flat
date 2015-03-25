@@ -1,0 +1,2 @@
+include settings.py
+include requires.txt

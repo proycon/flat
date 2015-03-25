@@ -1,5 +1,5 @@
 *****************************************
-FLAT - FoLiA Linguistic Annotatation Tool
+FLAT - FoLiA Linguistic Annotation Tool
 *****************************************
 
 Flat is a web-based linguistic annotation environment based around the FoLiA
@@ -65,23 +65,41 @@ Or from the cloned git repository::
     $ pip install -r requires.txt    #(to install the dependencies)
     $ python3 setup.py install
 
-You may need ``sudo`` for a global installation.
+You may need ``sudo`` for a global installation, but we recommend installation
+in ``virtualenv``.
  
 The following dependencies will be pulled in automatically if you follow either
-of the above steps::
+of the above steps:
 
- * foliadocserve (https://github.com/proycon/foliadocserve)
- * pynlpl (https://github.com/proycon/pynlpl)
- * django 
+* foliadocserve (https://github.com/proycon/foliadocserve)
+* pynlpl (https://github.com/proycon/pynlpl) (contains the FoLiA and FQL library)
+* django 
 
-Copy and edit the ``settings.py`` that comes with FLAT, and add a configuration for your
-system.
+Copy the ``settings.py`` that comes with FLAT (or grab it from
+https://github.com/proycon/flat/blob/master/settings.py) to some custom
+location, edit it and add a configuration for your system. The file is heavily
+commented to guide you along with the configuration.
 
-The development server can be started as follows (with the default settings,
-adapt for your own settings module)::
+The development server can be started now using your ``settings.py`` by setting
+``PYTHONPATH`` to the directory that contains it::
 
-    $ django-admin runserver --settings flat.settings
+    $ export PYTHONPATH=/your/settings/path/
+    $ django-admin runserver --settings settings
 
+We are not done yet, as we need to start the FoLiA document server, it is a
+required component that needs not necessarily be on the same host. Your copy of
+``settings.py`` should point to the host and port where FLAT can reach the
+document server, start it as follows::
+
+    $ foliadocserve -d /path/to/document/root -P 8080
+
+The document path will be a directory that will contain all FoLiA documents.
+Create a root directory and ensure the user the foliadocserve is running under has
+sufficient write permission there. The document server needs no further
+configuration. Note that it does not provide any authentication features so it
+should run somewhere where the outside world can not reach it, only FLAT needs
+to be able to connect there. Often, FLAT and the document server run on the
+same host, so a localhost connection is sufficient.
 
 =============================================
 Screenshots
