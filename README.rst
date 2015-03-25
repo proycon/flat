@@ -194,6 +194,31 @@ Extensive history with limitless undo ability, git-based:
     :alt: FLAT screenshot
     :align: center
 
-====================
+==========================
+FoLiA & Set Definitions
+==========================
 
-====================
+We urge people wanting to set up FLAT to familiarise themselves with FoLiA, as
+the tool is specifically designed for this format. Characteristic of FoLiA is
+the **class/set paradigm** and the distinction of a large number of specific
+**annotation types**, such as for example part-of-speech, lemma, dependencies,
+syntax, co-references, semantic roles, and many more...
+
+The values of annotations, of whatever type, are known as **classes**, which in
+turn are the elements of **sets**. A set thus defines what classes exist. A set
+is for example a part-of-speech tagset, and the invidual part-of-speech tags
+would be the classes. **FoLiA itself never prescribes sets**, only annotation
+types, it is up to the user to decide what set to use and anybody can freely
+create sets! This offers a great deal of flexibility, as you can use FLAT and
+FoLiA with whatever tagset you desire (provided you make a set definition for
+it).
+
+Sets are defined in Set Definition files, these tie the classes to nice human
+presentable labels (they may also impose taxonomies, put constraints on class
+combinations,  and link to data category registries). FLAT relies on
+these set definitions a great deal, as it uses them to present the labels for
+the classes. 
+
+For more information about FoLiA, see https://proycon.github.io/folia , the
+format itself is extensively documented.
+
