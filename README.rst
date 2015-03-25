@@ -6,13 +6,16 @@ Flat is a web-based linguistic annotation environment based around the FoLiA
 format (http://proycon.github.io/folia), a rich XML-based format for linguistic
 annotation. Flat allows users to view annotated FoLiA documents and enrich
 these documents with new annotations, a wide variety of linguistic annotation
-types is supported through the FoLiA paradigm. 
+types is supported through the FoLiA paradigm. It is a document-centric tool
+that fully preserves and visualises document structure.
 
 The project is in its early stages but already quite functional and in
 practical use in an academic setting.
 
-The tool is written in Python, using the Django framework and the FoLiA library
-in pynlpl.
+FLAT is written in Python using the Django framework. The user interface is
+written using javascript with jquery.  The FoLiA Document Server, the back-end
+of the system, is written in Python with CherryPy and is used as a RESTful
+webservice. 
 
 =============================================
 Features
@@ -23,16 +26,16 @@ Features
   has his own namespace. Active documents are held in memory server-side.
   Read and write permissions to access namespaces are fully configurable.
 * Concurrency (multiple users may edit the same document similtaneously)  [**not completed yet**]
-* Full versioning control for documents (using git), allowing limitless undo operations.
+* Full versioning control for documents (using git), allowing limitless undo operations. (in foliadocserve)
 * Full annotator information, with timestamps, is stored in the FoLiA XML and can be displayed by the interface. The git log also contains verbose information on annotations.
 * Highly configurable interface; interface options may be disabled on a
   per-configuration basis. Multiple configurations can be deployed on a single
   installation
 * Displays and retains document structure (divisions, paragraphs, sentence, lists, etc) 
 * Support for corrections, of text or linguistic annotations, and alternative annotations. Corrections are never mere substitutes, originals are always preserved!
-* Spelling corrections for runons, splits, insertions and deletions are
-  supported.
-* Supports FoLiA Set Definitions
+* Spelling corrections for runons, splits, insertions and deletions are supported.
+* Supports FoLiA Set Definitions to display label sets. Sets are not predefined
+  in FoLiA and anybody can create their own.
 * Supports Token Annotation and Span Annotation
 
 ============================================
@@ -45,9 +48,46 @@ The FLAT architecture consists of three layers:
 * The FLAT server
 * The user-interface
 
-At the far back-end is the FoLiA Document Server, which loads the requested FoLiA documents, and passes these as JSON and HTML to the middle layer, the FLAT server, this layer in turn passes edits formulated in FoLiA Query Language to the Document Server. The user-interface is a modern web-application interacting with the FLAT server and translates interface actions to FoLiA Query Language.
+At the far back-end is the FoLiA Document Server, which loads the requested
+FoLiA documents, and passes these as JSON and HTML to the middle layer, the
+FLAT server, this layer in turn passes edits formulated in FoLiA Query Language
+(FQL) to the Document Server. The user-interface is a modern web-application
+interacting with the FLAT server and translates interface actions to FQL.
 
-The FoLiA Document Server is written in Python with CherryPy and acts as a RESTful webservice. The FLAT server is written in Python using the Django framework. The user interface is written using javascript with jquery.
+FLAT distinguishes several **modes**, between which the user can switch to get
+another take of a document with different editing abilities. There are
+currently two modes available, and a third one under construction:
+
+* Viewer - Views a documents and its annotations, no editing abilities
+* Editor - Main editing environment for linguistic annotation
+* Structure Editor - Editing environment for document structure *(rudimentary version, not done)*
+
+In the viewer and editor mode, users may set an **annotation focus**, i.e. an
+annotation type that they want to visualise or edit. All instances of that
+annotation type will be coloured in the interface and offer a *global* overview.
+Moreover, the editor dialog will automatically present fields for editing that
+type whenever a structure element (usually a word/token) is clicked.
+
+Whereas the annotation focus is primary, users may select what other annotation
+types they want to view *locally*,  i.e. in the annotation viewer that
+pops up whenever the user hovers over a structural element. Similarly, users
+may select what annotation types they want to see in editor, allowing the
+editing of multiple annotation types at once rather than just the annotation
+focus.
+
+FoLiA distinguishes itself from some other annotation formats by explicitly
+providing support for corrections (on annotations, including text) and
+alternative annotations. In FLAT these are called *edit forms*, as they are
+differnt forms of editing, the user can select which form he wants to use when
+performing an annotation.
+
+The site administrator can configure in great detail what options the user has
+available and what defaults are selected (for annotation focus for instance),
+as a full unconstrained environment (which is the default) may quickly be
+daunting and confusing to the end-user. Different tasks ask for different
+configurations, so multiple configurations per site are
+possible; the user chooses the desired configuration, often tied to a
+particular annotation project, upon login.
 
 ============================================
 Installation
@@ -154,3 +194,6 @@ Extensive history with limitless undo ability, git-based:
     :alt: FLAT screenshot
     :align: center
 
+====================
+
+====================
