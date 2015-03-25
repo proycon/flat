@@ -13,7 +13,8 @@ The project is in its early stages but already quite functional and in
 practical use in an academic setting.
 
 FLAT is written in Python using the Django framework. The user interface is
-written using javascript with jquery.  The FoLiA Document Server, the back-end
+written using javascript with jquery.  The FoLiA Document Server
+(https://github.com/proycon/foliadocserve) , the back-end
 of the system, is written in Python with CherryPy and is used as a RESTful
 webservice. 
 
@@ -44,9 +45,9 @@ Architecture
 
 The FLAT architecture consists of three layers:
 
-* The FoLiA Document Server
-* The FLAT server
-* The user-interface
+* The **FoLiA Document Server** (https://github.com/proycon/foliadocserve)
+* The **FLAT server**
+* The **user-interface**
 
 At the far back-end is the FoLiA Document Server, which loads the requested
 FoLiA documents, and passes these as JSON and HTML to the middle layer, the
