@@ -127,7 +127,13 @@ The development server can be started now using your ``settings.py`` by setting
     $ export PYTHONPATH=/your/settings/path/
     $ django-admin runserver --settings settings
 
-We are not done yet, as we need to start the FoLiA document server, it is a
+But before you start it for the first time, the database needs to be
+populated::
+
+    $ export PYTHONPATH=/your/settings/path/
+    $ django-admin syncdb --settings settings
+
+We also need to start the FoLiA document server when starting FLAT, it is a
 required component that needs not necessarily be on the same host. Your copy of
 ``settings.py`` should point to the host and port where FLAT can reach the
 document server, start it as follows::
