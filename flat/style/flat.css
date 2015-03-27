@@ -14,6 +14,7 @@ body {
     color: white;
     min-height: 12pt;
     text-align: center;
+    font-size: 90%;
 }
 #topbar ul {
     margin: 0px;
