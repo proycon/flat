@@ -138,7 +138,7 @@ required component that needs not necessarily be on the same host. Your copy of
 ``settings.py`` should point to the host and port where FLAT can reach the
 document server, start it as follows::
 
-    $ foliadocserve -d /path/to/document/root -P 8080
+    $ foliadocserve -d /path/to/document/root -p 8080
 
 The document path will be a directory that will contain all FoLiA documents.
 Create a root directory and ensure the user the foliadocserve is running under has

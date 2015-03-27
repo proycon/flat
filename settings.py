@@ -51,7 +51,7 @@ FOLIADOCSERVE_HOST = '127.0.0.1'
 FOLIADOCSERVE_PORT = 8080
 
 # Make sure to start the document server when starting FLAT!
-#   $ foliadocserve -d /path/to/document/root -P 8080
+#   $ foliadocserve -d /path/to/document/root -p 8080
 
 
 ##############################################################################
