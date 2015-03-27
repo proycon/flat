@@ -198,11 +198,12 @@ nav ul ul li.on {
     background: #eee;
     border: #30677c 1px solid;
     border-radius: 25px;
-    padding: 10px;
+    padding: 25px;
     margin-top: 20px;
     margin-bottom: 200px;
     min-width: 480px;
     min-height: 480px;
+    max-width: 900px;
 }
 #wait {
     position: fixed;
