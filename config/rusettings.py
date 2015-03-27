@@ -330,7 +330,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-BASE_DIR_URLCONF = 'flat.urls'
+ROOT_URLCONF = 'flat.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'flat.wsgi.application'
