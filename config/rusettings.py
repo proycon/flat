@@ -41,6 +41,7 @@ if hostname == 'mhysa' or hostname == 'caprica':
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'db',                      # Or path to database file if using sqlite3.
     }
+    DEBUG = True
 elif hostname[:9] == 'applejack':
     if not ('DEV' in environ) or environ['DEV'] == 'false':
         DATABASES = {
@@ -53,10 +54,10 @@ elif hostname[:9] == 'applejack':
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        BASE_DIR = "/www/flat/live/repo/flat/"
         WORKDIR = "/www/flat/live/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8023
+        DEBUG = False
     else:
         DATABASES = {
             'default': {
@@ -68,10 +69,10 @@ elif hostname[:9] == 'applejack':
                 'PORT': '',                      # Set to empty string for default.
             }
         }
-        BASE_DIR = "/www/flat/test/repo/flat/"
         WORKDIR = "/www/flat/test/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8024
+        DEBUG = True
 elif hostname[:8] == 'spitfire':
     if not ('DEV' in environ) or environ['DEV'] == 'false':
         DATABASES = {
@@ -88,6 +89,7 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8023
         ADMIN_MEDIA_PREFIX = '/media/'
+        DEBUG = False
     else:
         DATABASES = {
             'default': {
@@ -103,6 +105,7 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8024
         ADMIN_MEDIA_PREFIX = '/media/'
+        DEBUG = True
 else:
     raise Exception("I don't know where I'm running from!")
 
@@ -235,12 +238,23 @@ CONFIGURATIONS = {
 #########################################
 
 
+ADMINS = ( #Change to your contact details
+    ('Maarten van Gompel', 'proycon@anaproy.nl'),
+)
+
+# Make this unique, and don't share it with anybody.
+# IMPORTANT!!!! GENERATE A NEW SECRET KEY !!!! The default one here is *NOT*
+# secret as it's publicly disclosed in the FLAT sources!
+# (Use for instance http://www.miniwebtool.com/django-secret-key-generator/)
+SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
 
 
 
 
 
 
+MANAGERS = ADMINS
+TEMPLATE_DEBUG = DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -282,13 +296,13 @@ MEDIA_URL = 'http://flat.science.ru.nl/usermedia/' #not used
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = BASE_DIR + 'static/'
+STATIC_ROOT = BASE_DIR + '/flat/static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
-STYLE_ROOT = BASE_DIR + 'style/'
+STYLE_ROOT = BASE_DIR + '/flat/style/'
 STYLE_URL = '/style/'
 
 # Additional locations of static files
@@ -296,7 +310,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    BASE_DIR + 'style/',
+    BASE_DIR + '/flat/style/',
 )
 
 
@@ -309,9 +323,6 @@ STATICFILES_FINDERS = (
 )
 
 LOGIN_URL = "/login/"
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
