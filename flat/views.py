@@ -37,7 +37,7 @@ def login(request):
             # Return an 'invalid login' error message.
             return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION} )
     else:
-        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS})
+        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, "version": settings.VERSION})
 
 
 def logout(request):
@@ -57,6 +57,7 @@ def register(request):
         form = django.contrib.auth.forms.UserCreationForm()
     return render(request, "register.html", {
         'form': form,
+        'version': settings.VERSION,
     })
 
 
