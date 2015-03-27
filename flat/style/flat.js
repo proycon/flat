@@ -18,7 +18,7 @@ annotationtypenames = {
     'coreferencechain': 'Coreference',
     'note': 'Note',
     'entry': 'Entry',
-    'definition': 'Definition',
+    'def': 'Definition',
     'term': 'Term',
     'gap': 'Gap',
     'event': 'Event',
@@ -27,6 +27,11 @@ annotationtypenames = {
     'phoneme': 'Phoneme',
     'lang': 'Language',
     'ex': 'Example',
+    'part': 'Part',
+    'timesegment': 'Time Segment',
+    'cell': 'Table cell',
+    'row': 'Table row',
+    'metric': 'Metric',
 }
 annotationtypespan = {
     'pos': false,
