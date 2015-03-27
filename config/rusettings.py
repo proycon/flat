@@ -271,9 +271,9 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_BASE_DIR = BASE_DIR + 'usermedia/' #not used
+MEDIA_ROOT = BASE_DIR + 'usermedia/' #not used
 
-# URL that handles the media served from MEDIA_BASE_DIR. Make sure to use a
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = 'http://flat.science.ru.nl/usermedia/' #not used
@@ -282,13 +282,13 @@ MEDIA_URL = 'http://flat.science.ru.nl/usermedia/' #not used
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_BASE_DIR = BASE_DIR + 'static/'
+STATIC_ROOT = BASE_DIR + 'static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
-STYLE_BASE_DIR = BASE_DIR + 'style/'
+STYLE_ROOT = BASE_DIR + 'style/'
 STYLE_URL = '/style/'
 
 # Additional locations of static files
