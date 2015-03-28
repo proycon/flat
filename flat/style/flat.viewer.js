@@ -5,7 +5,7 @@ annotationfocus = null;
 annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
 hover = null;
-globannotationsorder = ['su','dependency','coreferencechain','semrole','entity','sense','pos','lemma'] //from high to low
+globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma'] //from high to low
 
 
 function setview(v) {
