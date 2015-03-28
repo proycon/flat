@@ -218,6 +218,16 @@ function checkparentincorrection(annotation, correctionid) {
     return parentincorrection;
 }
 
+
+function renderspanrole(spanroledata) {
+    var roletext = "";
+    spanroledata.words.forEach(function(wordid){
+        if (roletext) roletext += " ";
+        roletext += annotations[wordid]['t/undefined'].text;
+    });
+    return "<br/><label class=\"spanrole\">" + spanroledata.type + ":</label> <span class=\"text\">" + roletext + "</span>";
+}
+
 function renderannotation(annotation, norecurse) {
     //renders the annotation in the details popup
     var s = "";
@@ -229,29 +239,21 @@ function renderannotation(annotation, norecurse) {
         }
     }
     if (annotation.span) {
-        var currentspanroles= null;
-        var spanrolesonly = false;
         if (spanroles[annotation.type]) {
-            currentspanroles = spanroles[annotation.type];  //ensures they will be in the order specified
-            spanrolesonly = true;
+            spanroles[annotation.type].forEach(function(spanrole){
+                annotation.spanroles.forEach(function(spanroledata){
+                    if (spanroledata.type == spanrole) {
+                        s = s + renderspanrole(spanroledata);
+                    }
+                });
+            });
         } else if (annotation.spanroles.length > 0) {
-            currentspanroles = Objects.keys(annotation.spanroles);
-            spanrolesonly = false;
-        }
-        if (currentspanroles && currentspanroles.length > 0) {
-            currentspanroles.forEach(function(spanrole){
-                if (annotation.spanroles[spanrole]) {
-                    var roletext = "";
-                    annotation.spanroles[spanrole].forEach(function(wordid){
-                        if (roletext) roletext += " ";
-                        roletext += annotations[wordid]['t/undefined'].text;
-                    });
-                    s = s + "<br/><label class=\"spanrole\">" + spanrole + ":</label> <span class=\"text\">" + roletext + "</span>";
-                }
+            annotation.spanroles.forEach(function(spanroledata){
+                s = s + renderspanrole(spanroledata);
             });
         }
-        if (!spanrolesonly) {
-            spantext = getspantext(annotation)
+        if (!spanroles[annotation.type]) {
+            spantext = getspantext(annotation);
             s = s + "<br/><span class=\"text\">" + spantext + "</span>";
         }
     }
