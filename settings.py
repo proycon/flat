@@ -122,16 +122,20 @@ CONFIGURATIONS = {
     'allowedannotationfocus': True,
 
     #EXAMPLE:
-    #'allowedannoationfocus': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml'),
+    #'allowedannotationfocus': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml'),
 
     # List of FoLiA annotation types (xml tags) that are initially enabled in
-    # the annotation viewer (the pop-up when the user hovers over elements)
+    # the local annotation viewer (the pop-up when the user hovers over elements)
     # set to True to enable all
     'initialviewannotations': True,
 
 
+    # List of FoLiA annotation types (xml tags) that are initially enabled in
+    # the global annotation viewer (in the annotation box above the words)
+    'initialglobviewannotations': [],
+
     # List of FoLiA annotation types (xml tags) that are allowed to be viewed,
-    # a superset of initialviewannotations. Users can enable/disable each as
+    # a superset of initialviewannotations/initialglobviewannotations. Users can enable/disable each as
     # they see fit. Set to True to enable all
     'allowedviewannotations': True,
 

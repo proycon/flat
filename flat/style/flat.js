@@ -189,7 +189,7 @@ function loadannotations(annotationlist) {
 function loaddeclarations(declarationlist) {
     declarationlist.forEach(function(declaration){
         if (!declarations[declaration.annotationtype])  declarations[declaration.annotationtype] =  {};
-        declarations[declaration.annotationtype][declaration.set] = { 'settype': 'open', 'classes': [] }; //this will hold proper set definitions later on, TODO
+        declarations[declaration.annotationtype][declaration.set] = { 'settype': 'open', 'classes': [] }; //this will hold proper set definitions later on
     });
 }
 

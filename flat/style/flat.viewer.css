@@ -1,12 +1,35 @@
 .F:hover {
     cursor: pointer;
 }
+.F {
+    vertical-align: bottom;
+}
 div.div, div.p {
     display: block;
     margin-bottom: 5px;
 }
 div.s, div.w,div.part,div.s div.quote,div.p div.quote {
-    display: inline;
+    display: inline-block;
+}
+span.ab { /*annotation box*/
+    display: none;
+    border-top: #888 1px dotted;
+    margin-top: 5px;
+    font-size: 75%;
+}
+span.ab>span{ /*items/rows in annotation box*/
+    display: block;
+    margin-right: 4px;
+    color: #5c6280;
+}
+span.ab>span.pos{ 
+    color: #5c6280;
+}
+span.ab>span.lemma{ 
+    color: #7a805c;
+}
+span.ab>span.su{ 
+    color: #528ed2;
 }
 div.head {
     font-size: 120%;
@@ -30,27 +53,27 @@ div.undofocustype span.lbl {
 }
 
 div.class1 span.lbl, div#class1legend {
-    background: #b4e0aa; //green
+    background: #b4e0aa; /*green*/
 }
 div.class2 span.lbl, div#class2legend {
-    background: #aaace0; //blue 
+    background: #aaace0; /*blue */
 }
 div.class3 span.lbl, div#class3legend {
-    background: #e19898; //red
+    background: #e19898; /*red*/
 }
 div.class4 span.lbl, div#class4legend {
-    background: #e1e098; //yellow 
+    background: #e1e098; /*yellow */
 }
 div.class5 span.lbl, div#class5legend {
-    background: #98e1dd; //cyan
+    background: #98e1dd; /*cyan*/
 }
 div.class6 span.lbl, div#class6legend {
-    background: #dcc6da; //pink
+    background: #dcc6da; /*pink*/
 }
 div.class7 span.lbl, div#class7legend {
-    background: #e1c398; //orange
+    background: #e1c398; /*orange*/
 }
-div.hover span.lbl {
+div.hover span.lbl, div.hover>span.ab {
     background: #b9d8d9;
 }
 

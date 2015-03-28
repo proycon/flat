@@ -1,5 +1,6 @@
 view = 'deepest';
-viewannotations = {};
+viewannotations = {}; //view local annotations in editor
+viewglobannotations = {}; //view global annotations
 annotationfocus = null;
 annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
@@ -301,6 +302,23 @@ function toggleannotationview(annotationtype, set) {
 }
 
 
+function toggleglobannotationview(annotationtype, set) {
+    viewglobannotations[annotationtype+"/"+set] = !viewglobannotations[annotationtype+"/"+set];
+    if (viewglobannotations[annotationtype+"/" + set]) {
+        $('#globannotationtypeview_' + annotationtype + "_" + hash(set)).addClass('on');
+    } else {
+        $('#globannotationtypeview_' + annotationtype + "_" + hash(set)).removeClass('on');
+    }
+    renderglobannotations();
+}
+
+function resetglobannotationview() {
+    $('#globannotationsviewmenu li').removeClass('on');
+    viewglobannotations = {}
+    renderglobannotations();
+}
+
+
 function setannotationfocus(t,set) {
     if (annotationfocus) {
         $('.focustype').removeClass("focustype");
@@ -417,6 +435,31 @@ function setclasscolors() {
     $('#legend').show();
 }
 
+
+function renderglobannotations() {
+    $('span.ab').css('display','none');
+    $('span.ab').html(""); // clear all
+
+    var globalannotations = 0;
+    Object.keys(viewglobannotations).forEach(function(annotationtypeset){
+      if (viewglobannotations[annotationtypeset]) globalannotations += 1;
+    });
+
+    if (globalannotations) {
+        Object.keys(annotations).forEach(function(target){
+            Object.keys(annotations[target]).forEach(function(annotationkey){
+                annotation = annotations[target][annotationkey];
+                if (viewglobannotations[annotation.type + '/' + annotation.set]) {
+                    if (annotation.class) {
+                        $('#' + valid(target) + " span.ab").css('display','block').append("<span class=\""+annotation.type+"\">" + annotation.class + "</span>")
+                    }
+                }
+            });
+        });
+    }
+
+}
+
 function viewer_onloadannotations(annotationlist) {
     if (annotationfocus) {
         setclasscolors();
@@ -442,17 +485,31 @@ function viewer_ontimer() {
     }
 }
 
+
+
 function viewer_loadmenus() {
     s = "";
     s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
+    sglob = "<li><a href=\"javascript:resetglobannotationview()\">Clear</li>";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
         if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
+            var state = "";
             if ((configuration.initialviewannotations === true) || (configuration.initialviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialviewannotations.indexOf(annotationtype) != -1)) {
                 viewannotations[annotationtype + "/" + set] = true;
+                state = "class=\"on\"";
+            } else {
+                state = "";
             }
             label = getannotationtypename(annotationtype);
-            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
+                globviewannotations[annotationtype + "/" + set] = true;
+                state = "class=\"on\"";
+            } else {
+                state = "";
+            }
+            sglob = sglob +  "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
         }
         if ((configuration.allowedannotationfocus === true) || (configuration.allowedannotationfocus.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedannotationfocus.indexOf(annotationtype) != -1)) {
             s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
@@ -460,7 +517,8 @@ function viewer_loadmenus() {
 
       });
     });
-    $('#annotationsviewmenu').html(s);
+    $('#annotationsviewmenu').html(s); //TODO: sort alphabetically
+    $('#globannotationsviewmenu').html(sglob);
     $('#annotationsfocusmenu').html(s2);
 }
 

@@ -139,6 +139,7 @@ CONFIGURATIONS = {
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'allowedviewannotations': True,
 
+    'initialglobviewannotations': [],
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'initialeditannotations': True,
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
@@ -171,6 +172,7 @@ CONFIGURATIONS = {
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'allowedviewannotations': True,
 
+    'initialglobviewannotations': [],
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'initialeditannotations': ('t',),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
@@ -207,6 +209,7 @@ CONFIGURATIONS = {
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'allowedviewannotations': ('t','entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml','correction'),
 
+    'initialglobviewannotations': [],
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
     'initialeditannotations': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',),
     #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
