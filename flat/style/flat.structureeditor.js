@@ -39,6 +39,8 @@ function structureeditor_oninit() {
     $("div.cell>.sinfo").html("cell")
     $("div.text>.sinfo").html("text")
 
+    $('div.s').css('display', 'inline');
+
     $('div.F').each(function(){
         if (this.id) {
             $(">.sinfo",this).append(" <span class=\"id\">" + this.id + "</span>");
