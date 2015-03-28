@@ -31,6 +31,9 @@ span.ab span.lemma{
 span.ab span.su{ 
     color: #528ed2;
 }
+span.ab span.dependency {
+    color: #854587;
+}
 span.ab>span.abc{ /* annotation box container (for a specific annotation type that spans vertical space) */
     vertical-align: bottom;
 }
