@@ -34,6 +34,9 @@ span.ab span.su{
 span.ab span.dependency {
     color: #854587;
 }
+span.dependency span.headtext {
+    font-style: italic;
+}
 span.ab>span.abc{ /* annotation box container (for a specific annotation type that spans vertical space) */
     vertical-align: bottom;
 }

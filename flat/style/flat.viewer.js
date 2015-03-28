@@ -514,6 +514,7 @@ function renderglobannotations(annotations) {
                                 }
                                 if (annotation.span) {
                                         var extra = "";
+                                        var usecontext = true;
                                         if (annotation.type == "dependency") {
                                             //for dependencies we point from the dependents to the head.
                 
@@ -525,45 +526,51 @@ function renderglobannotations(annotations) {
                                                     headtext = getspanroletext(spanroledata);
                                                 }
                                             });
-                                            if (partofhead) return; //if we're part of the head, we don't render this annotation here
-                                            extra = "&Rightarrow;" + headtext;
-                                        }
-
-                                        var previnspan = false;
-                                        var nextinspan = false;
-                                        //If the previous word is in the same
-                                        //span we do not repeat it explicitly
-                                        //but draw a line
-                                        var prevwordid = annotations[target]['self']['previousword'];
-                                        if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
-                                            var prevannotation = annotations[prevwordid][annotationkey];
-                                            if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
-                                                //previous word part of span already
-                                                if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
-                                                    previnspan = true;
-                                                }
+                                            if (partofhead) { //if we're part of the head, we don't render this annotation here
+                                                usecontext = false;
+                                                s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
+                                            } else {
+                                                extra = "&Rightarrow;<span class=\"headtext\">" + headtext + "</span>";
                                             }
                                         }
 
-                                        //is the next word still part of the span?
-                                        var nextwordid = annotations[target]['self']['nextword'];
-                                        if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
-                                            var nextannotation = annotations[nextwordid][annotationkey];
-                                            if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
-                                                if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
-                                                    nextinspan = true;
+                                        if (usecontext) {
+                                            var previnspan = false;
+                                            var nextinspan = false;
+                                            //If the previous word is in the same
+                                            //span we do not repeat it explicitly
+                                            //but draw a line
+                                            var prevwordid = annotations[target]['self']['previousword'];
+                                            if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
+                                                var prevannotation = annotations[prevwordid][annotationkey];
+                                                if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                    //previous word part of span already
+                                                    if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
+                                                        previnspan = true;
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        if ((previnspan) && (nextinspan)) {
-                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
-                                        } else if (nextinspan) {
-                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
-                                        } else if (previnspan) {
-                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
-                                        } else {
-                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
+                                            //is the next word still part of the span?
+                                            var nextwordid = annotations[target]['self']['nextword'];
+                                            if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
+                                                var nextannotation = annotations[nextwordid][annotationkey];
+                                                if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                    if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
+                                                        nextinspan = true;
+                                                    }
+                                                }
+                                            }
+
+                                            if ((previnspan) && (nextinspan)) {
+                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
+                                            } else if (nextinspan) {
+                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
+                                            } else if (previnspan) {
+                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
+                                            } else {
+                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
+                                            }
                                         }
 
 
