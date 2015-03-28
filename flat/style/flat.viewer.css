@@ -187,3 +187,8 @@ div.deleted span.lbl {
     text-decoration: line-through;
     color: red;
 }
+
+label.spanrole {
+    color: #854587;
+}
+

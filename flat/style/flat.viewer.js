@@ -219,6 +219,7 @@ function checkparentincorrection(annotation, correctionid) {
 }
 
 function renderannotation(annotation, norecurse) {
+    //renders the annotation in the details popup
     var s = "";
     if (!((annotation.type == "t") && ((annotation.class == "current")  || (annotation.class == "original")) )) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
@@ -227,9 +228,32 @@ function renderannotation(annotation, norecurse) {
             s = s + "<span class=\"class\">" + annotation.class + "</span>";
         }
     }
-    if (annotation.targets.length > 1) {
-        spantext = getspantext(annotation)
-        s = s + "<br/><span class=\"text\">" + spantext + "</span>";
+    if (annotation.span) {
+        var currentspanroles= null;
+        var spanrolesonly = false;
+        if (spanroles[annotation.type]) {
+            currentspanroles = spanroles[annotation.type];  //ensures they will be in the order specified
+            spanrolesonly = true;
+        } else if (annotation.spanroles.length > 0) {
+            currentspanroles = Objects.keys(annotation.spanroles);
+            spanrolesonly = false;
+        }
+        if (currentspanroles && currentspanroles.length > 0) {
+            currentspanroles.forEach(function(spanrole){
+                if (annotation.spanroles[spanrole]) {
+                    var roletext = "";
+                    annotation.spanroles[spanrole].forEach(function(wordid){
+                        if (roletext) roletext += " ";
+                        roletext += annotations[wordid]['t/undefined'].text;
+                    });
+                    s = s + "<br/><label class=\"spanrole\">" + spanrole + ":</label> <span class=\"text\">" + roletext + "</span>";
+                }
+            });
+        }
+        if (!spanrolesonly) {
+            spantext = getspantext(annotation)
+            s = s + "<br/><span class=\"text\">" + spantext + "</span>";
+        }
     }
     if (annotation.type == "t") {
         if (annotation.class != "current") s = s + "<br />";

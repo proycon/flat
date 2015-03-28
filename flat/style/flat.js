@@ -52,6 +52,11 @@ annotationtypespan = {
     'dependency': true,
     'coreferencechain': true,
 }
+spanroles = {
+    'coreferencechain': ['coreferencelink'],
+    'dependency': ['hd','dep'],
+}
+
 sid = ((Math.random() * 1e9) | 0); //session id
 
 function getannotationtypename(t) {
