@@ -86,13 +86,13 @@ function toggleoriginal() {
                             }
                         } else {
                             //must be a deletion, show
-                            if (annotation.previousword) {
+                            if (annotations[target]['self'].previousword) {
                                 //check if the deletion has a colored class
                                 var c = '';
                                 if (classrank[annotation.class]) {
                                     c = ' class' + classrank[annotation.class];
                                 }                                
-                                $('#' + valid(annotation.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
+                                $('#' + valid(annotations[target]['self'].previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
                             }
                         }
                     }
@@ -468,13 +468,42 @@ function renderglobannotations(annotations) {
                                 if (annotation.class) {
                                     s = "<span class=\""+annotation.type+"\">" + annotation.class + "</span>";
                                 } else {
-                                    s = "<span class=\""+annotation.type+"\">-</span>";
+                                    s = "<span class=\""+annotation.type+"\">?</span>";
                                 }
                                 if (annotation.span) {
-                                        //If the previous word has the very
-                                        //same class as this one, we do not
-                                        //repeat it explicitly but draw a line
-                                        //TODO
+                                        var previnspan = false;
+                                        var nextinspan = false;
+                                        //If the previous word is in the same
+                                        //span we do not repeat it explicitly
+                                        //but draw a line
+                                        var prevwordid = annotations[target]['self']['previousword'];
+                                        if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
+                                            var prevannotation = annotations[prevwordid][annotationkey];
+                                            if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                //previous word part of span already
+                                                previnspan = true;
+                                            }
+                                        }
+
+                                        //is the next word still part of the span?
+                                        var nextwordid = annotations[target]['self']['nextword'];
+                                        if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
+                                            var nextannotation = annotations[nextwordid][annotationkey];
+                                            if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                nextinspan = true;
+                                            }
+                                        }
+
+                                        if ((previnspan) && (nextinspan)) {
+                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
+                                        } else if (nextinspan) {
+                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + "</span>";
+                                        } else if (previnspan) {
+                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
+                                        } else {
+                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + "&rang;</span>";
+                                        }
+
 
                                         //this is a complex annotatation that
                                         //may span multiple lines, build a
