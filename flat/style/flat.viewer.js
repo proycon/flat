@@ -457,11 +457,11 @@ function renderglobannotations(annotations) {
             targetabselection.css('display','none'); //we clear on this level 
             targetabselection.html("");
             var changed = false;
-            Object.keys(annotations[target]).forEach(function(annotationkey){
-                if (annotationkey != "self") {
-                    var annotation = annotations[target][annotationkey];
-                    $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
-                        annotationtype = globannotationsorder[annotationtype];
+            $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
+                annotationtype = globannotationsorder[annotationtype];
+                Object.keys(annotations[target]).forEach(function(annotationkey){
+                    if (annotationkey != "self") {
+                        var annotation = annotations[target][annotationkey];
                         if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
                                 changed = true;
                                 var s = "";
@@ -470,7 +470,12 @@ function renderglobannotations(annotations) {
                                 } else {
                                     s = "<span class=\""+annotation.type+"\">-</span>";
                                 }
-                                if ((annotation.type == "su") || (annotation.type == "dependency") || (annotation.type=="coreferencechain")) {
+                                if (annotation.span) {
+                                        //If the previous word has the very
+                                        //same class as this one, we do not
+                                        //repeat it explicitly but draw a line
+                                        //TODO
+
                                         //this is a complex annotatation that
                                         //may span multiple lines, build a
                                         //container for it. All containers will
@@ -500,8 +505,8 @@ function renderglobannotations(annotations) {
                                     targetabselection.append(s)
                                 }
                         }
-                    });
-                }
+                    }
+                }); ///
             });
             if (changed) targetabselection.css('display','block'); 
         });

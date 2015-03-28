@@ -16,11 +16,11 @@ span.ab { /*annotation box*/
     border-top: #888 1px dotted;
     margin-top: 5px;
     font-size: 75%;
+    color: #5c6280;
 }
 span.ab>span, span.ab>span.abc>span { /*items/rows in annotation box*/
     display: block;
     margin-right: 4px;
-    color: #5c6280;
 }
 span.ab span.pos{ 
     color: #5c6280;
