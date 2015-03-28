@@ -234,7 +234,7 @@ function renderannotation(annotation, norecurse) {
     if (!((annotation.type == "t") && ((annotation.class == "current")  || (annotation.class == "original")) )) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
-        } else {
+        } else if (annotation.class) {
             s = s + "<span class=\"class\">" + annotation.class + "</span>";
         }
     }
