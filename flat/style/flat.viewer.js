@@ -5,6 +5,8 @@ annotationfocus = null;
 annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
 hover = null;
+globannotationsorder = ['dependency','su','coreferencechain','semrole','entity','sense','pos','lemma'] //from high to low
+
 
 function setview(v) {
     view = v;
@@ -309,13 +311,17 @@ function toggleglobannotationview(annotationtype, set) {
     } else {
         $('#globannotationtypeview_' + annotationtype + "_" + hash(set)).removeClass('on');
     }
-    renderglobannotations();
+    $('span.ab').css('display','none'); 
+    $('span.ab').html("");
+    renderglobannotations(annotations);
 }
 
 function resetglobannotationview() {
     $('#globannotationsviewmenu li').removeClass('on');
     viewglobannotations = {}
-    renderglobannotations();
+    $('span.ab').css('display','none'); 
+    $('span.ab').html("");
+    renderglobannotations(annotations);
 }
 
 
@@ -436,26 +442,88 @@ function setclasscolors() {
 }
 
 
-function renderglobannotations() {
-    $('span.ab').css('display','none');
-    $('span.ab').html(""); // clear all
-
+function renderglobannotations(annotations) {
+    //annotations are passed so we can work either locally or globally
+    //
     var globalannotations = 0;
     Object.keys(viewglobannotations).forEach(function(annotationtypeset){
       if (viewglobannotations[annotationtypeset]) globalannotations += 1;
     });
 
     if (globalannotations) {
+        var containers = {}
         Object.keys(annotations).forEach(function(target){
+            var targetabselection = $('#' + valid(target) + " span.ab");
+            targetabselection.css('display','none'); //we clear on this level 
+            targetabselection.html("");
+            var changed = false;
             Object.keys(annotations[target]).forEach(function(annotationkey){
-                annotation = annotations[target][annotationkey];
-                if (viewglobannotations[annotation.type + '/' + annotation.set]) {
-                    if (annotation.class) {
-                        $('#' + valid(target) + " span.ab").css('display','block').append("<span class=\""+annotation.type+"\">" + annotation.class + "</span>")
-                    }
+                if (annotationkey != "self") {
+                    var annotation = annotations[target][annotationkey];
+                    $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
+                        annotationtype = globannotationsorder[annotationtype];
+                        if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
+                                changed = true;
+                                var s = "";
+                                if (annotation.class) {
+                                    s = "<span class=\""+annotation.type+"\">" + annotation.class + "</span>";
+                                } else {
+                                    s = "<span class=\""+annotation.type+"\">-</span>";
+                                }
+                                if ((annotation.type == "su") || (annotation.type == "dependency") || (annotation.type=="coreferencechain")) {
+                                        //this is a complex annotatation that
+                                        //may span multiple lines, build a
+                                        //container for it. All containers will
+                                        //have the same height so content can
+                                        //be aligned.
+                                        var scope = annotation.layerparent 
+                                        var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
+                                        if (!containers[containerkey]) {
+                                            containers[containerkey] = {};
+                                        }
+                                        var container = null;
+                                        if (containers[containerkey][target]) {
+                                            container = containers[containerkey][target];
+                                        } else {
+                                            containers[containerkey][target] = [];
+                                        }
+                                        if (container === null) {
+                                            /* add a container first */
+                                            targetabselection.append("<span class=\"abc\">" + s + "</span>");
+                                            var abcs = $('#' + valid(target) + " span.ab span.abc")
+                                            container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
+                                        } else {
+                                            $(container).append(s);
+                                        }
+                                        containers[containerkey][target].push(container);
+                                } else {
+                                    targetabselection.append(s)
+                                }
+                        }
+                    });
                 }
             });
+            if (changed) targetabselection.css('display','block'); 
         });
+
+        //process containers, all containers for the same span layer must all have the same height (will be set to the height of the largest)
+        Object.keys(containers).forEach(function(containerkey){
+            var height = 0;
+            Object.keys(containers[containerkey]).forEach(function(target){
+                containers[containerkey][target].forEach(function(container){
+                    c_height =  $(container).height()
+                    if (c_height > height) height = c_height;
+                });
+            });
+            if (height > 0) {
+                Object.keys(containers[containerkey]).forEach(function(target){
+                    containers[containerkey][target].forEach(function(container){
+                        $(container).css('height',height);
+                    });
+                });
+            }
+        });
+
     }
 
 }
@@ -503,13 +571,15 @@ function viewer_loadmenus() {
             }
             label = getannotationtypename(annotationtype);
             s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
-            if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
-                globviewannotations[annotationtype + "/" + set] = true;
-                state = "class=\"on\"";
-            } else {
-                state = "";
+            if (globannotationsorder.indexOf(annotationtype) != -1) {
+                if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
+                    globviewannotations[annotationtype + "/" + set] = true;
+                    state = "class=\"on\"";
+                } else {
+                    state = "";
+                }
+                sglob = sglob +  "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
             }
-            sglob = sglob +  "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
         }
         if ((configuration.allowedannotationfocus === true) || (configuration.allowedannotationfocus.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedannotationfocus.indexOf(annotationtype) != -1)) {
             s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";

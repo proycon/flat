@@ -17,19 +17,22 @@ span.ab { /*annotation box*/
     margin-top: 5px;
     font-size: 75%;
 }
-span.ab>span{ /*items/rows in annotation box*/
+span.ab>span, span.ab>span.abc>span { /*items/rows in annotation box*/
     display: block;
     margin-right: 4px;
     color: #5c6280;
 }
-span.ab>span.pos{ 
+span.ab span.pos{ 
     color: #5c6280;
 }
-span.ab>span.lemma{ 
+span.ab span.lemma{ 
     color: #7a805c;
 }
-span.ab>span.su{ 
+span.ab span.su{ 
     color: #528ed2;
+}
+span.ab>span.abc{ /* annotation box container (for a specific annotation type that spans vertical space) */
+    vertical-align: bottom;
 }
 div.head {
     font-size: 120%;
