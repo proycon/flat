@@ -7,8 +7,8 @@ else:
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/?$', 'flat.modes.viewer.views.view', name='view'),
-    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/poll/?$', 'flat.modes.viewer.views.poll', name='poll'),
-    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/(?P<elementid>[\w\-\.]+)/$', 'flat.modes.viewer.views.subview', name='subview'),
+    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', 'flat.modes.viewer.views.view', name='view'),
+    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/poll/?$', 'flat.modes.viewer.views.poll', name='poll'),
+    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/(?P<elementid>[\w\d\-_\.]+)/$', 'flat.modes.viewer.views.subview', name='subview'),
 
 )

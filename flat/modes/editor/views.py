@@ -83,9 +83,9 @@ def revert(request,namespace, docid, commithash):
     if flat.users.models.haswritepermission(request.user.username, namespace):
         try:
             if hasattr(request, 'body'):
-                flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
+                flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/?commithash=' + commithash,False)
             else:
-                flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/' + commithash + '/',False)
+                flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/?commithash=' + commithash,False)
         except URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/revert]")
         return HttpResponse("{}", content_type='application/json') #no content, client will do a full reload

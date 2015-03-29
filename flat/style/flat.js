@@ -250,6 +250,9 @@ function update(data) {
             }
         });
     }
+    if (data.aborted) {
+        $('#aborted').show();
+    }
 }
 
 
@@ -332,6 +335,10 @@ function hideuploadform() {
     $('#uploadform').hide();
     return false;
 }
+function hideadddirectoryform() {
+    $('#adddirectoryform').hide();
+    return false;
+}
 
 $(function() {
     if (typeof(mode) != "undefined") {
@@ -359,6 +366,13 @@ $(function() {
         });
         $('#cancelupload').click(function(){
             $('#uploadform').hide();
+            return false;
+        });
+        $('#adddirectorybutton').click(function(){
+            $('#adddirectoryform').show();
+        });
+        $('#canceladddirectory').click(function(){
+            $('#adddirectoryform').hide();
             return false;
         });
     }

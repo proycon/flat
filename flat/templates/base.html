@@ -70,7 +70,7 @@
             {% block topbar_right %}
             {% endblock %}
             {% if loggedin %}
-            <li><a href="/">My Documents</a></li>
+            <li><a href="/">Document Index</a></li>
             <li><a href="/logout/">Log out {{ username }}</a></li>
             {% endif %}
             </ul>
@@ -84,6 +84,10 @@
         <div id="main">
             {% block main %}
             {% endblock %}
+            <div id="aborted">
+                <strong>Loading aborted: </strong> There was too much data to display at once. You are looking at a partial result.
+                <span class="help">(Select a sub-part to visualise instead)</span>
+            </div>
         </div>
 
 

@@ -61,40 +61,51 @@ def register(request):
     })
 
 
-
 @login_required
-def index(request):
-    docs = {}
+def index(request, namespace=""):
     try:
-        namespaces = flat.comm.get(request, '/namespaces/')
-    except URLError:
-        return HttpResponseForbidden("Unable to connect to the document server")
+        namespaces = flat.comm.get(request, '/namespaces/' + namespace)
+    except URLError as e:
+        return HttpResponseForbidden("The document server returned an error: "  + str(e))
 
-    if not request.user.username in namespaces['namespaces']:
-        try:
-            flat.comm.get(request, "makenamespace/" + request.user.username, False)
-        except URLError:
-            return HttpResponseForbidden("Unable to connect to the document server")
-
-    namespaces_sorted = sorted([x for x in namespaces['namespaces'] if x != request.user.username])
-    namespaces_sorted = [request.user.username] +  namespaces_sorted
-    for namespace in namespaces_sorted:
-        if flat.users.models.hasreadpermission(request.user.username, namespace):
+    if not namespace:
+        #check if user namespace is preset, if not, make it
+        if not request.user.username in namespaces['namespaces']:
             try:
-                r = flat.comm.get(request, '/documents/' + namespace)
-            except URLError:
-                return HttpResponseForbidden("Unable to connect to the document server")
-            docs[namespace] = []
-            for d in sorted(r['documents']):
-                docid =  os.path.basename(d.replace('.folia.xml',''))
-                docs[namespace].append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
+                flat.comm.get(request, "createnamespace/" + request.user.username, False)
+            except URLError as e:
+                return HttpResponseForbidden("Unable to connect to the document server" + str(e))
+
+    readpermission = flat.users.models.hasreadpermission(request.user.username, namespace)
+    dirs = []
+    print(namespaces['namespaces'],file=sys.stderr)
+    for ns in sorted(namespaces['namespaces']):
+        if readpermission or flat.users.models.hasreadpermission(request.user.username, os.path.join(namespace, ns)):
+            dirs.append(ns)
+
+    dirs.sort()
+
+    docs = []
+    if namespace and readpermission:
+        try:
+            r = flat.comm.get(request, '/documents/' + namespace)
+        except URLError as e:
+            return HttpResponseForbidden("The document server returned an error: " + str(e))
+        for d in sorted(r['documents']):
+            docid =  os.path.basename(d.replace('.folia.xml',''))
+            docs.append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
 
     if not 'configuration' in request.session:
         return logout(request)
 
-    sorteddocs = [ (k,  docs[k]) for k in namespaces_sorted if k in docs ]
+    docs.sort()
 
-    return render(request, 'index.html', {'docs': sorteddocs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION, 'namespaces': namespaces_sorted})
+    if namespace:
+        parentdir = '/'.join(namespace.split('/')[:-1])
+    else:
+        parentdir = ""
+
+    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
 
 @login_required
 def download(request, namespace, docid):
@@ -105,13 +116,16 @@ def download(request, namespace, docid):
 @login_required
 def upload(request):
     if request.method == 'POST':
-        namespace = request.POST['namespace'].replace('/','').replace('..','.')
+        namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(request.user.username, namespace) and 'file' in request.FILES:
-            data = unicode(request.FILES['file'].read(),'utf-8')
+            if sys.version < '3':
+                data = unicode(request.FILES['file'].read(),'utf-8')
+            else:
+                data = str(request.FILES['file'].read(),'utf-8')
             try:
                 response = flat.comm.postxml(request,"upload/" + namespace , data)
-            except URLError:
-                return HttpResponseForbidden("Unable to connect to the document server")
+            except URLError as e:
+                return HttpResponseForbidden("The document server returned an error: " + str(e))
             if 'error' in response and response['error']:
                 return HttpResponseForbidden(response['error'])
             else:
@@ -122,3 +136,24 @@ def upload(request):
     else:
         return HttpResponseForbidden("Permission denied")
 
+
+@login_required
+def addnamespace(request):
+    if request.method == 'POST':
+        namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
+        newdirectory = request.POST['newdirectory'].replace('/','').replace('..','.').replace(' ','').replace('&','')
+        if flat.users.models.haswritepermission(request.user.username, namespace):
+            try:
+                response = flat.comm.get(request,"createnamespace/" + namespace + "/" + newdirectory)
+            except URLError as e:
+                return HttpResponseForbidden("The document server returned an error: " + str(e))
+            if 'error' in response and response['error']:
+                return HttpResponseForbidden(response['error'])
+            elif namespace:
+                return HttpResponseRedirect("/index/" + namespace + '/' + newdirectory  )
+            else:
+                return HttpResponseRedirect("/index/" + newdirectory  )
+        else:
+            return HttpResponseForbidden("Permission denied")
+    else:
+        return HttpResponseForbidden("Permission denied")

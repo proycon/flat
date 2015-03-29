@@ -14,12 +14,15 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'flat.views.index', name='index'),
+    url(r'^index/?$', 'flat.views.index', name='index'),
+    url(r'^index/(?P<namespace>[\w\d\-_\./]+)/?$', 'flat.views.index', name='index'),
     url(r'^login/?$', 'flat.views.login', name='login'),
     url(r'^logout/?$', 'flat.views.logout', name='logout'),
     url(r'^register/?$', 'flat.views.register', name='register'),
-    url(r'^download/(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)\.folia\.xml/?$', 'flat.views.download', name='download'),
-    url(r'^download/(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/?$', 'flat.views.download', name='download'),
+    url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)\.folia\.xml/?$', 'flat.views.download', name='download'),
+    url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', 'flat.views.download', name='download'),
     url(r'^upload/?$', 'flat.views.upload', name='upload'),
+    url(r'^addnamespace/?$', 'flat.views.addnamespace', name='addnamespace'),
     # url(r'^flat/', include('flat.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
