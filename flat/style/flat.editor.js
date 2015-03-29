@@ -588,6 +588,7 @@ function openconsole() {
 
 function editor_oninit() {
     viewer_oninit();
+
     editor_loadmenus();
     $('#editordiscard').click(closeeditor);
     $('#newdeclarationdiscard').click(function(){
@@ -916,7 +917,7 @@ function editor_oninit() {
         if (namespace != "testflat") {  //tests will be handled by different ajax submission  
             $.ajax({
                 type: 'POST',
-                url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+                url: "/" + namespace + "/"+ docid + "/query/",
                 contentType: "application/json",
                 //processData: false,
                 headers: {'X-sessionid': sid },
@@ -948,7 +949,7 @@ function editor_oninit() {
         queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());
         $.ajax({
             type: 'POST',
-            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+            url: "/" + namespace + "/"+ docid + "/query/",
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
@@ -981,7 +982,7 @@ function editor_oninit() {
 
         $.ajax({
             type: 'POST',
-            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+            url: "/" + namespace + "/"+ docid + "/query/",
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },

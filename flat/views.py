@@ -3,8 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 import django.contrib.auth
+from pynlpl.formats import fql
+import json
 import datetime
-import flat.settings as settings
+from django.conf import settings
 import flat.comm
 import flat.users
 import sys
@@ -13,6 +15,106 @@ if sys.version < '3':
 else:
     from urllib.error import URLError
 import os
+
+def getcontext(request,namespace,docid, doc, mode):
+    return {
+            'configuration': settings.CONFIGURATIONS[request.session['configuration']],
+            'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
+            'namespace': namespace,
+            'docid': docid,
+            'mode': mode,
+            'modes': settings.CONFIGURATIONS[request.session['configuration']]['modes'] ,
+            'modes_json': json.dumps([x[0] for x in settings.CONFIGURATIONS[request.session['configuration']]['modes'] ]),
+            'perspectives_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]['perspectives']),
+            'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
+            'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
+            'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
+            'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",
+            'loggedin': request.user.is_authenticated(),
+            'version': settings.VERSION,
+            'username': request.user.username,
+            'waitmessage': "Loading document on server and initialising web-environment...",
+    }
+
+def validatenamespace(namespace):
+    return namespace.replace('..','').replace('"','').replace(' ','_').replace(';','').replace('&','').strip('/')
+
+def getdocumentselector(query):
+    if query.startswith("USE "):
+        end = query[4:].index(' ') + 4
+        if end >= 0:
+            try:
+                namespace,docid = query[4:end].rsplit("/",1)
+            except:
+                raise fql.SyntaxError("USE statement takes namespace/docid pair")
+            return (validatenamespace(namespace),docid), query[end+1:]
+        else:
+            try:
+                namespace,docid = query[4:end].rsplit("/",1)
+            except:
+                raise fql.SyntaxError("USE statement takes namespace/docid pair")
+            return (validatenamespace(namespace),docid), ""
+    return None, query
+
+def initdoc(request, namespace, docid, mode):
+    """Initialise a document (not invoked directly)"""
+    perspective = request.GET.get('perspective','document')
+    flatargs = {
+        'setdefinitions': True,
+        'declarations': True,
+        'toc': True,
+        'slices': request.GET.get('slices',settings.CONFIGURATIONS[request.session['configuration']].get('slices','p:25,s:100')), #overriden either by configuration or by user
+    }
+    try:
+        doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " PROBE", **flatargs) #retrieves only the meta information, not document content
+    except URLError:
+        return HttpResponseForbidden("Unable to connect to the document server [editor/view]")
+    context = getcontext(request,namespace,docid, doc, mode)
+    return context
+
+@login_required
+def query(request,namespace, docid):
+    if flat.users.models.hasreadpermission(request.user.username, namespace):
+
+        #stupid compatibility stuff
+        if sys.version < '3':
+            if hasattr(request, 'body'):
+                data = json.loads(unicode(request.body,'utf-8'))
+            else: #older django
+                data = json.loads(unicode(request.raw_post_data,'utf-8'))
+        else:
+            if hasattr(request, 'body'):
+                data = json.loads(str(request.body,'utf-8'))
+            else: #older django
+                data = json.loads(str(request.raw_post_data,'utf-8'))
+
+        if not data['queries']:
+            return HttpResponseForbidden("No queries to run")
+
+        for query in data['queries']:
+            #get document selector and check it doesn't violate the namespace
+            docselector, query = getdocumentselector(query)
+            if docselector[0] != namespace:
+                return HttpResponseForbidden("Query would affect a different namespace than your current one, forbidden!")
+
+            #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
+            try:
+                query = fql.Query(query)
+            except fql.SyntaxError as e:
+                return HttpResponseForbidden(e)
+            needwritepermission = query.declarations or query.action and query.action.action != "SELECT"
+
+        if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace):
+            return HttpResponseForbidden("Permission denied, no write access")
+
+        query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
+        try:
+            d = flat.comm.query(request, query)
+        except URLError as e:
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [query]")
+        return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
+    else:
+        return HttpResponseForbidden("Permission denied, no read access")
 
 def login(request):
     if 'username' in request.POST and 'password' in request.POST:

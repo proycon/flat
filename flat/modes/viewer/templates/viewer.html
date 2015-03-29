@@ -11,13 +11,16 @@
 {% endblock %}
 
 {% block dialogs %}
-<div id="legend"></div>
+<div id="leftpane">
+    <div id="perspective"></div>
+    <div id="legend"></div>
+</div>
 <div id="info"></div>
+<div id="connectioninfo"></div>
 {% endblock %}
 
 {% block main %}
 <div id="document">
-{{ dochtml|safe }}
 </div>
 {% endblock %}
 

@@ -63,11 +63,20 @@ FOLIADOCSERVE_PORT = 8080
 # Each enables the user to do completely different things.
 # The following modes are available and enabled. Simply
 # comment the ones you want to disable:
-EDITOR_MODES = [
+MODES = [
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
     ('structureeditor','Structure Editor'),
 ]
+
+# The viewer and editor allow for different perspectives on the data.
+#  - document: view of the entire document
+#  - toc: view of a named subsection of the document (a table of contents will
+#  be automatically constructed)
+#  - any other FoLiA XML tag corresponsing to a structural element: paged data
+#  over this type of element
+PERSPECTIVES = [ 'document', 'toc', 'p', 's' ]
+
 
 # Which mode should be used by default when the user opens a document?
 DEFAULTMODE = 'editor'
@@ -93,7 +102,11 @@ CONFIGURATIONS = {
     'name': "Full Editor",
 
     # use the editor modes defined globally, or specify them explicitly per configuration here.
-    'modes': EDITOR_MODES,
+    'modes': MODES,
+
+    # use the perspectives defined globally, or specify them explicitly per configuration here.
+    'perspectives': PERSPECTIVES,
+
 
     # Allow users to upload FoLiA documents?
     'allowupload': True, #boolean

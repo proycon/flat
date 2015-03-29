@@ -2,7 +2,7 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,HttpResponseForbidden
-import flat.settings as settings
+from django.conf import settings
 import flat.comm
 import flat.users
 import flat.modes.viewer.views

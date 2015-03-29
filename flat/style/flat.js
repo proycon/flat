@@ -59,6 +59,9 @@ spanroles = {
 
 sid = ((Math.random() * 1e9) | 0); //session id
 
+havecontent = false; //we start assuming we have no content
+closewait = true; //close the wait mask when we are done loading
+
 function getannotationtypename(t) {
     if (annotationtypenames[t]) {
         return annotationtypenames[t];
@@ -230,7 +233,16 @@ function update(data) {
     if (data.elements) {
         data.elements.forEach(function(returnitem){
             if ((returnitem.html) && (returnitem.elementid)) { 
-                $('#' + valid(returnitem.elementid))[0].outerHTML = returnitem.html;
+                var selector = $('#' + valid(returnitem.elementid));
+                if (selector.length == 1) {
+                    //structure exists
+                    //update the existing elements
+                    selector[0].outerHTML = returnitem.html;
+                } else if (!havecontent) {
+                    //structure does not exist yet and we we don't have content
+                    //yet, add to main document
+                    $('#document').append(returnitem.html);
+                }
                 //$('#' + valid(data.elementid)).attr('id',"replacing");
                 //$('#replacing').html("...");
                 //$('#replacing').after(data.html);
@@ -249,6 +261,10 @@ function update(data) {
                 f(returnitem);
             }
         });
+        havecontent = true;
+    }
+    if (data.sessions) {
+        $('#connectioninfo').html("<span title=\"This is the number of people that are currently viewing/editing this document, yourself included\">" + data.sessions + "</span>");
     }
     if (data.aborted) {
         $('#aborted').show();
@@ -308,6 +324,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
     }
 });
 
+
 $.fn.sortOptions = function(){
     var sel = $(this).val();
     $(this).each(function(){
@@ -346,10 +363,8 @@ $(function() {
             $('>ul',this).css('left', mouseX-30);
         });
 
-
-
         //loadtext(initialannotationlist);
-        loadannotations(initialannotationlist);
+        //loadannotations(initialannotationlist);
         loaddeclarations(initialdeclarationlist);
         registerhandlers();
         if (function_exists(mode + '_oninit')) {
@@ -376,5 +391,5 @@ $(function() {
             return false;
         });
     }
-    $('#wait').hide();
+    if (closewait) $('#wait').hide();
 });

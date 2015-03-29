@@ -40,6 +40,19 @@ span.dependency span.headtext {
 span.ab>span.abc{ /* annotation box container (for a specific annotation type that spans vertical space) */
     vertical-align: bottom;
 }
+div.persp { /*perspective */
+    display: block;
+    padding-top:5px;
+    padding-bottom: 5px;
+    border: 1px dashed #ccc;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+div.persp:hover { /*perspective */
+    background: #dee6e8;
+    border: 1px dashed #356a77;
+}
+
 div.head {
     font-size: 120%;
     font-weight: bold;
@@ -85,15 +98,29 @@ div.class7 span.lbl, div#class7legend {
 div.hover span.lbl, div.hover>span.ab {
     background: #b9d8d9;
 }
-
-div#legend {
+div#connectioninfo {
     position: fixed;
-    display: none;
+    right: 10px;
+    top: 50px;
+    background: transparent;
+    font-size: 24px;
+    color: #356a77;
+}
+div#leftpane {
+    position: fixed;
     width: 160px;
     left:10px;
-    top: 100px;
+    top: 50px;
+    font-size: 9px;
+}
+div#perspective {
+    width: 160px;
+}
+div#legend {
+    display: none;
     background: transparent;
     font-size: 9px;
+    margin-top: 25px;
 }
 div#legend .colorbox {
     display: inline-block;
@@ -105,7 +132,7 @@ div#legend .colorbox {
 div#legend span {
     display: inline-block;
 }
-div#legend .title {
+div#legend .title, div#perspective .title {
     display: block;
     font-size: 10px;
     font-weight: bold;
@@ -197,4 +224,6 @@ div.deleted span.lbl {
 label.spanrole {
     color: #854587;
 }
-
+#perspectivemenu {
+    max-width: 160px;
+}

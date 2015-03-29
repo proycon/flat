@@ -47,9 +47,12 @@ initialcorrectionset = '{{ initialcorrectionset }}';
 {% endblock %}
 
 {% block dialogs %}
-<div id="legend"></div>
-<div id="editformcorrectionsetselector">
-Correction set: <select id="editformcorrectionset"></select>
+<div id="leftpane">
+    <div id="perspective"></div>
+    <div id="editformcorrectionsetselector">
+    Correction set: <select id="editformcorrectionset"></select>
+    </div>
+    <div id="legend"></div>
 </div>
 <div id="info"></div>
 <div id="editor">
@@ -105,11 +108,11 @@ Correction set: <select id="editformcorrectionset"></select>
         </div>
     </div>
 </div>
+<div id="connectioninfo"></div>
 {% endblock %}
 
 {% block main %}
 <div id="document">
-{{ dochtml|safe }}
 </div>
 {% endblock %}
 

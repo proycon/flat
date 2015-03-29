@@ -26,15 +26,19 @@
             namespace = "{{ namespace|safe }}";
             docid = "{{ docid|safe }}";
             modes = {{ modes_json|safe }};
+            perspectives = {{ perspectives_json|safe }};
             mode = "{{ mode }}";
             {% if docdeclarations %}
             initialdeclarationlist = {{ docdeclarations|safe }};
             {% endif %}
-            {% if docannotations %}
-            initialannotationlist = {{ docannotations|safe }};
-            {% endif %}
             {% if setdefinitions %}
             setdefinitions = {{ setdefinitions|safe }};
+            {% endif %}
+            {% if toc %}
+            toc = {{ toc|safe }};
+            {% endif %}
+            {% if slices %}
+            slices = {{ slices|safe }};
             {% endif %}
             {% block js %}
             {% endblock js %}
@@ -97,6 +101,7 @@
         {% endif %}
         
         <div id="wait">
+            <span class="msg">{{ waitmessage }}</span>
             <img src="/style/loader.gif" alt="processing" />
         </div>
 

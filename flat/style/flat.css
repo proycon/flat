@@ -215,6 +215,16 @@ nav ul ul li.on {
     left: 0px;
     top: 0px;
 }
+#wait span.msg {
+    display: block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 80%;
+    color: white;
+    font-size: 20px;
+}
 #doclist span {
     font-size: 8px;
     font-family: monospace;
@@ -267,4 +277,7 @@ span.helptext {
 #aborted span.help {
     font-size: 70%;
     font-style: italic;
+}
+#connectioninfo {
+
 }

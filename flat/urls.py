@@ -8,7 +8,7 @@ if VERSION[1] >= 6: #Django 1.6
 else:
     from django.conf.urls.defaults import *
 
-import flat.settings as settings
+from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', 'flat.views.download', name='download'),
     url(r'^upload/?$', 'flat.views.upload', name='upload'),
     url(r'^addnamespace/?$', 'flat.views.addnamespace', name='addnamespace'),
+    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', 'flat.views.query', name='query'), #generic query function
     # url(r'^flat/', include('flat.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

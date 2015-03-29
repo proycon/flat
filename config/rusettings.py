@@ -20,7 +20,6 @@ except:
 hostname = gethostname()
 
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -120,6 +119,9 @@ EDITOR_MODES = [
     ('structureeditor','Structure Editor'),
 ]
 
+
+PERSPECTIVES = [ 'document', 'toc', 'p', 's' ]
+
 DEFAULTMODE = 'editor'
 
 DEFAULTCONFIGURATION = 'full'
@@ -127,6 +129,7 @@ DEFAULTCONFIGURATION = 'full'
 CONFIGURATIONS = {
 'full':{
     'name': "Full Editor",
+    'perspectives': PERSPECTIVES,
     #The default annotation focus upon loading a document, set to None to start without a focus
     'annotationfocustype': None,
     'annotationfocusset': None,
@@ -193,6 +196,7 @@ CONFIGURATIONS = {
     'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
     'autodeclare': [('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml')],
     'modes': [ ('editor','Annotation Editor')],
+    'perspectives': PERSPECTIVES,
 },
 'ner': {
     'name': 'Named Entity Annotation Project',
@@ -233,6 +237,7 @@ CONFIGURATIONS = {
         ('entity', 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')
     ],
     'modes': [ ('editor','Annotation Editor')],
+    'perspectives': PERSPECTIVES,
 }
 }
 

@@ -1,4 +1,3 @@
-view = 'deepest';
 viewannotations = {}; //view local annotations in editor
 viewglobannotations = {}; //view global annotations
 annotationfocus = null;
@@ -6,16 +5,29 @@ annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
 hover = null;
 globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma'] //from high to low
+perspective = 'document'; //initial perspective (TODO: override with configuration option later)
+perspective_ids = null;
+perspective_start = null;
+perspective_end = null;
 
 
-function setview(v) {
-    view = v;
+function setview() {
+    view = 'deepest';
     $('div.F span.lbl').hide();
-    $('div.s').css('display', 'inline');
-    $('ul#viewsmenu li').removeClass('on');
-    if (v == 'deepest') {
-        $('div.deepest>span.lbl').show();
-        $('li#views_deepest').addClass('on');
+    if (perspective != "s") {
+        $('div.s').css('display', 'inline');
+    } else {
+        $('div.s').css('display', 'block');
+    }
+    $('div.persp').removeClass('persp');
+    if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
+        $('div.' + perspective).addClass('persp');
+    }
+    //$('ul#viewsmenu li').removeClass('on');
+    //view=deepest
+    $('div.deepest>span.lbl').show();
+    //$('li#views_deepest').addClass('on');
+    /*
     } else if (v == 'w') {
         $('div.w>span.lbl').show();
         $('li#views_w').addClass('on');
@@ -27,6 +39,7 @@ function setview(v) {
         $('div.p>span.lbl').show();
         $('li#views_p').addClass('on');
     }
+    */
 }
 
 
@@ -639,7 +652,7 @@ function viewer_onloadannotations(annotationlist) {
 
 
 function viewer_onupdate() {
-    setview(view);
+    setview();
 }
 
 function viewer_ontimer() {
@@ -695,16 +708,181 @@ function viewer_loadmenus() {
     $('#annotationsfocusmenu').html(s2);
 }
 
+
+
+function rendertoc(tocitem, depth = "") {
+    var opts = "<option value=\"div:" + tocitem.id + "\"";
+    if ((perspective_ids) && (perspective_ids.indexOf(tocitem.id) != -1)) {
+        opts += " selected=\"selected\">";
+    } else {
+        opts += ">";
+    }
+    opts += depth + tocitem.text + "</option>";
+    if (tocitem.toc.length > 0) {
+        tocitem.toc.forEach(function(subtocitem){
+            opts += rendertoc(subtocitem, depth + "&horbar;");
+        });
+    }
+    return opts;
+}
+
+function loadperspectivemenu() {
+    var s = "<span class=\"title\">Perspective</span>";
+    s += "<select id=\"perspectivemenu\">";
+    var opts = "";
+    if (perspectives.indexOf("document") != -1) {
+        opts += "<option value=\"document\" ";
+        if (perspective == "document") {
+            opts += " selected=\"selected\">";
+        } else {
+            opts += ">";
+        }
+        opts += "Full Document</option>";
+    }
+    for (i = 0; i < perspectives.length; i++) {
+        if ((perspectives[i] != "document") && (perspectives[i] != "toc")) {
+            opts += "<option value=\"" + perspectives[i] + "\">" + annotationtypenames[perspectives[i]] + "</option>";
+        }
+    }
+    if (perspectives.indexOf('toc') != -1) {
+        opts += "<option value=\"\" style=\"font-weight: bold; font-style: italic;\">Table of contents</option>";
+        toc.forEach(function(tocitem){
+            opts += rendertoc(tocitem, "");
+        });
+    }
+    s += opts;
+    s += "</select>";
+    s += "<div id=\"pager\"></div>";
+    $('#perspective').html(s);
+
+    $('#perspectivemenu').change(function(){
+        var selected = $('#perspectivemenu').val();
+        if (!selected) return;
+        perspective_start = null;
+        perspective_end = null;
+        perspective_ids = null;
+        if (selected == "document") {
+            perspective = selected;
+            $('#pager').hide();
+        } else if (selected.substr(0,4) == "div:") {
+            perspective = "div";
+            perspective_ids = [selected.substr(4) ];
+            $('#pager').hide();
+        } else {
+            perspective = selected;
+            if ((slices[perspective]) &&  (slices[perspective].length > 1)) {
+                perspective_end = slices[perspective][1];
+            }
+            //setup pager
+            loadpager();
+        }
+        viewer_getdata(perspective, perspective_ids,null, perspective_end);
+    });
+}
+
+function loadpager() {
+    if (!slices[perspective]) {
+        alert("Error: No slices available for perspective " + perspective + ". If you are the administrator, make sure to define this perspective in the slices in the configuration");
+        return false;
+    }
+    var s = "<span>page:</span> <select id=\"pagemenu\">";
+    for (i = 1; i <= slices[perspective].length; i++) {
+        s += "<option value=\"" + i + "\">" + i + "</option>";
+    }
+    s += "</select>";
+    $('#pager').html(s);
+
+    $('#pager').show();
+    $('#pagemenu').change(function(){
+        var page = $('#pagemenu').val();
+        var start = slices[perspective][page-1];
+        var end = null;
+        if (slices[perspective].length > page) {
+            end = slices[perspective][page];
+        }
+        viewer_getdata(perspective, null, start, end);
+    });
+}
+
+function viewer_getdata(perspective, ids, start, end) {
+    //get query depending on the perspective
+    //  triggered on first page load and on change of perspective
+    //
+    $('#wait .msg').html("Obtaining document data...");
+    $('#wait').show();
+
+    havecontent = false; //global variable to indicate we have no content (anymore)
+    annotations = {};
+    $('#document').html(""); //clear document
+
+    var query = "USE " + namespace + "/" + docid + " SELECT FOR"
+    if (perspective == "document") {
+        query += " ALL";
+    } else if (ids) {
+        for (i = 0; i < ids.length; i++) {
+            if (i > 0) query += " ,";
+            query += " ID " + ids[i];
+        }
+    } else {
+        query += " " + perspective;
+        if (start) {
+            query += " START ID " + start
+        }
+        if (end) {
+            query += " ENDBEFORE ID " + end
+        }
+    }
+    query += " FORMAT flat"
+    
+
+    $.ajax({
+        type: 'POST',
+        url: "/" + namespace + "/"+ docid + "/query/",
+        contentType: "application/json",
+        //processData: false,
+        headers: {'X-sessionid': sid },
+        data: JSON.stringify( { 'queries': [query]}), 
+        success: function(data) {
+            if (data.error) {
+                $('#wait').hide();
+                alert("Received error from document server: " + data.error);
+            } else {
+                editfields = 0;
+                update(data);
+                if (annotationfocus) {
+                    setannotationfocus(annotationfocus.type, annotationfocus.set);
+                }
+                renderglobannotations(annotations);
+                $('#wait').hide();
+            }
+        },
+        error: function(req,err,exception) { 
+            $('#wait').hide();
+            alert("Obtaining document data: " + req + " " + err + " " + exception);
+        },
+        dataType: "json"
+    });
+}
+
+
+
 function viewer_oninit() {
+    closewait = false; //to notify called we'll handle it ourselves 
+
+    //get the data first of all (will take a while anyway)
+    viewer_getdata(perspective, perspective_ids, perspective_start, perspective_end); 
+
     $('#document').mouseleave( function(e) {
         $('#info').hide();
     });  
     annotatordetails = false;
-    setview(view);
     if ((configuration.annotationfocustype) && (configuration.annotationfocusset)) {
         setannotationfocus(configuration.annotationfocustype, configuration.annotationfocusset);
     }
     viewer_loadmenus();
+    loadperspectivemenu();
+    setview();
+
     //if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
 }

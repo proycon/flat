@@ -7,15 +7,17 @@ if sys.version < '3':
     from urllib2 import URLError
 else:
     from urllib.error import URLError
-import flat.settings as settings
+from django.conf import settings
 import flat.comm
 import flat.users
-import flat.modes.viewer.views
+from flat.views import initdoc
 import json
+
 
 
 @login_required
 def view(request, namespace, docid):
+    """The initial view, does not provide the document content yet"""
     if flat.users.models.hasreadpermission(request.user.username, namespace):
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
             if flat.users.models.haswritepermission(request.user.username, namespace):
@@ -25,18 +27,8 @@ def view(request, namespace, docid):
                     except URLError as e:
                         return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/view]")
 
-        try:
-            doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT ALL FORMAT flat", setdefinitions=True,declarations=True) #get the entire document with meta information
-        except URLError:
-            return HttpResponseForbidden("Unable to connect to the document server [editor/view]")
-        d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
-        d['mode'] = 'editor'
-        try:
-            d['initialcorrectionset'] = settings.CONFIGURATIONS[request.session['configuration']]['initialcorrectionset']
-        except:
-            pass
-
-        return render(request, 'editor.html', d)
+        context = initdoc(request, namespace,docid, 'editor')
+        return render(request, 'editor.html', context)
     else:
         return HttpResponseForbidden("Permission denied")
 
@@ -61,7 +53,6 @@ def annotate(request,namespace, docid):
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no write access")
-
 
 
 @login_required
