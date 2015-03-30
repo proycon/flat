@@ -84,7 +84,7 @@ function testtext(elementselector, reference, message) {
 //our tests are run sequentially
 QUnit.config.reorder = false;
 testname = ""; //global variable
-globalassert = "";;
+globalassert = null;
 
 QUnit.asyncTest("Text Change", function(assert){
     testinit("textchange",assert);
@@ -114,6 +114,7 @@ QUnit.asyncTest("Changing Text and multiple token annotations at once", function
     $('#editform3direct').trigger('click'); 
     $('#editorsubmit').trigger('click'); 
 });
+/*
 QUnit.asyncTest("Adding a new span annotation, out of order selection", function(assert){
     //tests adding new fields
     //tests span selection (deliberately selected out of order)
@@ -133,10 +134,8 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     $('#spanselector2').trigger('click'); 
     $(valid('#untitleddoc.p.3.s.1.w.12')).trigger('click');
     $('#spanselector2').trigger('click'); 
-    
-
     $('#editorsubmit').trigger('click'); 
-});
+});*/
 QUnit.asyncTest("Adding new overlapping span", function(assert){
     testinit("newoverlapspan",assert);
     $(valid('#untitleddoc.p.3.s.9.w.8')).trigger('click');

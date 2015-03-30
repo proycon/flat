@@ -120,7 +120,9 @@ def query(request,namespace, docid):
         for query in data['queries']:
             #get document selector and check it doesn't violate the namespace
             docselector, query = getdocumentselector(query)
-            if docselector[0] != namespace:
+            if not docselector:
+                return HttpResponseForbidden("Query does not start with a valid document selector (USE keyword)!")
+            elif docselector[0] != namespace:
                 return HttpResponseForbidden("Query would affect a different namespace than your current one, forbidden!")
 
             #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
