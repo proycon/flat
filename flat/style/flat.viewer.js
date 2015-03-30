@@ -855,6 +855,9 @@ function viewer_getdata(perspective, ids, start, end) {
                 }
                 renderglobannotations(annotations);
                 $('#wait').hide();
+                if ((mode == "editor") && (namespace == "testflat")) {
+                    testflat();
+                }
             }
         },
         error: function(req,err,exception) { 

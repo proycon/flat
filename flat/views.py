@@ -96,6 +96,9 @@ def initdoc(request, namespace, docid, mode, template, context={}):
 
 @login_required
 def query(request,namespace, docid):
+    if request.method != 'POST':
+        return HttpResponseForbidden("POST method required for " + namespace + "/" + docid + "/query")
+
     if flat.users.models.hasreadpermission(request.user.username, namespace):
 
         #stupid compatibility stuff
