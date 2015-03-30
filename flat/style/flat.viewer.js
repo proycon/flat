@@ -855,14 +855,11 @@ function viewer_getdata(perspective, ids, start, end) {
                 }
                 renderglobannotations(annotations);
                 $('#wait').hide();
-                if ((mode == "editor") && (namespace == "testflat")) {
-                    testflat();
-                }
             }
         },
         error: function(req,err,exception) { 
             $('#wait').hide();
-            alert("Obtaining document data: " + req + " " + err + " " + exception);
+            alert("Obtaining document data failed: " + req + " " + err + " " + exception);
         },
         dataType: "json"
     });
@@ -873,8 +870,10 @@ function viewer_getdata(perspective, ids, start, end) {
 function viewer_oninit() {
     closewait = false; //to notify called we'll handle it ourselves 
 
-    //get the data first of all (will take a while anyway)
-    viewer_getdata(perspective, perspective_ids, perspective_start, perspective_end); 
+    if (namespace != "testflat") {
+        //get the data first of all (will take a while anyway)
+        viewer_getdata(perspective, perspective_ids, perspective_start, perspective_end); 
+    }
 
     $('#document').mouseleave( function(e) {
         $('#info').hide();
