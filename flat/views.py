@@ -22,6 +22,7 @@ def getcontext(request,namespace,docid, doc, mode):
             'configuration': settings.CONFIGURATIONS[request.session['configuration']],
             'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
             'namespace': namespace,
+            'testnum': request.GET.get('testNumber',0),
             'docid': docid,
             'mode': mode,
             'modes': settings.CONFIGURATIONS[request.session['configuration']]['modes'] ,

@@ -1,6 +1,8 @@
 
 //will be invoked by editor submit
 function testbackend(testname,username,sid,queries) {
+    //if (testname == "testflat") throw "Got testname 'testflat' rather than an actual specific test!";
+    console.log("Running queries " + queries.join(' ; '));
     $.ajax({
         type: 'POST',
         url: "/testflat/"+ testname + "/query/",
@@ -16,7 +18,7 @@ function testbackend(testname,username,sid,queries) {
                 editfields = 0;
                 closeeditor();
                 update(data);
-                testeval(data);
+                testeval(data); //this will do the proper evaluation
             }
         },
         error: function(req,err,exception) { 
@@ -27,7 +29,10 @@ function testbackend(testname,username,sid,queries) {
     });
 }
 
+
+//will be called by each test to set up the environment
 function testinit(name, assert) {
+    console.log("(testinit) clear data prior to test " + name);
     testname = name;
     globalassert = assert;
     //update({ 'elements': {'html':""}  'untitleddoc.text']}); //reset 
@@ -38,12 +43,12 @@ function testinit(name, assert) {
         contentType: "application/json",
         //processData: false,
         headers: {'X-sessionid': sid },
-        async: false, //important here!! does not continue until ajax is all done
+        async: false, //important here!! does not continue until ajax is all done!!!
         data: JSON.stringify( { 'queries': ["USE testflat/testflat SELECT FOR ID untitleddoc.text FORMAT flat"]}), 
         success: function(data) {
             if (data.error) {
                 $('#wait').hide();
-                testeval({'testresult': false, 'testmessage': data.error});
+                testeval({'testresult': false, 'testmessage': data.error}); 
             } else {
                 update(data);
             }
@@ -66,9 +71,9 @@ function testtext(elementselector, reference, message) {
 QUnit.config.reorder = false;
 testname = ""; //global variable
 globalassert = "";;
-testnum = 0;
 
 function testflat() {
+    console.log("(testflat) Setting up test " + testnum);
     //Tests - First stage
     //
     switch(testnum){
@@ -362,9 +367,10 @@ function findcorrectionbytext(text) {
     return null;
 }
 
-// TESTS -- Second stage
+// TESTS -- Second stage, the actual test evaluation
 
 function testeval(data) {
+    console.log("(testeval) evaluating test result");
     if (data.testmessage == "") data.testmessage = "ok";
 
     if (data.queries) {
@@ -487,7 +493,9 @@ function testeval(data) {
 
     }
     
+    console.log("(testeval) next test");
     testnum += 1;
     testflat();
+    console.log("(testeval) (qunit.start)");
     QUnit.start(); //continue (for asynchronous tests)
 }

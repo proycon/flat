@@ -28,6 +28,9 @@
             modes = {{ modes_json|safe }};
             perspectives = {{ perspectives_json|safe }};
             mode = "{{ mode }}";
+            {% if namespace == "testflat" %}
+            testnum = {{ testnum }};
+            {% endif %}
             {% if docdeclarations %}
             initialdeclarationlist = {{ docdeclarations|safe }};
             {% endif %}
