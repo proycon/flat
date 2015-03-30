@@ -9,11 +9,12 @@ import datetime
 from django.conf import settings
 import flat.comm
 import flat.users
+import lxml.html
 import sys
 if sys.version < '3':
-    from urllib2 import URLError
+    from urllib2 import URLError, HTTPError
 else:
-    from urllib.error import URLError
+    from urllib.error import URLError, HTTPError
 import os
 
 def getcontext(request,namespace,docid, doc, mode):
@@ -56,7 +57,25 @@ def getdocumentselector(query):
             return (validatenamespace(namespace),docid), ""
     return None, query
 
-def initdoc(request, namespace, docid, mode):
+def getbody(html):
+    doc = lxml.html.fromstring(html)
+    return doc.xpath("//body/p")[0].text_content()
+
+def docserveerror(e, d={}):
+    if isinstance(e, HTTPError):
+        body = getbody(e.read())
+        d['fatalerror'] =  "<strong>Fatal Error:</strong> The document server returned an error<pre style=\"font-weight: bold\">" + str(e) + "</pre><pre>" + body +"</pre>"
+    elif isinstance(e, URLError):
+        d['fatalerror'] =  "<strong>Fatal Error:</strong> Could not connect to document server!"
+    elif isinstance(e, str) or sys.python < '3' and isinstance(e, unicode):
+        d['fatalerror'] =  e
+    elif isinstance(e, Exception):
+        # we don't handle other exceptions, raise!
+        raise
+    return d
+
+
+def initdoc(request, namespace, docid, mode, template, context={}):
     """Initialise a document (not invoked directly)"""
     perspective = request.GET.get('perspective','document')
     flatargs = {
@@ -67,10 +86,13 @@ def initdoc(request, namespace, docid, mode):
     }
     try:
         doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " PROBE", **flatargs) #retrieves only the meta information, not document content
-    except URLError:
-        return HttpResponseForbidden("Unable to connect to the document server [editor/view]")
-    context = getcontext(request,namespace,docid, doc, mode)
-    return context
+        context.update(getcontext(request,namespace,docid, doc, mode))
+    except Exception as e:
+        context.update(docserveerror(e))
+    response = render(request, template, context)
+    if 'fatalerror' in context:
+        response.status_code = 404
+    return response
 
 @login_required
 def query(request,namespace, docid):
@@ -110,8 +132,8 @@ def query(request,namespace, docid):
         query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
         try:
             d = flat.comm.query(request, query)
-        except URLError as e:
-            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [query]")
+        except Exception as e:
+            return fatalerror(request,e)
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
@@ -162,21 +184,29 @@ def register(request):
         'version': settings.VERSION,
     })
 
+def fatalerror(request, e,code=404):
+    if isinstance(e, Exception):
+        response = render(request,'base.html', docserveerror(e))
+    else:
+        response = render(request,'base.html', {'fatalerror': e})
+    response.status_code = code
+    return response
+
 
 @login_required
 def index(request, namespace=""):
     try:
         namespaces = flat.comm.get(request, '/namespaces/' + namespace)
-    except URLError as e:
-        return HttpResponseForbidden("The document server returned an error: "  + str(e))
+    except Exception as e:
+        return fatalerror(request,e)
 
     if not namespace:
         #check if user namespace is preset, if not, make it
         if not request.user.username in namespaces['namespaces']:
             try:
                 flat.comm.get(request, "createnamespace/" + request.user.username, False)
-            except URLError as e:
-                return HttpResponseForbidden("Unable to connect to the document server" + str(e))
+            except Exception as e:
+                return fatalerror(request,e)
 
     readpermission = flat.users.models.hasreadpermission(request.user.username, namespace)
     dirs = []
@@ -191,8 +221,8 @@ def index(request, namespace=""):
     if namespace and readpermission:
         try:
             r = flat.comm.get(request, '/documents/' + namespace)
-        except URLError as e:
-            return HttpResponseForbidden("The document server returned an error: " + str(e))
+        except Exception as e:
+            return fatalerror(request,e)
         for d in sorted(r['documents']):
             docid =  os.path.basename(d.replace('.folia.xml',''))
             docs.append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
@@ -226,17 +256,17 @@ def upload(request):
                 data = str(request.FILES['file'].read(),'utf-8')
             try:
                 response = flat.comm.postxml(request,"upload/" + namespace , data)
-            except URLError as e:
-                return HttpResponseForbidden("The document server returned an error: " + str(e))
+            except Exception as e:
+                return fatalerror(request,e)
             if 'error' in response and response['error']:
-                return HttpResponseForbidden(response['error'])
+                return fatalerror(response['error'],403)
             else:
                 docid = response['docid']
                 return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:
-            return HttpResponseForbidden("Permission denied")
+            return fatalerror("Permission denied",403)
     else:
-        return HttpResponseForbidden("Permission denied")
+        return fatalerror("Permission denied",403)
 
 
 @login_required
@@ -247,15 +277,15 @@ def addnamespace(request):
         if flat.users.models.haswritepermission(request.user.username, namespace):
             try:
                 response = flat.comm.get(request,"createnamespace/" + namespace + "/" + newdirectory)
-            except URLError as e:
-                return HttpResponseForbidden("The document server returned an error: " + str(e))
+            except Exception as e:
+                return fatalerror(request,e)
             if 'error' in response and response['error']:
-                return HttpResponseForbidden(response['error'])
+                return fatalerror(response['error'],403)
             elif namespace:
                 return HttpResponseRedirect("/index/" + namespace + '/' + newdirectory  )
             else:
                 return HttpResponseRedirect("/index/" + newdirectory  )
         else:
-            return HttpResponseForbidden("Permission denied")
+            return fatalerror("Permission denied",403)
     else:
-        return HttpResponseForbidden("Permission denied")
+        return fatalerror("Permission denied",403)

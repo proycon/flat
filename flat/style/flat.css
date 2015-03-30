@@ -262,6 +262,9 @@ span.helptext {
 }
 #aborted {
     display: none;
+    margin-top: -100px; 
+}
+#aborted, #fatalerror {
     width: 50%;
     color: #aa0000;
     border: 2px dashed #aa0000;
@@ -271,10 +274,10 @@ span.helptext {
     text-align: center;
     font-size: 110%;
 }
-#aborted strong {
+#aborted strong, #fatalerror strong {
     font-size: 110%;
 }
-#aborted span.help {
+#aborted span.help, #fatalerror span.help {
     font-size: 70%;
     font-style: italic;
 }

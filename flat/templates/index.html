@@ -70,7 +70,7 @@
     {% if docs %}
         <ul id="doclist">
         {% for doc, size, timestamp  in docs %}
-            <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="$('#wait').show()">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+            <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
         {% endfor %}
         </ul>
     {% endif %}

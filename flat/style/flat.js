@@ -357,6 +357,11 @@ function hideadddirectoryform() {
     return false;
 }
 
+function index_click() {
+    $('#wait span.msg').html("Loading document on the server...<br/>(this may take a while for large documents)");
+    $('#wait').show();
+}
+
 $(function() {
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){

@@ -19,7 +19,7 @@
         <link rel="StyleSheet" href="/style/flat.{{ mode }}.css" type="text/css" />
         <script type="text/javascript" src="/style/flat.{{ mode }}.js"></script> 
         {% endif %}
-        {% if docid %}
+        {% if docid and not fatalerror %}
         <script type="text/javascript">
             configuration = {{ configuration_json|safe }};
             username = "{{ username|safe }}";
@@ -46,6 +46,9 @@
         {% endif %}
     </head>
     <body>
+    {% if fatalerror %}
+        <div id="fatalerror">{{fatalerror|safe}}</div>
+    {% else %}
         <div id="topbar">
             <div class="left">
             <nav>
@@ -108,5 +111,6 @@
         <div id="footer">
             <a href="http://proycon.github.io/folia"><strong>FoLiA Linguistic Annotation Tool</strong></a> ({{ version }}) - by Maarten van Gompel - Centre for Language and Speech Technology - Radboud University Nijmegen
         </div>
+    {% endif %}
     </body>
 </html>

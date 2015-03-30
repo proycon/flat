@@ -810,6 +810,7 @@ function viewer_getdata(perspective, ids, start, end) {
     //
     $('#wait .msg').html("Obtaining document data...");
     $('#wait').show();
+    $('#aborted').hide();
 
     havecontent = false; //global variable to indicate we have no content (anymore)
     annotations = {};
