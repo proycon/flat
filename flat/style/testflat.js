@@ -108,6 +108,10 @@ QUnit.config.reorder = false;
 testname = ""; //global variable
 globalassert = null;
 
+//these will need to be adjusted when set definitions change
+FLATTEST_ADD_NER = 5; 
+FLATTEST_CORRECTIONCLASS_UNCERTAIN = 11;
+
 // This is how we detect the failure and cancel the rest of the tests...
 /*QUnit.testDone(function(details) {
     console.log(details);
@@ -152,7 +156,7 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     testinit("addentity",assert);
     ui_click('#untitleddoc.p.3.s.1.w.12b');
     //selected named entity to add
-    ui_choose('#editoraddablefields',4); //corresponds to NER as long as the declarations don't change
+    ui_choose('#editoraddablefields',FLATTEST_ADD_NER); 
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
@@ -231,7 +235,7 @@ QUnit.asyncTest("[As correction] Text Change", function(assert){
     ui_click('#untitleddoc.p.3.s.1.w.2');
     ui_edit('#editfield1text',"mijn"); 
     ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function(assert){
@@ -242,7 +246,7 @@ QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function
     ui_click('#spanselector1');
     ui_edit('#editfield1text',"wegreden"); 
     ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
@@ -250,7 +254,7 @@ QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
     ui_click('#untitleddoc.p.3.s.6.w.8');
     ui_edit('#editfield2',"LID(onbep,stan,rest)");  //pos
     ui_click('#editform2correction'); 
-    ui_choose('#editform2correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform2correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word deletion", function(assert){
@@ -258,7 +262,7 @@ QUnit.asyncTest("[As correction] Word deletion", function(assert){
     ui_click('#untitleddoc.p.3.s.8.w.10');
     ui_edit('#editfield1text',""); 
     ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word split", function(assert){
@@ -266,7 +270,7 @@ QUnit.asyncTest("[As correction] Word split", function(assert){
     ui_click('#untitleddoc.p.3.s.12.w.5');
     ui_edit('#editfield1text',"4 uur"); 
     ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',12); 
+    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
@@ -274,7 +278,7 @@ QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     ui_click('#untitleddoc.p.3.s.12.w.1');
     ui_edit('#editfield1text',"en we"); 
     ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
@@ -283,7 +287,7 @@ QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     ui_click('#untitleddoc.p.3.s.13.w.12');
     ui_edit('#editfield1text',"we hoorden"); 
     ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
@@ -292,7 +296,7 @@ QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert)
     ui_click('#untitleddoc.p.3.s.8.w.4');
     ui_edit('#editfield3',""); 
     ui_click('#editform3correction'); 
-    ui_choose('#editform3correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform3correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
@@ -303,7 +307,7 @@ QUnit.asyncTest("[As correction] Span change", function(assert){
     ui_click('#untitleddoc.p.3.s.9.w.7');
     ui_click('#spanselector8'); 
     ui_click('#editform8correction'); 
-    ui_choose('#editform8correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
@@ -312,7 +316,7 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
     ui_click('#untitleddoc.p.3.s.9.w.9');
     ui_choose('#editfield8',0); //corresponds to empty class, implies deletion
     ui_click('#editform8correction'); 
-    ui_choose('#editform8correctionclass',12);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 

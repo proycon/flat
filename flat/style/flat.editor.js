@@ -588,7 +588,7 @@ function openconsole() {
 
 
 function editor_error(errormsg) {
-    if (namespace == "testflat") {
+    if ((namespace == "testflat") && (docid != "manual")) {
         globalassert.ok(false,"Editor error: " + errormsg);
         QUnit.start(); //continue with next test
     } else {
@@ -773,7 +773,7 @@ function editor_oninit() {
                 var action = "";
                 var returntype = "target";
                 var query = "";
-                if (namespace == "testflat") {
+                if ((namespace == "testflat") && (docid != "manual")) {
                     query += "USE testflat/" + testname + " ";
                 } else {
                     query += "USE " + namespace + "/" + docid + " ";
@@ -927,7 +927,7 @@ function editor_oninit() {
         $('#wait span.msg').val("Submitting edits");
         $('#wait').show();
 
-        if (namespace != "testflat") {  //tests will be handled by different ajax submission  
+        if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission  
             $.ajax({
                 type: 'POST',
                 url: "/" + namespace + "/"+ docid + "/query/",

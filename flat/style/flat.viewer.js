@@ -870,7 +870,7 @@ function viewer_getdata(perspective, ids, start, end) {
 function viewer_oninit() {
     closewait = false; //to notify called we'll handle it ourselves 
 
-    if (namespace != "testflat") {
+    if ((namespace != "testflat")  || (docid == "manual")) {
         //get the data first of all (will take a while anyway)
         viewer_getdata(perspective, perspective_ids, perspective_start, perspective_end); 
     }
