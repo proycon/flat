@@ -66,10 +66,13 @@ def docserveerror(e, d={}):
     if isinstance(e, HTTPError):
         body = getbody(e.read())
         d['fatalerror'] =  "<strong>Fatal Error:</strong> The document server returned an error<pre style=\"font-weight: bold\">" + str(e) + "</pre><pre>" + body +"</pre>"
+        d['fatalerror_text'] = body
     elif isinstance(e, URLError):
         d['fatalerror'] =  "<strong>Fatal Error:</strong> Could not connect to document server!"
+        d['fatalerror_text'] =  "Could not connect to document server!"
     elif isinstance(e, str) or sys.python < '3' and isinstance(e, unicode):
         d['fatalerror'] =  e
+        d['fatalerror_text'] = e
     elif isinstance(e, Exception):
         # we don't handle other exceptions, raise!
         raise
@@ -131,12 +134,15 @@ def query(request,namespace, docid):
             elif docselector[0] != namespace:
                 return HttpResponseForbidden("Query would affect a different namespace than your current one, forbidden!")
 
-            #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
-            try:
-                query = fql.Query(query)
-            except fql.SyntaxError as e:
-                return HttpResponseForbidden(e)
-            needwritepermission = query.declarations or query.action and query.action.action != "SELECT"
+            if query != "GET" and query[:4] != "CQL ":
+                #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
+                try:
+                    query = fql.Query(query)
+                except fql.SyntaxError as e:
+                    return HttpResponseForbidden("FQL Syntax Error: " + e)
+                needwritepermission = query.declarations or query.action and query.action.action != "SELECT"
+            else:
+                needwritepermission = False
 
         if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace):
             return HttpResponseForbidden("Permission denied, no write access")
@@ -145,7 +151,7 @@ def query(request,namespace, docid):
         try:
             d = flat.comm.query(request, query,**flatargs)
         except Exception as e:
-            return fatalerror(request,e)
+            return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")

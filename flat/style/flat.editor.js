@@ -1013,7 +1013,7 @@ function editor_oninit() {
             },
             error: function(req,err,exception) { 
                 $('#wait').hide();
-                editor_error("Editor submission failed: " + req + " " + err + " " + exception);
+                editor_error("Query failed: " + err + " " + exception + ": " + req.responseText);
             },
             dataType: "json"
         });

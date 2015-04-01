@@ -934,6 +934,18 @@ function opensearch() {
     $('#search').draggable();
 }
 
+function highlight(data) {
+    $('.highlighted').removeClass('highlighted');
+    if (data.elements) {
+        data.elements.forEach(function(returnitem){
+            if (returnitem.elementid) { 
+                $('#' + valid(returnitem.elementid)).addClass("highlighted");
+            }
+        });
+    }
+}
+
+
 function viewer_oninit() {
     closewait = false; //to notify called we'll handle it ourselves 
 
@@ -963,7 +975,7 @@ function viewer_oninit() {
 
     $('#searchsubmit').click(function(){ 
 
-        var queries = $('#queryinput').val().split("\n"); 
+        var queries = $('#searchqueryinput').val().split("\n"); 
         var changeperspective = $('#searchperspective').is(':checked');
 
         var format = "flat";
@@ -971,13 +983,19 @@ function viewer_oninit() {
             format = "json"
         }
 
+
         for (i = 0; i < queries.length; i++) {
+            var cql = false;
             if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
+                cql = true;
                 queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
             } else if (queries[i].trim().substr(0,3) == "USE") {
                 queries[i] = queries[i].trim();
             } else {
                 queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
+            }  
+            if (queries[i].indexOf('FORMAT') == -1) {
+                queries[i] += " FORMAT flat"; 
             }
         }
 
@@ -994,16 +1012,26 @@ function viewer_oninit() {
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
-                    editor_error("Received error from document server: " + data.error);
+                    alert("Received error from document server: " + data.error);
                 } else {
-                    editfields = 0;
-                    closeeditor();
-                    update(data);
+                    $('#search').hide();
+                    if (changeperspective) {
+                        settextclassselector(data);
+                        update(data);
+                        if (textclass != 'current') rendertextclass();
+                        if (annotationfocus) {
+                            setannotationfocus(annotationfocus.type, annotationfocus.set);
+                        }
+                        renderglobannotations(annotations);
+                    } else {
+                        highlight(data);
+                    }
+                    $('#wait').hide();
                 }
             },
             error: function(req,err,exception) { 
                 $('#wait').hide();
-                editor_error("Editor submission failed: " + req + " " + err + " " + exception);
+                alert("Query failed: " + err + " " + exception + ": " + req.responseText);
             },
             dataType: "json"
         });
