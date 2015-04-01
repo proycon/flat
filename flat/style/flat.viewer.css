@@ -110,19 +110,6 @@ div#connectioninfo {
     font-size: 24px;
     color: #356a77;
 }
-div#leftpane {
-    position: fixed;
-    width: 160px;
-    left:10px;
-    top: 50px;
-    font-size: 9px;
-}
-div#perspective {
-    width: 160px;
-}
-div#textclassselector {
-    display: none;
-}
 div#legend {
     display: none;
     background: transparent;
@@ -138,14 +125,6 @@ div#legend .colorbox {
 }
 div#legend span {
     display: inline-block;
-}
-div#leftpane .title {
-    display: block;
-    font-size: 10px;
-    font-weight: bold;
-    font-style: italic;
-    color: black;
-    text-align: left;
 }
 
 div#info {
@@ -231,10 +210,6 @@ div.deleted span.lbl {
 label.spanrole {
     color: #854587;
 }
-#perspectivemenu {
-    max-width: 160px;
-}
-
 div#search{
     position: absolute;
     display: none;

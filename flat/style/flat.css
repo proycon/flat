@@ -284,3 +284,28 @@ span.helptext {
 #connectioninfo {
 
 }
+div#leftpane {
+    position: fixed;
+    width: 160px;
+    left:10px;
+    top: 50px;
+    font-size: 9px;
+}
+div#perspective {
+    width: 160px;
+}
+div#textclassselector {
+    display: none;
+}
+div#leftpane .title {
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    font-style: italic;
+    color: black;
+    text-align: left;
+}
+#perspectivemenu {
+    max-width: 160px;
+}
+

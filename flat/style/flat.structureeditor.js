@@ -29,6 +29,17 @@ function structureeditor_contentloaded() {
     $('div.s').css('display', 'inline');
 }
 
-function structureeditor_oninit() {
+function structureeditor_ontimer() {
 
+}
+
+function structureeditor_oninit() {
+    loadperspectivemenu();
+
+    $('#document').mouseleave( function() {
+        $('#leftpane').show();
+    });  
+    $('#document').mouseenter( function() {
+        $('#leftpane').hide();
+    });  
 }
