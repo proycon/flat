@@ -84,6 +84,8 @@ def initdoc(request, namespace, docid, mode, template, context={}):
         'declarations': True,
         'toc': True,
         'slices': request.GET.get('slices',settings.CONFIGURATIONS[request.session['configuration']].get('slices','p:25,s:100')), #overriden either by configuration or by user
+        'customslicesize': 0, #disabled for initial probe
+        'textclasses': True,
     }
     try:
         doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " PROBE", **flatargs) #retrieves only the meta information, not document content
@@ -99,6 +101,10 @@ def initdoc(request, namespace, docid, mode, template, context={}):
 def query(request,namespace, docid):
     if request.method != 'POST':
         return HttpResponseForbidden("POST method required for " + namespace + "/" + docid + "/query")
+
+    flatargs = {
+        'customslicesize': request.POST.get('customslicesize',settings.CONFIGURATIONS[request.session['configuration']].get('customslicesize','50')), #for pagination of search results
+    }
 
     if flat.users.models.hasreadpermission(request.user.username, namespace):
 
@@ -137,7 +143,7 @@ def query(request,namespace, docid):
 
         query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
         try:
-            d = flat.comm.query(request, query)
+            d = flat.comm.query(request, query,**flatargs)
         except Exception as e:
             return fatalerror(request,e)
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')

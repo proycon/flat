@@ -1,0 +1,17 @@
+<div id="search" class="dialog">
+    <div id="searchheader">
+        <span>Search Query</span>
+        <button id="searchdiscard">x</button>
+    </div>
+    <div id="consolebody">
+        Enter your search query below, the search query may be in <em>Corpus Query Language</em> (CQL, requires a tokenised document) or <em>FoLiA Query Language</em> (FQL, more expressive)<br />
+        <strong><em>Presentation:</em></strong></br>
+        <input type="radio" name="searchpresentation" id="searchhighlight" checked="checked" /> <span class="optionlabel">Highlight results (in current perspective)</span><br/>
+        <input type="radio" name="searchpresentation" id="searchperspecive" /> <span class="optionlabel">Change perspective showing only the search results</span><br/>
+        <button onclick="$('#searchqueryinput').val('');">Clear</button><br />
+        <textarea id="searchqueryinput"></textarea>
+        <div class="buttoncontainer">
+            <button id="searchsubmit">Ok</button>
+        </div>
+    </div>
+</div>

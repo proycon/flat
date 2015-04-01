@@ -34,12 +34,11 @@ initialcorrectionset = '{{ initialcorrectionset }}';
 </li>
 <li>Tools &amp; Options
 <ul id="toolsandoptions">
+    {% include "viewertoolsandoptions.html" %}
     {% if configuration.allowdeclare %}
     <li><a href="javascript:declare()">Add new Annotation Type</a></li>
     {% endif %}
-    <li id="toggleannotatordetails"><a href="javascript:toggleannotatordetails()">Show annotator details</a></li>
     <li><a href="javascript:showhistory()">History &amp; Undo</a></li>
-    <li id="toggleoriginal"><a href="javascript:toggleoriginal()">Show uncorrected text</a></li>
     <li><a href="javascript:openconsole()">Query Console</a></li>
     <li><a href="/download/{{ namespace }}/{{ docid }}.folia.xml">View FoLiA XML source</a></li>
 </ul>
@@ -49,6 +48,7 @@ initialcorrectionset = '{{ initialcorrectionset }}';
 {% block dialogs %}
 <div id="leftpane">
     <div id="perspective"></div>
+    <div id="textclassselector"></div>
     <div id="editformcorrectionsetselector">
     Correction set: <select id="editformcorrectionset"></select>
     </div>
@@ -108,6 +108,7 @@ initialcorrectionset = '{{ initialcorrectionset }}';
         </div>
     </div>
 </div>
+{% include "search.html" %}
 <div id="connectioninfo"></div>
 {% endblock %}
 

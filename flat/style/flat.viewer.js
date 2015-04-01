@@ -9,6 +9,7 @@ perspective = 'document'; //initial perspective (TODO: override with configurati
 perspective_ids = null;
 perspective_start = null;
 perspective_end = null;
+textclass = "current";
 
 
 function setview() {
@@ -235,7 +236,7 @@ function getspanroletext(spanroledata) {
     var roletext = "";
     spanroledata.words.forEach(function(wordid){
         if (roletext) roletext += " ";
-        roletext += annotations[wordid]['t/undefined'].text;
+        roletext += annotations[wordid]['t/undefined:' + textclass].text;
     });
     return roletext;
 }
@@ -849,7 +850,9 @@ function viewer_getdata(perspective, ids, start, end) {
                 alert("Received error from document server: " + data.error);
             } else {
                 editfields = 0;
+                settextclassselector(data);
                 update(data);
+                if (textclass != 'current') rendertextclass();
                 if (annotationfocus) {
                     setannotationfocus(annotationfocus.type, annotationfocus.set);
                 }
@@ -866,6 +869,70 @@ function viewer_getdata(perspective, ids, start, end) {
 }
 
 
+function settextclassselector(data) {
+    $('#textclassselector').hide();
+    if (data['textclasses']) {
+        if (data['textclasses'].length > 1) {
+            var s = "<span class=\"title\">Text class</span><select id=\"textclass\">";
+            var found = false;
+            var hascurrent = false;
+            for (i = 0; i < data['textclasses'].length; i++) { 
+                if (textclass == data['textclasses'][i]) {
+                    found = true; 
+                }
+                if (data['textclasses'][i] == 'current') {
+                    hascurrent = true;
+                }
+            }
+            if (!found) {
+                if (hascurrent) {
+                    textclass = "current";  
+                } else {  
+                    textclass = data['textclasses'][0];
+                }
+            }
+            for (i = 0; i < data['textclasses'].length; i++) { 
+                var extra ="";
+                if (textclass == data['textclasses'][i]) {
+                    var extra = " selected=\"selected\"";
+                }
+                s += "<option value=\"" + data['textclasses'][i] + "\"" + extra + ">" + data['textclasses'][i] + "</option>";
+            }
+            s += "</select>";
+            $('#textclassselector').html(s);
+            $('#textclassselector').show();
+            $('#textclass').change(function(){
+                textclass = $('#textclass').val();
+                rendertextclass();
+            });
+        }
+    }
+}
+
+function rendertextclass() {
+    Object.keys(annotations).forEach(function(target){
+        Object.keys(annotations[target]).forEach(function(annotationid){
+            var annotation = annotations[target][annotationid];
+            if ((annotation.type == "t") && (annotation.class == textclass)) {
+                lbl = $('#' + valid(target) + " span.lbl");
+                if ((lbl.length == 1) && ($('#'  + valid(target)).hasClass('deepest'))) {
+                    if (annotation.htmltext) {
+                        e.html(annotation.htmltext);
+                    } else {
+                        lbl.html(annotation.text);
+                    }
+                }
+            }
+        });
+    });
+    $('div.deepest>span.lbl').show();
+}
+
+
+function opensearch() {
+    $('#search').show();
+    $('#search').draggable();
+}
 
 function viewer_oninit() {
     closewait = false; //to notify called we'll handle it ourselves 
@@ -886,6 +953,59 @@ function viewer_oninit() {
     loadperspectivemenu();
     setview();
 
+
     //if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
+
+    $('#searchdiscard').click(function(){
+        $('#search').hide();
+    });
+
+    $('#searchsubmit').click(function(){ 
+
+        var queries = $('#queryinput').val().split("\n"); 
+        var changeperspective = $('#searchperspective').is(':checked');
+
+        var format = "flat";
+        if (!changeperspective) {
+            format = "json"
+        }
+
+        for (i = 0; i < queries.length; i++) {
+            if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
+                queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
+            } else if (queries[i].trim().substr(0,3) == "USE") {
+                queries[i] = queries[i].trim();
+            } else {
+                queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
+            }
+        }
+
+        $('#wait span.msg').val("Executing search query and obtaining results");
+        $('#wait').show();
+
+        $.ajax({
+            type: 'POST',
+            url: "/" + namespace + "/"+ docid + "/query/",
+            contentType: "application/json",
+            //processData: false,
+            headers: {'X-sessionid': sid },
+            data: JSON.stringify( { 'queries': queries}), 
+            success: function(data) {
+                if (data.error) {
+                    $('#wait').hide();
+                    editor_error("Received error from document server: " + data.error);
+                } else {
+                    editfields = 0;
+                    closeeditor();
+                    update(data);
+                }
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                editor_error("Editor submission failed: " + req + " " + err + " " + exception);
+            },
+            dataType: "json"
+        });
+    });
 }

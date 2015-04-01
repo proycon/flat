@@ -991,6 +991,7 @@ function editor_oninit() {
 
         var queries = $('#queryinput').val().split("\n"); 
 
+        $('#wait span.msg').val("Executing query and obtaining results");
         $('#wait').show();
 
         $.ajax({

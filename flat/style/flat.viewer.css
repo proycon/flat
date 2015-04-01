@@ -116,6 +116,9 @@ div#leftpane {
 div#perspective {
     width: 160px;
 }
+div#textclassselector {
+    display: none;
+}
 div#legend {
     display: none;
     background: transparent;
@@ -132,7 +135,7 @@ div#legend .colorbox {
 div#legend span {
     display: inline-block;
 }
-div#legend .title, div#perspective .title {
+div#leftpane .title {
     display: block;
     font-size: 10px;
     font-weight: bold;
@@ -226,4 +229,39 @@ label.spanrole {
 }
 #perspectivemenu {
     max-width: 160px;
+}
+
+div#search{
+    position: absolute;
+    display: none;
+    width: 520px;
+    padding: 10px;
+    background: #cdcdcd; 
+    color: #333;
+    border: #30677c 1px solid;
+    border-radius: 15px;
+    min-height: 100px;
+    text-align: left;
+    left: 30%;
+}
+div#searchheader {
+    width:100%;
+    background: #30677c;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    margin-top: -3px;
+}
+div#search button {
+    float: right;
+    margin-top: -5px;
+    background: #30677c;
+}
+.optionlabel {
+    font-size: 90%;
+}
+#search textarea {
+    width: 90%;
+    min-height: 320px;
 }

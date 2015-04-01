@@ -68,7 +68,7 @@ div.dialog label {
     width: 20%;
     margin: 5px;
 }
-div.dialog input, div.dialog select {
+div.dialog input[type="input"], div.dialog select {
     display: inline-block;
     width: 70%;
     background: white;

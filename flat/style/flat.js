@@ -89,6 +89,8 @@ function getannotationid(annotation) {
         return "self";
     } else if (annotation.id)  {
         return annotation.id;
+    } else if (annotation.type == 't') {
+        return annotation.type + '/' + annotation.set + ':' + annotation.class;
     } else if (annotation.set) {
         return annotation.type + '/' + annotation.set;
     } else if (annotation.type) {
