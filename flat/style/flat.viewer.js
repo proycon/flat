@@ -4,44 +4,8 @@ annotationfocus = null;
 annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
 hover = null;
-globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma'] //from high to low
-perspective = 'document'; //initial perspective (TODO: override with configuration option later)
-perspective_ids = null;
-perspective_start = null;
-perspective_end = null;
-textclass = "current";
+globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk'] //from high to low
 
-
-function setview() {
-    view = 'deepest';
-    $('div.F span.lbl').hide();
-    if (perspective != "s") {
-        $('div.s').css('display', 'inline');
-    } else {
-        $('div.s').css('display', 'block');
-    }
-    $('div.persp').removeClass('persp');
-    if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
-        $('div.' + perspective).addClass('persp');
-    }
-    //$('ul#viewsmenu li').removeClass('on');
-    //view=deepest
-    $('div.deepest>span.lbl').show();
-    //$('li#views_deepest').addClass('on');
-    /*
-    } else if (v == 'w') {
-        $('div.w>span.lbl').show();
-        $('li#views_w').addClass('on');
-    } else if (v == 's') {
-        $('div.s').css('display', 'block');
-        $('div.s>span.lbl').show();
-        $('li#views_s').addClass('on');
-    } else if (v == 'p') {
-        $('div.p>span.lbl').show();
-        $('li#views_p').addClass('on');
-    }
-    */
-}
 
 
 function sethover(element) {
@@ -653,7 +617,34 @@ function viewer_onloadannotations(annotationlist) {
 
 
 function viewer_onupdate() {
-    setview();
+    view = 'deepest';
+    $('div.F span.lbl').hide();
+    if (perspective != "s") {
+        $('div.s').css('display', 'inline');
+    } else {
+        $('div.s').css('display', 'block');
+    }
+    $('div.persp').removeClass('persp');
+    if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
+        $('div.' + perspective).addClass('persp');
+    }
+    //$('ul#viewsmenu li').removeClass('on');
+    //view=deepest
+    $('div.deepest>span.lbl').show();
+    //$('li#views_deepest').addClass('on');
+    /*
+    } else if (v == 'w') {
+        $('div.w>span.lbl').show();
+        $('li#views_w').addClass('on');
+    } else if (v == 's') {
+        $('div.s').css('display', 'block');
+        $('div.s>span.lbl').show();
+        $('li#views_s').addClass('on');
+    } else if (v == 'p') {
+        $('div.p>span.lbl').show();
+        $('li#views_p').addClass('on');
+    }
+    */
 }
 
 function viewer_ontimer() {
@@ -711,221 +702,14 @@ function viewer_loadmenus() {
 
 
 
-function rendertoc(tocitem, depth = "") {
-    var opts = "<option value=\"div:" + tocitem.id + "\"";
-    if ((perspective_ids) && (perspective_ids.indexOf(tocitem.id) != -1)) {
-        opts += " selected=\"selected\">";
-    } else {
-        opts += ">";
+
+function viewer_contentloaded(data) {
+    editfields = 0;
+    if (textclass != 'current') rendertextclass();
+    if (annotationfocus) {
+        setannotationfocus(annotationfocus.type, annotationfocus.set);
     }
-    opts += depth + tocitem.text + "</option>";
-    if (tocitem.toc.length > 0) {
-        tocitem.toc.forEach(function(subtocitem){
-            opts += rendertoc(subtocitem, depth + "&horbar;");
-        });
-    }
-    return opts;
-}
-
-function loadperspectivemenu() {
-    var s = "<span class=\"title\">Perspective</span>";
-    s += "<select id=\"perspectivemenu\">";
-    var opts = "";
-    if (perspectives.indexOf("document") != -1) {
-        opts += "<option value=\"document\" ";
-        if (perspective == "document") {
-            opts += " selected=\"selected\">";
-        } else {
-            opts += ">";
-        }
-        opts += "Full Document</option>";
-    }
-    for (i = 0; i < perspectives.length; i++) {
-        if ((perspectives[i] != "document") && (perspectives[i] != "toc")) {
-            opts += "<option value=\"" + perspectives[i] + "\">" + annotationtypenames[perspectives[i]] + "</option>";
-        }
-    }
-    if (perspectives.indexOf('toc') != -1) {
-        opts += "<option value=\"\" style=\"font-weight: bold; font-style: italic;\">Table of contents</option>";
-        toc.forEach(function(tocitem){
-            opts += rendertoc(tocitem, "");
-        });
-    }
-    s += opts;
-    s += "</select>";
-    s += "<div id=\"pager\"></div>";
-    $('#perspective').html(s);
-
-    $('#perspectivemenu').change(function(){
-        var selected = $('#perspectivemenu').val();
-        if (!selected) return;
-        perspective_start = null;
-        perspective_end = null;
-        perspective_ids = null;
-        if (selected == "document") {
-            perspective = selected;
-            $('#pager').hide();
-        } else if (selected.substr(0,4) == "div:") {
-            perspective = "div";
-            perspective_ids = [selected.substr(4) ];
-            $('#pager').hide();
-        } else {
-            perspective = selected;
-            if ((slices[perspective]) &&  (slices[perspective].length > 1)) {
-                perspective_end = slices[perspective][1];
-            }
-            //setup pager
-            loadpager();
-        }
-        viewer_getdata(perspective, perspective_ids,null, perspective_end);
-    });
-}
-
-function loadpager() {
-    if (!slices[perspective]) {
-        alert("Error: No slices available for perspective " + perspective + ". If you are the administrator, make sure to define this perspective in the slices in the configuration");
-        return false;
-    }
-    var s = "<span>page:</span> <select id=\"pagemenu\">";
-    for (i = 1; i <= slices[perspective].length; i++) {
-        s += "<option value=\"" + i + "\">" + i + "</option>";
-    }
-    s += "</select>";
-    $('#pager').html(s);
-
-    $('#pager').show();
-    $('#pagemenu').change(function(){
-        var page = $('#pagemenu').val();
-        var start = slices[perspective][page-1];
-        var end = null;
-        if (slices[perspective].length > page) {
-            end = slices[perspective][page];
-        }
-        viewer_getdata(perspective, null, start, end);
-    });
-}
-
-function viewer_getdata(perspective, ids, start, end) {
-    //get query depending on the perspective
-    //  triggered on first page load and on change of perspective
-    //
-    $('#wait .msg').html("Obtaining document data...");
-    $('#wait').show();
-    $('#aborted').hide();
-
-    havecontent = false; //global variable to indicate we have no content (anymore)
-    annotations = {};
-    $('#document').html(""); //clear document
-
-    var query = "USE " + namespace + "/" + docid + " SELECT FOR"
-    if (perspective == "document") {
-        query += " ALL";
-    } else if (ids) {
-        for (i = 0; i < ids.length; i++) {
-            if (i > 0) query += " ,";
-            query += " ID " + ids[i];
-        }
-    } else {
-        query += " " + perspective;
-        if (start) {
-            query += " START ID " + start
-        }
-        if (end) {
-            query += " ENDBEFORE ID " + end
-        }
-    }
-    query += " FORMAT flat"
-    
-
-    $.ajax({
-        type: 'POST',
-        url: "/" + namespace + "/"+ docid + "/query/",
-        contentType: "application/json",
-        //processData: false,
-        headers: {'X-sessionid': sid },
-        data: JSON.stringify( { 'queries': [query]}), 
-        success: function(data) {
-            if (data.error) {
-                $('#wait').hide();
-                alert("Received error from document server: " + data.error);
-            } else {
-                editfields = 0;
-                settextclassselector(data);
-                update(data);
-                if (textclass != 'current') rendertextclass();
-                if (annotationfocus) {
-                    setannotationfocus(annotationfocus.type, annotationfocus.set);
-                }
-                renderglobannotations(annotations);
-                $('#wait').hide();
-            }
-        },
-        error: function(req,err,exception) { 
-            $('#wait').hide();
-            alert("Obtaining document data failed: " + req + " " + err + " " + exception);
-        },
-        dataType: "json"
-    });
-}
-
-
-function settextclassselector(data) {
-    $('#textclassselector').hide();
-    if (data['textclasses']) {
-        if (data['textclasses'].length > 1) {
-            var s = "<span class=\"title\">Text class</span><select id=\"textclass\">";
-            var found = false;
-            var hascurrent = false;
-            for (i = 0; i < data['textclasses'].length; i++) { 
-                if (textclass == data['textclasses'][i]) {
-                    found = true; 
-                }
-                if (data['textclasses'][i] == 'current') {
-                    hascurrent = true;
-                }
-            }
-            if (!found) {
-                if (hascurrent) {
-                    textclass = "current";  
-                } else {  
-                    textclass = data['textclasses'][0];
-                }
-            }
-            for (i = 0; i < data['textclasses'].length; i++) { 
-                var extra ="";
-                if (textclass == data['textclasses'][i]) {
-                    var extra = " selected=\"selected\"";
-                }
-                s += "<option value=\"" + data['textclasses'][i] + "\"" + extra + ">" + data['textclasses'][i] + "</option>";
-            }
-            s += "</select>";
-            $('#textclassselector').html(s);
-            $('#textclassselector').show();
-            $('#textclass').change(function(){
-                textclass = $('#textclass').val();
-                rendertextclass();
-            });
-        }
-    }
-}
-
-function rendertextclass() {
-    Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationid){
-            var annotation = annotations[target][annotationid];
-            if ((annotation.type == "t") && (annotation.class == textclass)) {
-                lbl = $('#' + valid(target) + " span.lbl");
-                if ((lbl.length == 1) && ($('#'  + valid(target)).hasClass('deepest'))) {
-                    if (annotation.htmltext) {
-                        e.html(annotation.htmltext);
-                    } else {
-                        lbl.html(annotation.text);
-                    }
-                }
-            }
-        });
-    });
-    $('div.deepest>span.lbl').show();
+    renderglobannotations(annotations);
 }
 
 
@@ -949,10 +733,6 @@ function highlight(data) {
 function viewer_oninit() {
     closewait = false; //to notify called we'll handle it ourselves 
 
-    if ((namespace != "testflat")  || (docid == "manual")) {
-        //get the data first of all (will take a while anyway)
-        viewer_getdata(perspective, perspective_ids, perspective_start, perspective_end); 
-    }
 
     $('#document').mouseleave( function(e) {
         $('#info').hide();
@@ -963,7 +743,6 @@ function viewer_oninit() {
     }
     viewer_loadmenus();
     loadperspectivemenu();
-    setview();
 
 
     //if (viewannotations['t']) toggleannotationview('t');

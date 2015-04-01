@@ -560,6 +560,10 @@ function editor_onupdate() {
     viewer_onupdate();
 }
 
+function editor_contentloaded(data) {
+    viewer_contentloaded(data);
+}
+
 function declare() {
     $('#newdeclaration').show();
     $('#newdeclaration').draggable();
@@ -595,6 +599,7 @@ function editor_error(errormsg) {
         alert(errormsg); //make nicer someday, alerts are evil
     }
 }
+
 
 function editor_oninit() {
     viewer_oninit();
