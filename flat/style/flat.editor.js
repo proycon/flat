@@ -491,7 +491,7 @@ function showhistory() {
         },
         error: function(req,err,exception) { 
             $('#wait').hide();
-            alert("Unable to obtain history");
+            editor_error("Unable to obtain history");
         },
         dataType: "json"
     });
@@ -511,7 +511,7 @@ function revert(commithash) {
         },
         error: function(req,err,exception) { 
             $('#wait').hide();
-            alert("Unable to revert");
+            editor_error("Unable to revert");
         },
         dataType: "json"
     });
@@ -560,6 +560,10 @@ function editor_onupdate() {
     viewer_onupdate();
 }
 
+function editor_contentloaded(data) {
+    viewer_contentloaded(data);
+}
+
 function declare() {
     $('#newdeclaration').show();
     $('#newdeclaration').draggable();
@@ -586,8 +590,20 @@ function openconsole() {
     $('#console').draggable();
 }
 
+
+function editor_error(errormsg) {
+    if ((namespace == "testflat") && (docid != "manual")) {
+        globalassert.ok(false,"Editor error: " + errormsg);
+        QUnit.start(); //continue with next test
+    } else {
+        alert(errormsg); //make nicer someday, alerts are evil
+    }
+}
+
+
 function editor_oninit() {
     viewer_oninit();
+
     editor_loadmenus();
     $('#editordiscard').click(closeeditor);
     $('#newdeclarationdiscard').click(function(){
@@ -689,7 +705,7 @@ function editor_oninit() {
                     editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
                     editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
                     if (!editdata[i].correctionclass) {
-                        alert("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
+                        editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                         return false;
                     }
                 } 
@@ -748,11 +764,11 @@ function editor_oninit() {
                     sortededittargets = editdata[i].targets;
                 }
                 if (sortededittargets.length != editdata[i].targets.length) {
-                    alert("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
+                    editor_error("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
                     return;
                 }
                 if (sortededittargets.length == 0) {
-                    alert("Error, no targets for action");
+                    editor_error("Error, no targets for action");
                     return;
                 }
                 editdata[i].targets = sortededittargets;
@@ -762,7 +778,7 @@ function editor_oninit() {
                 var action = "";
                 var returntype = "target";
                 var query = "";
-                if (namespace == "testflat") {
+                if ((namespace == "testflat") && (docid != "manual")) {
                     query += "USE testflat/" + testname + " ";
                 } else {
                     query += "USE " + namespace + "/" + docid + " ";
@@ -773,7 +789,7 @@ function editor_oninit() {
                     if (editdata[i].editform == "new") continue;
                     //deletion of text implies deletion of word
                     if (sortededittargets.length > 1) {
-                        alert("Can't delete multiple words at once");
+                        editor_error("Can't delete multiple words at once");
                         return;
                     }
                     action = "DELETE";
@@ -903,20 +919,23 @@ function editor_oninit() {
             closeeditor();
             $('#queryinput').val(queries.join("\n"));
             openconsole();
+            if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
             return false;
         } else if ((queries.length == 0)) {
             //discard, nothing changed
             closeeditor();
+            if (namespace == "testflat") editor_error("No queries were formulated");
             return false;
         }
         
  
+        $('#wait span.msg').val("Submitting edits");
         $('#wait').show();
 
-        if (namespace != "testflat") {  //tests will be handled by different ajax submission  
+        if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission  
             $.ajax({
                 type: 'POST',
-                url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+                url: "/" + namespace + "/"+ docid + "/query/",
                 contentType: "application/json",
                 //processData: false,
                 headers: {'X-sessionid': sid },
@@ -924,7 +943,7 @@ function editor_oninit() {
                 success: function(data) {
                     if (data.error) {
                         $('#wait').hide();
-                        alert("Received error from document server: " + data.error);
+                        editor_error("Received error from document server: " + data.error);
                     } else {
                         editfields = 0;
                         closeeditor();
@@ -933,7 +952,7 @@ function editor_oninit() {
                 },
                 error: function(req,err,exception) { 
                     $('#wait').hide();
-                    alert("Editor submission failed: " + req + " " + err + " " + exception);
+                    editor_error("Editor submission failed: " + req + " " + err + " " + exception);
                 },
                 dataType: "json"
             });
@@ -948,7 +967,7 @@ function editor_oninit() {
         queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());
         $.ajax({
             type: 'POST',
-            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+            url: "/" + namespace + "/"+ docid + "/query/",
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
@@ -956,7 +975,7 @@ function editor_oninit() {
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
-                    alert("Received error from document server: " + data.error);
+                    editor_error("Received error from document server: " + data.error);
                 } else {
                     loaddeclarations(data['declarations']);
                     viewer_loadmenus();
@@ -967,7 +986,7 @@ function editor_oninit() {
             error: function(req,err,exception) { 
                 $('#wait').hide();
                 $('#newdeclaration').hide();
-                alert("Declaration failed: " + req + " " + err + " " + exception);
+                editor_error("Declaration failed: " + req + " " + err + " " + exception);
             },
             dataType: "json"
         });
@@ -977,11 +996,12 @@ function editor_oninit() {
 
         var queries = $('#queryinput').val().split("\n"); 
 
+        $('#wait span.msg').val("Executing query and obtaining results");
         $('#wait').show();
 
         $.ajax({
             type: 'POST',
-            url: "/editor/" + namespace + "/"+ docid + "/annotate/",
+            url: "/" + namespace + "/"+ docid + "/query/",
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
@@ -989,7 +1009,7 @@ function editor_oninit() {
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
-                    alert("Received error from document server: " + data.error);
+                    editor_error("Received error from document server: " + data.error);
                 } else {
                     editfields = 0;
                     closeeditor();
@@ -998,7 +1018,7 @@ function editor_oninit() {
             },
             error: function(req,err,exception) { 
                 $('#wait').hide();
-                alert("Editor submission failed: " + req + " " + err + " " + exception);
+                editor_error("Query failed: " + err + " " + exception + ": " + req.responseText);
             },
             dataType: "json"
         });

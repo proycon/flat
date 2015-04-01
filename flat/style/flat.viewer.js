@@ -1,30 +1,11 @@
-view = 'deepest';
-viewannotations = {};
+viewannotations = {}; //view local annotations in editor
+viewglobannotations = {}; //view global annotations
 annotationfocus = null;
 annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
 hover = null;
+globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk'] //from high to low
 
-function setview(v) {
-    view = v;
-    $('div.F span.lbl').hide();
-    $('div.s').css('display', 'inline');
-    $('ul#viewsmenu li').removeClass('on');
-    if (v == 'deepest') {
-        $('div.deepest>span.lbl').show();
-        $('li#views_deepest').addClass('on');
-    } else if (v == 'w') {
-        $('div.w>span.lbl').show();
-        $('li#views_w').addClass('on');
-    } else if (v == 's') {
-        $('div.s').css('display', 'block');
-        $('div.s>span.lbl').show();
-        $('li#views_s').addClass('on');
-    } else if (v == 'p') {
-        $('div.p>span.lbl').show();
-        $('li#views_p').addClass('on');
-    }
-}
 
 
 function sethover(element) {
@@ -83,13 +64,13 @@ function toggleoriginal() {
                             }
                         } else {
                             //must be a deletion, show
-                            if (annotation.previousword) {
+                            if (annotations[target]['self'].previousword) {
                                 //check if the deletion has a colored class
                                 var c = '';
                                 if (classrank[annotation.class]) {
                                     c = ' class' + classrank[annotation.class];
                                 }                                
-                                $('#' + valid(annotation.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
+                                $('#' + valid(annotations[target]['self'].previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
                             }
                         }
                     }
@@ -215,18 +196,47 @@ function checkparentincorrection(annotation, correctionid) {
     return parentincorrection;
 }
 
+function getspanroletext(spanroledata) {
+    var roletext = "";
+    spanroledata.words.forEach(function(wordid){
+        if (roletext) roletext += " ";
+        roletext += annotations[wordid]['t/undefined:' + textclass].text;
+    });
+    return roletext;
+}
+
+function renderspanrole(spanroledata) {
+    return "<br/><label class=\"spanrole\">" + spanroledata.type + ":</label> <span class=\"text\">" + getspanroletext(spanroledata) + "</span>";
+}
+
 function renderannotation(annotation, norecurse) {
+    //renders the annotation in the details popup
     var s = "";
     if (!((annotation.type == "t") && ((annotation.class == "current")  || (annotation.class == "original")) )) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
-        } else {
+        } else if (annotation.class) {
             s = s + "<span class=\"class\">" + annotation.class + "</span>";
         }
     }
-    if (annotation.targets.length > 1) {
-        spantext = getspantext(annotation)
-        s = s + "<br/><span class=\"text\">" + spantext + "</span>";
+    if (annotation.span) {
+        if (spanroles[annotation.type]) {
+            spanroles[annotation.type].forEach(function(spanrole){
+                annotation.spanroles.forEach(function(spanroledata){
+                    if (spanroledata.type == spanrole) {
+                        s = s + renderspanrole(spanroledata);
+                    }
+                });
+            });
+        } else if (annotation.spanroles.length > 0) {
+            annotation.spanroles.forEach(function(spanroledata){
+                s = s + renderspanrole(spanroledata);
+            });
+        }
+        if (!spanroles[annotation.type]) {
+            spantext = getspantext(annotation);
+            s = s + "<br/><span class=\"text\">" + spantext + "</span>";
+        }
     }
     if (annotation.type == "t") {
         if (annotation.class != "current") s = s + "<br />";
@@ -298,6 +308,27 @@ function toggleannotationview(annotationtype, set) {
     } else {
         $('#annotationtypeview_' + annotationtype + "_" + hash(set)).removeClass('on');
     }
+}
+
+
+function toggleglobannotationview(annotationtype, set) {
+    viewglobannotations[annotationtype+"/"+set] = !viewglobannotations[annotationtype+"/"+set];
+    if (viewglobannotations[annotationtype+"/" + set]) {
+        $('#globannotationtypeview_' + annotationtype + "_" + hash(set)).addClass('on');
+    } else {
+        $('#globannotationtypeview_' + annotationtype + "_" + hash(set)).removeClass('on');
+    }
+    $('span.ab').css('display','none'); 
+    $('span.ab').html("");
+    renderglobannotations(annotations);
+}
+
+function resetglobannotationview() {
+    $('#globannotationsviewmenu li').removeClass('on');
+    viewglobannotations = {}
+    $('span.ab').css('display','none'); 
+    $('span.ab').html("");
+    renderglobannotations(annotations);
 }
 
 
@@ -417,6 +448,167 @@ function setclasscolors() {
     $('#legend').show();
 }
 
+
+function partofspanhead(annotation, target) {
+    var partofhead = false;
+    annotation.spanroles.forEach(function(spanroledata) {
+        if (spanroledata.type == "hd") {
+            if (spanroledata.words.indexOf(target) != -1) {
+                partofhead = true;
+            }
+        }
+    });
+    return partofhead;
+}
+
+
+function renderglobannotations(annotations) {
+    //annotations are passed so we can work either locally or globally
+    //
+    var globalannotations = 0;
+    Object.keys(viewglobannotations).forEach(function(annotationtypeset){
+      if (viewglobannotations[annotationtypeset]) globalannotations += 1;
+    });
+
+    if (globalannotations) {
+        var containers = {}
+        Object.keys(annotations).forEach(function(target){
+            var targetabselection = $('#' + valid(target) + " span.ab");
+            targetabselection.css('display','none'); //we clear on this level 
+            targetabselection.html("");
+            var changed = false;
+            $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
+                annotationtype = globannotationsorder[annotationtype];
+                Object.keys(annotations[target]).forEach(function(annotationkey){
+                    if (annotationkey != "self") {
+                        var annotation = annotations[target][annotationkey];
+                        if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
+                                changed = true;
+                                var s = "";
+                                if (annotation.class) {
+                                    s = "<span class=\""+annotation.type+"\">" + annotation.class + "</span>";
+                                } else {
+                                    s = "<span class=\""+annotation.type+"\">?</span>";
+                                }
+                                if (annotation.span) {
+                                        var extra = "";
+                                        var usecontext = true;
+                                        if (annotation.type == "dependency") {
+                                            //for dependencies we point from the dependents to the head.
+                
+                                            //grab the head
+                                            var headtext = "";
+                                            var partofhead = partofspanhead(annotation, target);
+                                            annotation.spanroles.forEach(function(spanroledata) {
+                                                if (spanroledata.type == "hd") {
+                                                    headtext = getspanroletext(spanroledata);
+                                                }
+                                            });
+                                            if (partofhead) { //if we're part of the head, we don't render this annotation here
+                                                usecontext = false;
+                                                s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
+                                            } else {
+                                                extra = "&Rightarrow;<span class=\"headtext\">" + headtext + "</span>";
+                                            }
+                                        }
+
+                                        if (usecontext) {
+                                            var previnspan = false;
+                                            var nextinspan = false;
+                                            //If the previous word is in the same
+                                            //span we do not repeat it explicitly
+                                            //but draw a line
+                                            var prevwordid = annotations[target]['self']['previousword'];
+                                            if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
+                                                var prevannotation = annotations[prevwordid][annotationkey];
+                                                if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                    //previous word part of span already
+                                                    if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
+                                                        previnspan = true;
+                                                    }
+                                                }
+                                            }
+
+                                            //is the next word still part of the span?
+                                            var nextwordid = annotations[target]['self']['nextword'];
+                                            if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
+                                                var nextannotation = annotations[nextwordid][annotationkey];
+                                                if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                    if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
+                                                        nextinspan = true;
+                                                    }
+                                                }
+                                            }
+
+                                            if ((previnspan) && (nextinspan)) {
+                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
+                                            } else if (nextinspan) {
+                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
+                                            } else if (previnspan) {
+                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
+                                            } else {
+                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
+                                            }
+                                        }
+
+
+                                        //this is a complex annotatation that
+                                        //may span multiple lines, build a
+                                        //container for it. All containers will
+                                        //have the same height so content can
+                                        //be aligned.
+                                        var scope = annotation.layerparent 
+                                        var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
+                                        if (!containers[containerkey]) {
+                                            containers[containerkey] = {};
+                                        }
+                                        var container = null;
+                                        if (containers[containerkey][target]) {
+                                            container = containers[containerkey][target];
+                                        } else {
+                                            containers[containerkey][target] = [];
+                                        }
+                                        if (container === null) {
+                                            /* add a container first */
+                                            targetabselection.append("<span class=\"abc\">" + s + "</span>");
+                                            var abcs = $('#' + valid(target) + " span.ab span.abc")
+                                            container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
+                                        } else {
+                                            $(container).append(s);
+                                        }
+                                        containers[containerkey][target].push(container);
+                                } else {
+                                    targetabselection.append(s)
+                                }
+                        }
+                    }
+                }); ///
+            });
+            if (changed) targetabselection.css('display','block'); 
+        });
+
+        //process containers, all containers for the same span layer must all have the same height (will be set to the height of the largest)
+        Object.keys(containers).forEach(function(containerkey){
+            var height = 0;
+            Object.keys(containers[containerkey]).forEach(function(target){
+                containers[containerkey][target].forEach(function(container){
+                    c_height =  $(container).height()
+                    if (c_height > height) height = c_height;
+                });
+            });
+            if (height > 0) {
+                Object.keys(containers[containerkey]).forEach(function(target){
+                    containers[containerkey][target].forEach(function(container){
+                        $(container).css('height',height);
+                    });
+                });
+            }
+        });
+
+    }
+
+}
+
 function viewer_onloadannotations(annotationlist) {
     if (annotationfocus) {
         setclasscolors();
@@ -425,7 +617,34 @@ function viewer_onloadannotations(annotationlist) {
 
 
 function viewer_onupdate() {
-    setview(view);
+    view = 'deepest';
+    $('div.F span.lbl').hide();
+    if (perspective != "s") {
+        $('div.s').css('display', 'inline');
+    } else {
+        $('div.s').css('display', 'block');
+    }
+    $('div.persp').removeClass('persp');
+    if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
+        $('div.' + perspective).addClass('persp');
+    }
+    //$('ul#viewsmenu li').removeClass('on');
+    //view=deepest
+    $('div.deepest>span.lbl').show();
+    //$('li#views_deepest').addClass('on');
+    /*
+    } else if (v == 'w') {
+        $('div.w>span.lbl').show();
+        $('li#views_w').addClass('on');
+    } else if (v == 's') {
+        $('div.s').css('display', 'block');
+        $('div.s>span.lbl').show();
+        $('li#views_s').addClass('on');
+    } else if (v == 'p') {
+        $('div.p>span.lbl').show();
+        $('li#views_p').addClass('on');
+    }
+    */
 }
 
 function viewer_ontimer() {
@@ -442,17 +661,33 @@ function viewer_ontimer() {
     }
 }
 
+
+
 function viewer_loadmenus() {
     s = "";
     s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
+    sglob = "<li><a href=\"javascript:resetglobannotationview()\">Clear</li>";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
         if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
+            var state = "";
             if ((configuration.initialviewannotations === true) || (configuration.initialviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialviewannotations.indexOf(annotationtype) != -1)) {
                 viewannotations[annotationtype + "/" + set] = true;
+                state = "class=\"on\"";
+            } else {
+                state = "";
             }
             label = getannotationtypename(annotationtype);
-            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            if (globannotationsorder.indexOf(annotationtype) != -1) {
+                if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
+                    globviewannotations[annotationtype + "/" + set] = true;
+                    state = "class=\"on\"";
+                } else {
+                    state = "";
+                }
+                sglob = sglob +  "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            }
         }
         if ((configuration.allowedannotationfocus === true) || (configuration.allowedannotationfocus.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedannotationfocus.indexOf(annotationtype) != -1)) {
             s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
@@ -460,20 +695,124 @@ function viewer_loadmenus() {
 
       });
     });
-    $('#annotationsviewmenu').html(s);
+    $('#annotationsviewmenu').html(s); //TODO: sort alphabetically
+    $('#globannotationsviewmenu').html(sglob);
     $('#annotationsfocusmenu').html(s2);
 }
 
+
+
+
+function viewer_contentloaded(data) {
+    editfields = 0;
+    if (textclass != 'current') rendertextclass();
+    if (annotationfocus) {
+        setannotationfocus(annotationfocus.type, annotationfocus.set);
+    }
+    renderglobannotations(annotations);
+}
+
+
+function opensearch() {
+    $('#search').show();
+    $('#search').draggable();
+}
+
+function highlight(data) {
+    $('.highlighted').removeClass('highlighted');
+    if (data.elements) {
+        data.elements.forEach(function(returnitem){
+            if (returnitem.elementid) { 
+                $('#' + valid(returnitem.elementid)).addClass("highlighted");
+            }
+        });
+    }
+}
+
+
 function viewer_oninit() {
+    closewait = false; //to notify called we'll handle it ourselves 
+
+
     $('#document').mouseleave( function(e) {
         $('#info').hide();
     });  
     annotatordetails = false;
-    setview(view);
     if ((configuration.annotationfocustype) && (configuration.annotationfocusset)) {
         setannotationfocus(configuration.annotationfocustype, configuration.annotationfocusset);
     }
     viewer_loadmenus();
+    loadperspectivemenu();
+
+
     //if (viewannotations['t']) toggleannotationview('t');
     $('#document').mouseleave(function() { $('#info').hide(); });
+
+    $('#searchdiscard').click(function(){
+        $('#search').hide();
+    });
+
+    $('#searchsubmit').click(function(){ 
+
+        var queries = $('#searchqueryinput').val().split("\n"); 
+        var changeperspective = $('#searchperspective').is(':checked');
+
+        var format = "flat";
+        if (!changeperspective) {
+            format = "json"
+        }
+
+
+        for (i = 0; i < queries.length; i++) {
+            var cql = false;
+            if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
+                cql = true;
+                queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
+            } else if (queries[i].trim().substr(0,3) == "USE") {
+                queries[i] = queries[i].trim();
+            } else {
+                queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
+            }  
+            if (queries[i].indexOf('FORMAT') == -1) {
+                queries[i] += " FORMAT flat"; 
+            }
+        }
+
+        $('#wait span.msg').val("Executing search query and obtaining results");
+        $('#wait').show();
+
+        $.ajax({
+            type: 'POST',
+            url: "/" + namespace + "/"+ docid + "/query/",
+            contentType: "application/json",
+            //processData: false,
+            headers: {'X-sessionid': sid },
+            data: JSON.stringify( { 'queries': queries}), 
+            success: function(data) {
+                if (data.error) {
+                    $('#wait').hide();
+                    alert("Received error from document server: " + data.error);
+                } else {
+                    $('#search').hide();
+                    if (changeperspective) {
+                        settextclassselector(data);
+                        update(data);
+                        if (textclass != 'current') rendertextclass();
+                        if (annotationfocus) {
+                            setannotationfocus(annotationfocus.type, annotationfocus.set);
+                        }
+                        renderglobannotations(annotations);
+                    } else {
+                        highlight(data);
+                    }
+                    $('#wait').hide();
+                }
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                alert("Query failed: " + err + " " + exception + ": " + req.responseText);
+            },
+            dataType: "json"
+        });
+    });
 }

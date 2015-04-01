@@ -2,10 +2,10 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,HttpResponseForbidden
-import flat.settings as settings
+from django.conf import settings
 import flat.comm
 import flat.users
-import flat.modes.viewer.views
+from flat.views import getcontext
 import json
 
 
@@ -16,8 +16,7 @@ def view(request, namespace, docid):
             doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT ALL FORMAT flat", setdefinitions=True,declarations=True) #get the entire document with meta information
         except URLError:
             return HttpResponseForbidden("Unable to connect to the document server [viewer/view]")
-        d = flat.modes.viewer.views.getcontext(request,namespace,docid, doc)
-        d['mode'] = 'structureeditor'
+        d = getcontext(request,namespace,docid, doc, 'structureeditor')
         return render(request, 'structureeditor.html', d)
     else:
         return HttpResponseForbidden("Permission denied")

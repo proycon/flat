@@ -19,23 +19,33 @@ def hasreadpermission(username, namespace):
         return True
     else:
         try:
-            perms = ReadPermissions.objects.get(username=username, namespace=namespace)
+            perms = ReadPermissions.objects.get(username=username, namespace='ALL')
         except:
-            try:
-                perms = ReadPermissions.objects.get(username=username, namespace='ALL')
-            except:
-                return False
-        return True
+            nsparts = namespace.split('/')
+            namespace = ""
+            for nspart in nsparts:
+                namespace = (namespace + '/' + nspart).strip('/')
+                try:
+                    perms = ReadPermissions.objects.get(username=username, namespace=namespace)
+                    return True
+                except:
+                    pass
+        return False
 
 def haswritepermission(username, namespace):
     if username == namespace or namespace == "testflat":
         return True
     else:
         try:
-            perms = WritePermissions.objects.get(username=username, namespace=namespace)
+            perms = WritePermissions.objects.get(username=username, namespace='ALL')
         except:
-            try:
-                perms = ReadPermissions.objects.get(username=username, namespace='ALL')
-            except:
-                return False
-        return True
+            nsparts = namespace.split('/')
+            namespace = ""
+            for nspart in nsparts:
+                namespace = (namespace + '/' + nspart).strip('/')
+                try:
+                    perms = WritePermissions.objects.get(username=username, namespace=namespace)
+                    return True
+                except:
+                    pass
+        return False

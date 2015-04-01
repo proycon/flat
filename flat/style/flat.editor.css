@@ -97,11 +97,8 @@ div.selected span.lbl {
     display: block;
 }
 div#editformcorrectionsetselector {
-    position: fixed;
     display: none;
     width: 160px;
-    left:10px;
-    top: 50px;
     background: transparent;
     font-size: 9px;
 }

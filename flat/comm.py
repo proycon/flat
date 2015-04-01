@@ -7,7 +7,7 @@ else:
     from urllib.parse import urlencode
     from urllib.request import urlopen, Request
     from io import BytesIO as StringIO
-import flat.settings as settings
+from django.conf import settings
 import json
 import pycurl
 

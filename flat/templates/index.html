@@ -20,26 +20,60 @@
     </form>
 </div>
 
+
+<div id="adddirectoryform" class="dialog">
+    <h3>Upload</h3>
+    <form action="/addnamespace/" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <label>Namespace: </label> {{namespace}}<br />
+        <label>New directory: </label> <input type="text" name="newdirectory" value="" />
+        <input type="hidden" name="namespace" value="{{namespace}}" />
+        <div class="buttoncontainer">
+            <input class="button" type="submit" value="Add directory" onclick="$('#wait').show()" />
+            <button id="canceladddirectory" class="button">Cancel</button>
+        </div>
+    </form>
+</div>
+
 <div class="dialog">
-    <h3>My Documents</h3>
+    <h3>Document Index</h3>
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
-    {% if configuration.allowupload %}
-    <div class="uploadcontainer">
-        <button id="showuploadbutton" class="button">Upload</button>
-    </div>
+    <div class="indexbuttoncontainer">
+    {% if configuration.allownew %}
+        <button id="newbutton" class="button">New document</button>
     {% endif %}
-    <ul id="doclist">
-    {% for namespace, docsinnamespace in docs %}
-        <li><strong>{{ namespace }}</strong>
-        <ul>
-        {% for doc, size, timestamp  in docsinnamespace %}
-        <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="$('#wait').show()">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+    {% if configuration.allowupload %}
+        <button id="showuploadbutton" class="button">Upload document</button>
+    {% endif %}
+    {% if configuration.allowupload or configuration.allownew %}
+        <button id="adddirectorybutton" class="button">Add new directory</button>
+    {% endif %}
+    </div>
+    {% if namespace %}<h4>{{ namespace }}</h4>{% endif %}
+
+    {% if namespace or dirs %}
+        <ul id="dirlist">
+        {% if namespace %}
+            <li><a href="/index/{{parentdir}}">../</a></li>
+        {% endif %}
+        {% for dir in dirs %}
+            {% if namespace %}
+                <li><a href="/index/{{namespace}}/{{dir}}">{{dir}}/</a></li>
+            {% else %}
+                <li><a href="/index/{{dir}}">{{dir}}/</a></li>
+            {% endif %}
         {% endfor %}
-        </ul></li>
-    {% endfor %}
-    </ul>
+        </ul>
+    {% endif %}
+    {% if docs %}
+        <ul id="doclist">
+        {% for doc, size, timestamp  in docs %}
+            <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 </div>
 
 {% endblock %}

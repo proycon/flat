@@ -63,11 +63,20 @@ FOLIADOCSERVE_PORT = 8080
 # Each enables the user to do completely different things.
 # The following modes are available and enabled. Simply
 # comment the ones you want to disable:
-EDITOR_MODES = [
+MODES = [
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
     ('structureeditor','Structure Editor'),
 ]
+
+# The viewer and editor allow for different perspectives on the data.
+#  - document: view of the entire document
+#  - toc: view of a named subsection of the document (a table of contents will
+#  be automatically constructed)
+#  - any other FoLiA XML tag corresponsing to a structural element: paged data
+#  over this type of element
+PERSPECTIVES = [ 'document', 'toc', 'p', 's' ]
+
 
 # Which mode should be used by default when the user opens a document?
 DEFAULTMODE = 'editor'
@@ -93,7 +102,11 @@ CONFIGURATIONS = {
     'name': "Full Editor",
 
     # use the editor modes defined globally, or specify them explicitly per configuration here.
-    'modes': EDITOR_MODES,
+    'modes': MODES,
+
+    # use the perspectives defined globally, or specify them explicitly per configuration here.
+    'perspectives': PERSPECTIVES,
+
 
     # Allow users to upload FoLiA documents?
     'allowupload': True, #boolean
@@ -122,16 +135,20 @@ CONFIGURATIONS = {
     'allowedannotationfocus': True,
 
     #EXAMPLE:
-    #'allowedannoationfocus': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml'),
+    #'allowedannotationfocus': ('entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml'),
 
     # List of FoLiA annotation types (xml tags) that are initially enabled in
-    # the annotation viewer (the pop-up when the user hovers over elements)
+    # the local annotation viewer (the pop-up when the user hovers over elements)
     # set to True to enable all
     'initialviewannotations': True,
 
 
+    # List of FoLiA annotation types (xml tags) that are initially enabled in
+    # the global annotation viewer (in the annotation box above the words)
+    'initialglobviewannotations': [],
+
     # List of FoLiA annotation types (xml tags) that are allowed to be viewed,
-    # a superset of initialviewannotations. Users can enable/disable each as
+    # a superset of initialviewannotations/initialglobviewannotations. Users can enable/disable each as
     # they see fit. Set to True to enable all
     'allowedviewannotations': True,
 

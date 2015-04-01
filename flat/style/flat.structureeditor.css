@@ -51,7 +51,7 @@ div.p:hover {
 }
 
 div.s, div.w, div.part, div.s div.quote, div.p div.quote, div.morpheme {
-    display: inline;
+    display: inline-block;
 }
 div.s>.sinfo {
     background: #272274;

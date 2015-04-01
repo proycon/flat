@@ -14,6 +14,7 @@ body {
     color: white;
     min-height: 12pt;
     text-align: center;
+    font-size: 90%;
 }
 #topbar ul {
     margin: 0px;
@@ -67,7 +68,7 @@ div.dialog label {
     width: 20%;
     margin: 5px;
 }
-div.dialog input, div.dialog select {
+div.dialog input[type="input"], div.dialog select {
     display: inline-block;
     width: 70%;
     background: white;
@@ -110,7 +111,7 @@ h3 {
     color: #30677c;
     margin-top: -5px;
 }
-ul#doclist {
+ul#doclist,ul#dirlist {
     border: #30677c 1px solid;
     border-radius: 5px;
     padding: 2px;
@@ -119,16 +120,12 @@ ul#doclist {
     color: black;
     min-height: 50px;
     list-style: none;
+    clear: both; 
 }
-ul#doclist>li {
+ul#dirlist>li {
     font-weight: bold;
 }
-ul#doclist>li>ul {
-    list-style: none;
-    margin: 0px;
-    padding: 0px;
-}
-ul#doclist>li>ul>li {
+ul#doclist>li, ul#dirlist>li {
     background: #eee;
     border-top: 1px #fff solid;
     border-bottom: 1px #ccc solid;
@@ -137,7 +134,7 @@ ul#doclist>li>ul>li {
     padding-top: 3px;
     padding-bottom: 3px;
 }
-ul#doclist>li>ul>li:hover {
+ul#doclist>li:hover, ul#dirlist>li:hover {
     background: #ddd;
 }
 #doclist span {
@@ -198,11 +195,12 @@ nav ul ul li.on {
     background: #eee;
     border: #30677c 1px solid;
     border-radius: 25px;
-    padding: 10px;
+    padding: 25px;
     margin-top: 20px;
     margin-bottom: 200px;
     min-width: 480px;
     min-height: 480px;
+    max-width: 900px;
 }
 #wait {
     position: fixed;
@@ -217,17 +215,30 @@ nav ul ul li.on {
     left: 0px;
     top: 0px;
 }
+#wait span.msg {
+    display: block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 80%;
+    color: white;
+    font-size: 20px;
+}
 #doclist span {
     font-size: 8px;
     font-family: monospace;
     margin-left: 20px;
 }
 
-.uploadcontainer {
-    width: 100%;
-    text-align: right;
+.indexbuttoncontainer {
+    float: right;
+    margin-bottom: 4px;
 }
 #uploadform {
+    display: none;
+}
+#adddirectoryform {
     display: none;
 }
 #footer {
@@ -249,3 +260,52 @@ img#logo {
 span.helptext {
     display: block;
 }
+#aborted {
+    display: none;
+    margin-top: -100px; 
+}
+#aborted, #fatalerror {
+    width: 50%;
+    color: #aa0000;
+    border: 2px dashed #aa0000;
+    padding: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: 110%;
+}
+#aborted strong, #fatalerror strong {
+    font-size: 110%;
+}
+#aborted span.help, #fatalerror span.help {
+    font-size: 70%;
+    font-style: italic;
+}
+#connectioninfo {
+
+}
+div#leftpane {
+    position: fixed;
+    width: 160px;
+    left:10px;
+    top: 50px;
+    font-size: 9px;
+}
+div#perspective {
+    width: 160px;
+}
+div#textclassselector {
+    display: none;
+}
+div#leftpane .title {
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    font-style: italic;
+    color: black;
+    text-align: left;
+}
+#perspectivemenu {
+    max-width: 160px;
+}
+
