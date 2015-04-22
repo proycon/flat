@@ -32,6 +32,7 @@ annotationtypenames = {
     'cell': 'Table cell',
     'row': 'Table row',
     'metric': 'Metric',
+    'str': 'String'
 }
 annotationtypespan = {
     'pos': false,
