@@ -226,7 +226,7 @@ function rendertextclass() {
                 lbl = $('#' + valid(target) + " span.lbl");
                 if ((lbl.length == 1) && ($('#'  + valid(target)).hasClass('deepest'))) {
                     if (annotation.htmltext) {
-                        e.html(annotation.htmltext);
+                        lbl.html(annotation.htmltext);
                     } else {
                         lbl.html(annotation.text);
                     }
