@@ -5,7 +5,7 @@ annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
 hover = null;
 globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk'] //from high to low
-
+hoverstr = null; //ID of string element we're currently hovering over
 
 
 function sethover(element) {
@@ -137,8 +137,14 @@ function getclasslabel(set, key) {
 }
 
 function rendercorrection(correctionid, addlabels) {
+    //pass either an ID or an annotation element
     var s = "";
-    var correction = corrections[correctionid];
+    var correction;
+    if ((typeof correctionid == 'string' || correctionid instanceof String)) {
+        correction = corrections[correctionid];
+    } else {
+        correction = correctionid; 
+    }
     if ((viewannotations[correction.type+"/"+correction.set])) {
         s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
         if (annotatordetails && correction.annotator) {
@@ -147,18 +153,10 @@ function rendercorrection(correctionid, addlabels) {
                 s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
             }
         }
-        if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+        if ((correction.suggestions) || (correction.original)) {
             s = s + "<table>";
         }
-        if (correction.suggestions.length > 0) {
-            correction.suggestions.forEach(function(suggestion){
-                s = s + "<tr><th>Suggestion:</th><td>";
-                s = s +  "<div class=\"correctionchild\">";
-                s = s +  renderannotation(suggestion,true)
-                s = s + "</div></td></tr>";
-            });
-        }
-        if (correction.original.length > 0) {
+        if ((correction.original) && (correction.original.length > 0)) {
             correction.original.forEach(function(original){
                 if (viewannotations[original.type+"/"+original.set]) {
                     s = s + "<tr><th>Original";
@@ -172,7 +170,21 @@ function rendercorrection(correctionid, addlabels) {
                 }
             });
         }
-        if ((correction.suggestions.length > 0) || (correction.original.length > 0)) {
+        if ((correction.suggestions) && (correction.suggestions.length > 0)) {
+            correction.suggestions.forEach(function(suggestion){
+                s = s + "<tr><th>Suggestion:</th><td>";
+                if ((suggestion.n) || (suggestion.confidence)) s = s + "<span class=\"suggestiondetails\">"
+                if (suggestion.n) s = s + "N: " + suggestion.n + " ";
+                if (suggestion.confidence) s = s + "Confidence: " + suggestion.confidence;
+                if ((suggestion.n) || (suggestion.confidence)) s = s +"</span>" 
+                s = s +  "<div class=\"correctionchild\">";
+                suggestion.children.forEach(function(child){
+                    s = s +  renderannotation(child,true)
+                });
+                s = s + "</div></td></tr>";
+            });
+        }
+        if ((correction.suggestions) || (correction.original)) {
             s = s + "</table>";
         }
         s = s + "</div>";
@@ -248,6 +260,31 @@ function renderannotation(annotation, norecurse) {
             s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
         }
     }
+    if (annotation.type == "str") {
+        s = s + "<div class=\"strinfo\">";
+        annotation.children.forEach(function(subannotation){
+            if (subannotation.type) { //filter out invalid elements
+                s = s + "<span class=\"id\">" + subannotation.annotationid + "</span>";
+                s  = s + "<table>";
+                label = getannotationtypename(subannotation.type);
+                if (subannotation.set) {
+                    setname = subannotation.set;
+                } else {
+                    setname = "";
+                }
+                if (setname == "undefined") setname = "";
+                s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                if (subannotation.type == "correction") { 
+                    s = s + rendercorrection( setupcorrection(subannotation), true);
+                } else{
+                    s = s + renderannotation(subannotation);
+                }
+                s = s + "</td></tr>";
+                s = s + "</table>";
+            }
+        });
+        s = s + "</div>";
+    }
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
         annotation.incorrection.forEach(function(correctionid){
@@ -274,16 +311,18 @@ function showinfo(element) {
                 annotation = annotations[element.id][annotationid];
                 if (annotationid != "self") {
                     if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                        label = getannotationtypename(annotation.type);
-                        if (annotation.set) {
-                            setname = annotation.set;
-                        } else {
-                            setname = "";
-                        }
-                        if (setname == "undefined") setname = "";
-                        s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                        s = s + renderannotation(annotation);
-                        s = s + "</td></tr>";
+                    if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
+                            label = getannotationtypename(annotation.type);
+                            if (annotation.set) {
+                                setname = annotation.set;
+                            } else {
+                                setname = "";
+                            }
+                            if (setname == "undefined") setname = "";
+                            s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                            s = s + renderannotation(annotation);
+                            s = s + "</td></tr>";
+                    }
                     }
                 }
             });
@@ -615,6 +654,9 @@ function viewer_onloadannotations(annotationlist) {
     }
 }
 
+function viewer_contentloaded() {
+
+}
 
 function viewer_onupdate() {
     view = 'deepest';
@@ -631,6 +673,10 @@ function viewer_onupdate() {
     //$('ul#viewsmenu li').removeClass('on');
     //view=deepest
     $('div.deepest>span.lbl').show();
+
+    $('div.deepest span.str').mouseenter(function(){
+        hoverstr = this.id.substr(7);
+    });
     //$('li#views_deepest').addClass('on');
     /*
     } else if (v == 'w') {
@@ -712,6 +758,13 @@ function viewer_contentloaded(data) {
     renderglobannotations(annotations);
 }
 
+
+function viewer_onrendertextclass() {
+    $('div.deepest span.str').mouseenter(function(){
+        hoverstr = this.id.substr(7);
+        showinfo($(this).parents('.deepest')[0]);
+    });
+}
 
 function opensearch() {
     $('#search').show();

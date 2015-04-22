@@ -193,6 +193,12 @@ div#info div#id {
     font-style: italic;
     color: #666;
 }
+div#info .id {
+    display: block;
+    font-size: 8px;
+    font-style: italic;
+    color: #666;
+}
 div#info .setname {
     font-size: 8px;
     font-style: italic;
@@ -252,4 +258,9 @@ div#search button {
 #search textarea {
     width: 90%;
     min-height: 320px;
+}
+.suggestiondetails {
+    font-size: 75%;
+    font-style: italic;
+    font-color: #bbb;
 }

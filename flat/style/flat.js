@@ -235,6 +235,32 @@ function rendertextclass() {
         });
     });
     $('div.deepest>span.lbl').show();
+    if (function_exists(mode + '_onrendertextclass')) {
+        f = eval(mode + '_onrendertextclass');
+        f();
+    }
+}
+
+function setupcorrection(correction) {
+    if (!((correction.original) || (correction.new) || (correction.current) || (correction.suggestions))) {
+        //process 
+        correction.children.forEach(function(correctionchild){
+            if (correctionchild.type == "new") {
+                correction.new = correctionchild.children;
+            }
+            if (correctionchild.type == "current") {
+                correction.current = correctionchild.children;
+            }
+            if (correctionchild.type == "original") {
+                correction.original = correctionchild.children;
+            }
+            if (correctionchild.type == "suggestion") {
+                if (!correction.suggestions) correction.suggestions = []
+                correction.suggestions.push( correctionchild );
+            }
+        });
+    }
+    return correction;
 }
 
 function registerhandlers() {
@@ -292,12 +318,12 @@ function update(data) {
                 //reregister handlers
                 registerhandlers();
             }
-            if (function_exists(mode + '_onupdate')) {
-                f = eval(mode + '_onupdate');
-                f(returnitem);
-            }
         });
         havecontent = true;
+        if (function_exists(mode + '_onupdate')) {
+            f = eval(mode + '_onupdate');
+            f();
+        }
     }
     if (data.sessions) {
         $('#connectioninfo').html("<span title=\"This is the number of people that are currently viewing/editing this document, yourself included\">" + data.sessions + "</span>");
