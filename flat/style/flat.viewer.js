@@ -310,7 +310,6 @@ function showinfo(element) {
             Object.keys(annotations[element.id]).forEach(function(annotationid){
                 annotation = annotations[element.id][annotationid];
                 if (annotationid != "self") {
-                    if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
                             label = getannotationtypename(annotation.type);
                             if (annotation.set) {
@@ -320,9 +319,12 @@ function showinfo(element) {
                             }
                             if (setname == "undefined") setname = "";
                             s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                            s = s + renderannotation(annotation);
+                            if (annotation.type == "correction") { //corrections get special treatment
+                                s = s + rendercorrection(annotation);
+                            } else {
+                                s = s + renderannotation(annotation);
+                            }
                             s = s + "</td></tr>";
-                    }
                     }
                 }
             });
