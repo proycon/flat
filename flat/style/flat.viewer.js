@@ -285,6 +285,7 @@ function renderannotation(annotation, norecurse) {
         });
         s = s + "</div>";
     }
+    var renderedcorrections = [];
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
         annotation.incorrection.forEach(function(correctionid){
@@ -292,10 +293,18 @@ function renderannotation(annotation, norecurse) {
             //correction? in the latter case we don't want to display a correction
             //here
             if (!checkparentincorrection(annotation, correctionid)) {
+                renderedcorrections.push(correctionid);
                 if (corrections[correctionid]) {
                     s = s + rendercorrection( correctionid, true);
-                } else {
-                    s = s + "<div class=\"correction\"><span class=\"title\">Correction</span></div>";
+                }
+            }
+        });
+    }
+    if (annotation.hassuggestions)  {
+        annotation.hassuggestions.forEach(function(correctionid){
+            if (renderedcorrections.indexOf(correctionid)==-1) {
+                if (corrections[correctionid]) {
+                    s = s + rendercorrection( correctionid, true);
                 }
             }
         });
@@ -311,6 +320,7 @@ function showinfo(element) {
                 annotation = annotations[element.id][annotationid];
                 if (annotationid != "self") {
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
+                    if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
                             label = getannotationtypename(annotation.type);
                             if (annotation.set) {
                                 setname = annotation.set;
@@ -319,12 +329,9 @@ function showinfo(element) {
                             }
                             if (setname == "undefined") setname = "";
                             s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                            if (annotation.type == "correction") { //corrections get special treatment
-                                s = s + rendercorrection(annotation);
-                            } else {
-                                s = s + renderannotation(annotation);
-                            }
+                            s = s + renderannotation(annotation);
                             s = s + "</td></tr>";
+                    }
                     }
                 }
             });
