@@ -237,6 +237,14 @@ function spanselector_click(){
     }
 }
 
+function applysuggestion_text(e,i) {
+    $("#editfield" + i + "text").val($(e).val());
+}
+function applysuggestion(e,i) {
+    $("#editfield" + i).val($(e).val());
+}
+
+
 function showeditor(element) {
     //show and populate the editor for a particular element
 
@@ -304,6 +312,39 @@ function showeditor(element) {
                         }
                     }
                     s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                    if (annotation.hassuggestions) {
+                        s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
+                        var onchange;
+                        if (annotation.type == 't') {
+                            s += "<select id=\"editsuggestions\" onchange=\"applysuggestion_text(this," + editfields + ")\">";
+                        } else {
+                            s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
+                        }
+                        var suggestions = [];
+                        annotation.hassuggestions.forEach(function(correctionid){
+                            if (corrections[correctionid]) {
+                                var correction = corrections[correctionid];
+                                correction.suggestions.forEach(function(suggestion){
+                                    suggestion.children.forEach(function(child){
+                                        if ((child.type == annotation.type) && (child.set == annotation.set)) {
+                                            var value;
+                                            if (child.type == "t") {
+                                                value = child.text;
+                                            } else{
+                                                value = child.cls;
+                                            }
+                                            if (suggestions.indexOf(value) == -1) {
+                                                suggestions.push(value);
+                                                s += "<option value=\"" + value + "\">" + value + "</option>";
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                        s += "</select>";
+                        s += "</div>";
+                    }
                     editformdata = addeditforms();
                     editformcount = editformdata[1];
                     s = s + editformdata[0];
