@@ -53,6 +53,7 @@ annotationtypespan = {
     'dependency': true,
     'coreferencechain': true,
 }
+annotationtypestructure = ['p','w','s','div','event','utt']
 spanroles = {
     'coreferencechain': ['coreferencelink'],
     'dependency': ['hd','dep'],
@@ -90,6 +91,11 @@ function function_exists(functionName) {
     if(eval("typeof(" + functionName + ") == typeof(Function)")) {
         return true;
     }
+}
+
+
+function isstructure(annotationtype) {
+    return (annotationtypestructure.indexOf(annotationtype) != -1);
 }
 
 function hash(s){
