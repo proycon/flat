@@ -231,7 +231,7 @@ function renderspanrole(spanroledata) {
 function renderannotation(annotation, norecurse) {
     //renders the annotation in the details popup
     var s = "";
-    if (!((annotation.type == "t") && ((annotation.class == "current")  || (annotation.class == "original")) )) {
+    if (!((annotation.type == "t") && (annotation.class == "current"))) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
         } else if (annotation.class) {
@@ -269,9 +269,9 @@ function renderannotation(annotation, norecurse) {
     }
     if (annotation.type == "str") {
         s = s + "<div class=\"strinfo\">";
+        s = s + "<span class=\"id\">" + annotation.annotationid + "</span>";
         annotation.children.forEach(function(subannotation){
             if (subannotation.type) { //filter out invalid elements
-                s = s + "<span class=\"id\">" + subannotation.annotationid + "</span>";
                 s  = s + "<table>";
                 label = getannotationtypename(subannotation.type);
                 if (subannotation.set) {

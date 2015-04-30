@@ -267,3 +267,6 @@ div#search button {
     font-style: italic;
     font-color: #bbb;
 }
+.strinfo {
+    border: 2px dashed #1765b5;
+}
