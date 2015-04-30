@@ -206,11 +206,14 @@ div#info .setname {
 
 div#info div.correction {
     width: 90%;
-    border: 1px dashed #666;
+    background: #d4e2e3;
+    border: 1px solid #fff;
     padding: 2px;
+    margin-top:1px;
+    margin-bottom:1px;
 }
 div#info div.correction span.title {
-    color: #680000;
+    color: #17afb5;
     font-weight: bold;
 }
 div#info div.correctionchild {

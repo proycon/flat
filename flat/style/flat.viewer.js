@@ -146,7 +146,9 @@ function rendercorrection(correctionid, addlabels) {
         correction = correctionid; 
     }
     if ((viewannotations[correction.type+"/"+correction.set])) {
-        s = s + "<div class=\"correction\"><span class=\"title\">Correction: " + correction.class + "</span>";
+        s = s + "<div class=\"correction\"><span class=\"title\">Correction: ";
+        if (correction.class) s = s + "<em>" + correction.class + "</em>";
+        s = s + "</span>";
         if (annotatordetails && correction.annotator) {
             s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
             if (correction.datetime) {
@@ -179,7 +181,12 @@ function rendercorrection(correctionid, addlabels) {
                 if ((suggestion.n) || (suggestion.confidence)) s = s +"</span>" 
                 s = s +  "<div class=\"correctionchild\">";
                 suggestion.children.forEach(function(child){
+                    s  = s + "<table>";
+                    label = getannotationtypename(child.type);
+                    s = s + "<tr><th>" + label + "</th><td>";
                     s = s +  renderannotation(child,true)
+                    s = s + "</td></tr>";
+                    s = s + "</table>";
                 });
                 s = s + "</div></td></tr>";
             });
