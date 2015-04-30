@@ -136,7 +136,7 @@ function getclasslabel(set, key) {
     return label;
 }
 
-function rendercorrection(correctionid, addlabels) {
+function rendercorrection(correctionid, addlabels, explicitnew) {
     //pass either an ID or an annotation element
     var s = "";
     var correction;
@@ -155,8 +155,38 @@ function rendercorrection(correctionid, addlabels) {
                 s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
             }
         }
-        if ((correction.suggestions) || (correction.original)) {
+        if ((correction.suggestions) || (correction.original) || (explicitnew && correction.new || correction.current)) {
             s = s + "<table>";
+        }
+        if (explicitnew) {
+            if ((correction.new) && (correction.new.length > 0)) {
+                correction.new.forEach(function(e){
+                    if (viewannotations[e.type+"/"+e.set]) {
+                        s = s + "<tr><th>New";
+                        if (addlabels) {
+                            s = s + " " + getannotationtypename(e.type);
+                        }
+                        s = s + ":</th><td> ";
+                        s = s +  "<div class=\"correctionchild\">";
+                        s = s + renderannotation(e,true);
+                        s = s + "</div></td></tr>";
+                    }
+                });
+            }
+            if ((correction.current) && (correction.current.length > 0)) {
+                correction.current.forEach(function(e){
+                    if (viewannotations[e.type+"/"+e.set]) {
+                        s = s + "<tr><th>Current";
+                        if (addlabels) {
+                            s = s + " " + getannotationtypename(e.type);
+                        }
+                        s = s + ":</th><td> ";
+                        s = s +  "<div class=\"correctionchild\">";
+                        s = s + renderannotation(e,true);
+                        s = s + "</div></td></tr>";
+                    }
+                });
+            }
         }
         if ((correction.original) && (correction.original.length > 0)) {
             correction.original.forEach(function(original){
@@ -272,6 +302,7 @@ function renderannotation(annotation, norecurse) {
         s = s + "<span class=\"id\">" + annotation.annotationid + "</span>";
         annotation.children.forEach(function(subannotation){
             if (subannotation.type) { //filter out invalid elements
+            if (subannotation.type != "correction") {
                 s  = s + "<table>";
                 label = getannotationtypename(subannotation.type);
                 if (subannotation.set) {
@@ -281,13 +312,13 @@ function renderannotation(annotation, norecurse) {
                 }
                 if (setname == "undefined") setname = "";
                 s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                if (subannotation.type == "correction") { 
-                    s = s + rendercorrection( setupcorrection(subannotation), true);
-                } else{
-                    s = s + renderannotation(subannotation);
-                }
+                s = s + renderannotation(subannotation);
                 s = s + "</td></tr>";
                 s = s + "</table>";
+            } else {
+                //correction
+                s = s + rendercorrection( setupcorrection(subannotation), true, true);
+            }
             }
         });
         s = s + "</div>";
