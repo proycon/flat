@@ -216,6 +216,13 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     s = s + "<tr><th>" + label + "</th><td>";
                     s = s +  renderannotation(child,true)
                     s = s + "</td></tr>";
+                    if ((isstructure(child.type)) && (child.children)) {
+                        child.children.forEach(function(subchild){
+                            s = s + "<tr><th>" + getannotationtypename(subchild.type) + "</th><td>";
+                            s = s +  renderannotation(subchild,true);
+                            s = s + "</td></tr>";
+                        });
+                    }
                     s = s + "</table>";
                 });
                 s = s + "</div></td></tr>";
