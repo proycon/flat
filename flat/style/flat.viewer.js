@@ -155,6 +155,9 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
             }
         }
+        if (correction.specialtype) {
+            s = s + "<span class=\"specialtype\">(" + correction.specialtype + ")</span>";
+        }
         if ((correction.suggestions) || (correction.original) || (explicitnew && correction.new || correction.current)) {
             s = s + "<table>";
         }

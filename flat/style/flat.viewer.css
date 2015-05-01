@@ -270,3 +270,8 @@ div#search button {
 .strinfo {
     border: 2px dashed #1765b5;
 }
+.specialtype{
+    display: block;
+    font-size: 80%;
+    font-style: italic;
+}
