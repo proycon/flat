@@ -531,6 +531,13 @@ function setclasscolors() {
                                 }
                             });
                         }
+                        if (annotation.current.length > 0) {
+                            annotation.current.forEach(function(newtarget) {
+                                if (newtarget.type == 'w') {
+                                    $('#' + valid(newtarget.id)).addClass('class' + classrank[annotation.class]);
+                                }
+                            });
+                        }
                     }
                 }
             }
