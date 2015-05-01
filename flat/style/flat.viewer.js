@@ -47,8 +47,9 @@ function toggledeletions() {
     renderdeletions();
 }
 
-function renderdeletions() {
+function renderdeletions() { //and suggested insertions
     $('.deleted').remove();
+    $('.suggestinsertion').remove();
     if (showdeletions) {
         Object.keys(annotations).forEach(function(target){
             Object.keys(annotations[target]).forEach(function(annotationkey){
@@ -74,6 +75,36 @@ function renderdeletions() {
                         }
                     });                        
                     var s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                    if (annotation.previous) {
+                        $('#' + valid(annotation.previous)).after(s);
+                    } else if (annotation.next) {
+                        $('#' + valid(annotation.next)).before(s);
+                    }
+                } 
+                if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
+                    var c = '';
+                    if ((classrank) && (classrank[annotation.class])) {
+                        c = ' class' + classrank[annotation.class];
+                    }                                
+                    var textblob = ""; //we grab the text of the first suggestion
+                    var suggestionid = "";
+                    var suggestiontype = "";
+                    annotation.suggestions.forEach(function(suggestion){
+                        suggestion.children.forEach(function(e){
+                            if ((!suggestiontype) && (isstructure(e.type))) {
+                                suggestiontype = e.type;
+                                suggestionid = e.id;
+                                e.children.forEach(function(e2){
+                                    if (e2.text) {
+                                        if (textblob) textblob += " ";
+                                        textblob += e2.text;
+                                    }
+                                });
+                            }
+                        });                        
+                        return; //first suggestion only
+                    });                        
+                    var s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
                     if (annotation.previous) {
                         $('#' + valid(annotation.previous)).after(s);
                     } else if (annotation.next) {

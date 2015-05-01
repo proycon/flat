@@ -224,6 +224,11 @@ div.deleted span.lbl {
     text-decoration: line-through;
     color: red;
 }
+div.suggestinsertion span.lbl {
+    font-style: italic;
+    color: blue;
+    font-size: 90%;
+}
 
 label.spanrole {
     color: #854587;
