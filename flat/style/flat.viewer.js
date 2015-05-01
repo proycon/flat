@@ -708,9 +708,6 @@ function viewer_onloadannotations(annotationlist) {
     }
 }
 
-function viewer_contentloaded() {
-
-}
 
 function viewer_onupdate() {
     view = 'deepest';

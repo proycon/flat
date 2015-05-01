@@ -605,6 +605,10 @@ function editor_contentloaded(data) {
     viewer_contentloaded(data);
 }
 
+function editor_onrendertextclass() {
+    viewer_onrendertextclass();
+}
+
 function declare() {
     $('#newdeclaration').show();
     $('#newdeclaration').draggable();
