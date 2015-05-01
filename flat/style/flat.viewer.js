@@ -3,6 +3,7 @@ viewglobannotations = {}; //view global annotations
 annotationfocus = null;
 annotatordetails = false; //show annotor details
 showoriginal = false; //show originals instead of corrections
+showdeletions = false; //show deletions
 hover = null;
 globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk'] //from high to low
 hoverstr = null; //ID of string element we're currently hovering over
@@ -33,6 +34,55 @@ function toggleannotatordetails() {
         $('#toggleannotatordetails').addClass("on");
     } else {
         $('#toggleannotatordetails').removeClass("on");
+    }
+}
+
+function toggledeletions() {
+    showdeletions = !showdeletions;
+    if (showdeletions) {
+        $('#toggledeletions').addClass("on");
+    } else {
+        $('#toggledeletions').removeClass("on");
+    }
+    renderdeletions();
+}
+
+function renderdeletions() {
+    $('.deleted').remove();
+    if (showdeletions) {
+        Object.keys(annotations).forEach(function(target){
+            Object.keys(annotations[target]).forEach(function(annotationkey){
+                annotation = annotations[target][annotationkey];
+                if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
+                    //check if the deletion has a colored class
+                    var c = '';
+                    if ((classrank) && (classrank[annotation.class])) {
+                        c = ' class' + classrank[annotation.class];
+                    }                                
+                    var textblob = "";
+                    var originalid = "";
+                    var originaltype = "";
+                    //find original text
+                    annotation.original.forEach(function(original){
+                        if (original.text) {
+                            if (textblob) textblob += " ";
+                            textblob += original.text;
+                        }
+                        if ((!originaltype) && (isstructure(original.type))) {
+                            originaltype = original.type;
+                            originalid = original.id;
+                        }
+                    });                        
+                    var s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                    if (annotation.previous) {
+                        $('#' + valid(annotation.previous)).after(s);
+                    } else if (annotation.next) {
+                        $('#' + valid(annotation.next)).before(s);
+                    }
+                }
+            });
+        });
+
     }
 }
 
@@ -452,10 +502,19 @@ function setannotationfocus(t,set) {
         } else {
             $('.focustype').addClass('undofocustype');
         }
+        if (annotationfocus.type == 'correction') {
+            showdeletions = true;
+            renderdeletions();
+        }
     } else {
+        if ((annotationfocus) && (annotationfocus.type == 'correction')) {
+            showdeletions = false;
+            renderdeletions(); //will delete the ones shown
+        }
         annotationfocus = null;
     }
 }
+
 
 function removeclasscolors(toggle) {
     for (var i = 1; i < 8; i++) {
@@ -551,6 +610,11 @@ function setclasscolors() {
     $('#legend').show();
 }
 
+function showdeletions() {
+    //remove all deletions
+    $('.deletion').remove();
+    
+}
 
 function partofspanhead(annotation, target) {
     var partofhead = false;
