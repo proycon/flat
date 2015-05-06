@@ -464,7 +464,7 @@ function showeditor(element) {
                 //now we manipulate the editor by adding the suggested text
                 for (var i = 0; i < editfields; i++) {
                     if (editdata[i].type == "t") {
-                        editdata[i].text += ' ' + $(element).find('.lbl').html(); 
+                        editdata[i].text += ' ' + $(element).find('.lbl').html().replace('&nbsp;',''); 
                         editdata[i].changed = true;
                         $('#editfield' + i + 'text').val(editdata[i].text);
                         $('#editform' + i + 'correction').click(); //edit as correction
