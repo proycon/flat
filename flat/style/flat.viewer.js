@@ -7,6 +7,7 @@ showdeletions = false; //show deletions
 hover = null;
 globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk'] //from high to low
 hoverstr = null; //ID of string element we're currently hovering over
+suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 
 
 function sethover(element) {
@@ -112,6 +113,7 @@ function renderdeletions() { //and suggested insertions
                         $('#' + valid(annotation.next)).before(s);
                     }
                     $('#' + valid(suggestionid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+                    suggestinsertion[suggestionid] = annotation;
                 }
             });
         });
@@ -294,7 +296,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 if ((suggestion.n) || (suggestion.confidence)) s = s + "<span class=\"suggestiondetails\">"
                 if (suggestion.n) s = s + "N: " + suggestion.n + " ";
                 if (suggestion.confidence) s = s + "Confidence: " + suggestion.confidence;
-                if ((suggestion.n) || (suggestion.confidence)) s = s +"</span>" 
+                if ((suggestion.n) || (suggestion.confidence)) s = s + "</span>";
                 s = s +  "<div class=\"correctionchild\">";
                 suggestion.children.forEach(function(child){
                     s  = s + "<table>";
@@ -305,7 +307,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     if ((isstructure(child.type)) && (child.children)) {
                         child.children.forEach(function(subchild){
                             s = s + "<tr><th>" + getannotationtypename(subchild.type) + "</th><td>";
-                            s = s +  renderannotation(subchild,true);
+                            s = s + renderannotation(subchild,true);
                             s = s + "</td></tr>";
                         });
                     }

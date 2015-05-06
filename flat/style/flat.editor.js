@@ -4,6 +4,7 @@ coselector = -1; //disabled
 editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 editedelementid = null;
 editfields = 0;
+editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
 
 
 function toggleeditform(editform) {
@@ -251,208 +252,240 @@ function applysuggestion(e,i) {
 
 function showeditor(element) {
     //show and populate the editor for a particular element
+    editsuggestinsertion = null;
 
     if ((element) && ($(element).hasClass(view))) {
-        if ((element.id)  && (annotations[element.id])) {            
+        if (element.id) { 
+            if (annotations[element.id]) { //main editor 
+                var s = "";
+                editoropen = true;
+                sethover(element);
+                editedelementid = element.id;
+                editfields = 0;
+                editdata = [];
 
-            s = "";
-            editoropen = true;
-            sethover(element);
-            editedelementid = element.id;
-            editfields = 0;
-            editdata = [];
+                //clear current selection
+                $('.selected').removeClass('selected');
+                $(element).addClass('selected');
+                //select(element);
 
-            //clear current selection
-            $('.selected').removeClass('selected');
-            $(element).addClass('selected');
-            //select(element);
-
-            var annotationfocusfound = false;
-            var editformcount = 0;
-            Object.keys(annotations[element.id]).forEach(function(annotationid){
-                annotation = annotations[element.id][annotationid];
-                if (annotationfocus) {
-                    if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
-                        annotationfocusfound = true;
+                var annotationfocusfound = false;
+                var editformcount = 0;
+                Object.keys(annotations[element.id]).forEach(function(annotationid){
+                    annotation = annotations[element.id][annotationid];
+                    if (annotationfocus) {
+                        if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                            annotationfocusfound = true;
+                        }
                     }
-                }
-                var ok = ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)))  );
-                if (ok) {
-                    label = getannotationtypename(annotation.type);
-                    if (annotation.set) {
-                        setname = annotation.set;
-                    } else {
-                        setname = "";
-                    }
-                    if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
-                        s = s + "<tr class=\"focus\">";
-                    } else {
-                        s = s + "<tr>";
-                    }
-                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                    if (annotation.type == 't') {
-                        if (annotation.class != "current") {
-                            s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/><br/>Text:";
+                    var ok = ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)))  );
+                    if (ok) {
+                        label = getannotationtypename(annotation.type);
+                        if (annotation.set) {
+                            setname = annotation.set;
                         } else {
-                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                            setname = "";
                         }
-                        s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + annotation.text + "\"/>";
-                    } else {
-                        if (annotation.targets.length > 1) {
-                            spantext = getspantext(annotation);
-                            s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
-                            s  = s + "<br/>";
-                        }
-                        if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
-                            s = s + "<select id=\"editfield" + editfields + "\" >";
-                            s = s + "<option value=\"\"></option>";
-                            setdefinitions[annotation.set].classorder.forEach(function(cid){
-                                c = setdefinitions[annotation.set].classes[cid]
-                                s = s + getclassesasoptions(c, annotation.class); // will add to s
-                            });
-                            s = s + "</select>";
+                        if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                            s = s + "<tr class=\"focus\">";
                         } else {
-                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
+                            s = s + "<tr>";
                         }
-                    }
-                    s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
-                    if (annotation.hassuggestions) {
-                        s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
-                        var onchange;
+                        s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                         if (annotation.type == 't') {
-                            s += "<select id=\"editsuggestions\" onchange=\"applysuggestion_text(this," + editfields + ")\">";
-                        } else {
-                            s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
-                        }
-                        s += "<option value=\"\"></option>";
-                        var suggestions = [];
-                        annotation.hassuggestions.forEach(function(correctionid){
-                            if (corrections[correctionid]) {
-                                var correction = corrections[correctionid];
-                                correction.suggestions.forEach(function(suggestion){
-                                    suggestion.children.forEach(function(child){
-                                        if ((child.type == annotation.type) && (child.set == annotation.set)) {
-                                            var value;
-                                            if (child.type == "t") {
-                                                value = child.text;
-                                            } else{
-                                                value = child.cls;
-                                            }
-                                            if (suggestions.indexOf(value) == -1) {
-                                                suggestions.push(value);
-                                                s += "<option value=\"" + value + "\">" + value + "</option>";
-                                            }
-                                        }
-                                    });
-                                });
+                            if (annotation.class != "current") {
+                                s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/><br/>Text:";
+                            } else {
+                                s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
                             }
-                        });
-                        s += "</select>";
-                        s += "</div>";
+                            s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + annotation.text + "\"/>";
+                        } else {
+                            if (annotation.targets.length > 1) {
+                                spantext = getspantext(annotation);
+                                s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
+                                s  = s + "<br/>";
+                            }
+                            if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
+                                s = s + "<select id=\"editfield" + editfields + "\" >";
+                                s = s + "<option value=\"\"></option>";
+                                setdefinitions[annotation.set].classorder.forEach(function(cid){
+                                    c = setdefinitions[annotation.set].classes[cid]
+                                    s = s + getclassesasoptions(c, annotation.class); // will add to s
+                                });
+                                s = s + "</select>";
+                            } else {
+                                s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
+                            }
+                        }
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                        if (annotation.hassuggestions) {
+                            s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
+                            var onchange;
+                            if (annotation.type == 't') {
+                                s += "<select id=\"editsuggestions\" onchange=\"applysuggestion_text(this," + editfields + ")\">";
+                            } else {
+                                s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
+                            }
+                            s += "<option value=\"\"></option>";
+                            var suggestions = [];
+                            annotation.hassuggestions.forEach(function(correctionid){
+                                if (corrections[correctionid]) {
+                                    var correction = corrections[correctionid];
+                                    correction.suggestions.forEach(function(suggestion){
+                                        suggestion.children.forEach(function(child){
+                                            if ((child.type == annotation.type) && (child.set == annotation.set)) {
+                                                var value;
+                                                if (child.type == "t") {
+                                                    value = child.text;
+                                                } else{
+                                                    value = child.cls;
+                                                }
+                                                if (suggestions.indexOf(value) == -1) {
+                                                    suggestions.push(value);
+                                                    s += "<option value=\"" + value + "\">" + value + "</option>";
+                                                }
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                            s += "</select>";
+                            s += "</div>";
+                        }
+                        editformdata = addeditforms();
+                        editformcount = editformdata[1];
+                        s = s + editformdata[0];
+                        s = s + "</td></tr>";
+                        editfields = editfields + 1;
+                        editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
+                        if (annotation.type == 't') editdataitem.text = annotation.text;
+                        if (annotation.id) editdataitem.id = annotation.id;
+
+                        //set default edit form (seteditform will be called later
+                        //to affect the interface)
+                        if (configuration.alloweditformcorrection) {
+                            editdataitem.editform = 'correction';
+                        } else if (configuration.alloweditformdirect) {
+                            editdataitem.editform = 'direct';
+                        } else {
+                            editdataitem.editform = 'alternative';
+                        }            
+                        editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy)
+                        editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend
+                        editdata.push(editdataitem);
+
+                        if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                            //highlight other targets (just mimicks user click)
+                            for (var j = 0; j < annotation.targets.length; j++) {
+                                $('#' + valid(annotation.targets[j])).addClass('selected');
+                            }
+                        }
+
                     }
-                    editformdata = addeditforms();
-                    editformcount = editformdata[1];
-                    s = s + editformdata[0];
-                    s = s + "</td></tr>";
-                    editfields = editfields + 1;
-                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
-                    if (annotation.type == 't') editdataitem.text = annotation.text;
-                    if (annotation.id) editdataitem.id = annotation.id;
+                    
+                });
+                s = s + "<tr id=\"editrowplaceholder\"></tr>";
+                idheader = "<div id=\"id\">" + element.id + "</div>"
 
-                    //set default edit form (seteditform will be called later
-                    //to affect the interface)
-                    if (configuration.alloweditformcorrection) {
-                        editdataitem.editform = 'correction';
-                    } else if (configuration.alloweditformdirect) {
-                        editdataitem.editform = 'direct';
-                    } else {
-                        editdataitem.editform = 'alternative';
-                    }            
-                    editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy)
-                    editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend
-                    editdata.push(editdataitem);
 
-                    if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
-                        //highlight other targets (just mimicks user click)
-                        for (var j = 0; j < annotation.targets.length; j++) {
-                            $('#' + valid(annotation.targets[j])).addClass('selected');
+
+                //extra fields list
+                setaddablefields();
+
+
+
+
+                s = idheader + "<table>"  + s + "</table>";
+                $('#editor div.body').html(s);
+
+
+
+                if ((annotationfocus) && (!annotationfocusfound)) {
+                    //the annotation focus has not been found, so no field appears, add one automatically:
+                    for (var i = 0; i < editoraddablefields.length; i++) {
+                        if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
+                            addeditorfield(i);
+                            break;
                         }
                     }
-
                 }
-                 
-            });
-            s = s + "<tr id=\"editrowplaceholder\"></tr>";
-            idheader = "<div id=\"id\">" + element.id + "</div>"
+                $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
+                if ((editformcount > 1) || (editforms.correction)) {
+                    $('.editforms').show();                
+                } else {
+                    $('.editforms').hide();                
+                }
+                //configure actions and events for edit fields
+                for (var i = 0; i < editfields;i++){
+                    //propagate editform to interface, for each field
+                    seteditform(i, editdata[i].editform);
 
+                    $('select#editfield'+i).sortOptions();
 
+                    $('#spanselector' + i).off(); //prevent duplicates
+                    $('#spanselector' + i).click(spanselector_click);
 
-            //extra fields list
-            setaddablefields();
-
-
-
-
-            s = idheader + "<table>"  + s + "</table>";
-            $('#editor div.body').html(s);
-
-
-
-            if ((annotationfocus) && (!annotationfocusfound)) {
-                //the annotation focus has not been found, so no field appears, add one automatically:
-                for (var i = 0; i < editoraddablefields.length; i++) {
-                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
-                        addeditorfield(i);
-                        break;
+                    //sort correctionclass
+                    if ($('select#editform' + i + 'correctionclass')) {
+                        var options = $('#editform' + i + 'correctionclass option')
+                        var arr = options.map(function(_, o) { return { t: $(o).text(), v: o.value , s: $(o).attr('selected')}; }).get();
+                        arr.sort(function(o1, o2) { return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0; });
+                        options.each(function(i, o) {
+                            o.value = arr[i].v;
+                            $(o).text(arr[i].t);
+                            $(o).attr('selected', arr[i].s);
+                        });
                     }
-                }
-            }
-            $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
-            if ((editformcount > 1) || (editforms.correction)) {
-                $('.editforms').show();                
-            } else {
-                $('.editforms').hide();                
-            }
-            //configure actions and events for edit fields
-            for (var i = 0; i < editfields;i++){
-                //propagate editform to interface, for each field
-                seteditform(i, editdata[i].editform);
-
-                $('select#editfield'+i).sortOptions();
-
-                $('#spanselector' + i).off(); //prevent duplicates
-                $('#spanselector' + i).click(spanselector_click);
-
-                //sort correctionclass
-                if ($('select#editform' + i + 'correctionclass')) {
-                    var options = $('#editform' + i + 'correctionclass option')
-                    var arr = options.map(function(_, o) { return { t: $(o).text(), v: o.value , s: $(o).attr('selected')}; }).get();
-                    arr.sort(function(o1, o2) { return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0; });
-                    options.each(function(i, o) {
-                        o.value = arr[i].v;
-                        $(o).text(arr[i].t);
-                        $(o).attr('selected', arr[i].s);
-                    });
-                }
-                
-                /*$('#editfield'+i).change(function(){
-                    index = 0;
-                    for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
-                    if ($(this).val() != editdata[index].class) {
-                        editdata[index].class = $(this).val();
+                    
+                    /*$('#editfield'+i).change(function(){
+                        index = 0;
+                        for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
+                        if ($(this).val() != editdata[index].class) {
+                            editdata[index].class = $(this).val();
+                            if (!$(this).hasClass("changed")) $(this).addClass("changed");
+                        }
+                    });*/
+                    /*$('#editordelete'+i).click(function(){
+                        index = 0;
+                        for (var i = 0; i < editfields;i++) { if (this.id == "editordelete" + i) { index = i; break; } }
+                        editdata[index].delete = true;
+                        $("#editfield" + index).val("");
                         if (!$(this).hasClass("changed")) $(this).addClass("changed");
+                    });*/
+                }
+                $('#editor').show();    
+                $('#editor').draggable();
+            } else if (suggestinsertion[element.id]) {
+                //suggestion for insertion:
+                //we select the PREVIOUS element and add this text
+                previousid = suggestinsertion[element.id].previous;
+                $('#' + valid(previousid)).click(); //this will call showeditor() again but now for the previous element
+
+                //now we manipulate the editor by adding the suggested text
+                for (var i = 0; i < editfields; i++) {
+                    if (editdata[i].type == "t") {
+                        editdata[i].text += ' ' + $(element).find('.lbl').html(); 
+                        editdata[i].changed = true;
+                        $('#editfield' + i + 'text').val(editdata[i].text);
+                        $('#editform' + i + 'correction').click(); //edit as correction
+                        //select the right class:
+                        try{
+                            if ($('#editform' + i + 'correctionclass')[0].type == 'select-one') {
+                                //select
+                                $('#editform' + i + 'correctionclass>option[value="' + suggestinsertion[element.id].class + '"]').prop('selected',true);
+                            } else{ 
+                                //simple free field
+                                $('#editform' + i + 'correctionclass').val(suggestinsertion[element.id].class)
+                            }
+                        }catch(err){}
                     }
-                });*/
-                /*$('#editordelete'+i).click(function(){
-                    index = 0;
-                    for (var i = 0; i < editfields;i++) { if (this.id == "editordelete" + i) { index = i; break; } }
-                    editdata[index].delete = true;
-                    $("#editfield" + index).val("");
-                    if (!$(this).hasClass("changed")) $(this).addClass("changed");
-                });*/
+                }
+
+                //and we set editsuggestinsertion to the correction id, so the
+                //editor will reuse the correction upon submission (provided it
+                //is edited as correction rather than direct)
+                editsuggestinsertion = suggestinsertion[element.id].id;
             }
-            $('#editor').show();    
-            $('#editor').draggable();
         }
     }
 }
@@ -928,14 +961,21 @@ function editor_oninit() {
                         returntype = "ancestor-focus";
                     }
 
+
                     //set AS expression
                     if (editdata[i].editform == "correction") {
-                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
+                        if (editsuggestinsertion) {
+                            //used with  leftinsert (PREPEND), rightinsert
+                            //(APPEND), reuses a correction
+                            query += " FOR current IN ID " + editsuggestinsertion;
+                        } else {
+                            query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
+                        }
                     } else if (editdata[i].editform == "alternative") {
                         query += " (AS ALTERNATIVE)"
                     }
 
-                    if (!(isspan && editdata[i].id && (action == "EDIT"))) { //only if we're not editing an existing span annotation 
+                    if (!( (isspan && editdata[i].id && (action == "EDIT")) || (editsuggestinsertion) )) { //only if we're not editing an existing span annotation  and not reusing a suggestinsertion
                         //set target expression
                         if (sortededittargets.length > 0) {
                             query += " FOR";
