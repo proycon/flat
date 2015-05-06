@@ -238,10 +238,14 @@ function spanselector_click(){
 }
 
 function applysuggestion_text(e,i) {
-    $("#editfield" + i + "text").val($(e).val());
+    if ($(e).val()) {
+        $("#editfield" + i + "text").val($(e).val());
+    }
 }
 function applysuggestion(e,i) {
-    $("#editfield" + i).val($(e).val());
+    if ($(e).val()) {
+        $("#editfield" + i).val($(e).val());
+    }
 }
 
 
@@ -320,6 +324,7 @@ function showeditor(element) {
                         } else {
                             s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
                         }
+                        s += "<option value=\"\"></option>";
                         var suggestions = [];
                         annotation.hassuggestions.forEach(function(correctionid){
                             if (corrections[correctionid]) {
