@@ -238,14 +238,23 @@ function spanselector_click(){
     }
 }
 
-function applysuggestion_text(e,i) {
-    if ($(e).val()) {
-        $("#editfield" + i + "text").val($(e).val());
-    }
-}
 function applysuggestion(e,i) {
     if ($(e).val()) {
-        $("#editfield" + i).val($(e).val());
+        fields = $(e).val().split("|")
+        var val = fields[0];
+        var cls = fields[1];
+        if ($("#editfield" + i + "text").length > 0) {
+            $("#editfield" + i + "text").val(val);
+        } else{
+            $("#editfield" + i).val(val);
+        }
+        if ($("#editform" + i + "correctionclass").length > 0) {
+            if ($("#editform" + i + "correctionclass")[0].type == 'select-one') {
+                $('#editform' + i + 'correctionclass>option[value="' + cls+ '"]').prop('selected',true);
+            } else {
+                $("#editform" + i + "correctionclass").val(cls);
+            }
+        }
     }
 }
 
@@ -322,17 +331,16 @@ function showeditor(element) {
                         if (annotation.hassuggestions) {
                             s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
                             var onchange;
-                            if (annotation.type == 't') {
-                                s += "<select id=\"editsuggestions\" onchange=\"applysuggestion_text(this," + editfields + ")\">";
-                            } else {
-                                s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
-                            }
+                            //if (annotation.type == 't') {
+                            //    s += "<select id=\"editsuggestions\" onchange=\"applysuggestion_text(this," + editfields + ")\">";
+                            //} else {
+                            s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
+                            //}
                             s += "<option value=\"\"></option>";
                             var suggestions = [];
                             annotation.hassuggestions.forEach(function(correctionid){
                                 if (corrections[correctionid]) {
                                     var correction = corrections[correctionid];
-                                    preselectcorrectionclass = correction.class;
                                     correction.suggestions.forEach(function(suggestion){
                                         suggestion.children.forEach(function(child){
                                             if ((child.type == annotation.type) && (child.set == annotation.set)) {
@@ -344,7 +352,7 @@ function showeditor(element) {
                                                 }
                                                 if (suggestions.indexOf(value) == -1) {
                                                     suggestions.push(value);
-                                                    s += "<option value=\"" + value + "\">" + value + "</option>";
+                                                    s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
                                                 }
                                             }
                                         });
@@ -354,7 +362,7 @@ function showeditor(element) {
                             s += "</select>";
                             s += "</div>";
                         }
-                        editformdata = addeditforms(preselectcorrectionclass);
+                        editformdata = addeditforms();
                         editformcount = editformdata[1];
                         s = s + editformdata[0];
                         s = s + "</td></tr>";
