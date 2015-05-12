@@ -129,7 +129,7 @@ function seteditform(index, value) {
     }
 }
 
-function addeditforms() {
+function addeditforms(preselectcorrectionclass) {
     
 
     //do we have a single selection?
@@ -173,7 +173,7 @@ function addeditforms() {
             s = s + "<option value=\"\"></option>";
             setdefinitions[correctionset].classorder.forEach(function(cid){
                 c = setdefinitions[correctionset].classes[cid]
-                s = s + getclassesasoptions(c, ""); // will add to s
+                s = s + getclassesasoptions(c, preselectcorrectionclass); // will add to s
             });
             s = s + "</select>";
         } else {
@@ -318,6 +318,7 @@ function showeditor(element) {
                             }
                         }
                         s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                        var preselectcorrectionclass = "";
                         if (annotation.hassuggestions) {
                             s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
                             var onchange;
@@ -331,6 +332,7 @@ function showeditor(element) {
                             annotation.hassuggestions.forEach(function(correctionid){
                                 if (corrections[correctionid]) {
                                     var correction = corrections[correctionid];
+                                    preselectcorrectionclass = correction.class;
                                     correction.suggestions.forEach(function(suggestion){
                                         suggestion.children.forEach(function(child){
                                             if ((child.type == annotation.type) && (child.set == annotation.set)) {
@@ -352,7 +354,7 @@ function showeditor(element) {
                             s += "</select>";
                             s += "</div>";
                         }
-                        editformdata = addeditforms();
+                        editformdata = addeditforms(preselectcorrectionclass);
                         editformcount = editformdata[1];
                         s = s + editformdata[0];
                         s = s + "</td></tr>";

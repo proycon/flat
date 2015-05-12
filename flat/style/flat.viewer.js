@@ -241,7 +241,13 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
             }
         }
         if (correction.specialtype) {
-            s = s + "<span class=\"specialtype\">(" + correction.specialtype + ")</span>";
+            s = s + "<span class=\"specialtype\">(" + correction.specialtype;
+            if (correction.suggestmerge) {
+                s = s + " and merge with next structure";
+            } else if (correction.suggestsplit) {
+                s = s + " and split structure at this point";
+            }
+            s = s + ")</span>";
         }
         if ((correction.suggestions) || (correction.original) || (explicitnew && correction.new || correction.current)) {
             s = s + "<table>";
