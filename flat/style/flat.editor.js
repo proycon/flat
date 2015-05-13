@@ -474,9 +474,8 @@ function showeditor(element) {
                 //now we manipulate the editor by adding the suggested text
                 for (var i = 0; i < editfields; i++) {
                     if (editdata[i].type == "t") {
-                        editdata[i].text += ' ' + $(element).find('.lbl').html().replace('&nbsp;',''); 
-                        editdata[i].changed = true;
-                        $('#editfield' + i + 'text').val(editdata[i].text);
+                        var newtext = editdata[i].text  + ' ' + $(element).find('.lbl').html().replace('&nbsp;',''); 
+                        $('#editfield' + i + 'text').val(newtext);
                         $('#editform' + i + 'correction').click(); //edit as correction
                         //select the right class:
                         try{
@@ -902,10 +901,18 @@ function editor_oninit() {
                     } else if ((editdata[i].type == "t") && (editdata[i].text != "")) {
                         if (editdata[i].insertleft) { 
                             returntype = "ancestor-focus";
-                            action = "PREPEND";
+                            if (editsuggestinsertion) {
+                                action = "SUBSTITUTE"; //substitute the correction for suggestion
+                            } else {
+                                action = "PREPEND";
+                            }
                         } else if (editdata[i].insertright) {
                             returntype = "ancestor-focus";
-                            action = "APPEND";
+                            if (editsuggestinsertion) {
+                                action = "SUBSTITUTE"; //substitute the correction for suggestion
+                            } else {
+                                action = "APPEND";
+                            }
                         } else if (editdata[i].dosplit) {
                             returntype = "ancestor-focus";
                             action = "SUBSTITUTE";
@@ -945,7 +952,17 @@ function editor_oninit() {
                             }
                         }
                     } else { //substitute
-                        if (editdata[i].dosplit) {
+                        if (editdata[i].insertright) { //insertright as substitute
+                            query += " w";
+                            if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
+                                query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            }
+                        } else if (editdata[i].insertleft) { //insertleft as substitue
+                            query += " w"; 
+                            if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
+                                query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            }
+                        } if (editdata[i].dosplit) {
                             parts = editdata[i].text.split(" ");
                             for (var j = 0; j < parts.length; j++) { //SPLIT
                                 if (j > 0) query += " ";
@@ -974,18 +991,14 @@ function editor_oninit() {
 
                     //set AS expression
                     if (editdata[i].editform == "correction") {
-                        if (editsuggestinsertion) {
-                            //used with  leftinsert (PREPEND), rightinsert
-                            //(APPEND), reuses a correction
-                            query += " FOR current IN ID " + editsuggestinsertion;
-                        } else {
-                            query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
-                        }
+                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     } else if (editdata[i].editform == "alternative") {
                         query += " (AS ALTERNATIVE)"
                     }
 
-                    if (!( (isspan && editdata[i].id && (action == "EDIT")) || (editsuggestinsertion) )) { //only if we're not editing an existing span annotation  and not reusing a suggestinsertion
+                    if (editsuggestinsertion) {
+                        query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
+                    } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation 
                         //set target expression
                         if (sortededittargets.length > 0) {
                             query += " FOR";
