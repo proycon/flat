@@ -953,12 +953,12 @@ function editor_oninit() {
                         }
                     } else { //substitute
                         if (editdata[i].insertright) { //insertright as substitute
-                            query += " w";
+                            query += "SUBSTITUTE w";
                             if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
                                 query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
                         } else if (editdata[i].insertleft) { //insertleft as substitue
-                            query += " w"; 
+                            query += "SUBSTITUTE w"; 
                             if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
                                 query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
