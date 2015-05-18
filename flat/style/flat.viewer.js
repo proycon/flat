@@ -1,13 +1,13 @@
-viewannotations = {}; //view local annotations in editor
-viewglobannotations = {}; //view global annotations
-annotationfocus = null;
-annotatordetails = false; //show annotor details
-showoriginal = false; //show originals instead of corrections
-showdeletions = false; //show deletions
-hover = null;
-globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk'] //from high to low
-hoverstr = null; //ID of string element we're currently hovering over
-suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
+var viewannotations = {}; //view local annotations in editor
+var viewglobannotations = {}; //view global annotations
+var annotationfocus = null;
+var annotatordetails = false; //show annotor details
+var showoriginal = false; //show originals instead of corrections
+var showdeletions = false; //show deletions
+var hover = null;
+var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from high to low
+var hoverstr = null; //ID of string element we're currently hovering over
+var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 
 
 function sethover(element) {

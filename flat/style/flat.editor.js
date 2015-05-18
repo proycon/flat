@@ -1,10 +1,10 @@
-editannotations = {};
-editoropen = false;
-coselector = -1; //disabled
-editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
-editedelementid = null;
-editfields = 0;
-editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
+var editannotations = {};
+var editoropen = false;
+var coselector = -1; //disabled
+var editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
+var editedelementid = null;
+var editfields = 0;
+var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
 
 
 function toggleeditform(editform) {
