@@ -43,7 +43,7 @@ if settings.DEBUG:
         )
 
 
-for mode, _ in settings.EDITOR_MODES:
+for mode, _ in settings.MODES:
     urlpatterns += patterns('',url(r'^' + mode + '/', include('flat.modes.' + mode + '.urls')))
 
 
