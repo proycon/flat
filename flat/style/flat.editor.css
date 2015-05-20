@@ -164,3 +164,11 @@ div#qunit {
     margin-left: auto;
     margin-right: auto;
 }
+
+#editor div.suggestions label {
+    font-size: 80%;
+}
+#editsuggestions {
+    color: #0f5722;
+    background: #aaa;
+}

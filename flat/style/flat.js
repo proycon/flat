@@ -1,4 +1,4 @@
-annotationtypenames = {
+var annotationtypenames = {
     'pos': 'Part-of-Speech',
     'lemma': 'Lemma',
     't': 'Text',
@@ -32,8 +32,9 @@ annotationtypenames = {
     'cell': 'Table cell',
     'row': 'Table row',
     'metric': 'Metric',
-}
-annotationtypespan = {
+    'str': 'String'
+};
+var annotationtypespan = {
     'pos': false,
     'lemma': false,
     't': false,
@@ -51,44 +52,49 @@ annotationtypespan = {
     'errordetection': false,
     'dependency': true,
     'coreferencechain': true,
-}
-spanroles = {
+};
+var annotationtypestructure = ['p','w','s','div','event','utt'];
+var spanroles = {
     'coreferencechain': ['coreferencelink'],
     'dependency': ['hd','dep'],
-}
+};
 
-sid = ((Math.random() * 1e9) | 0); //session id
+var sid = ((Math.random() * 1e9) | 0); //session id
 
-havecontent = false; //we start assuming we have no content
-closewait = true; //close the wait mask when we are done loading
-textclass = "current";
+var havecontent = false; //we start assuming we have no content
+var closewait = true; //close the wait mask when we are done loading
+var textclass = "current";
 
-perspective = 'document'; //initial perspective (TODO: override with configuration option later)
-perspective_ids = null;
-perspective_start = null;
-perspective_end = null;
+var perspective = 'document'; //initial perspective (TODO: override with configuration option later)
+var perspective_ids = null;
+var perspective_start = null;
+var perspective_end = null;
 
-annotations = {}; //annotations per structure item
-declarations = {};
-corrections = {};
-docid = null;
-initialannotationlist = [];
-initialdeclarationlist = [];
-mouseX = 0;
-mouseY = 0;
+var annotations = {}; //annotations per structure item
+var declarations = {};
+var corrections = {};
+var docid = null;
+var initialannotationlist = [];
+var initialdeclarationlist = [];
+var mouseX = 0;
+var mouseY = 0;
 
 function getannotationtypename(t) {
     if (annotationtypenames[t]) {
         return annotationtypenames[t];
-    } else {
-        return t;
     }
+    return t;
 }
 
 function function_exists(functionName) {
     if(eval("typeof(" + functionName + ") == typeof(Function)")) {
         return true;
     }
+}
+
+
+function isstructure(annotationtype) {
+    return (annotationtypestructure.indexOf(annotationtype) !== -1);
 }
 
 function hash(s){
@@ -117,28 +123,28 @@ function getannotationid(annotation) {
 
 function onfoliaclick() {
     if (function_exists(mode + '_onclick')) {
-        f = eval(mode + '_onclick');
+        var f = eval(mode + '_onclick');
         f(this);
     }
     return false;
 }
 function onfoliadblclick() {
     if (function_exists(mode + '_ondblclick')) {
-        f = eval(mode + '_ondblclick');
+        var f = eval(mode + '_ondblclick');
         f(this);
     }
     return false;
 }
 function onfoliamouseenter() {
     if (function_exists(mode + '_onmouseenter')) {
-        f = eval(mode + '_onmouseenter');
+        var f = eval(mode + '_onmouseenter');
         f(this);
     }
     return false;
 }
 function onfoliamouseleave() {
     if (function_exists(mode + '_onmouseleave')) {
-        f = eval(mode + '_onmouseleave');
+        var f = eval(mode + '_onmouseleave');
         f(this);
     }
     return false;
@@ -150,13 +156,13 @@ function loadtext(annotationlist) {
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             if (annotation.targets) {
                 annotation.targets.forEach(function(target){
-                    if (target) $('#' + valid(target) + " span.lbl").html(annotation.text);
+                    if (target) { $('#' + valid(target) + " span.lbl").html(annotation.text); }
                 });
             }
         }
     });
     if (function_exists(mode + '_onloadtext')) {
-        f = eval(mode + '_onloadtext');
+        var f = eval(mode + '_onloadtext');
         f(annotationlist);
     }
 }
@@ -226,7 +232,7 @@ function rendertextclass() {
                 lbl = $('#' + valid(target) + " span.lbl");
                 if ((lbl.length == 1) && ($('#'  + valid(target)).hasClass('deepest'))) {
                     if (annotation.htmltext) {
-                        e.html(annotation.htmltext);
+                        lbl.html(annotation.htmltext);
                     } else {
                         lbl.html(annotation.text);
                     }
@@ -235,6 +241,32 @@ function rendertextclass() {
         });
     });
     $('div.deepest>span.lbl').show();
+    if (function_exists(mode + '_onrendertextclass')) {
+        f = eval(mode + '_onrendertextclass');
+        f();
+    }
+}
+
+function setupcorrection(correction) {
+    if (!((correction.original) || (correction.new) || (correction.current) || (correction.suggestions))) {
+        //process 
+        correction.children.forEach(function(correctionchild){
+            if (correctionchild.type == "new") {
+                correction.new = correctionchild.children;
+            }
+            if (correctionchild.type == "current") {
+                correction.current = correctionchild.children;
+            }
+            if (correctionchild.type == "original") {
+                correction.original = correctionchild.children;
+            }
+            if (correctionchild.type == "suggestion") {
+                if (!correction.suggestions) correction.suggestions = []
+                correction.suggestions.push( correctionchild );
+            }
+        });
+    }
+    return correction;
 }
 
 function registerhandlers() {
@@ -292,12 +324,12 @@ function update(data) {
                 //reregister handlers
                 registerhandlers();
             }
-            if (function_exists(mode + '_onupdate')) {
-                f = eval(mode + '_onupdate');
-                f(returnitem);
-            }
         });
         havecontent = true;
+        if (function_exists(mode + '_onupdate')) {
+            f = eval(mode + '_onupdate');
+            f();
+        }
     }
     if (data.sessions) {
         $('#connectioninfo').html("<span title=\"This is the number of people that are currently viewing/editing this document, yourself included\">" + data.sessions + "</span>");

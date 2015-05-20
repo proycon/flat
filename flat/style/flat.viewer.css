@@ -34,6 +34,15 @@ span.ab span.su{
 span.ab span.dependency {
     color: #854587;
 }
+span.str {
+    border-bottom: 1px #696487 solid;
+}
+span.correction {
+    border-bottom: 1px #ff0000 solid;
+}
+span.str:hover {
+    border: 1px #2400ff dashed;
+}
 span.dependency span.headtext {
     font-style: italic;
 }
@@ -184,6 +193,12 @@ div#info div#id {
     font-style: italic;
     color: #666;
 }
+div#info .id {
+    display: block;
+    font-size: 8px;
+    font-style: italic;
+    color: #666;
+}
 div#info .setname {
     font-size: 8px;
     font-style: italic;
@@ -191,11 +206,14 @@ div#info .setname {
 
 div#info div.correction {
     width: 90%;
-    border: 1px dashed #666;
+    background: #d4e2e3;
+    border: 1px solid #fff;
     padding: 2px;
+    margin-top:1px;
+    margin-bottom:1px;
 }
 div#info div.correction span.title {
-    color: #680000;
+    color: #17afb5;
     font-weight: bold;
 }
 div#info div.correctionchild {
@@ -205,6 +223,11 @@ div#info div.correctionchild {
 div.deleted span.lbl {
     text-decoration: line-through;
     color: red;
+}
+div.suggestinsertion span.lbl {
+    font-style: italic;
+    color: blue;
+    font-size: 90%;
 }
 
 label.spanrole {
@@ -243,4 +266,33 @@ div#search button {
 #search textarea {
     width: 90%;
     min-height: 320px;
+}
+.suggestiondetails {
+    font-size: 75%;
+    font-style: italic;
+    font-color: #bbb;
+}
+.strinfo {
+    border: 2px dashed #1765b5;
+}
+.specialtype{
+    display: block;
+    font-size: 80%;
+    font-style: italic;
+}
+#info .specialdeleted {
+    display: block;
+    text-align: center;
+    width: 100%;
+    color: red;
+    font-weight: bold;
+    font-size: 110%;
+}
+#info .specialinsertion {
+    display: block;
+    text-align: center;
+    width: 100%;
+    color: blue;
+    font-weight: bold;
+    font-size: 110%;
 }
