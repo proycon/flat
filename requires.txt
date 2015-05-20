@@ -1,3 +1,4 @@
-pynlpl >= 0.7.3
-foliadocserve >= 0.2.1
+pynlpl >= 0.7.6.5
+foliadocserve >= 0.3.1
 Django >= 1.5
+pycurl
