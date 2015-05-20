@@ -16,7 +16,7 @@ VERSION = flat.VERSION
 try:
     BASE_DIR = os.path.dirname(os.path.dirname(flat.__file__)) + "/"
 except:
-    BASE_DIR = os.path.dirname(os.path.firname(flat.__path__)) + "/"
+    BASE_DIR = os.path.dirname(os.path.dirname(flat.__path__)) + "/"
 hostname = gethostname()
 
 
@@ -113,7 +113,7 @@ else:
 # Settings specific to FLAT
 
 #Editor modes the user can switch between
-EDITOR_MODES = [
+MODES = [
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
     ('structureeditor','Structure Editor'),
@@ -159,7 +159,7 @@ CONFIGURATIONS = {
     'alloweditformalternative': True, #boolean
     'alloweditformnew': True, #boolean
     'allowupload': True, #boolean
-    'modes': EDITOR_MODES,
+    'modes': MODES,
 },
 'valkuileval':{
     'name': "Valkuil Evaluation Project - Stage 1",
@@ -360,7 +360,7 @@ TEMPLATE_DIRS = [
     # Don't forget to use absolute paths, not relative paths.
     BASE_DIR + 'flat/templates/'
 ]
-for mode,_ in EDITOR_MODES:
+for mode,_ in MODES:
     if os.path.isdir(BASE_DIR + '/modes/' + mode + '/templates/'):
         TEMPLATE_DIRS.append(BASE_DIR + '/modes/' + mode + '/templates/')
 
@@ -380,7 +380,7 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
     'flat.users'
 ]
-for mode,_ in EDITOR_MODES:
+for mode,_ in MODES:
     INSTALLED_APPS.append('flat.modes.' + mode)
 INSTALLED_APPS = tuple(INSTALLED_APPS)
 
