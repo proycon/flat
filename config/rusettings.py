@@ -56,7 +56,7 @@ elif hostname[:9] == 'applejack':
         WORKDIR = "/www/flat/live/writable/docroot/"
         FOLIADOCSERVE_HOST = '127.0.0.1'
         FOLIADOCSERVE_PORT = 8023
-        DEBUG = False
+        DEBUG = True
     else:
         DATABASES = {
             'default': {
@@ -88,7 +88,7 @@ elif hostname[:8] == 'spitfire':
         FOLIADOCSERVE_HOST = 'applejack.science.ru.nl'
         FOLIADOCSERVE_PORT = 8023
         ADMIN_MEDIA_PREFIX = '/media/'
-        DEBUG = False
+        DEBUG = True
     else:
         DATABASES = {
             'default': {
