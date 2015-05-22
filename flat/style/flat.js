@@ -100,25 +100,27 @@ function isstructure(annotationtype) {
 function hash(s){
   if (s) {
     return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 function getannotationid(annotation) {
     if (annotation.self) {
         return "self";
-    } else if (annotation.id)  {
+    } 
+    if (annotation.id)  {
         return annotation.id;
-    } else if (annotation.type == 't') {
+    } 
+    if (annotation.type === 't') {
         return annotation.type + '/' + annotation.set + ':' + annotation.class;
-    } else if (annotation.set) {
+    } 
+    if (annotation.set) {
         return annotation.type + '/' + annotation.set;
-    } else if (annotation.type) {
+    } 
+    if (annotation.type) {
         return annotation.type;
-    } else {
-        alert("Unable to get ID for " + annotation)
     }
+    alert("Unable to get ID for " + annotation)
 }
 
 function onfoliaclick() {
@@ -169,7 +171,7 @@ function loadtext(annotationlist) {
 
 function loadannotations(annotationlist) {
     //load annotations in memory
-    var annotationexists = {}
+    var annotationexists = {};
 
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
@@ -446,7 +448,7 @@ $(document).mousemove( function(e) {
    mouseY = e.pageY;
 });  
 
-function rendertoc(tocitem, depth = "") {
+function rendertoc(tocitem, depth) {
     var opts = "<option value=\"div:" + tocitem.id + "\"";
     if ((perspective_ids) && (perspective_ids.indexOf(tocitem.id) != -1)) {
         opts += " selected=\"selected\">";
