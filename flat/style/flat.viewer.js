@@ -55,15 +55,16 @@ function renderdeletions() { //and suggested insertions
         Object.keys(annotations).forEach(function(target){
             Object.keys(annotations[target]).forEach(function(annotationkey){
                 annotation = annotations[target][annotationkey];
+                var c;
+                var s;
+                var textblob = "";
+                var originalid = "";
+                var originaltype = "";
                 if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
                     //check if the deletion has a colored class
-                    var c = '';
                     if ((classrank) && (classrank[annotation.class])) {
                         c = ' class' + classrank[annotation.class];
                     }                                
-                    var textblob = "";
-                    var originalid = "";
-                    var originaltype = "";
                     //find original text
                     annotation.original.forEach(function(original){
                         if (original.text) {
@@ -75,7 +76,7 @@ function renderdeletions() { //and suggested insertions
                             originalid = original.id;
                         }
                     });                        
-                    var s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                    s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
                     if (annotation.previous) {
                         $('#' + valid(annotation.previous)).after(s);
                     } else if (annotation.next) {
@@ -84,13 +85,9 @@ function renderdeletions() { //and suggested insertions
                     $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
                 } 
                 if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
-                    var c = '';
                     if ((classrank) && (classrank[annotation.class])) {
                         c = ' class' + classrank[annotation.class];
                     }                                
-                    var textblob = ""; //we grab the text of the first suggestion
-                    var suggestionid = "";
-                    var suggestiontype = "";
                     annotation.suggestions.forEach(function(suggestion){
                         suggestion.children.forEach(function(e){
                             if ((!suggestiontype) && (isstructure(e.type))) {
@@ -106,7 +103,7 @@ function renderdeletions() { //and suggested insertions
                         });                        
                         return; //first suggestion only
                     });                        
-                    var s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                    s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
                     if (annotation.previous) {
                         $('#' + valid(annotation.previous)).after(s);
                     } else if (annotation.next) {
@@ -140,22 +137,22 @@ function toggleoriginal() {
                             if (textblob) textblob += " ";
                             textblob += original.text;
                         }
-                        if ((original.type == 'w') && (originalid == "")) originalid = original.id;
+                        if ((original.type == 'w') && (originalid === "")) originalid = original.id;
                     });                        
-                    if (annotations[target]['self'].type == 's') {
+                    if (annotations[target].self.type == 's') {
                         if (annotation.new.length > 0) {
                             if ($('#' + valid(annotation.new[0].id)).hasClass('w')) {
                                 $('#' + valid(annotation.new[0].id) + ' span.lbl').html(textblob);
                             }
                         } else {
                             //must be a deletion, show
-                            if (annotations[target]['self'].previousword) {
+                            if (annotations[target].self.previousword) {
                                 //check if the deletion has a colored class
                                 var c = '';
                                 if (classrank[annotation.class]) {
                                     c = ' class' + classrank[annotation.class];
                                 }                                
-                                $('#' + valid(annotations[target]['self'].previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
+                                $('#' + valid(annotations[target].self.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
                             }
                         }
                     }
@@ -299,7 +296,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
         if ((correction.suggestions) && (correction.suggestions.length > 0)) {
             correction.suggestions.forEach(function(suggestion){
                 s = s + "<tr><th>Suggestion:</th><td>";
-                if ((suggestion.n) || (suggestion.confidence)) s = s + "<span class=\"suggestiondetails\">"
+                if ((suggestion.n) || (suggestion.confidence)) s = s + "<span class=\"suggestiondetails\">";
                 if (suggestion.n) s = s + "N: " + suggestion.n + " ";
                 if (suggestion.confidence) s = s + "Confidence: " + suggestion.confidence;
                 if ((suggestion.n) || (suggestion.confidence)) s = s + "</span>";
@@ -308,7 +305,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     s  = s + "<table>";
                     label = getannotationtypename(child.type);
                     s = s + "<tr><th>" + label + "</th><td>";
-                    s = s +  renderannotation(child,true)
+                    s = s +  renderannotation(child,true);
                     s = s + "</td></tr>";
                     if ((isstructure(child.type)) && (child.children)) {
                         child.children.forEach(function(subchild){
@@ -525,7 +522,7 @@ function toggleglobannotationview(annotationtype, set) {
 
 function resetglobannotationview() {
     $('#globannotationsviewmenu li').removeClass('on');
-    viewglobannotations = {}
+    viewglobannotations = {};
     $('span.ab').css('display','none'); 
     $('span.ab').html("");
     renderglobannotations(annotations);
@@ -604,7 +601,7 @@ function setclasscolors() {
 
                 legendtype = annotation.type;
                 legendset = annotation.set;
-                if (legendtitle == "") {
+                if (legendtitle === "") {
                     if (annotationtypenames[legendtype]) {
                         legendtitle = annotationtypenames[legendtype];
                     } else {
@@ -617,13 +614,13 @@ function setclasscolors() {
 
     s = "<span class=\"title\">Legend &bull; " + legendtitle + "</span>"; //text for legend
     s = s + "(<a href=\"javascript:removeclasscolors(true)\">Hide</a>)<br />";
-    classrank = {}
+    classrank = {};
     currentrank = 1;
     bySortedValue(classfreq, function(key, val){
         if (currentrank < 8) {
             classrank[key] = currentrank;
             var keylabel = getclasslabel(legendset, key);
-            s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + keylabel + "</span><br />"
+            s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + keylabel + "</span><br />";
             currentrank++;
         }
     });
@@ -638,7 +635,7 @@ function setclasscolors() {
                         $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
                     }
                     if (($('#' + valid(target)).hasClass('s')) && (annotation.type == 'correction')) {
-                        if (annotation.new.length == 0) {
+                        if (annotation.new.length === 0) {
                             //a deletion occurred
                         } else {
                             annotation.new.forEach(function(newtarget) {
@@ -692,7 +689,7 @@ function renderglobannotations(annotations) {
     });
 
     if (globalannotations) {
-        var containers = {}
+        var containers = {};
         Object.keys(annotations).forEach(function(target){
             var targetabselection = $('#' + valid(target) + " span.ab");
             targetabselection.css('display','none'); //we clear on this level 
@@ -739,7 +736,7 @@ function renderglobannotations(annotations) {
                                             //If the previous word is in the same
                                             //span we do not repeat it explicitly
                                             //but draw a line
-                                            var prevwordid = annotations[target]['self']['previousword'];
+                                            var prevwordid = annotations[target].self.previousword;
                                             if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
                                                 var prevannotation = annotations[prevwordid][annotationkey];
                                                 if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
@@ -751,7 +748,7 @@ function renderglobannotations(annotations) {
                                             }
 
                                             //is the next word still part of the span?
-                                            var nextwordid = annotations[target]['self']['nextword'];
+                                            var nextwordid = annotations[target].self.nextword;
                                             if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
                                                 var nextannotation = annotations[nextwordid][annotationkey];
                                                 if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
@@ -778,7 +775,7 @@ function renderglobannotations(annotations) {
                                         //container for it. All containers will
                                         //have the same height so content can
                                         //be aligned.
-                                        var scope = annotation.layerparent 
+                                        var scope = annotation.layerparent;
                                         var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
                                         if (!containers[containerkey]) {
                                             containers[containerkey] = {};
@@ -792,14 +789,14 @@ function renderglobannotations(annotations) {
                                         if (container === null) {
                                             /* add a container first */
                                             targetabselection.append("<span class=\"abc\">" + s + "</span>");
-                                            var abcs = $('#' + valid(target) + " span.ab span.abc")
+                                            var abcs = $('#' + valid(target) + " span.ab span.abc");
                                             container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
                                         } else {
                                             $(container).append(s);
                                         }
                                         containers[containerkey][target].push(container);
                                 } else {
-                                    targetabselection.append(s)
+                                    targetabselection.append(s);
                                 }
                         }
                     }
@@ -813,7 +810,7 @@ function renderglobannotations(annotations) {
             var height = 0;
             Object.keys(containers[containerkey]).forEach(function(target){
                 containers[containerkey][target].forEach(function(container){
-                    c_height =  $(container).height()
+                    c_height =  $(container).height();
                     if (c_height > height) height = c_height;
                 });
             });
@@ -991,7 +988,7 @@ function viewer_oninit() {
 
         var format = "flat";
         if (!changeperspective) {
-            format = "json"
+            format = "json";
         }
 
 

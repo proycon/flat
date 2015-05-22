@@ -1,3 +1,4 @@
+// jshint evil:true
 var annotationtypenames = {
     'pos': 'Part-of-Speech',
     'lemma': 'Lemma',
@@ -59,6 +60,7 @@ var spanroles = {
     'dependency': ['hd','dep'],
 };
 
+
 var sid = ((Math.random() * 1e9) | 0); //session id
 
 var havecontent = false; //we start assuming we have no content
@@ -99,7 +101,7 @@ function isstructure(annotationtype) {
 
 function hash(s){
   if (s) {
-    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0); 
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);  //jshint ignore:line
   }
   return 0;
 }
@@ -120,7 +122,7 @@ function getannotationid(annotation) {
     if (annotation.type) {
         return annotation.type;
     }
-    alert("Unable to get ID for " + annotation)
+    alert("Unable to get ID for " + annotation);
 }
 
 function onfoliaclick() {
@@ -184,7 +186,7 @@ function loadannotations(annotationlist) {
         });
         if ((annotation.type == "correction") && (annotation.id)) {
             corrections[annotation.id] = annotation;
-            if ((annotation.suggestions.length > 0) && (annotation.new.length == 0)) {
+            if ((annotation.suggestions.length > 0) && (annotation.new.length === 0)) {
                 //find the annotation the suggestions apply to and act as if
                 //that is part of the correction
                 target = annotation.targets[0];
@@ -263,7 +265,7 @@ function setupcorrection(correction) {
                 correction.original = correctionchild.children;
             }
             if (correctionchild.type == "suggestion") {
-                if (!correction.suggestions) correction.suggestions = []
+                if (!correction.suggestions) correction.suggestions = [];
                 correction.suggestions.push( correctionchild );
             }
         });
@@ -283,7 +285,7 @@ function valid(id){
 function shorten(s) {
     if (s.length > 30) {
         if (s.substr(s.length -13) == ".foliaset.xml") {
-            s = s.substr(0,s.length-13) + '..'
+            s = s.substr(0,s.length-13) + '..';
         }
         if (s.substr(0,22) == "http://raw.github.com/") {
             s = ".." + s.substr(22);
@@ -354,7 +356,7 @@ function loadcontent(perspective, ids, start, end) {
     annotations = {};
     $('#document').html(""); //clear document
 
-    var query = "USE " + namespace + "/" + docid + " SELECT FOR"
+    var query = "USE " + namespace + "/" + docid + " SELECT FOR";
     if (perspective == "document") {
         query += " ALL";
     } else if (ids) {
@@ -365,13 +367,13 @@ function loadcontent(perspective, ids, start, end) {
     } else {
         query += " " + perspective;
         if (start) {
-            query += " START ID " + start
+            query += " START ID " + start;
         }
         if (end) {
-            query += " ENDBEFORE ID " + end
+            query += " ENDBEFORE ID " + end;
         }
     }
-    query += " FORMAT flat"
+    query += " FORMAT flat";
     
 
     $.ajax({
@@ -405,16 +407,16 @@ function loadcontent(perspective, ids, start, end) {
 
 function settextclassselector(data) {
     $('#textclassselector').hide();
-    if (data['textclasses']) {
-        if (data['textclasses'].length > 1) {
+    if (data.textclasses) {
+        if (data.textclasses.length > 1) {
             var s = "<span class=\"title\">Text class</span><select id=\"textclass\">";
             var found = false;
             var hascurrent = false;
-            for (i = 0; i < data['textclasses'].length; i++) { 
-                if (textclass == data['textclasses'][i]) {
+            for (i = 0; i < data.textclasses.length; i++) { 
+                if (textclass == data.textclasses[i]) {
                     found = true; 
                 }
-                if (data['textclasses'][i] == 'current') {
+                if (data.textclasses[i] == 'current') {
                     hascurrent = true;
                 }
             }
@@ -422,15 +424,15 @@ function settextclassselector(data) {
                 if (hascurrent) {
                     textclass = "current";  
                 } else {  
-                    textclass = data['textclasses'][0];
+                    textclass = data.textclasses[0];
                 }
             }
-            for (i = 0; i < data['textclasses'].length; i++) { 
+            for (i = 0; i < data.textclasses.length; i++) { 
                 var extra ="";
-                if (textclass == data['textclasses'][i]) {
-                    var extra = " selected=\"selected\"";
+                if (textclass == data.textclasses[i]) {
+                    extra = " selected=\"selected\"";
                 }
-                s += "<option value=\"" + data['textclasses'][i] + "\"" + extra + ">" + data['textclasses'][i] + "</option>";
+                s += "<option value=\"" + data.textclasses[i] + "\"" + extra + ">" + data.textclasses[i] + "</option>";
             }
             s += "</select>";
             $('#textclassselector').html(s);
@@ -546,7 +548,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
     //CSRF token support for jquery AJAX request to Django
     function getCookie(name) {
         var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
+        if (document.cookie && document.cookie !== '') {
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
                 var cookie = jQuery.trim(cookies[i]);
@@ -587,18 +589,18 @@ $.fn.sortOptions = function(){
         var op = $(this).children("option");
         op.sort(function(a, b) {
             return a.text > b.text ? 1 : -1;
-        })
+        });
         return $(this).empty().append(op);
     });
     $(this).val(sel);
-}
+};
 
 function bySortedValue(obj, callback, context) {
     var tuples = [];
 
     for (var key in obj) tuples.push([key, obj[key]]);
 
-    tuples.sort(function(a, b) { return a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0 });
+    tuples.sort(function(a, b) { return a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0 }); //jshint ignore:line
 
     var length = tuples.length;
     while (length--) callback.call(context, tuples[length][0], tuples[length][1]);

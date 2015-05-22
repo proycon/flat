@@ -92,7 +92,7 @@ function setaddablefields() {
 }
 
 function seteditform(index, value) {
-    editdata[index].editform = value
+    editdata[index].editform = value;
     if ($('#editform' + index + 'direct')) {
         if (value == 'direct') {
             $('#editform' + index + 'direct').addClass('selected');
@@ -136,7 +136,7 @@ function addeditforms(preselectcorrectionclass) {
     var selected = false;
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) {
-            if (selected == false) {
+            if (selected === false) {
                 selected = editform;
             } else {
                 selected = null;
@@ -146,7 +146,7 @@ function addeditforms(preselectcorrectionclass) {
     var editformcount = 0;
     var s = "<span id=\"editforms" + editfields + "\" class=\"editforms\">";
     if (editforms.direct) {
-        if ((selected == "direct") || (selected == null)) {
+        if ((selected == "direct") || (!selected)) {
             s += "<button id=\"editform" + editfields + "direct\" class=\"selected\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
         } else {
             s += "<button id=\"editform" + editfields + "direct\" title=\"Edit Directly\" onclick=\"javascript:seteditform(" + editfields + ",'direct')\">D</button>";
@@ -172,7 +172,7 @@ function addeditforms(preselectcorrectionclass) {
             s = s + "<select id=\"editform" + editfields + "correctionclass\">";
             s = s + "<option value=\"\"></option>";
             setdefinitions[correctionset].classorder.forEach(function(cid){
-                c = setdefinitions[correctionset].classes[cid]
+                c = setdefinitions[correctionset].classes[cid];
                 s = s + getclassesasoptions(c, preselectcorrectionclass); // will add to s
             });
             s = s + "</select>";
@@ -190,7 +190,7 @@ function addeditforms(preselectcorrectionclass) {
         editformcount++;
     }
     s = s + "</span>";
-    return [s,editformcount]
+    return [s,editformcount];
 }
 
 
@@ -198,16 +198,17 @@ function addeditforms(preselectcorrectionclass) {
 function getclassesasoptions(c, selected) {
     //get classes pertaining to a set, from a set definition, as option elements (used in select)
     //supports recursive classes
+    var s;
     if (c.id == selected) {
-        var s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+        s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
     } else {
-        var s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+        s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
     }
     Object.keys(c.subclasses).forEach(function(cid){
-        csub = c.subclasses[cid]
+        csub = c.subclasses[cid];
         s = s + getclassesasoptions(csub, selected);
     });
-    return s
+    return s;
 }
 
 function spanselector_click(){
@@ -215,13 +216,14 @@ function spanselector_click(){
     //toggle coselector (select multiple), takes care of
     //switching off any other coselector
     var toggleon = true;
+    var j;
     if (coselector > -1) {
         if (coselector == i) toggleon = false; //this is a toggle off action only
 
         $('#spanselector' + i).removeClass("selectoron");
         //
         //de-highlight all coselected elements
-        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+        for (j = 0; j < editdata[coselector].targets.length; j++) {
             $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
         }
         coselector = -1;
@@ -230,7 +232,7 @@ function spanselector_click(){
         coselector = i;
 
         //highlight all coselected elements
-        for (var j = 0; j < editdata[coselector].targets.length; j++) {
+        for (j = 0; j < editdata[coselector].targets.length; j++) {
             $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
         }
 
@@ -240,7 +242,7 @@ function spanselector_click(){
 
 function applysuggestion(e,i) {
     if ($(e).val()) {
-        fields = $(e).val().split("|")
+        fields = $(e).val().split("|");
         var val = fields[0];
         var cls = fields[1];
         if ($("#editfield" + i + "text").length > 0) {
@@ -263,6 +265,8 @@ function showeditor(element) {
     //show and populate the editor for a particular element
     editsuggestinsertion = null;
 
+
+    var i;
     if ((element) && ($(element).hasClass(view))) {
         if (element.id) { 
             if (annotations[element.id]) { //main editor 
@@ -318,7 +322,7 @@ function showeditor(element) {
                                 s = s + "<select id=\"editfield" + editfields + "\" >";
                                 s = s + "<option value=\"\"></option>";
                                 setdefinitions[annotation.set].classorder.forEach(function(cid){
-                                    c = setdefinitions[annotation.set].classes[cid]
+                                    c = setdefinitions[annotation.set].classes[cid];
                                     s = s + getclassesasoptions(c, annotation.class); // will add to s
                                 });
                                 s = s + "</select>";
@@ -395,7 +399,7 @@ function showeditor(element) {
                     
                 });
                 s = s + "<tr id=\"editrowplaceholder\"></tr>";
-                idheader = "<div id=\"id\">" + element.id + "</div>"
+                idheader = "<div id=\"id\">" + element.id + "</div>";
 
 
 
@@ -412,7 +416,7 @@ function showeditor(element) {
 
                 if ((annotationfocus) && (!annotationfocusfound)) {
                     //the annotation focus has not been found, so no field appears, add one automatically:
-                    for (var i = 0; i < editoraddablefields.length; i++) {
+                    for (i = 0; i < editoraddablefields.length; i++) {
                         if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
                             addeditorfield(i);
                             break;
@@ -426,7 +430,7 @@ function showeditor(element) {
                     $('.editforms').hide();                
                 }
                 //configure actions and events for edit fields
-                for (var i = 0; i < editfields;i++){
+                for (i = 0; i < editfields;i++){
                     //propagate editform to interface, for each field
                     seteditform(i, editdata[i].editform);
 
@@ -437,7 +441,7 @@ function showeditor(element) {
 
                     //sort correctionclass
                     if ($('select#editform' + i + 'correctionclass')) {
-                        var options = $('#editform' + i + 'correctionclass option')
+                        var options = $('#editform' + i + 'correctionclass option');
                         var arr = options.map(function(_, o) { return { t: $(o).text(), v: o.value , s: $(o).attr('selected')}; }).get();
                         arr.sort(function(o1, o2) { return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0; });
                         options.each(function(i, o) {
@@ -472,7 +476,7 @@ function showeditor(element) {
                 $('#' + valid(previousid)).click(); //this will call showeditor() again but now for the previous element
 
                 //now we manipulate the editor by adding the suggested text
-                for (var i = 0; i < editfields; i++) {
+                for (i = 0; i < editfields; i++) {
                     if (editdata[i].type == "t") {
                         var newtext = editdata[i].text  + ' ' + $(element).find('.lbl').html().replace('&nbsp;',''); 
                         $('#editfield' + i + 'text').val(newtext);
@@ -484,7 +488,7 @@ function showeditor(element) {
                                 $('#editform' + i + 'correctionclass>option[value="' + suggestinsertion[element.id].class + '"]').prop('selected',true);
                             } else{ 
                                 //simple free field
-                                $('#editform' + i + 'correctionclass').val(suggestinsertion[element.id].class)
+                                $('#editform' + i + 'correctionclass').val(suggestinsertion[element.id].class);
                             }
                         }catch(err){}
                     }
@@ -535,7 +539,7 @@ function addeditorfield(index) {
         s = s + "<select id=\"editfield" + editfields + "\">";
         s = s + "<option selected=\"selected\" value=\"\"></option>";
         setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
-            c = setdefinitions[editoraddablefields[index].set].classes[cid]
+            c = setdefinitions[editoraddablefields[index].set].classes[cid];
             s = s + getclassesasoptions(c, ""); // will add to s
         });
         s = s + "</select>";
@@ -566,11 +570,11 @@ function showhistory() {
         success: function(data) {
             $('#wait').hide();
             s = "";
-            data['history'].forEach(function(h){
-                if (s == "") {
-                    s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + '</em> - (current version)</li>';
+            data.history.forEach(function(h){
+                if (s === "") {
+                    s = s + "<li><tt><strong>" + h.date + '</strong></tt> - <em>' + h.msg + '</em> - (current version)</li>';
                 } else {
-                    s = s + "<li><tt><strong>" + h['date'] + '</strong></tt> - <em>' + h['msg'] + "</em> - [<a href=\"javascript:revert('"+h['commit']+"')\">Revert to this version</a>]</li>";
+                    s = s + "<li><tt><strong>" + h.date + '</strong></tt> - <em>' + h.msg + "</em> - [<a href=\"javascript:revert('"+h.commit+"')\">Revert to this version</a>]</li>";
                 }
             });
             $('#historybody').html("<ol>" + s + "</ol>");
@@ -737,15 +741,15 @@ function editor_oninit() {
         addeditorfield(index);
     });
 
-    editforms['direct'] = configuration.editformdirect;
-    editforms['correction'] = configuration.editformcorrection;
-    editforms['alternative'] = configuration.editformalternative;
-    editforms['new'] = configuration.editformnew;
+    editforms.direct = configuration.editformdirect;
+    editforms.correction = configuration.editformcorrection;
+    editforms.alternative = configuration.editformalternative;
+    editforms.new = configuration.editformnew;
 
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) $('#editform' + editform).addClass('on');
     });
-    var s = "";
+    s = "";
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if (annotationtype == "correction") {
@@ -841,7 +845,7 @@ function editor_oninit() {
 
         //gather edits that changed, and sort targets
         var sendeditdata = []; 
-        for (var i = 0; i < editfields;i++) { 
+        for (var i = 0; i < editfields;i++) {  //jshint ignore:line
             if (editdata[i].changed) {
                 if (editdata[i].new) editdata[i].editform = "new";
                 //sort targets in proper order
@@ -859,7 +863,7 @@ function editor_oninit() {
                     editor_error("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
                     return;
                 }
-                if (sortededittargets.length == 0) {
+                if (sortededittargets.length === 0) {
                     editor_error("Error, no targets for action");
                     return;
                 }
@@ -877,7 +881,7 @@ function editor_oninit() {
                 }
                 var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
                 if (isspan) returntype = "ancestor-target";
-                if ((editdata[i].type == "t") && (editdata[i].text == "")) {
+                if ((editdata[i].type == "t") && (editdata[i].text === "")) {
                     if (editdata[i].editform == "new") continue;
                     //deletion of text implies deletion of word
                     if (sortededittargets.length > 1) {
@@ -893,12 +897,12 @@ function editor_oninit() {
                 } else {
                     if ((editdata[i].editform == "new")) {
                         action = "ADD";
-                        if (editdata[i].class == "") continue;
-                    } else if (editdata[i].class == "") {
+                        if (editdata[i].class === "") continue;
+                    } else if (editdata[i].class === "") {
                         //deletion
                         action = "DELETE";
                         returntype = "ancestor-focus";
-                    } else if ((editdata[i].type == "t") && (editdata[i].text != "")) {
+                    } else if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
                         if (editdata[i].insertleft) { 
                             returntype = "ancestor-focus";
                             if (editsuggestinsertion) {
@@ -929,12 +933,12 @@ function editor_oninit() {
                         query += action;
                         if (editdata[i].insertright) { //APPEND (insertion)
                             query += " w";
-                            if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
+                            if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
                                 query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
                         } else if (editdata[i].insertleft) { //PREPEND (insertion)
                             query += " w"; 
-                            if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
+                            if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
                                 query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
                         } else { //normal behaviour
@@ -944,9 +948,9 @@ function editor_oninit() {
                             } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
                                 query += " OF " + editdata[i].set;                    
                             }
-                            if ((editdata[i].type == "t") && (editdata[i].text != "")) {
+                            if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
                                 query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            } else if (editdata[i].class != "") {
+                            } else if (editdata[i].class !== "") {
                                 //no deletion 
                                 query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
@@ -954,19 +958,19 @@ function editor_oninit() {
                     } else { //substitute
                         if (editdata[i].insertright) { //insertright as substitute
                             query += "SUBSTITUTE w";
-                            if ((editdata[i].type == "t") && (editdata[i].insertright != "")) {
+                            if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
                                 query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
                         } else if (editdata[i].insertleft) { //insertleft as substitue
                             query += "SUBSTITUTE w"; 
-                            if ((editdata[i].type == "t") && (editdata[i].insertleft != "")) {
+                            if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
                                 query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
                             }
                         } if (editdata[i].dosplit) {
                             parts = editdata[i].text.split(" ");
                             for (var j = 0; j < parts.length; j++) { //SPLIT
                                 if (j > 0) query += " ";
-                                query += "SUBSTITUTE w WITH text \"" + parts[j] + "\""
+                                query += "SUBSTITUTE w WITH text \"" + parts[j] + "\"";
                             }
                         } else if (editdata[i].targets.length > 1) { //MERGE
                             query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
@@ -993,7 +997,7 @@ function editor_oninit() {
                     if (editdata[i].editform == "correction") {
                         query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     } else if (editdata[i].editform == "alternative") {
-                        query += " (AS ALTERNATIVE)"
+                        query += " (AS ALTERNATIVE)";
                     }
 
                     if (editsuggestinsertion) {
@@ -1003,13 +1007,13 @@ function editor_oninit() {
                         if (sortededittargets.length > 0) {
                             query += " FOR";
                             if ((action == "SUBSTITUTE") || (isspan)) query += " SPAN";
-                            var forids = "";
+                            var forids = ""; //jshint ignore:line
                             sortededittargets.forEach(function(t){
                                 if (forids) {
                                     if ((action == "SUBSTITUTE") || (isspan)) {
-                                        forids += " &"
+                                        forids += " &";
                                     } else {
-                                        forids += " ,"
+                                        forids += " ,";
                                     }
                                 }
                                 forids += " ID " + t;
@@ -1034,7 +1038,7 @@ function editor_oninit() {
             openconsole();
             if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
             return false;
-        } else if ((queries.length == 0)) {
+        } else if ((queries.length === 0)) {
             //discard, nothing changed
             closeeditor();
             if (namespace == "testflat") editor_error("No queries were formulated");
@@ -1090,7 +1094,7 @@ function editor_oninit() {
                     $('#wait').hide();
                     editor_error("Received error from document server: " + data.error);
                 } else {
-                    loaddeclarations(data['declarations']);
+                    loaddeclarations(data.declarations);
                     viewer_loadmenus();
                     $('#wait').hide();
                     $('#newdeclaration').hide();
