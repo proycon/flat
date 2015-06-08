@@ -650,6 +650,7 @@ function editor_ontimer() {
 
 function editor_onupdate() {
     viewer_onupdate();
+    $('#saveversion').hide();
 }
 
 function editor_contentloaded(data) {
@@ -1065,6 +1066,7 @@ function editor_oninit() {
                         editfields = 0;
                         closeeditor();
                         update(data);
+                        $('#saveversion').show();
                     }
                 },
                 error: function(req,err,exception) { 
@@ -1098,6 +1100,7 @@ function editor_oninit() {
                     viewer_loadmenus();
                     $('#wait').hide();
                     $('#newdeclaration').hide();
+                    $('#saveversion').show();
                 }
             },
             error: function(req,err,exception) { 
@@ -1131,6 +1134,7 @@ function editor_oninit() {
                     editfields = 0;
                     closeeditor();
                     update(data);
+                    $('#saveversion').show();
                 }
             },
             error: function(req,err,exception) { 
@@ -1141,4 +1145,24 @@ function editor_oninit() {
         });
     });
     
+    $('#savebutton').click(function(){
+        $('#wait').show();
+        $.ajax({
+            type: 'GET',
+            url: "/editor/" + namespace + "/"+ docid + "/save/",
+            contentType: "application/json",
+            headers: {'X-sessionid': sid },
+            data: {'message': $('#versionlabel').val() },
+            success: function(data) {
+                $('#wait').hide();
+                $('#saveversion').hide();
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                editor_error("save failed: " + req + " " + err + " " + exception);
+            },
+            dataType: "json"
+        });
+    });
+
 }

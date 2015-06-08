@@ -172,3 +172,22 @@ div#qunit {
     color: #0f5722;
     background: #aaa;
 }
+#saveversion {
+    width: 100px;
+    font-size: 80%;
+    position: fixed;
+    right: 10px;
+    top: 75px;
+}
+#versionlabel {
+    width: 95%;
+}
+#saveversion label {
+    display: block;
+}
+#saveversion input {
+    display: block;
+}
+#saveversion button {
+    float: right;
+}

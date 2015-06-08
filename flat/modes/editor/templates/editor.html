@@ -110,6 +110,9 @@ initialcorrectionset = '{{ initialcorrectionset }}';
 </div>
 {% include "search.html" %}
 <div id="connectioninfo"></div>
+<div id="saveversion">
+<label>Version label:</label> <input id="versionlabel" title="A label to quickly identify this version" /><button id="savebutton" title="Explicitly save the current state of the document, using the specified version label (if any), this enables you to go back to this version later. Note that explicit saving is not required, all changes will be retained automatically">Save</button>
+</div>
 {% endblock %}
 
 {% block main %}

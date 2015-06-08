@@ -59,3 +59,21 @@ def revert(request,namespace, docid, commithash):
         return HttpResponse("{}", content_type='application/json') #no content, client will do a full reload
     else:
         return HttpResponseForbidden("Permission denied, no write access")
+
+@login_required
+def save(request,namespace, docid):
+    if flat.users.models.haswritepermission(request.user.username, namespace):
+        if 'message' in request.GET:
+            message = request.GET['message']
+        else:
+            message = ""
+        try:
+            if hasattr(request, 'body'):
+                flat.comm.get(request, '/save/' +namespace + '/' + docid + '/?message=' + message,False)
+            else:
+                flat.comm.get(request, '/save/' +namespace + '/' + docid + '/?message=' + message,False)
+        except URLError as e:
+            return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/revert]")
+        return HttpResponse("{}", content_type='application/json')
+    else:
+        return HttpResponseForbidden("Permission denied, no write access")
