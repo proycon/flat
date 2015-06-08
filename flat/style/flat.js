@@ -302,6 +302,9 @@ function update(data) {
     if (data.error) {
         alert(data.error);
     }
+    if (data.sessions) {
+        $('#connectioninfo').html("<span title=\"This is the number of people that are currently viewing/editing this document, yourself included\">" + data.sessions + "</span>");
+    }
     if (data.elements) {
         data.elements.forEach(function(returnitem){
             if ((returnitem.html) && (returnitem.elementid)) { 
@@ -334,9 +337,6 @@ function update(data) {
             f = eval(mode + '_onupdate');
             f();
         }
-    }
-    if (data.sessions) {
-        $('#connectioninfo').html("<span title=\"This is the number of people that are currently viewing/editing this document, yourself included\">" + data.sessions + "</span>");
     }
     if (data.aborted) {
         $('#aborted').show();
