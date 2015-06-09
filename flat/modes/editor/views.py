@@ -29,7 +29,7 @@ def view(request, namespace, docid):
 
         return initdoc(request, namespace,docid, 'editor', 'editor.html')
     else:
-        return fatalerror("Permission denied")
+        return fatalerror(request,"Permission denied")
 
 
 @login_required

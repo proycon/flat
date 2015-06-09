@@ -566,7 +566,7 @@ function showhistory() {
         url: "/editor/" + namespace + "/"+ docid + "/history/",
         contentType: "application/json",
         headers: {'X-sessionid': sid },
-        //processData: false,
+        processData: true,
         success: function(data) {
             $('#wait').hide();
             s = "";
