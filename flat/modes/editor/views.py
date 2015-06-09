@@ -42,7 +42,7 @@ def history(request,namespace, docid):
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
         except URLError as e:
             return HttpResponseForbidden("Unable to connect to the document server: " + e.reason + " [editor/history]")
-        return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
+        return HttpResponse(d, content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
 
