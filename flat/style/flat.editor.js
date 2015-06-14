@@ -778,6 +778,7 @@ function editor_oninit() {
         for (var i = 0; i < editfields;i++) { 
             if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
                 //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
+                editdata[i].oldclass = editdata[i].class;
                 editdata[i].class = $('#editfield' + i).val().trim();
                 editdata[i].changed = true;
                 changes = true;
@@ -789,6 +790,24 @@ function editor_oninit() {
                 editdata[i].changed = true;
                 changes = true;
             }
+            if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim())) {
+                //edit of correction class only, affects existing correction
+                editdata[i].correctionclasschanged = true;
+                editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+                editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
+                if (!editdata[i].correctionclass) {
+                    editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
+                    return false;
+                }
+                if ($('#editfield' + i) && ($('#editfield' + i).val() == editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
+                    editdata[i].oldclass = editdata[i].class; //will remain equal
+                    editdata[i].class = $('#editfield' + i).val().trim();
+                }
+                if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
+                    editdata[i].oldtext = editdata[i].text; //will remain requal
+                    editdata[i].text = $('#editfield' + i + 'text').val().trim();
+                }
+            } 
             
 
             if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
@@ -847,7 +866,7 @@ function editor_oninit() {
         //gather edits that changed, and sort targets
         var sendeditdata = []; 
         for (var i = 0; i < editfields;i++) {  //jshint ignore:line
-            if (editdata[i].changed) {
+            if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
                 if (editdata[i].new) editdata[i].editform = "new";
                 //sort targets in proper order
                 var sortededittargets = [];
@@ -882,7 +901,24 @@ function editor_oninit() {
                 }
                 var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
                 if (isspan) returntype = "ancestor-target";
-                if ((editdata[i].type == "t") && (editdata[i].text === "")) {
+                if (editdata[i].correctionclasschanged) {
+                    //TODO: this will change ALL corrections under the element, too generic
+                    action = "EDIT";
+                    query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                    returntype = "ancestor-focus";
+                    //set target expression
+                    if (sortededittargets.length > 0) {
+                        query += " IN";
+                        var forids = ""; //jshint ignore:line
+                        sortededittargets.forEach(function(t){
+                            if (forids) {
+                                forids += " ,";
+                            }
+                            forids += " ID " + t;
+                        });
+                        query += forids;
+                    }
+                } else if ((editdata[i].type == "t") && (editdata[i].text === "")) {
                     if (editdata[i].editform == "new") continue;
                     //deletion of text implies deletion of word
                     if (sortededittargets.length > 1) {
@@ -995,7 +1031,7 @@ function editor_oninit() {
 
 
                     //set AS expression
-                    if (editdata[i].editform == "correction") {
+                    if ((editdata[i].editform == "correction") && (!editdata[i].correctionclasschanged)) {
                         query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
                     } else if (editdata[i].editform == "alternative") {
                         query += " (AS ALTERNATIVE)";
@@ -1029,7 +1065,7 @@ function editor_oninit() {
 
                 queries.push(query);
                     
-            }
+            } 
         }
 
         if ($('#openinconsole').prop('checked')) {
