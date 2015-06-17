@@ -23,7 +23,9 @@ def hasreadpermission(username, namespace):
         except:
             nsparts = namespace.split('/')
             namespace = ""
-            for nspart in nsparts:
+            for i, nspart in enumerate(nsparts):
+                if i == 0 and nspart == username: 
+                    return True
                 namespace = (namespace + '/' + nspart).strip('/')
                 try:
                     perms = ReadPermissions.objects.get(username=username, namespace=namespace)
@@ -41,7 +43,9 @@ def haswritepermission(username, namespace):
         except:
             nsparts = namespace.split('/')
             namespace = ""
-            for nspart in nsparts:
+            for i, nspart in enumerate(nsparts):
+                if i == 0 and nspart == username: 
+                    return True
                 namespace = (namespace + '/' + nspart).strip('/')
                 try:
                     perms = WritePermissions.objects.get(username=username, namespace=namespace)
