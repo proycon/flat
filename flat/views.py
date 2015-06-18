@@ -70,7 +70,14 @@ def docserveerror(e, d={}):
     elif isinstance(e, URLError):
         d['fatalerror'] =  "<strong>Fatal Error:</strong> Could not connect to document server!"
         d['fatalerror_text'] =  "Could not connect to document server!"
-    elif isinstance(e, str) or (sys.version < '3' and isinstance(e, unicode)): #pylint: disable=undefined-variable
+    elif isinstance(e, str) :
+        if sys.version < '3':
+            d['fatalerror'] =  unicode(e,'utf-8') #pylint: disable=undefined-variable
+            d['fatalerror_text'] = unicode(e,'utf-8') #pylint: disable=undefined-variable
+        else:
+            d['fatalerror'] =  e
+            d['fatalerror_text'] = e
+    elif sys.version < '3' and isinstance(e, unicode): #pylint: disable=undefined-variable
         d['fatalerror'] =  e
         d['fatalerror_text'] = e
     elif isinstance(e, Exception):
