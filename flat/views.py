@@ -159,7 +159,8 @@ def query(request,namespace, docid):
             d = flat.comm.query(request, query,**flatargs)
         except Exception as e:
             if sys.version < '3':
-                return HttpResponseForbidden("FoLiA Document Server error: ".encode('utf-8') + docserveerror(e)['fatalerror_text'].encode('utf-8'))
+                errmsg = docserveerror(e)['fatalerror_text']
+                return HttpResponseForbidden("FoLiA Document Server error: ".encode('utf-8') + errmsg.encode('utf-8'))
             else:
                 return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
