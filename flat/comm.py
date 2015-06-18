@@ -28,11 +28,17 @@ def query(request, query, parsejson=True, **extradata):
             data[key] = int(value)
         else:
             data[key] = value
+    if sys.version < '3':
+        #encode for python 2
+        for key, value in data.items():
+            if isinstance(value,unicode): #pylint: disable=undefined-variable
+                data[key] = value.encode('utf-8')
+
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/query/")
     setsid(docservereq, getsid(request))
     f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
     if sys.version < '3':
-        contents = unicode(f.read(),'utf-8')
+        contents = unicode(f.read(),'utf-8') #pylint: disable=undefined-variable
     else:
         contents = str(f.read(),'utf-8')
     f.close()
