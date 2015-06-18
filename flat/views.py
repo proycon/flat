@@ -158,8 +158,10 @@ def query(request,namespace, docid):
         try:
             d = flat.comm.query(request, query,**flatargs)
         except Exception as e:
-            e = "FoLiA Document Server error: " + docserveerror(e)['fatalerror_text']
-            return HttpResponseForbidden(e.encode('utf-8'))
+            if sys.version < '3':
+                return HttpResponseForbidden("FoLiA Document Server error: ".encode('utf-8') + docserveerror(e)['fatalerror_text'].encode('utf-8'))
+            else:
+                return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
