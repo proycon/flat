@@ -72,8 +72,8 @@ def docserveerror(e, d={}):
         d['fatalerror_text'] =  "Could not connect to document server!"
     elif isinstance(e, str) :
         if sys.version < '3':
-            d['fatalerror'] =  unicode(e,'utf-8') #pylint: disable=undefined-variable
-            d['fatalerror_text'] = unicode(e,'utf-8') #pylint: disable=undefined-variable
+            d['fatalerror'] =   e.decode('utf-8') #pylint: disable=undefined-variable
+            d['fatalerror_text'] = e.decode('utf-8') #pylint: disable=undefined-variable
         else:
             d['fatalerror'] =  e
             d['fatalerror_text'] = e
@@ -158,7 +158,8 @@ def query(request,namespace, docid):
         try:
             d = flat.comm.query(request, query,**flatargs)
         except Exception as e:
-            return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
+            e = "FoLiA Document Server error: " + docserveerror(e)['fatalerror_text']
+            return HttpResponseForbidden(e.encode('utf-8'))
         return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
     else:
         return HttpResponseForbidden("Permission denied, no read access")
