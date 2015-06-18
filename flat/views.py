@@ -12,7 +12,7 @@ import flat.users
 import lxml.html
 import sys
 if sys.version < '3':
-    from urllib2 import URLError, HTTPError
+    from urllib2 import URLError, HTTPError #pylint: disable=import-error
 else:
     from urllib.error import URLError, HTTPError
 import os
@@ -70,7 +70,7 @@ def docserveerror(e, d={}):
     elif isinstance(e, URLError):
         d['fatalerror'] =  "<strong>Fatal Error:</strong> Could not connect to document server!"
         d['fatalerror_text'] =  "Could not connect to document server!"
-    elif isinstance(e, str) or (sys.version < '3' and isinstance(e, unicode)):
+    elif isinstance(e, str) or (sys.version < '3' and isinstance(e, unicode)): #pylint: disable=undefined-variable
         d['fatalerror'] =  e
         d['fatalerror_text'] = e
     elif isinstance(e, Exception):
@@ -114,9 +114,9 @@ def query(request,namespace, docid):
         #stupid compatibility stuff
         if sys.version < '3':
             if hasattr(request, 'body'):
-                data = json.loads(unicode(request.body,'utf-8'))
+                data = json.loads(unicode(request.body,'utf-8')) #pylint: disable=undefined-variable
             else: #older django
-                data = json.loads(unicode(request.raw_post_data,'utf-8'))
+                data = json.loads(unicode(request.raw_post_data,'utf-8')) #pylint: disable=undefined-variable
         else:
             if hasattr(request, 'body'):
                 data = json.loads(str(request.body,'utf-8'))
@@ -269,7 +269,7 @@ def upload(request):
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(request.user.username, namespace) and 'file' in request.FILES:
             if sys.version < '3':
-                data = unicode(request.FILES['file'].read(),'utf-8')
+                data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
             else:
                 data = str(request.FILES['file'].read(),'utf-8')
             try:
