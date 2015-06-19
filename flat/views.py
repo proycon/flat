@@ -279,12 +279,12 @@ def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(request.user.username, namespace) and 'file' in request.FILES:
-            if sys.version < '3':
-                data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
-            else:
-                data = str(request.FILES['file'].read(),'utf-8')
+            #if sys.version < '3':
+            #    data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
+            #else:
+            #    data = str(request.FILES['file'].read(),'utf-8')
             try:
-                response = flat.comm.postxml(request,"upload/" + namespace , data)
+                response = flat.comm.postxml(request,"upload/" + namespace , request.FILES['file'])
             except Exception as e:
                 return fatalerror(request,e)
             if 'error' in response and response['error']:

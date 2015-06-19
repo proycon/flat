@@ -9,7 +9,7 @@ else:
     from io import BytesIO as StringIO
 from django.conf import settings
 import json
-import pycurl
+import requests
 
 
 def getsid(request):
@@ -101,20 +101,21 @@ def postjson( request, url, data):
     else:
         return None
 
-def postxml( request, url, data):
-    buf = StringIO()
-    c = pycurl.Curl()
-    url = "http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url
-    c.setopt(c.URL, url.encode('utf-8'))
+def postxml( request, url, f):
+    #buf = StringIO()
+    #c = pycurl.Curl()
+    #url = "http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url
+    #c.setopt(c.URL, url.encode('utf-8'))
     #c.setopt(c.HTTPPOST, data.encode('utf-8') )
-    c.setopt(pycurl.HTTPHEADER, ["Content-Type: application/json"])
-    c.setopt(pycurl.POST, 1)
-    c.setopt(pycurl.POSTFIELDS, data.encode('utf-8'))
-    c.setopt(c.WRITEFUNCTION, buf.write)
-    c.perform()
-    code = c.getinfo(c.HTTP_CODE)
-    contents = buf.getvalue()
-    c.close()
+    #c.setopt(pycurl.HTTPHEADER, ["Content-Type: application/json"])
+    #c.setopt(pycurl.POST, 1)
+    #c.setopt(pycurl.POSTFIELDS, data.encode('utf-8'))
+    #c.setopt(c.WRITEFUNCTION, buf.write)
+    #c.perform()
+    #code = c.getinfo(c.HTTP_CODE)
+    #contents = buf.getvalue()
+    #c.close()
+
 
     #req = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url)
     #req.add_header('Content-Type', 'application/xml; charset=utf-8')
@@ -122,6 +123,9 @@ def postxml( request, url, data):
     #f = urlopen(req)
     #contents = f.read()
     #f.close()
+
+    response = requests.post("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url, data=f, headers={'Content-Type':'application/xml; charset=utf-8'})
+    contents = response.text
     if contents and contents[0] == '{':
         #assume this is json
         return json.loads(contents)

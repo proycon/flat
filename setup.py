@@ -41,5 +41,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     package_data = {'flat':['templates/*.html','style/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'] },
-    install_requires=['pynlpl >= 0.7.6.5','foliadocserve >= 0.3.1','Django >= 1.5','pycurl']
+    install_requires=['pynlpl >= 0.7.6.5','foliadocserve >= 0.3.1','Django >= 1.5','requests']
 )
