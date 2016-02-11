@@ -1,3 +1,6 @@
+.. image:: http://applejack.science.ru.nl/lamabadge.php/flat
+   :target: http://applejack.science.ru.nl/languagemachines/
+
 *****************************************
 FLAT - FoLiA Linguistic Annotation Tool
 *****************************************
