@@ -67,7 +67,7 @@ var havecontent = false; //we start assuming we have no content
 var closewait = true; //close the wait mask when we are done loading
 var textclass = "current";
 
-var perspective = 'document'; //initial perspective (TODO: override with configuration option later)
+var perspective = 'document'; //initial perspective (will be overriden from config in init anyway)
 var perspective_ids = null;
 var perspective_start = null;
 var perspective_end = null;
@@ -632,6 +632,7 @@ $(function() {
         registerhandlers();
         if ((namespace != "testflat")  || (docid == "manual")) {
             //get the data first of all (will take a while anyway)
+            perspective = perspectives[0]; //set default perspective
             loadcontent(perspective, perspective_ids, perspective_start, perspective_end); 
         }
         if (function_exists(mode + '_oninit')) {
