@@ -903,7 +903,7 @@ function viewer_loadmenus() {
             s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
             if (globannotationsorder.indexOf(annotationtype) != -1) {
                 if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
-                    globviewannotations[annotationtype + "/" + set] = true;
+                    viewglobannotations[annotationtype + "/" + set] = true;
                     state = "class=\"on\"";
                 } else {
                     state = "";
