@@ -15,6 +15,7 @@ body {
     min-height: 12pt;
     text-align: center;
     font-size: 90%;
+    cursor: pointer;
 }
 #topbar ul {
     margin: 0px;
@@ -40,7 +41,6 @@ body {
     font-weight: bold;
     text-decoration: none;
 }
-
 #topbar nav a {
     color: white;
     font-weight: normal;
