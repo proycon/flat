@@ -62,7 +62,8 @@ def getbody(html):
     doc = lxml.html.fromstring(html)
     return doc.xpath("//body/p")[0].text_content()
 
-def docserveerror(e, d={}):
+def docserveerror(e, d=None):
+    if d is None: d={}
     if isinstance(e, HTTPError):
         body = getbody(e.read())
         d['fatalerror'] =  "<strong>Fatal Error:</strong> The document server returned an error<pre style=\"font-weight: bold\">" + str(e) + "</pre><pre>" + body +"</pre>"
@@ -82,13 +83,14 @@ def docserveerror(e, d={}):
         d['fatalerror_text'] = e
     elif isinstance(e, Exception):
         # we don't handle other exceptions, raise!
-        raise
+        raise e
     return d
 
 
-def initdoc(request, namespace, docid, mode, template, context={}):
+def initdoc(request, namespace, docid, mode, template, context=None):
     """Initialise a document (not invoked directly)"""
     perspective = request.GET.get('perspective','document')
+    if context is None: context = {}
     flatargs = {
         'setdefinitions': True,
         'declarations': True,
@@ -104,7 +106,7 @@ def initdoc(request, namespace, docid, mode, template, context={}):
         context.update(docserveerror(e))
     response = render(request, template, context)
     if 'fatalerror' in context:
-        response.status_code = 404
+        response.status_code = 500
     return response
 
 @login_required
