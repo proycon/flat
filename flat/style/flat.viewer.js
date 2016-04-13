@@ -9,7 +9,7 @@ var hover = null;
 var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from high to low
 var hoverstr = null; //ID of string element we're currently hovering over
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
-var NROFCLASSES = 8;
+var NROFCLASSES = 7; //number of coloured classes
 
 
 function sethover(element) {
@@ -570,7 +570,7 @@ function setannotationfocus(t,set) {
 
 
 function removeclasscolors(toggle) {
-    for (var i = 1; i < NROFCLASSES; i++) {
+    for (var i = 1; i <= NROFCLASSES; i++) {
         $('.class' + i).removeClass('class' + i);
     }
     $('.focustype').removeClass('focustype');
@@ -622,7 +622,7 @@ function setclasscolors() {
     classrank = {};
     currentrank = 1;
     bySortedValue(classfreq, function(key, val){
-        if (currentrank < NROFCLASSES) {
+        if (currentrank <= NROFCLASSES) {
             classrank[key] = currentrank;
             var keylabel = getclasslabel(legendset, key);
             s = s + "<div id=\"class" + currentrank + "legend\" class=\"colorbox\"></div><span>" + keylabel + "</span><br />";
