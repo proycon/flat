@@ -19,7 +19,7 @@ def read(fname):
 
 setup(
     name = "FoLiA-Linguistic-Annotation-Tool",
-    version = "0.3.6.3",
+    version = "0.3.7",
     author = "Maarten van Gompel",
     author_email = "proycon@anaproy.nl",
     description = ("FLAT is a web-based linguistic annotation environment based around the FoLiA format (http://proycon.github.io/folia), a rich XML-based format for linguistic annotation. Flat allows users to view annotated FoLiA documents and enrich these documents with new annotations, a wide variety of linguistic annotation types is supported through the FoLiA paradigm."),

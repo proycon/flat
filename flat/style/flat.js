@@ -165,10 +165,10 @@ function loadtext(annotationlist) {
             }
         }
     });
-    if (function_exists(mode + '_onloadtext')) {
+    /*if (function_exists(mode + '_onloadtext')) {
         var f = eval(mode + '_onloadtext');
         f(annotationlist);
-    }
+    }*/
 }
 
 function loadannotations(annotationlist) {
@@ -206,18 +206,20 @@ function loadannotations(annotationlist) {
     });
 
     //find old annotations that are no longer in the response, delete them
-    Object.keys(annotations).forEach(function(target){
-        if (annotationexists[target]) {
+    Object.keys(annotationexists).forEach(function(target){
+        if (annotations[target]) {
             Object.keys(annotations[target]).forEach(function(annotationid){
                 if (!annotationexists[target][annotationid]) delete annotations[target][annotationid];
             });
         }
     });
 
+    /*
     if (function_exists(mode + '_onloadannotations')) {
         f = eval(mode + '_onloadannotations');
         f(annotationlist);
     }
+    */
 }
 
 
@@ -483,7 +485,13 @@ function loadperspectivemenu() {
     }
     for (i = 0; i < perspectives.length; i++) {
         if ((perspectives[i] != "document") && (perspectives[i] != "toc")) {
-            opts += "<option value=\"" + perspectives[i] + "\">" + annotationtypenames[perspectives[i]] + "</option>";
+            opts += "<option value=\"" + perspectives[i] + "\" ";
+            if (perspective === perspectives[i]) {
+                opts += " selected=\"selected\">";
+            } else {
+                opts += ">";
+            }
+            opts += annotationtypenames[perspectives[i]] + "</option>";
         }
     }
     if (perspectives.indexOf('toc') != -1) {
@@ -496,6 +504,9 @@ function loadperspectivemenu() {
     s += "</select>";
     s += "<div id=\"pager\"></div>";
     $('#perspective').html(s);
+    if ((perspective !== "document") && (perspective_ids === null)) {
+        loadpager();
+    }
 
     $('#perspectivemenu').change(function(){
         var selected = $('#perspectivemenu').val();
@@ -635,6 +646,10 @@ $(function() {
         if ((namespace != "testflat")  || (docid == "manual")) {
             //get the data first of all (will take a while anyway)
             perspective = perspectives[0]; //set default perspective
+            if ((slices[perspective]) && (slices[perspective].length > 1)) {
+                perspective_start = slices[perspective][0];
+                perspective_end = slices[perspective][1];
+            }
             loadcontent(perspective, perspective_ids, perspective_start, perspective_end); 
         }
         if (function_exists(mode + '_oninit')) {

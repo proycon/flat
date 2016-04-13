@@ -241,7 +241,6 @@ def index(request, namespace=""):
 
     readpermission = flat.users.models.hasreadpermission(request.user.username, namespace)
     dirs = []
-    print(namespaces['namespaces'],file=sys.stderr)
     for ns in sorted(namespaces['namespaces']):
         if readpermission or flat.users.models.hasreadpermission(request.user.username, os.path.join(namespace, ns)):
             dirs.append(ns)
