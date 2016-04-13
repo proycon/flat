@@ -238,6 +238,84 @@ CONFIGURATIONS = {
     ],
     'modes': [ ('editor','Annotation Editor')],
     'perspectives': PERSPECTIVES,
+},
+'parsemedemo': {
+    'name': 'PARSEME Demo',
+    #The default annotation focus upon loading a document, set to None to start without a focus
+    'annotationfocustype': 'entity',
+    'annotationfocusset': 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',
+
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+    'allowedannotationfocus': ('entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',),
+
+
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialviewannotations': ('t','entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml'),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowedviewannotations': ('t','entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml'),
+
+    'initialglobviewannotations': ('entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialeditannotations': ('entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowededitannotations': ('entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',),
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+
+    'allowaddfields': False, #boolean
+    'allowdeclare': False, #boolean
+    'editformdirect': True, #boolean
+    'editformcorrection': False, #boolean
+    'editformalternative': False, #boolean
+    'editformnew': True, #boolean
+    'alloweditformdirect': True, #boolean
+    'alloweditformcorrection': False, #boolean
+    'alloweditformalternative': False, #boolean
+    'alloweditformnew': True, #boolean
+    'allowupload': True, #boolean
+    'autodeclare': [
+        ('entity', 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml')
+    ],
+    'modes': [ ('editor','Annotation Editor')],
+    'perspectives': ['s'],
+},
+'sinfex': {
+    'name': 'Sinfex Annotation Task',
+    #The default annotation focus upon loading a document, set to None to start without a focus
+    'annotationfocustype': 'entity',
+    'annotationfocusset': 'https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml',
+
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+    'allowedannotationfocus': ('entity/https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml',),
+
+
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialviewannotations': ('t','entity/https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml'),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowedviewannotations': ('t','entity/https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml'),
+
+    'initialglobviewannotations': ('entity/https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'initialeditannotations': ('entity/https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml',),
+    #List of FoLiA annotation types (xml tags) that are initially enabled, set to True to enable all
+    'allowededitannotations': ('entity/https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml',),
+    #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
+
+    'allowaddfields': False, #boolean
+    'allowdeclare': False, #boolean
+    'editformdirect': True, #boolean
+    'editformcorrection': False, #boolean
+    'editformalternative': False, #boolean
+    'editformnew': True, #boolean
+    'alloweditformdirect': True, #boolean
+    'alloweditformcorrection': False, #boolean
+    'alloweditformalternative': False, #boolean
+    'alloweditformnew': True, #boolean
+    'allowupload': True, #boolean
+    'autodeclare': [
+        ('entity', 'https://github.com/ahurriyetoglu/sinfexfolia/raw/master/sinfex-entities.foliaset.xml')
+    ],
+    'modes': [ ('editor','Annotation Editor')],
+    'perspectives': ['event'],
 }
 }
 
