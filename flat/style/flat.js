@@ -214,10 +214,12 @@ function loadannotations(annotationlist) {
         }
     });
 
+    /*
     if (function_exists(mode + '_onloadannotations')) {
         f = eval(mode + '_onloadannotations');
         f(annotationlist);
     }
+    */
 }
 
 

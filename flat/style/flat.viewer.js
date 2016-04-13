@@ -827,12 +827,6 @@ function renderglobannotations(annotations) {
 
 }
 
-function viewer_onloadannotations(annotationlist) {
-    if (annotationfocus) {
-        setclasscolors();
-    }
-}
-
 
 function viewer_onupdate() {
     view = 'deepest';
@@ -853,6 +847,9 @@ function viewer_onupdate() {
     $('div.deepest span.str').mouseenter(function(){
         hoverstr = this.id.substr(7);
     });
+    if (annotationfocus) {
+        setclasscolors();
+    }
     //$('li#views_deepest').addClass('on');
     /*
     } else if (v == 'w') {
