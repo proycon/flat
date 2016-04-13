@@ -1,5 +1,6 @@
 var viewannotations = {}; //view local annotations in editor
 var viewglobannotations = {}; //view global annotations
+var paintedglobannotations = {}; //target => bool,  target ids for which global annotations have been painted
 var annotationfocus = null;
 var annotatordetails = false; //show annotor details
 var showoriginal = false; //show originals instead of corrections
@@ -691,17 +692,21 @@ function renderglobannotations(annotations) {
     if (globalannotations) {
         var containers = {};
         Object.keys(annotations).forEach(function(target){
-            var targetabselection = $('#' + valid(target) + " span.ab");
-            targetabselection.css('display','none'); //we clear on this level 
-            targetabselection.html("");
-            var changed = false;
+            var targetabselection = null;
+            if (paintedglobannotations[target]) {
+                targetabselection = $('#' + valid(target) + " span.ab");
+                targetabselection.css('display','none'); //we clear on this level 
+                targetabselection.html("");
+                paintedglobannotations[target] = false;
+            }
+            //var changed = false;
             $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
                 annotationtype = globannotationsorder[annotationtype];
                 Object.keys(annotations[target]).forEach(function(annotationkey){
                     if (annotationkey != "self") {
                         var annotation = annotations[target][annotationkey];
                         if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
-                                changed = true;
+                                //changed = true;
                                 var s = "";
                                 if (annotation.class) {
                                     s = "<span class=\""+annotation.type+"\">" + annotation.class + "</span>";
@@ -788,6 +793,11 @@ function renderglobannotations(annotations) {
                                         }
                                         if (container === null) {
                                             /* add a container first */
+                                            if (targetabselection === null) {
+                                                targetabselection = $('#' + valid(target) + " span.ab");
+                                                targetabselection.css('display','none');
+                                                paintedglobannotations[target] = true;
+                                            }
                                             targetabselection.append("<span class=\"abc\">" + s + "</span>");
                                             var abcs = $('#' + valid(target) + " span.ab span.abc");
                                             container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
@@ -796,13 +806,19 @@ function renderglobannotations(annotations) {
                                         }
                                         containers[containerkey][target].push(container);
                                 } else {
+                                    if (targetabselection === null) {
+                                        targetabselection = $('#' + valid(target) + " span.ab");
+                                        targetabselection.css('display','none'); 
+                                        paintedglobannotations[target] = true;
+                                    }
                                     targetabselection.append(s);
                                 }
                         }
                     }
                 }); ///
             });
-            if (changed) targetabselection.css('display','block'); 
+            //if (changed) targetabselection.css('display','block'); 
+            if (targetabselection !== null) targetabselection.css('display','block'); 
         });
 
         //process containers, all containers for the same span layer must all have the same height (will be set to the height of the largest)
