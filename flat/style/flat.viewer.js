@@ -583,12 +583,9 @@ function removeclasscolors(toggle) {
     }
 }
 
-function setclasscolors() {
-    //count class distribution
-    classfreq = {};
-    var legendtitle = "";
-    var legendtype = "";
-    var legendset = "";
+function computeclassfreq() {
+    //Compute class frequency for the annotationfocus 
+    var classfreq = {};
     Object.keys(annotations).forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationkey){
             annotation = annotations[target][annotationkey];
@@ -600,18 +597,24 @@ function setclasscolors() {
                 }
 
 
-                legendtype = annotation.type;
-                legendset = annotation.set;
-                if (legendtitle === "") {
-                    if (annotationtypenames[legendtype]) {
-                        legendtitle = annotationtypenames[legendtype];
-                    } else {
-                        legendtitle = annotation.type;
-                    }
-                }
             }
         });
     });
+    return classfreq;
+}
+
+function setclasscolors() {
+    //count class distribution
+    
+    var legendtype = annotationfocus.type;
+    var legendset = annotationfocus.set;
+    var legendtitle;
+    if (annotationtypenames[legendtype]) {
+        legendtitle = annotationtypenames[legendtype];
+    } else {
+        legendtitle = annotationfocus.type;
+    }
+    var classfreq = computeclassfreq();
 
     s = "<span class=\"title\">Legend &bull; " + legendtitle + "</span>"; //text for legend
     s = s + "(<a href=\"javascript:removeclasscolors(true)\">Hide</a>)<br />";
