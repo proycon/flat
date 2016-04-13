@@ -277,6 +277,7 @@ CONFIGURATIONS = {
     ],
     'modes': [ ('editor','Annotation Editor')],
     'perspectives': ['s'],
+    'slices': 's:100',
 },
 'sinfex': {
     'name': 'Sinfex Annotation Task',
@@ -316,6 +317,7 @@ CONFIGURATIONS = {
     ],
     'modes': [ ('editor','Annotation Editor')],
     'perspectives': ['event'],
+    'slices': 'event:200',
 }
 }
 
