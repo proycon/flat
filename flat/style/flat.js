@@ -165,10 +165,10 @@ function loadtext(annotationlist) {
             }
         }
     });
-    if (function_exists(mode + '_onloadtext')) {
+    /*if (function_exists(mode + '_onloadtext')) {
         var f = eval(mode + '_onloadtext');
         f(annotationlist);
-    }
+    }*/
 }
 
 function loadannotations(annotationlist) {
