@@ -206,8 +206,8 @@ function loadannotations(annotationlist) {
     });
 
     //find old annotations that are no longer in the response, delete them
-    Object.keys(annotations).forEach(function(target){
-        if (annotationexists[target]) {
+    Object.keys(annotationexists).forEach(function(target){
+        if (annotations[target]) {
             Object.keys(annotations[target]).forEach(function(annotationid){
                 if (!annotationexists[target][annotationid]) delete annotations[target][annotationid];
             });
