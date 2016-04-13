@@ -14,7 +14,7 @@
         <label>Select file:</label> <input type="file" name="file" />
         <label>Namespace:</label> <input type="text" name="namespace" value="{{ username }}" />
         <div class="buttoncontainer">
-            <input id="uploadbutton" class="button" type="submit" value="Upload" onclick="$('#wait').show()" />
+            <input id="uploadbutton" class="button" type="submit" value="Upload" onclick="$('#wait .msg').html('Uploading document...'); $('#wait').show()" />
             <button id="cancelupload" class="button">Cancel</button>
         </div>
     </form>
