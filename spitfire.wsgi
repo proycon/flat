@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 import os, sys
+import site
+
+
+site.addsitedir('/var/www2/flat/live/env/lib/python2.7/site-packages') #all python eggs here should be available
+
 
 #sanity check
 if not os.path.exists('/var/www2/flat/live/repo/flat'):
