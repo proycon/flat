@@ -1,10 +1,12 @@
 var editannotations = {};
 var editoropen = false;
 var coselector = -1; //disabled
+var coselector2 = false; //disabled
 var editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 var editedelementid = null;
 var editfields = 0;
 var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
+var multitargets = [];
 
 
 function toggleeditform(editform) {
@@ -33,7 +35,7 @@ function toggleannotationedit(annotationtype, set) {
 }
 
 function select(element) {
-    //toggles selection of an element (coselector)
+    //toggles selection of an element (coselector) - Span selection
     var found = false;
     var index = 0;
     for (var i = 0; i < editdata[coselector].targets.length; i++) {
@@ -49,6 +51,26 @@ function select(element) {
     } else { 
         editdata[coselector].targets.push( element.id);
         $(element).addClass("selected");
+    }
+}
+
+function select2(element) {
+    //toggles selection of an element (coselector2) - Multiple target selection
+    var found = false;
+    var index = 0;
+    for (var i = 0; i < multitargets.length; i++) {
+        if (multitargets[i] == element.id) {
+            index = i;
+            found = true;
+            break;
+        }
+    }
+    if (found) {
+        multitargets.splice(index, 1);
+        $(element).removeClass("selected2");
+    } else { 
+        multitargets.push( element.id);
+        $(element).addClass("selected2");
     }
 }
 
@@ -217,6 +239,15 @@ function spanselector_click(){
     //switching off any other coselector
     var toggleon = true;
     var j;
+    if (coselector2) { //switch off coselector2
+        $('#multiselector').removeClass("multiselectoron");
+        //
+        //de-highlight all coselected elements
+        for (j = 0; j < multitargets.length; j++) {
+            $('#' + valid(multitargets[j])).removeClass('selected2');
+        }
+        coselector2 = false;
+    }
     if (coselector > -1) {
         if (coselector == i) toggleon = false; //this is a toggle off action only
 
@@ -237,6 +268,39 @@ function spanselector_click(){
         }
 
         $(this).addClass("selectoron");
+    }
+}
+
+function multiselector_click(){
+    //toggle coselector2 (select multiple), takes care of
+    //switching off any other coselector2
+    var j;
+    if (coselector > -1) { //switch off coselector
+        //$('#spanselector' + i).removeClass("selectoron");
+        //
+        //de-highlight all coselected elements
+        for (j = 0; j < editdata[coselector].targets.length; j++) {
+            $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
+        }
+        coselector = -1;
+    }
+    if (coselector2) {
+        $('#multiselector').removeClass("multiselectoron");
+        //
+        //de-highlight all coselected elements
+        for (j = 0; j < multitargets.length; j++) {
+            $('#' + valid(multitargets[j])).removeClass('selected2');
+        }
+        coselector2 = false;
+    } else {
+        coselector2 = true;
+
+        //highlight all coselected elements
+        for (j = 0; j < multitargets.length; j++) {
+            $('#' + valid(multitargets[j])).addClass('selected2');
+        }
+
+        $(this).addClass("multiselectoron");
     }
 }
 
@@ -614,6 +678,8 @@ function editor_onclick(element) {
     //open editor
     if (coselector >= 0) {
         select(element); //toggle
+    } else if (coselector2) {
+        select2(element); //toggle
     } else if (!editoropen) {
         $('#info').hide();
         showeditor(element);
@@ -772,6 +838,9 @@ function editor_oninit() {
     });
     $('#editformcorrectionset').html(s);
     if (editforms.correction) $('#editformcorrectionsetselector').show();
+
+
+    $('#multiselector').click(multiselector_click);
 
     $('#editorsubmit').click(function(){
         var changes = false;

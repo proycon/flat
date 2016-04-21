@@ -85,12 +85,24 @@ div#editor span#editoraddfields button {
 div.selected span.lbl {
     background: yellow;
 }
+div.selected2 span.lbl {
+    background: red;
+    color: yellow;
+}
 #editor button.spanselector {
     background: #444;
     font-size: 80%;
 }
 #editor button.selectoron {
     background: yellow;
+    color: black;
+}
+#editor button.multiselector {
+    background: #444;
+    font-size: 80%;
+}
+#editor button.multiselectoron {
+    background: red;
     color: black;
 }
 #editoraddfields, #editortargets {
