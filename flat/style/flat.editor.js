@@ -702,10 +702,10 @@ function update_queue_info() {
      * "Submit queue" button */
     var queuedqueries = $('#queryinput').val();
     var queuesize = queuedqueries.split("\n").length;
-    if (queuesize === 0) {
+    if (queuedqueries === "") {
         $('#submitqueue').hide();
     } else {
-        $('#submitqueue').val("Submit queue (" + queuesize + ")");
+        $('#submitqueue').text("Submit queue (" + queuesize + ")");
         $('#submitqueue').show();
     }
 }
@@ -1040,12 +1040,16 @@ function editor_submit(addtoqueue) {
         openconsole();
         if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
         return false;
+    } else if (addtoqueue) {
+        closeeditor();
+        return false;
     } else if ((queries.length === 0)) {
         //discard, nothing changed
         closeeditor();
         if (namespace == "testflat") editor_error("No queries were formulated");
         return false;
     }
+
     
 
     $('#wait span.msg').val("Submitting edits");

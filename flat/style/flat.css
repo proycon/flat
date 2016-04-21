@@ -86,6 +86,7 @@ button, .button, div.dialog input.button {
     border-radius: 10px;
     text-align: center;
     padding: 5px;
+    cursor: pointer;
 }
 div.error {
     color: red;

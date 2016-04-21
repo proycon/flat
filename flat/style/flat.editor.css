@@ -181,7 +181,7 @@ div#qunit {
     font-size: 80%;
     position: fixed;
     right: 10px;
-    top: 75px;
+    top: 150px;
 }
 #versionlabel {
     width: 95%;
@@ -194,4 +194,11 @@ div#qunit {
 }
 #saveversion button {
     float: right;
+}
+div#queueinfo {
+    width: 100px;
+    position: fixed;
+    right: 10px;
+    top: 75px;
+    background: transparent;
 }
