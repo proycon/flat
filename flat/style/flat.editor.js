@@ -5,6 +5,8 @@ var editforms = {'direct': true, 'correction': false,'alternative': false, 'new'
 var editedelementid = null;
 var editfields = 0;
 var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
+var repeatmode = false;
+var sentdata = []; //list of the last submitted edits (js objects, pre-fql)
 
 
 function toggleeditform(editform) {
@@ -722,6 +724,7 @@ function editor_queuerepeat() {
      * rather than submitting it immediately, and primes the edit dialog to
      * pre-select the last chosen input upon selection of the next target */
     editor_queue();
+    repeatmode = true;
     //TODO: prime environment to repeat action
 }
 
@@ -730,6 +733,7 @@ function editor_submit(addtoqueue) {
         addtoqueue = false;
     }
     var changes = false;
+    repeatdata = [];
     for (var i = 0; i < editfields;i++) { 
         if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
             //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
@@ -808,7 +812,6 @@ function editor_submit(addtoqueue) {
                     
                     }
                     
-
                 }
             }
         }
@@ -819,7 +822,7 @@ function editor_submit(addtoqueue) {
 
 
     //gather edits that changed, and sort targets
-    var sendeditdata = []; 
+    sentdata = []; //will be used in repeatmode 
     for (var i = 0; i < editfields;i++) {  //jshint ignore:line
         if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
             if (editdata[i].new) editdata[i].editform = "new";
@@ -843,7 +846,7 @@ function editor_submit(addtoqueue) {
                 return;
             }
             editdata[i].targets = sortededittargets;
-            sendeditdata.push(editdata[i]);
+            sentdata.push(editdata[i]);
             
             //compose query  
             var action = "";
@@ -1155,7 +1158,10 @@ function editor_oninit() {
     viewer_oninit();
 
     editor_loadmenus();
-    $('#editordiscard').click(closeeditor);
+    $('#editordiscard').click(function(){
+        repeat = false; //discarding the editor manually closes repeat-mode
+        closeeditor();
+    });
     $('#newdeclarationdiscard').click(function(){
         $('#newdeclaration').hide();
     });
