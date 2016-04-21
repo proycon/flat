@@ -72,7 +72,9 @@ initialcorrectionset = '{{ initialcorrectionset }}';
         <div id="openinconsolecontainer">
             <input id="openinconsole" type="checkbox" /> Delegate to console
         </div>
-        <button id="editorsubmit">Submit</button>
+        <button id="editorsubmit" title="Submit the annotation">Submit</button>
+        <button id="editorqueue" title="Queue the annotation for later submission">Queue</button>
+        <button id="editorqueuerepeat" title="Queue the annotation for later submission, and prepare to repeat the same action for the next element">Queue &amp; Repeat</button>
     </div>
 </div>
 <div id="newdeclaration" class="dialog">
@@ -110,8 +112,11 @@ initialcorrectionset = '{{ initialcorrectionset }}';
 </div>
 {% include "search.html" %}
 <div id="connectioninfo"></div>
+<div id="queue">
+    <button id="submitqueue" title="Submit all queued annotations">Submit queue</button>
+</div>
 <div id="saveversion">
-<label>Version label:</label> <input id="versionlabel" title="A label to quickly identify this version" /><button id="savebutton" title="Explicitly save the current state of the document, using the specified version label (if any), this enables you to go back to this version later. Note that explicit saving is not required, all changes will be retained automatically">Save</button>
+<label>Version label:</label> <input id="versionlabel" title="A label to quickly identify this version" /><button id="savebutton" title="Explicitly save the current state of the document, using the specified version label (if any), this enables you to go back to this version later. Note that explicit saving is not required, all changes will be retained automatically. Make sure to submit any queued actions prior to this.">Save</button>
 </div>
 {% endblock %}
 

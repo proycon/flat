@@ -93,6 +93,10 @@ div.selected span.lbl {
     background: yellow;
     color: black;
 }
+div.queued span.lbl {
+    background: red;
+    color: yellow;
+}
 #editoraddfields, #editortargets {
     display: block;
 }

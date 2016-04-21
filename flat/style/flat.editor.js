@@ -697,6 +697,455 @@ function editor_error(errormsg) {
     }
 }
 
+function update_queue_info() {
+    /* updates the queue information in the interface, hides or shows the
+     * "Submit queue" button */
+    var queuedqueries = $('#queryinput').val();
+    var queuesize = queuedqueries.split("\n").length;
+    if (queuesize === 0) {
+        $('#submitqueue').hide();
+    } else {
+        $('#submitqueue').val("Submit queue (" + queuesize + ")");
+        $('#submitqueue').show();
+    }
+}
+
+function editor_queue() {
+    /* triggered when the queue & repeat button is pressed, queues the query
+     * rather than submitting it immediately */
+    editor_submit(true); //addtoqueue=true
+    update_queue_info();
+}
+
+function editor_queuerepeat() {
+    /* triggered when the queue & repeat button is pressed, queues the query
+     * rather than submitting it immediately, and primes the edit dialog to
+     * pre-select the last chosen input upon selection of the next target */
+    editor_queue();
+    //TODO: prime environment to repeat action
+}
+
+function editor_submit(addtoqueue) {
+    if (arguments.length === 0) {
+        addtoqueue = false;
+    }
+    var changes = false;
+    for (var i = 0; i < editfields;i++) { 
+        if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
+            //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
+            editdata[i].oldclass = editdata[i].class;
+            editdata[i].class = $('#editfield' + i).val().trim();
+            editdata[i].changed = true;
+            changes = true;
+        }
+        if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+            //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
+            editdata[i].oldtext = editdata[i].text;
+            editdata[i].text = $('#editfield' + i + 'text').val().trim();
+            editdata[i].changed = true;
+            changes = true;
+        }
+        if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim())) {
+            //edit of correction class only, affects existing correction
+            editdata[i].correctionclasschanged = true;
+            editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+            editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
+            if (!editdata[i].correctionclass) {
+                editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
+                return false;
+            }
+            if ($('#editfield' + i) && ($('#editfield' + i).val() == editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
+                editdata[i].oldclass = editdata[i].class; //will remain equal
+                editdata[i].class = $('#editfield' + i).val().trim();
+            }
+            if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
+                editdata[i].oldtext = editdata[i].text; //will remain requal
+                editdata[i].text = $('#editfield' + i + 'text').val().trim();
+            }
+        } 
+        
+
+        if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
+            //detect changes in span, and set the changed flag
+            editdata[i].changed = true;
+        }
+
+        if (editdata[i].changed) {
+            if (editdata[i].editform == 'correction') {
+                //editdata[i].editform = 'correction';
+                editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+                editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
+                if (!editdata[i].correctionclass) {
+                    editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
+                    return false;
+                }
+            } 
+            if (editdata[i].type == 't') {
+                if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
+                    //there is a space in a token! This can mean a number
+                    //of things
+                    
+                    //Is the leftmost word the same as the original word?
+                    //Then the user wants to do an insertion to the right
+                    if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
+                        editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
+                        editdata[i].text = editdata[i].oldtext;
+                    //Is the rightmost word the same as the original word?
+                    //Then the user wants to do an insertion to the left
+                    } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
+                        editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].text.length - editdata[i].oldtext.length - 1);
+                        editdata[i].text = editdata[i].oldtext;
+                    } else {
+                        //Words are different? than the user may want to split
+                        //the original token into new ones:
+                        //
+                        //ask user if he wants to split the token into two
+                        if (namespace == "testflat") {
+                            editdata[i].dosplit = true; //no need to task for confirmation in test mode
+                        } else {
+                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
+                        }
+                    
+                    }
+                    
+
+                }
+            }
+        }
+
+    }
+
+    var queries = [];
+
+
+    //gather edits that changed, and sort targets
+    var sendeditdata = []; 
+    for (var i = 0; i < editfields;i++) {  //jshint ignore:line
+        if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
+            if (editdata[i].new) editdata[i].editform = "new";
+            //sort targets in proper order
+            var sortededittargets = [];
+            if (editdata[i].targets.length > 1) {
+                $('.' + view).each(function(){
+                    if (editdata[i].targets.indexOf(this.id) > -1) {
+                        sortededittargets.push(this.id);
+                    }
+                });
+            } else {
+                sortededittargets = editdata[i].targets;
+            }
+            if (sortededittargets.length != editdata[i].targets.length) {
+                editor_error("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
+                return;
+            }
+            if (sortededittargets.length === 0) {
+                editor_error("Error, no targets for action");
+                return;
+            }
+            editdata[i].targets = sortededittargets;
+            sendeditdata.push(editdata[i]);
+            
+            //compose query  
+            var action = "";
+            var returntype = "target";
+            var query = "";
+            if ((namespace == "testflat") && (docid != "manual")) {
+                query += "USE testflat/" + testname + " ";
+            } else {
+                query += "USE " + namespace + "/" + docid + " ";
+            }
+            var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
+            if (isspan) returntype = "ancestor-target";
+            if (editdata[i].correctionclasschanged) {
+                //TODO: this will change ALL corrections under the element, too generic
+                action = "EDIT";
+                query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                returntype = "ancestor-focus";
+                //set target expression
+                if (sortededittargets.length > 0) {
+                    query += " IN";
+                    var forids = ""; //jshint ignore:line
+                    sortededittargets.forEach(function(t){
+                        if (forids) {
+                            forids += " ,";
+                        }
+                        forids += " ID " + t;
+                    });
+                    query += forids;
+                }
+            } else if ((editdata[i].type == "t") && (editdata[i].text === "")) {
+                if (editdata[i].editform == "new") continue;
+                //deletion of text implies deletion of word
+                if (sortededittargets.length > 1) {
+                    editor_error("Can't delete multiple words at once");
+                    return;
+                }
+                action = "DELETE";
+                query += "DELETE w ID " + sortededittargets[0];
+                if (editdata[i].editform == "correction") {
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
+                }
+                returntype = "ancestor-focus";
+            } else {
+                if ((editdata[i].editform == "new")) {
+                    action = "ADD";
+                    if (editdata[i].class === "") continue;
+                } else if (editdata[i].class === "") {
+                    //deletion
+                    action = "DELETE";
+                    returntype = "ancestor-focus";
+                } else if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
+                    if (editdata[i].insertleft) { 
+                        returntype = "ancestor-focus";
+                        if (editsuggestinsertion) {
+                            action = "SUBSTITUTE"; //substitute the correction for suggestion
+                        } else {
+                            action = "PREPEND";
+                        }
+                    } else if (editdata[i].insertright) {
+                        returntype = "ancestor-focus";
+                        if (editsuggestinsertion) {
+                            action = "SUBSTITUTE"; //substitute the correction for suggestion
+                        } else {
+                            action = "APPEND";
+                        }
+                    } else if (editdata[i].dosplit) {
+                        returntype = "ancestor-focus";
+                        action = "SUBSTITUTE";
+                    } else if (editdata[i].targets.length > 1) { //merge
+                        returntype = "ancestor-focus";
+                        action = "SUBSTITUTE";
+                    } else {
+                        action = "EDIT";
+                    }
+                } else {
+                    action = "EDIT";
+                }
+                if (action != "SUBSTITUTE") {
+                    query += action;
+                    if (editdata[i].insertright) { //APPEND (insertion)
+                        query += " w";
+                        if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
+                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                        }
+                    } else if (editdata[i].insertleft) { //PREPEND (insertion)
+                        query += " w"; 
+                        if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
+                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                        }
+                    } else { //normal behaviour
+                        query += " " +editdata[i].type;
+                        if ((editdata[i].id) && ( editdata[i].editform != "new")) {
+                            query += " ID " + editdata[i].id;
+                        } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
+                            query += " OF " + editdata[i].set;                    
+                        }
+                        if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
+                            query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                        } else if (editdata[i].class !== "") {
+                            //no deletion 
+                            query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                        }
+                    }
+                } else { //substitute
+                    if (editdata[i].insertright) { //insertright as substitute
+                        query += "SUBSTITUTE w";
+                        if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
+                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                        }
+                    } else if (editdata[i].insertleft) { //insertleft as substitue
+                        query += "SUBSTITUTE w"; 
+                        if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
+                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                        }
+                    } if (editdata[i].dosplit) {
+                        parts = editdata[i].text.split(" ");
+                        for (var j = 0; j < parts.length; j++) { //SPLIT
+                            if (j > 0) query += " ";
+                            query += "SUBSTITUTE w WITH text \"" + parts[j] + "\"";
+                        }
+                    } else if (editdata[i].targets.length > 1) { //MERGE
+                        query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
+                    }
+                }
+                if (isspan && editdata[i].id && (action == "EDIT")) {
+                    //we edit a span annotation, edittargets reflects the new span:
+                    if (sortededittargets.length > 0) {
+                        query += " RESPAN ";
+                        var forids = "";
+                        sortededittargets.forEach(function(t){
+                            if (forids) {
+                                    forids += " &";
+                            }
+                            forids += " ID " + t;
+                        });
+                        query += forids;
+                    }
+                    returntype = "ancestor-focus";
+                }
+
+
+                //set AS expression
+                if ((editdata[i].editform == "correction") && (!editdata[i].correctionclasschanged)) {
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
+                } else if (editdata[i].editform == "alternative") {
+                    query += " (AS ALTERNATIVE)";
+                }
+
+                if (editsuggestinsertion) {
+                    query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
+                } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation 
+                    //set target expression
+                    if (sortededittargets.length > 0) {
+                        query += " FOR";
+                        if ((action == "SUBSTITUTE") || (isspan)) query += " SPAN";
+                        var forids = ""; //jshint ignore:line
+                        sortededittargets.forEach(function(t){
+                            if (forids) {
+                                if ((action == "SUBSTITUTE") || (isspan)) {
+                                    forids += " &";
+                                } else {
+                                    forids += " ,";
+                                }
+                            }
+                            forids += " ID " + t;
+                            if (addtoqueue) {
+                                //elements are queued for later submission, highlight them
+                                $('#' + valid(t)).addClass('queued');
+                            }
+                        });
+                        query += forids;
+                    }
+                }
+                
+            }
+            //set format and return type
+            query += " FORMAT flat RETURN " + returntype;
+
+            queries.push(query);
+                
+        } 
+    }
+
+    if ((addtoqueue) || ($('#openinconsole').prop('checked'))) {
+        var queuedqueries = $('#queryinput').val();
+        if (queuedqueries !== "") queuedqueries = queuedqueries + "\n";
+        $('#queryinput').val(queuedqueries + queries.join("\n"));
+        update_queue_info();
+    }
+
+    if ($('#openinconsole').prop('checked')) {
+        //discard, nothing changed
+        closeeditor();
+        openconsole();
+        if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
+        return false;
+    } else if ((queries.length === 0)) {
+        //discard, nothing changed
+        closeeditor();
+        if (namespace == "testflat") editor_error("No queries were formulated");
+        return false;
+    }
+    
+
+    $('#wait span.msg').val("Submitting edits");
+    $('#wait').show();
+
+    if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission  
+        $.ajax({
+            type: 'POST',
+            url: "/" + namespace + "/"+ docid + "/query/",
+            contentType: "application/json",
+            //processData: false,
+            headers: {'X-sessionid': sid },
+            data: JSON.stringify( { 'queries': queries}), 
+            success: function(data) {
+                if (data.error) {
+                    $('#wait').hide();
+                    editor_error("Received error from document server: " + data.error);
+                } else {
+                    editfields = 0;
+                    closeeditor();
+                    update(data);
+                    $('#saveversion').show();
+                }
+            },
+            error: function(req,err,exception) { 
+                $('#wait').hide();
+                editor_error("Editor submission failed: " + req + " " + err + " " + exception);
+            },
+            dataType: "json"
+        });
+    } else {
+        testbackend(docid, username, sid, queries);
+    }
+}
+
+function console_submit(savefunction) { 
+    var queries = $('#queryinput').val().split("\n"); 
+    if (queries.length === 0) {
+        closeeditor();
+        if (arguments.length === 1) savefunction();
+        return;
+    }
+
+    $('#wait span.msg').val("Executing query and obtaining results");
+    $('#wait').show();
+
+    $.ajax({
+        type: 'POST',
+        url: "/" + namespace + "/"+ docid + "/query/",
+        contentType: "application/json",
+        //processData: false,
+        headers: {'X-sessionid': sid },
+        data: JSON.stringify( { 'queries': queries}), 
+        success: function(data) {
+            if (data.error) {
+                $('#wait').hide();
+                editor_error("Received error from document server whilst submitting queued queries: " + data.error);
+            } else {
+                $('.queued').removeClass('queued');
+                $('#queryinput').val("");
+                editfields = 0;
+                closeeditor();
+                update_queue_info();
+                update(data); //will unhide the wait shroud
+                if (arguments.length === 1) {
+                    savefunction();
+                } else {
+                    $('#saveversion').show();
+                }
+            }
+        },
+        error: function(req,err,exception) { 
+            $('#wait').hide();
+            editor_error("Query failed: " + err + " " + exception + ": " + req.responseText);
+        },
+        dataType: "json"
+    });
+}
+
+
+function saveversion() {
+    $('#wait span.msg').val("Saving version");
+    $('#wait').show();
+    $.ajax({
+        type: 'GET',
+        url: "/editor/" + namespace + "/"+ docid + "/save/",
+        contentType: "application/json",
+        headers: {'X-sessionid': sid },
+        data: {'message': $('#versionlabel').val() },
+        success: function(data) {
+            $('#wait').hide();
+            $('#saveversion').hide();
+        },
+        error: function(req,err,exception) { 
+            $('#wait').hide();
+            editor_error("save failed: " + req + " " + err + " " + exception);
+        },
+        dataType: "json"
+    });
+}
 
 function editor_oninit() {
     viewer_oninit();
@@ -711,6 +1160,7 @@ function editor_oninit() {
     });
     $('#consolediscard').click(function(){
         $('#console').hide();
+        update_queue_info();
     });
 
     $('#editorselecttarget').click(function(){
@@ -773,348 +1223,9 @@ function editor_oninit() {
     $('#editformcorrectionset').html(s);
     if (editforms.correction) $('#editformcorrectionsetselector').show();
 
-    $('#editorsubmit').click(function(){
-        var changes = false;
-        for (var i = 0; i < editfields;i++) { 
-            if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
-                //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
-                editdata[i].oldclass = editdata[i].class;
-                editdata[i].class = $('#editfield' + i).val().trim();
-                editdata[i].changed = true;
-                changes = true;
-            }
-            if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
-                //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
-                editdata[i].oldtext = editdata[i].text;
-                editdata[i].text = $('#editfield' + i + 'text').val().trim();
-                editdata[i].changed = true;
-                changes = true;
-            }
-            if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim())) {
-                //edit of correction class only, affects existing correction
-                editdata[i].correctionclasschanged = true;
-                editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
-                editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
-                if (!editdata[i].correctionclass) {
-                    editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                    return false;
-                }
-                if ($('#editfield' + i) && ($('#editfield' + i).val() == editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
-                    editdata[i].oldclass = editdata[i].class; //will remain equal
-                    editdata[i].class = $('#editfield' + i).val().trim();
-                }
-                if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
-                    editdata[i].oldtext = editdata[i].text; //will remain requal
-                    editdata[i].text = $('#editfield' + i + 'text').val().trim();
-                }
-            } 
-            
-
-            if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
-                //detect changes in span, and set the changed flag
-                editdata[i].changed = true;
-            }
-
-            if (editdata[i].changed) {
-                if (editdata[i].editform == 'correction') {
-                    //editdata[i].editform = 'correction';
-                    editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
-                    editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
-                    if (!editdata[i].correctionclass) {
-                        editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                        return false;
-                    }
-                } 
-                if (editdata[i].type == 't') {
-                    if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
-                        //there is a space in a token! This can mean a number
-                        //of things
-                        
-                        //Is the leftmost word the same as the original word?
-                        //Then the user wants to do an insertion to the right
-                        if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
-                            editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
-                            editdata[i].text = editdata[i].oldtext;
-                        //Is the rightmost word the same as the original word?
-                        //Then the user wants to do an insertion to the left
-                        } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
-                            editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].text.length - editdata[i].oldtext.length - 1);
-                            editdata[i].text = editdata[i].oldtext;
-                        } else {
-                            //Words are different? than the user may want to split
-                            //the original token into new ones:
-                            //
-                            //ask user if he wants to split the token into two
-                            if (namespace == "testflat") {
-                                editdata[i].dosplit = true; //no need to task for confirmation in test mode
-                            } else {
-                                editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
-                            }
-                        
-                        }
-                        
-
-                    }
-                }
-            }
-
-        }
-
-        var queries = [];
-
-
-        //gather edits that changed, and sort targets
-        var sendeditdata = []; 
-        for (var i = 0; i < editfields;i++) {  //jshint ignore:line
-            if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
-                if (editdata[i].new) editdata[i].editform = "new";
-                //sort targets in proper order
-                var sortededittargets = [];
-                if (editdata[i].targets.length > 1) {
-                    $('.' + view).each(function(){
-                        if (editdata[i].targets.indexOf(this.id) > -1) {
-                            sortededittargets.push(this.id);
-                        }
-                    });
-                } else {
-                    sortededittargets = editdata[i].targets;
-                }
-                if (sortededittargets.length != editdata[i].targets.length) {
-                    editor_error("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
-                    return;
-                }
-                if (sortededittargets.length === 0) {
-                    editor_error("Error, no targets for action");
-                    return;
-                }
-                editdata[i].targets = sortededittargets;
-                sendeditdata.push(editdata[i]);
-                
-                //compose query  
-                var action = "";
-                var returntype = "target";
-                var query = "";
-                if ((namespace == "testflat") && (docid != "manual")) {
-                    query += "USE testflat/" + testname + " ";
-                } else {
-                    query += "USE " + namespace + "/" + docid + " ";
-                }
-                var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
-                if (isspan) returntype = "ancestor-target";
-                if (editdata[i].correctionclasschanged) {
-                    //TODO: this will change ALL corrections under the element, too generic
-                    action = "EDIT";
-                    query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                    returntype = "ancestor-focus";
-                    //set target expression
-                    if (sortededittargets.length > 0) {
-                        query += " IN";
-                        var forids = ""; //jshint ignore:line
-                        sortededittargets.forEach(function(t){
-                            if (forids) {
-                                forids += " ,";
-                            }
-                            forids += " ID " + t;
-                        });
-                        query += forids;
-                    }
-                } else if ((editdata[i].type == "t") && (editdata[i].text === "")) {
-                    if (editdata[i].editform == "new") continue;
-                    //deletion of text implies deletion of word
-                    if (sortededittargets.length > 1) {
-                        editor_error("Can't delete multiple words at once");
-                        return;
-                    }
-                    action = "DELETE";
-                    query += "DELETE w ID " + sortededittargets[0];
-                    if (editdata[i].editform == "correction") {
-                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
-                    }
-                    returntype = "ancestor-focus";
-                } else {
-                    if ((editdata[i].editform == "new")) {
-                        action = "ADD";
-                        if (editdata[i].class === "") continue;
-                    } else if (editdata[i].class === "") {
-                        //deletion
-                        action = "DELETE";
-                        returntype = "ancestor-focus";
-                    } else if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                        if (editdata[i].insertleft) { 
-                            returntype = "ancestor-focus";
-                            if (editsuggestinsertion) {
-                                action = "SUBSTITUTE"; //substitute the correction for suggestion
-                            } else {
-                                action = "PREPEND";
-                            }
-                        } else if (editdata[i].insertright) {
-                            returntype = "ancestor-focus";
-                            if (editsuggestinsertion) {
-                                action = "SUBSTITUTE"; //substitute the correction for suggestion
-                            } else {
-                                action = "APPEND";
-                            }
-                        } else if (editdata[i].dosplit) {
-                            returntype = "ancestor-focus";
-                            action = "SUBSTITUTE";
-                        } else if (editdata[i].targets.length > 1) { //merge
-                            returntype = "ancestor-focus";
-                            action = "SUBSTITUTE";
-                        } else {
-                            action = "EDIT";
-                        }
-                    } else {
-                        action = "EDIT";
-                    }
-                    if (action != "SUBSTITUTE") {
-                        query += action;
-                        if (editdata[i].insertright) { //APPEND (insertion)
-                            query += " w";
-                            if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                                query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            }
-                        } else if (editdata[i].insertleft) { //PREPEND (insertion)
-                            query += " w"; 
-                            if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                                query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            }
-                        } else { //normal behaviour
-                            query += " " +editdata[i].type;
-                            if ((editdata[i].id) && ( editdata[i].editform != "new")) {
-                                query += " ID " + editdata[i].id;
-                            } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                                query += " OF " + editdata[i].set;                    
-                            }
-                            if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                                query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            } else if (editdata[i].class !== "") {
-                                //no deletion 
-                                query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            }
-                        }
-                    } else { //substitute
-                        if (editdata[i].insertright) { //insertright as substitute
-                            query += "SUBSTITUTE w";
-                            if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                                query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            }
-                        } else if (editdata[i].insertleft) { //insertleft as substitue
-                            query += "SUBSTITUTE w"; 
-                            if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                                query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
-                            }
-                        } if (editdata[i].dosplit) {
-                            parts = editdata[i].text.split(" ");
-                            for (var j = 0; j < parts.length; j++) { //SPLIT
-                                if (j > 0) query += " ";
-                                query += "SUBSTITUTE w WITH text \"" + parts[j] + "\"";
-                            }
-                        } else if (editdata[i].targets.length > 1) { //MERGE
-                            query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
-                        }
-                    }
-                    if (isspan && editdata[i].id && (action == "EDIT")) {
-                        //we edit a span annotation, edittargets reflects the new span:
-                        if (sortededittargets.length > 0) {
-                            query += " RESPAN ";
-                            var forids = "";
-                            sortededittargets.forEach(function(t){
-                                if (forids) {
-                                        forids += " &";
-                                }
-                                forids += " ID " + t;
-                            });
-                            query += forids;
-                        }
-                        returntype = "ancestor-focus";
-                    }
-
-
-                    //set AS expression
-                    if ((editdata[i].editform == "correction") && (!editdata[i].correctionclasschanged)) {
-                        query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
-                    } else if (editdata[i].editform == "alternative") {
-                        query += " (AS ALTERNATIVE)";
-                    }
-
-                    if (editsuggestinsertion) {
-                        query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
-                    } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation 
-                        //set target expression
-                        if (sortededittargets.length > 0) {
-                            query += " FOR";
-                            if ((action == "SUBSTITUTE") || (isspan)) query += " SPAN";
-                            var forids = ""; //jshint ignore:line
-                            sortededittargets.forEach(function(t){
-                                if (forids) {
-                                    if ((action == "SUBSTITUTE") || (isspan)) {
-                                        forids += " &";
-                                    } else {
-                                        forids += " ,";
-                                    }
-                                }
-                                forids += " ID " + t;
-                            });
-                            query += forids;
-                        }
-                    }
-                    
-                }
-                //set format and return type
-                query += " FORMAT flat RETURN " + returntype;
-
-                queries.push(query);
-                    
-            } 
-        }
-
-        if ($('#openinconsole').prop('checked')) {
-            //discard, nothing changed
-            closeeditor();
-            $('#queryinput').val(queries.join("\n"));
-            openconsole();
-            if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
-            return false;
-        } else if ((queries.length === 0)) {
-            //discard, nothing changed
-            closeeditor();
-            if (namespace == "testflat") editor_error("No queries were formulated");
-            return false;
-        }
-        
- 
-        $('#wait span.msg').val("Submitting edits");
-        $('#wait').show();
-
-        if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission  
-            $.ajax({
-                type: 'POST',
-                url: "/" + namespace + "/"+ docid + "/query/",
-                contentType: "application/json",
-                //processData: false,
-                headers: {'X-sessionid': sid },
-                data: JSON.stringify( { 'queries': queries}), 
-                success: function(data) {
-                    if (data.error) {
-                        $('#wait').hide();
-                        editor_error("Received error from document server: " + data.error);
-                    } else {
-                        editfields = 0;
-                        closeeditor();
-                        update(data);
-                        $('#saveversion').show();
-                    }
-                },
-                error: function(req,err,exception) { 
-                    $('#wait').hide();
-                    editor_error("Editor submission failed: " + req + " " + err + " " + exception);
-                },
-                dataType: "json"
-            });
-        } else {
-            testbackend(docid, username, sid, queries);
-        }
-    });
+    $('#editorsubmit').click(editor_submit);
+    $('#editorqueue').click(editor_queue);
+    $('#editorqueuerepeat').click(editor_queuerepeat);
 
     $('#newdeclarationsubmit').click(function(){
         $('#wait').show();
@@ -1148,57 +1259,13 @@ function editor_oninit() {
         });
     });
 
-    $('#consolesubmit').click(function(){ 
-
-        var queries = $('#queryinput').val().split("\n"); 
-
-        $('#wait span.msg').val("Executing query and obtaining results");
-        $('#wait').show();
-
-        $.ajax({
-            type: 'POST',
-            url: "/" + namespace + "/"+ docid + "/query/",
-            contentType: "application/json",
-            //processData: false,
-            headers: {'X-sessionid': sid },
-            data: JSON.stringify( { 'queries': queries}), 
-            success: function(data) {
-                if (data.error) {
-                    $('#wait').hide();
-                    editor_error("Received error from document server: " + data.error);
-                } else {
-                    editfields = 0;
-                    closeeditor();
-                    update(data);
-                    $('#saveversion').show();
-                }
-            },
-            error: function(req,err,exception) { 
-                $('#wait').hide();
-                editor_error("Query failed: " + err + " " + exception + ": " + req.responseText);
-            },
-            dataType: "json"
-        });
-    });
+    $('#consolesubmit').click(console_submit);
+    $('#submitqueue').hide();
+    $('#submitqueue').click(console_submit);
     
+   
     $('#savebutton').click(function(){
-        $('#wait').show();
-        $.ajax({
-            type: 'GET',
-            url: "/editor/" + namespace + "/"+ docid + "/save/",
-            contentType: "application/json",
-            headers: {'X-sessionid': sid },
-            data: {'message': $('#versionlabel').val() },
-            success: function(data) {
-                $('#wait').hide();
-                $('#saveversion').hide();
-            },
-            error: function(req,err,exception) { 
-                $('#wait').hide();
-                editor_error("save failed: " + req + " " + err + " " + exception);
-            },
-            dataType: "json"
-        });
+        console_submit(saveversion); //will submit the queue and save (if there's no queue, it will just save)
     });
 
 }
