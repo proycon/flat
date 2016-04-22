@@ -421,15 +421,13 @@ function showeditor(element) {
 
 
 
-            //extra fields list
+            //extra fields list, adds a selector in the editor for adding extra annotation types to an element (must be previously declared)
             setaddablefields();
 
-
-
-
+            //render editor
             s = idheader + "<table>"  + s + "</table>";
             $('#editor div.body').html(s);
-
+            $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
 
 
             if ((annotationfocus) && (!annotationfocusfound)) {
@@ -441,19 +439,23 @@ function showeditor(element) {
                     }
                 }
             }
-            $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} );
+
+            //show the edit form buttons when there is more than one option, hide otherwise
             if ((editformcount > 1) || (editforms.correction)) {
                 $('.editforms').show();                
             } else {
                 $('.editforms').hide();                
             }
-            //configure actions and events for edit fields
+
+            //configure interface actions and events for edit fields
             for (i = 0; i < editfields;i++){
                 //propagate editform to interface, for each field
                 seteditform(i, editdata[i].editform);
 
+                //sort options in down-lists alphabetically
                 $('select#editfield'+i).sortOptions();
 
+                //Enable the span selector button
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(spanselector_click);
 
@@ -485,6 +487,8 @@ function showeditor(element) {
                     if (!$(this).hasClass("changed")) $(this).addClass("changed");
                 });*/
             }
+            
+            //finally, show the editor
             $('#editor').show();    
             $('#editor').draggable();
         } else if (suggestinsertion[element.id]) {
