@@ -525,6 +525,9 @@ function showeditor(element) {
 }
 
 function closeeditor() {
+    /* called when the editor should be closed (i.e. the X button is clicked or
+     * another process wants to close it) */
+    //note that repeat mode is not disabled here, but only when the dialog is explicitly closed using the button
     $('#editor').hide();
     $('#wait').hide();
     editoropen = false;
@@ -536,8 +539,7 @@ function closeeditor() {
 
 
 function addeditorfield(index) {
-    //add a new field to the editor, populated by setaddablefields()
-    //
+    //add a new field to the editor, populated by setaddablefields() 
     if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
     } else {
@@ -581,6 +583,8 @@ function addeditorfield(index) {
 }
 
 function showhistory() {
+    /* Show a dialog window with the history of all edits (git history) and th
+     * option to roll back to a specific revision */
     $('#wait').show();
     $.ajax({
         type: 'GET',
@@ -612,6 +616,8 @@ function showhistory() {
 
 
 function revert(commithash) {
+    /* Revert to a specific revision, identified by git commithash, called from
+     * the history & undo dialog window */
     $('#wait').show();
     $.ajax({
         type: 'GET',
@@ -632,7 +638,7 @@ function revert(commithash) {
 }
 
 function editor_onclick(element) {
-    //open editor
+    /* An element is clicked: open the editor */
     if (coselector >= 0) {
         select(element); //toggle
     } else if (!editoropen) {
@@ -645,7 +651,7 @@ function editor_onclick(element) {
 
 
 function editor_ondblclick(element) {
-    //open editor
+    /* An element is doubleclicked: close/cancel any existing editor dialog, and open the editor anew */
     $('#info').hide();
     if (editoropen) {
         closeeditor();
@@ -654,9 +660,10 @@ function editor_ondblclick(element) {
 }
 
 function editor_onmouseenter(element) {
+    /* Mouse cursor hovers over an element */
     if (!editoropen) {
         sethover(element);
-        showinfo(element);
+        showinfo(element); 
     }
 }
 
@@ -670,19 +677,22 @@ function editor_ontimer() {
 }
 
 function editor_onupdate() {
-    viewer_onupdate();
+    /* called when new data is received from the backend and the document needs
+     * to be updated. Non-mode specific updating is already done at this stage */
+    viewer_onupdate(); //do viewer-mode specific updating
     $('#saveversion').hide();
 }
 
 function editor_contentloaded(data) {
-    viewer_contentloaded(data);
+    viewer_contentloaded(data); //relay to viewer mode
 }
 
 function editor_onrendertextclass() {
-    viewer_onrendertextclass();
+    viewer_onrendertextclass(); //relay to viewer mode
 }
 
 function declare() {
+    /* Presents the dialog window to declare a new annotation type */
     $('#newdeclaration').show();
     $('#newdeclaration').draggable();
 }
@@ -704,6 +714,7 @@ function editor_loadmenus() {
 }
 
 function openconsole() {
+    /* Opens the FQL query console that also serves to hold queued annotations */
     $('#console').show();
     $('#console').draggable();
 }
@@ -748,13 +759,18 @@ function editor_queuerepeat() {
 }
 
 function editor_submit(addtoqueue) {
+    /* Submit the annotation prepared in the editor dialog */
+    //If addtoqueue is set, the annotation will not be performed yet but added to a queue (the console window), for later submission
     if (arguments.length === 0) {
-        addtoqueue = false;
+        addtoqueue = false; 
     }
-    var changes = false;
-    repeatdata = [];
+
+
+    //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend? 
+    var changes = false; //assume no changes, falsify:
     for (var i = 0; i < editfields;i++) { 
         if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
+            //A class was changed
             //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
             editdata[i].oldclass = editdata[i].class;
             editdata[i].class = $('#editfield' + i).val().trim();
@@ -762,6 +778,7 @@ function editor_submit(addtoqueue) {
             changes = true;
         }
         if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+            //Text content was changed
             //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
             editdata[i].oldtext = editdata[i].text;
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
@@ -837,7 +854,7 @@ function editor_submit(addtoqueue) {
 
     }
 
-    var queries = [];
+    var queries = []; //will hold the FQL queries to be send to the backend
 
 
     //gather edits that changed, and sort targets
@@ -1044,25 +1061,28 @@ function editor_submit(addtoqueue) {
             //set format and return type
             query += " FORMAT flat RETURN " + returntype;
 
+            //add to queries
             queries.push(query);
                 
         } 
     }
 
     if ((addtoqueue) || ($('#openinconsole').prop('checked'))) {
+        //Add-to-queue or delegate-to-console is selected (same thing, different route)
         var queuedqueries = $('#queryinput').val();
         if (queuedqueries !== "") queuedqueries = queuedqueries + "\n";
-        $('#queryinput').val(queuedqueries + queries.join("\n"));
-        update_queue_info();
+        $('#queryinput').val(queuedqueries + queries.join("\n")); //add query to query input in console
+        update_queue_info(); //updates the interface to inform the user of the state of the queue and adds submit queue button
     }
 
     if ($('#openinconsole').prop('checked')) {
-        //discard, nothing changed
+        //delegate-to-console is selected, we are done and can close the editor and open the console
         closeeditor();
         openconsole();
         if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
         return false;
     } else if (addtoqueue) {
+        //add to queue selected, just close editor
         closeeditor();
         return false;
     } else if ((queries.length === 0)) {
@@ -1071,13 +1091,14 @@ function editor_submit(addtoqueue) {
         if (namespace == "testflat") editor_error("No queries were formulated");
         return false;
     }
-
-    
+    //==========================================================================================
+    //Queries are submitted now
 
     $('#wait span.msg').val("Submitting edits");
     $('#wait').show();
 
     if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission  
+        //submit queries
         $.ajax({
             type: 'POST',
             url: "/" + namespace + "/"+ docid + "/query/",
