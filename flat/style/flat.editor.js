@@ -322,11 +322,19 @@ function showeditor(element) {
                         s = s + "<tr>";
                     }
                     s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                    var repeat_preset = false; //is this annotation preset because of repeatmode?
                     if (annotation.type == 't') {
                         //Annotation concerns text content
                         var class_value = annotation.class;
-                        if (repeatmode) class_value = repeatreference.class;
+                        if (repeatmode) {
+                            class_value = repeatreference.class;
+                            if (class_value != annotation.class) { repeat_preset = true; }
+                        }
                         var text_value = annotation.text;
+                        if (repeatmode) {
+                            text_value = repeatreference.text;
+                            if (text_value != annotation.text) { repeat_preset = true; }
+                        }
                         if (repeatmode) text_value = repeatreference.text;
                         if (annotation.class != "current") {
                             s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + class_value + "\"/><br/>Text:";
@@ -350,6 +358,7 @@ function showeditor(element) {
                                 c = setdefinitions[annotation.set].classes[cid];
                                 if (repeatmode) {
                                     s = s + getclassesasoptions(c, repeatreference.class); // will add to s
+                                    if (annotation.class != repeatreference.class) { repeat_preset = true; }
                                 } else {
                                     s = s + getclassesasoptions(c, annotation.class); // will add to s
                                 }
@@ -358,10 +367,14 @@ function showeditor(element) {
                         } else {
                             //Annotation type uses a free-fill value, present a textbox:
                             var class_value = annotation.class;
-                            if (repeatmode) class_value = repeatreference.class;
+                            if (repeatmode) {
+                                class_value = repeatreference.class;
+                                if (annotation.class != class_value) { repeat_preset = true; }
+                            }
                             s = s + "<input id=\"editfield" + editfields + "\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
                         }
                     }
+                    if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
                     s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
                     var preselectcorrectionclass = "";
                     if (annotation.hassuggestions) {
@@ -612,6 +625,7 @@ function addeditorfield(index) {
         //text-field
         s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
     }
+    if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
     s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
