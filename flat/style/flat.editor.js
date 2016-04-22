@@ -287,16 +287,18 @@ function showeditor(element) {
 
             //Iterate over all annotations for the selected target element
             Object.keys(annotations[element.id]).forEach(function(annotationid){
+                var isannotationfocus = false;
                 annotation = annotations[element.id][annotationid];
                 if (annotationfocus) {
                     if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         //this annotation is corresponds to the annotation focus
-                        annotationfocusfound = true;
+                        isannotationfocus = true; //set per-item
+                        annotationfocusfound = true; //set only once for all
                     }
                 }
 
                 //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus?
-                if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)))) {
+                if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
                     
                     //Get the human-presentable label for the annotation type
                     label = getannotationtypename(annotation.type);
@@ -305,14 +307,14 @@ function showeditor(element) {
                     } else {
                         setname = "";
                     }
-                    if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                    if (isannotationfocus) { 
                         s = s + "<tr class=\"focus\">"; //annotation focus is highlighted in the editor
                     } else {
                         s = s + "<tr>";
                     }
                     s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                     if (annotation.type == 't') {
-                        //Annotation is text content
+                        //Annotation concerns text content
                         if (annotation.class != "current") {
                             s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/><br/>Text:";
                         } else {
@@ -320,7 +322,7 @@ function showeditor(element) {
                         }
                         s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + annotation.text + "\"/>";
                     } else {
-                        //Annotation is something else
+                        //Annotation concerns a class
                         if (annotation.targets.length > 1) {
                             //Annotation spans multiple elements, gather the text of the entire span for presentation:
                             spantext = getspantext(annotation);
@@ -406,7 +408,7 @@ function showeditor(element) {
                     editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend (deep copy, hence the json parse/stringify)
                     editdata.push(editdataitem); //add this item
 
-                    if ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                    if (isannotationfocus) {
                         //highlight other targets if this annotation type is the annotation focus (just mimicks user click)
                         for (var j = 0; j < annotation.targets.length; j++) {
                             $('#' + valid(annotation.targets[j])).addClass('selected');
