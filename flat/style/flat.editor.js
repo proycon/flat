@@ -474,7 +474,17 @@ function showeditor(element) {
                 }
             }
             if (repeatmode) {
-                //TODO: process unused elements from sentdata (!sentdata[x].used)
+                //process unused elements from sentdata (!sentdata[x].used)
+                for (i = 0; i < sentdata.length; i++) {
+                    if (!sentdata[i].used) {
+                        for (var j = 0; j < editoraddablefields.length; j++) {
+                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set)) {
+                                addeditorfield(j);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             //show the edit form buttons when there is more than one option, hide otherwise
