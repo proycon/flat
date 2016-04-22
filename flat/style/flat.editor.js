@@ -307,6 +307,15 @@ function showeditor(element) {
                     } else {
                         setname = "";
                     }
+                    var repeatreference;
+                    if (repeatmode) {
+                        for (var i = 0; i < sentdata.length;i++) { 
+                            if ((sentdata[i].type === annotation.type) && (sentdata[i].set === annotation.set)) {
+                                repeatreference = sentdata[i];
+                                sentdata[i].used = true; //mark as used (unused elements will be added later)
+                            }
+                        }
+                    }
                     if (isannotationfocus) { 
                         s = s + "<tr class=\"focus\">"; //annotation focus is highlighted in the editor
                     } else {
@@ -315,12 +324,16 @@ function showeditor(element) {
                     s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                     if (annotation.type == 't') {
                         //Annotation concerns text content
+                        var class_value = annotation.class;
+                        if (repeatmode) class_value = repeatreference.class;
+                        var text_value = annotation.text;
+                        if (repeatmode) text_value = repeatreference.text;
                         if (annotation.class != "current") {
-                            s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/><br/>Text:";
+                            s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + class_value + "\"/><br/>Text:";
                         } else {
-                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\"/>";
+                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" value=\"" + class_value + "\"/>";
                         }
-                        s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + annotation.text + "\"/>";
+                        s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + text_value + "\"/>";
                     } else {
                         //Annotation concerns a class
                         if (annotation.targets.length > 1) {
@@ -335,12 +348,18 @@ function showeditor(element) {
                             s = s + "<option value=\"\"></option>";
                             setdefinitions[annotation.set].classorder.forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid];
-                                s = s + getclassesasoptions(c, annotation.class); // will add to s
+                                if (repeatmode) {
+                                    s = s + getclassesasoptions(c, repeatreference.class); // will add to s
+                                } else {
+                                    s = s + getclassesasoptions(c, annotation.class); // will add to s
+                                }
                             });
                             s = s + "</select>";
                         } else {
                             //Annotation type uses a free-fill value, present a textbox:
-                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + annotation.class + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
+                            var class_value = annotation.class;
+                            if (repeatmode) class_value = repeatreference.class;
+                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
                         }
                     }
                     s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
@@ -440,6 +459,9 @@ function showeditor(element) {
                         break;
                     }
                 }
+            }
+            if (repeatmode) {
+                //TODO: process unused elements from sentdata (!sentdata[x].used)
             }
 
             //show the edit form buttons when there is more than one option, hide otherwise
@@ -553,6 +575,16 @@ function addeditorfield(index) {
         setname = "";
     }
 
+    var repeatreference = null;
+    if (repeatmode) {
+        for (var i = 0; i < sentdata.length;i++) { 
+            if ((sentdata[i].type === editoraddablefields[index].type) && (sentdata[i].set === editoraddablefields[index].set)) {
+                repeatreference = sentdata[i];
+                sentdata[i].used = true; //mark as used (unused elements will be added later)
+            }
+        }
+    }
+
     s = "";
     if ((annotationfocus) && (annotationfocus.type == editoraddablefields[index].type) && (annotationfocus.set == editoraddablefields[index].set)) {
         s = s + "<tr class=\"focus\">";
@@ -561,14 +593,23 @@ function addeditorfield(index) {
     }
     s =  s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
     if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
+        //drop-down field
         s = s + "<select id=\"editfield" + editfields + "\">";
-        s = s + "<option selected=\"selected\" value=\"\"></option>";
+        var selected_option;
+        if ((!repeatmode) || (repeatreference === null) || (repeatreference.class === "")) {
+            s = s + "<option selected=\"selected\" value=\"\"></option>";
+            selected_option = "";
+        } else {
+            s = s + "<option value=\"\"></option>";
+            selected_option = repeatreference.class;
+        }
         setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
             c = setdefinitions[editoraddablefields[index].set].classes[cid];
-            s = s + getclassesasoptions(c, ""); // will add to s
+            s = s + getclassesasoptions(c, selected_option); // will add to s
         });
         s = s + "</select>";
     } else {
+        //text-field
         s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
     }
     s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
