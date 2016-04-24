@@ -809,21 +809,6 @@ function update_queue_info() {
     }
 }
 
-function editor_queue() {
-    /* triggered when the queue & repeat button is pressed, queues the query
-     * rather than submitting it immediately */
-    editor_submit(true); //addtoqueue=true
-    update_queue_info();
-}
-
-function editor_queuerepeat() {
-    /* triggered when the queue & repeat button is pressed, queues the query
-     * rather than submitting it immediately, and primes the edit dialog to
-     * pre-select the last chosen input upon selection of the next target */
-    editor_queue();
-    repeatmode = true;
-    //TODO: prime environment to repeat action
-}
 
 function editor_submit(addtoqueue) {
     /* Submit the annotation prepared in the editor dialog */
@@ -1340,9 +1325,19 @@ function editor_oninit() {
     $('#editformcorrectionset').html(s);
     if (editforms.correction) $('#editformcorrectionsetselector').show();
 
-    $('#editorsubmit').click(editor_submit);
-    $('#editorqueue').click(editor_queue);
-    $('#editorqueuerepeat').click(editor_queuerepeat);
+    $('#editorsubmit').click(function(){
+        if ($('#queuemode').prop('checked')) {
+            editor_submit(true);
+            update_queue_info();
+        } else {
+            editor_submit(false);
+        }
+        if ($('#repeatmode').prop('checked')) {
+            repeatmode = true;
+        } else {
+            repeatmode = false;
+        }
+    });
 
     $('#newdeclarationsubmit').click(function(){
         $('#wait').show();

@@ -70,11 +70,11 @@ initialcorrectionset = '{{ initialcorrectionset }}';
     </div>
     <div class="buttoncontainer">
         <div id="openinconsolecontainer">
-            <input id="openinconsole" type="checkbox" /> Delegate to console
+            <input id="queuemode" type="checkbox" /> <span title="Do not submit the annotation directly but queue it for later submission. The queue can always be accessed through the console window">Queue for later submission</span><br/>
+            <input id="repeatmode" type="checkbox" /> <span title="This will pre-fill the edit dialog for the next clicked elements, with the same annotations made for the current one.">Repeat this annotation for the next clicked element</span><br/>
+            <input id="openinconsole" type="checkbox" /> <span title="The console window shows queued queries and allows to edit and submit them">Open console window after submission</span><br/>
         </div>
-        <button id="editorsubmit" title="Submit the annotation">Submit</button>
-        <button id="editorqueue" title="Queue the annotation for later submission">Queue</button>
-        <button id="editorqueuerepeat" title="Queue the annotation for later submission, and prepare to repeat the same action for the next element">Queue &amp; Repeat</button>
+        <button id="editorsubmit" title="Submit the annotation">Ok</button>
     </div>
 </div>
 <div id="newdeclaration" class="dialog">
