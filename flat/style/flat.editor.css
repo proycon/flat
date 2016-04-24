@@ -154,10 +154,10 @@ span.editforms button.selected {
 span.text {
     color: #7c7639;
 }
-#openinconsolecontainer {
-    float: left;
+#submitoptionscontainer {
     font-size: 60%;
     color: #666;
+    text-align: left;
 }
 #console textarea {
     width: 90%;
