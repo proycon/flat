@@ -197,10 +197,13 @@ Correcting a word in a spelling-annotation project:
     :alt: FLAT screenshot
     :align: center
 
-Proper right-to-left support for languages such as Arabic, Farsi and Hebrew:
+Proper right-to-left support for languages such as Arabic, Farsi and Hebrew.
+This relies on the FoLiA document having either a metadata attribute
+*direction* set to ``rtl``, or a properly set *language* field in the
+metadata.
 
 .. image:: https://raw.github.com/proycon/flat/master/docs/righttoleft.png
-    :alt: FLAT screenshot (right to left
+    :alt: FLAT screenshot (right to left)
     :align: center
 
 Extensive history with limitless undo ability, git-based:
