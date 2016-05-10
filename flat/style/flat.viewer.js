@@ -492,7 +492,11 @@ function showinfo(element) {
             }
             if (s) {
                 $('#info').html(s);
-                $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
+                if (mouseX < $(window).width() / 2) {
+                    $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
+                } else {
+                    $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX - $('#info').width() } );
+                }
                 $('#info').show();    
             }
         }
