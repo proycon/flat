@@ -43,6 +43,11 @@
             {% if slices %}
             slices = {{ slices|safe }};
             {% endif %}
+            {% if rtl %}
+            rtl = true;
+            {% else %}
+            rtl = false;
+            {% endif %}
             {% block js %}
             {% endblock js %}
         </script>

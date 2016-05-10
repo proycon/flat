@@ -398,6 +398,9 @@ function loadcontent(perspective, ids, start, end) {
                     f = eval(mode + '_contentloaded');
                     f(data);
                 }
+                if (rtl) {
+                    $('#document').css({'direction':'rtl'} );
+                }
                 $('#wait').hide();
             }
         },

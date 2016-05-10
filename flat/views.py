@@ -32,6 +32,7 @@ def getcontext(request,namespace,docid, doc, mode):
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
             'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",
+            'rtl': True if 'rtl' in doc and doc['rtl'] else False,
             'loggedin': request.user.is_authenticated(),
             'version': settings.VERSION,
             'username': request.user.username,
