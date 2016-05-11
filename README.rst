@@ -193,6 +193,8 @@ For Apache2, you can use either ``mod_wsgi`` or ``mod_uwsgi_proxy``, we
 recommend the latter. To this end, you need a ``wsgi`` script, copy and edit
 the provided ``template.wsgi`` for your situation.
 
+(TODO: Further instructions will follow, feel free to poke me if you are
+waiting for this now)
 
 =============================================
 Screenshots
