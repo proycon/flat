@@ -97,44 +97,74 @@ particular annotation project, upon login.
 Installation
 ============================================
 
-FLAT runs on Python 3 (the document server requires Python 3, the rest will
-also work on Python 2) and uses these libraries. 
+FLAT runs on Python 3 (the document server requires Python 3, the rest can
+also work on Python 2). We recommend installation in a Python *virtualenv*,
+create one as follows::
 
-FLAT can be installed through the Python Package Index::
+    $ virtualenv --python=python3 env 
+
+Activate it::
+
+    $ . env/bin/activate.sh
+
+FLAT can then simply be installed through the Python Package Index::
 
     $ pip install FoLiA-Linguistic-Annotation-Tool
 
-Or from the cloned git repository::
+Or alternatively from the cloned git repository::
 
     $ pip install -r requires.txt    #(to install the dependencies)
     $ python3 setup.py install
 
-You may need ``sudo`` for a global installation, but we recommend installation
-in ``virtualenv``.
+If you are the system administrator and opt for a global installation instead
+of using a virtualenv, then add ``sudo``.
  
 The following dependencies will be pulled in automatically if you follow either
 of the above steps:
 
 * foliadocserve (https://github.com/proycon/foliadocserve)
 * pynlpl (https://github.com/proycon/pynlpl) (contains the FoLiA and FQL library)
-* django 
+* django (https://www.djangoproject.com)
+
+----------------
+Updating
+----------------
+
+To update your existing instalation of flat, run::
+
+    $ pip install -U FoLiA-Linguistic-Annotation-Tool
+
+-------------------------
+Configuration
+-------------------------
 
 Copy the ``settings.py`` that comes with FLAT (or grab it from
 https://github.com/proycon/flat/blob/master/settings.py) to some custom
 location, edit it and add a configuration for your system. The file is heavily
 commented to guide you along with the configuration.
 
-The development server can be started now using your ``settings.py`` by setting
+
+
+----------------------
+Starting FLAT
+----------------------
+
+Before you start FLAT for the first time, the database needs to be
+populated. Set ``PYTHONPATH`` to the directory that contains your
+``settings.py`` and initialise the database::
+
+    $ export PYTHONPATH=/your/settings/path/
+    $ django-admin syncdb --settings settings
+
+From then on, the *development server* can be started now using your ``settings.py`` by setting
 ``PYTHONPATH`` to the directory that contains it::
 
     $ export PYTHONPATH=/your/settings/path/
     $ django-admin runserver --settings settings
 
-But before you start it for the first time, the database needs to be
-populated::
-
-    $ export PYTHONPATH=/your/settings/path/
-    $ django-admin syncdb --settings settings
+FLAT will advertise the host and port it is running on (as configured in your
+``settings.py``), and you can access it in your browser, but not before you
+complete the step below.
 
 We also need to start the FoLiA document server when starting FLAT, it is a
 required component that needs not necessarily be on the same host. Your copy of
@@ -147,9 +177,22 @@ The document path will be a directory that will contain all FoLiA documents.
 Create a root directory and ensure the user the foliadocserve is running under has
 sufficient write permission there. The document server needs no further
 configuration. Note that it does not provide any authentication features so it
-should run somewhere where the outside world can not reach it, only FLAT needs
+should run somewhere where the outside world **can NOT reach** it, only FLAT needs
 to be able to connect there. Often, FLAT and the document server run on the
 same host, so a localhost connection is sufficient.
+
+---------------------------
+Deployment in Production
+---------------------------
+
+The development server is not intended for production use. In production
+environments, you will want to hook up FLAT from a webserver such as Apache2 or
+nginx.
+
+For Apache2, you can use either ``mod_wsgi`` or ``mod_uwsgi_proxy``, we
+recommend the latter. To this end, you need a ``wsgi`` script, copy and edit
+the provided ``template.wsgi`` for your situation.
+
 
 =============================================
 Screenshots
