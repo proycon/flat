@@ -1182,7 +1182,7 @@ function editor_submit(addtoqueue) {
 
 function console_submit(savefunction) { 
     var queries = $('#queryinput').val().split("\n"); 
-    if (queries.length === 0) {
+    if ((queries.length === 1) && (queries[0] === "")) {
         closeeditor();
         if (arguments.length === 1) savefunction();
         return;
