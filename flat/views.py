@@ -18,6 +18,8 @@ else:
 import os
 
 def getcontext(request,namespace,docid, doc, mode):
+    correction_set = settings.CONFIGURATIONS[request.session['configuration']]['initialcorrectionset']
+    correction_dict = {'set': correction_set, 'annotationtype': 'correction'}
     return {
             'configuration': settings.CONFIGURATIONS[request.session['configuration']],
             'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
@@ -28,6 +30,7 @@ def getcontext(request,namespace,docid, doc, mode):
             'modes': settings.CONFIGURATIONS[request.session['configuration']]['modes'] ,
             'modes_json': json.dumps([x[0] for x in settings.CONFIGURATIONS[request.session['configuration']]['modes'] ]),
             'perspectives_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]['perspectives']),
+            'initialcorrectionset': json.dumps(correction_dict),
             'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
