@@ -645,6 +645,8 @@ $(function() {
         //loadtext(initialannotationlist);
         //loadannotations(initialannotationlist);
         loaddeclarations(initialdeclarationlist);
+        declarations['correction'] = {};
+        declarations['correction'][initialcorrectionset.set] = { 'settype': 'open', 'classes': [] };
         registerhandlers();
         if ((namespace != "testflat")  || (docid == "manual")) {
             //get the data first of all (will take a while anyway)

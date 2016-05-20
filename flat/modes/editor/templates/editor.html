@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block js %}
-initialcorrectionset = '{{ initialcorrectionset }}';
+initialcorrectionset = {{ initialcorrectionset|safe }};
 {% endblock %}
 
 {% block menu %}
