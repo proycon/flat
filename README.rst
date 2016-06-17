@@ -224,26 +224,30 @@ It is commented to guide you in the setup.
 1) Install and enable the ``mod_wsgi`` module for Apache (corresponding also to the Python version
 you intend to use). On Debian/Ubuntu systems, install the package
 ``libapache2-mod-wsgi`` (python 2) or ``libapache2-mod-wsgi-py3`` (python 3).
-2) Configure Apache2 for FLAT, we assume you have a dedicated ``VirtualHost``
-directive. The configuration within should look as follows, but make sure all paths and Python and FLAT version numbers correspond exactly to your setup:
+2) Configure Apache2 for FLAT. We assume you use a dedicated subdomain for FLAT, so a configuration with a dedicated ``VirtualHost``
+directive. Create a file ``flat`` in ``/etc/apache2/sites-available/`` (or similar) to this end. The configuration within should look as follows, but make sure all paths and Python and FLAT version numbers correspond exactly to your setup:
 
 .. code::
 
-	WSGIScriptAlias / /path/to/your_copy_of_template.wsgi
-    Alias /media/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/ 
-    Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
-    <Directory /path/to/virtualenv/lib/python3.4/site-packages/FLAT/flat/style/>
-     Order deny,allow
-     Allow from all
-    </Directory>
-    <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/>
-        Order deny,allow
-        Allow from all
-    </Directory>
+    <VirtualHost *:80>
+        ServerName flat.yourdomain.org
+
+        WSGIScriptAlias / /path/to/your_copy_of_template.wsgi
+        Alias /media/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/ 
+        Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
+        <Directory /path/to/virtualenv/lib/python3.4/site-packages/FLAT/flat/style/>
+          Order deny,allow
+          Allow from all
+        </Directory>
+        <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/>
+          Order deny,allow
+          Allow from all
+        </Directory>
+    </VirtualHost>
 
 If you did not use a virtualenv but installed everything globally then ``/path/to/virtualenv/`` is usually ``/usr/`` or ``/usr/local/``.
 
-Restart Apache after this.
+Enable the configuration using ``sudo a2ensite flat`` and restart Apache after this.
 
 
 =============================================
