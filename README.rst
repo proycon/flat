@@ -97,13 +97,17 @@ particular annotation project, upon login.
 Installation
 ============================================
 
+Setting up a web application is often a fairly complex endeavour. We provide
+instructions in this sections.
+
 FLAT runs on Python 3 (the document server requires Python 3, the rest can
 also work on Python 2). We recommend installation in a Python *virtualenv*,
 create one as follows::
 
     $ virtualenv --python=python3 env 
 
-Activate it::
+Activate the virtual environment as follows (you will need to do this every
+time you want to access the virtual environment)::
 
     $ . env/bin/activate.sh
 
@@ -117,7 +121,7 @@ Or alternatively from the cloned git repository::
     $ python3 setup.py install
 
 If you are the system administrator and opt for a global installation instead
-of using a virtualenv, then add ``sudo``.
+of using a virtualenv, then just add ``sudo`` on most Linux distributions.
  
 The following dependencies will be pulled in automatically if you follow either
 of the above steps:
@@ -134,39 +138,41 @@ To update your existing instalation of flat, run::
 
     $ pip install -U FoLiA-Linguistic-Annotation-Tool
 
+In production environments, you will then also need to update your configuration to point
+to the right version.
+
 -------------------------
-Configuration
+FLAT Configuration
 -------------------------
 
 Copy the ``settings.py`` that comes with FLAT (or grab it from
 https://github.com/proycon/flat/blob/master/settings.py) to some custom
 location, edit it and add a configuration for your system. The file is heavily
-commented to guide you along with the configuration.
+commented to guide you along with the configuration. It is here where you
+specify what your users will see and what function are enabled..
 
+------------------------
+Database Configuration
+------------------------
 
+FLAT uses a database to store user accounts. In your ``settings.py`` you refer
+to this database. Multiple backends are supported  (MySQL, PostgreSQL and
+others). Make sure you create the desired database and user, with proper rights
+to access and modify the database, in your database management system.
 
-----------------------
-Starting FLAT
-----------------------
-
-Before you start FLAT for the first time, the database needs to be
+Before you start FLAT for the first time, this database needs to be
 populated. Set ``PYTHONPATH`` to the directory that contains your
 ``settings.py`` and initialise the database::
 
     $ export PYTHONPATH=/your/settings/path/
     $ django-admin syncdb --settings settings
 
-From then on, the *development server* can be started now using your ``settings.py`` by setting
-``PYTHONPATH`` to the directory that contains it::
+-------------------------------
+Starting the Document Server
+-------------------------------
 
-    $ export PYTHONPATH=/your/settings/path/
-    $ django-admin runserver --settings settings
-
-FLAT will advertise the host and port it is running on (as configured in your
-``settings.py``), and you can access it in your browser, but not before you
-complete the step below.
-
-We also need to start the FoLiA document server when starting FLAT, it is a
+FLAT constantly talks to a document server running in the background.
+We need to start the FoLiA document server prior to starting FLAT, it is a
 required component that needs not necessarily be on the same host. Your copy of
 ``settings.py`` should point to the host and port where FLAT can reach the
 document server, start it as follows::
@@ -178,23 +184,67 @@ Create a root directory and ensure the user the foliadocserve is running under h
 sufficient write permission there. The document server needs no further
 configuration. Note that it does not provide any authentication features so it
 should run somewhere where the outside world **can NOT reach** it, only FLAT needs
-to be able to connect there. Often, FLAT and the document server run on the
+to be able to connect to it. Often, FLAT and the document server run on the
 same host, so a localhost connection is sufficient.
+
+-------------------------------------
+Starting FLAT (development server)
+-------------------------------------
+
+After all this is done, the *development server* can be started now using your ``settings.py`` by setting
+``PYTHONPATH`` to the directory that contains it::
+
+    $ export PYTHONPATH=/your/settings/path/
+    $ django-admin runserver --settings settings
+
+FLAT will advertise the host and port it is running on (as configured in your
+``settings.py``), and you can access it in your browser.
+
 
 ---------------------------
 Deployment in Production
 ---------------------------
 
 The development server is not intended for production use. In production
-environments, you will want to hook up FLAT from a webserver such as Apache2 or
-nginx.
+environments, you will want to hook up FLAT to a webserver such as Apache2 or
+nginx. First ensure that you completed all previous steps and
+you manage to run the development server properly, as this mode is by
+definition more suited for debugging any problems that may occur. After all that works, you can consider
+deployment in a production setting.
 
-For Apache2, you can use either ``mod_wsgi`` or ``mod_uwsgi_proxy``, we
-recommend the latter. To this end, you need a ``wsgi`` script, copy and edit
-the provided ``template.wsgi`` for your situation.
+For Apache2, you can use either ``mod_wsgi`` or ``mod_uwsgi_proxy``. For both,
+you need a ``wsgi`` script, so the first step is to copy the provided
+``template.wsgi`` (or grab it from
+https://github.com/proycon/flat/blob/master/template.wsgi) and edit it for your
+situation, this script will be referenced from your web server's configuration.
+It is commented to guide you in the setup.
 
-(TODO: Further instructions will follow, feel free to poke me if you are
-waiting for this now)
+************************
+Apache2 with mod_wsgi
+************************
+
+1) Install and enable the ``mod_wsgi`` module for Apache (corresponding also to the Python version
+you intend to use). On Debian/Ubuntu systems, install the package
+``libapache2-mod-wsgi`` (python 2) or ``libapache2-mod-wsgi-py3`` (python 3).
+2) Configure Apache2 for FLAT, we assume you have a dedicated ``VirtualHost``
+directive. The configuration within should look as follows, but make sure all paths and Python and FLAT version numbers correspond exactly to your setup:
+
+	WSGIScriptAlias / /path/to/your_copy_of_template.wsgi
+    Alias /media/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/ 
+    Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
+    <Directory /path/to/virtualenv/lib/python3.4/site-packages/FLAT/flat/style/>
+        Order deny,allow
+        Allow from all
+    </Directory>
+    <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+If you did not use a virtualenv but installed everything globally then ``/path/to/virtualenv/`` is usually ``/usr/`` or ``/usr/local/``.
+
+Restart Apache after this.
+
 
 =============================================
 Screenshots

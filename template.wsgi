@@ -2,10 +2,11 @@
 import os, sys
 import site
 
-VIRTUALENV = '/path/to/your/virtualenv'
+#If you installed FLAT in a python virtualenv, set the VIRTUALENV variable here, otherwise, remove these two lines:
+VIRTUALENV = '/path/to/your/virtualenv' #<-- change this
 site.addsitedir(VIRTUALENV + '/lib/python' + str(sys.version_info.major) + '.' + str(sys.version_info.minor) + '/site-packages')
 
-SETTINGSDIR = '/path/to/flat/root/dir' #the dir that holds your settings.py
+SETTINGSDIR = '/path/to/flat/root/dir' #<-- change this: the dir that holds your settings.py
 
 if SETTINGSDIR not in sys.path:
     sys.path.append(SETTINGSDIR)
