@@ -13,7 +13,12 @@ if SETTINGSDIR not in sys.path:
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+from django import VERSION
+if VERSION[0] == 1 and VERSION[1] < 7:
+    import django.core.handlers.wsgi
+    application = django.core.handlers.wsgi.WSGIHandler()
+else:
+    from django.core.wsgi import get_wsgi_application
+    application = get_wsgi_application()
 
 
