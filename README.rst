@@ -246,6 +246,7 @@ directive. Create a file ``flat`` in ``/etc/apache2/sites-available/`` (or simil
     </VirtualHost>
 
 If you did not use a virtualenv but installed everything globally then ``/path/to/virtualenv/`` is usually ``/usr/`` or ``/usr/local/``.
+The FLAT directory may also reside in ``dist-packages/flat/`` on some installations.
 
 Enable the configuration using ``sudo a2ensite flat`` and restart Apache after this.
 
