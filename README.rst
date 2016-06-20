@@ -235,11 +235,11 @@ directive. Create a file ``flat`` in ``/etc/apache2/sites-available/`` (or simil
         WSGIScriptAlias / /path/to/your_copy_of_template.wsgi
         Alias /static/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/ 
         Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
-        <Directory /path/to/virtualenv/lib/python3.4/site-packages/FLAT/flat/style/>
+        <Directory /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/>
           Order deny,allow
           Allow from all
         </Directory>
-        <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/media/>
+        <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/>
           Order deny,allow
           Allow from all
         </Directory>
