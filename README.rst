@@ -109,7 +109,7 @@ create one as follows::
 Activate the virtual environment as follows (you will need to do this every
 time you want to access the virtual environment)::
 
-    $ . env/bin/activate.sh
+    $ . env/bin/activate
 
 FLAT can then simply be installed through the Python Package Index::
 
