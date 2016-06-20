@@ -1,4 +1,4 @@
 pynlpl >= 0.8.2
 foliadocserve >= 0.3.5
-Django >= 1.5
+Django==1.8.13
 requests
