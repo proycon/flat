@@ -1369,6 +1369,10 @@ function editor_oninit() {
     editforms.alternative = configuration.editformalternative;
     editforms.new = configuration.editformnew;
     editconfidence = (configuration.allowconfidence === true); //allow setting/editing confidence?
+    if (editconfidence) {
+        $('#toggleeditconfidence').addClass('on');
+    }
+
 
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) $('#editform' + editform).addClass('on');
