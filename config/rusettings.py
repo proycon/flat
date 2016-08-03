@@ -159,6 +159,7 @@ CONFIGURATIONS = {
     'alloweditformalternative': True, #boolean
     'alloweditformnew': True, #boolean
     'allowupload': True, #boolean
+    'allowconfidence': True,
     'modes': MODES,
 },
 'valkuileval':{
@@ -272,6 +273,7 @@ CONFIGURATIONS = {
     'alloweditformalternative': False, #boolean
     'alloweditformnew': True, #boolean
     'allowupload': True, #boolean
+    'allowconfidence': True,
     'autodeclare': [
         ('entity', 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml')
     ],

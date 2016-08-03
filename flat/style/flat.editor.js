@@ -5,6 +5,7 @@ var editforms = {'direct': true, 'correction': false,'alternative': false, 'new'
 var editedelementid = null;
 var editfields = 0;
 var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
+var editconfidence = true; //allow setting/editing confidence, will be overwritten to configuration value on init
 var repeatmode = false;
 var sentdata = []; //list of the last submitted edits (js objects, pre-fql)
 
@@ -34,6 +35,15 @@ function toggleannotationedit(annotationtype, set) {
     }
 }
 
+function toggleeditconfidence() {
+    editconfidence = !editconfidence;
+    if (editconfidence) {
+        $('#toggleeditconfidence').addClass("on");
+    } else {
+        $('#toggleeditconfidence').removeClass("on");
+    }
+}
+
 function select(element) {
     //toggles selection of an element (coselector)
     var found = false;
@@ -48,7 +58,7 @@ function select(element) {
     if (found) {
         editdata[coselector].targets.splice(index, 1);
         $(element).removeClass("selected");
-    } else { 
+    } else {
         editdata[coselector].targets.push( element.id);
         $(element).addClass("selected");
     }
@@ -69,7 +79,7 @@ function setaddablefields() {
                 found = false;
                 editdata.forEach(function(editdataitem){
                     if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
-                        found = true; 
+                        found = true;
                         return true;
                     }
                 });
@@ -132,7 +142,7 @@ function seteditform(index, value) {
 }
 
 function addeditforms(preselectcorrectionclass) {
-    
+
 
     //do we have a single selection?
     var selected = false;
@@ -269,7 +279,7 @@ function showeditor(element) {
 
     var i;
     if ((element) && ($(element).hasClass(view)) && (element.id)) {  //sanity check: is there an element selected?
-        if (annotations[element.id]) { //are there annotations for this element? 
+        if (annotations[element.id]) { //are there annotations for this element?
             var s = "";
             editoropen = true;
             sethover(element);
@@ -299,7 +309,7 @@ function showeditor(element) {
 
                 //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus?
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
-                    
+
                     //Get the human-presentable label for the annotation type
                     label = getannotationtypename(annotation.type);
                     if (annotation.set) {
@@ -309,14 +319,14 @@ function showeditor(element) {
                     }
                     var repeatreference;
                     if (repeatmode) {
-                        for (var i = 0; i < sentdata.length;i++) { 
+                        for (var i = 0; i < sentdata.length;i++) {
                             if ((sentdata[i].type === annotation.type) && (sentdata[i].set === annotation.set)) {
                                 repeatreference = sentdata[i];
                                 sentdata[i].used = true; //mark as used (unused elements will be added later)
                             }
                         }
                     }
-                    if (isannotationfocus) { 
+                    if (isannotationfocus) {
                         s = s + "<tr class=\"focus\">"; //annotation focus is highlighted in the editor
                     } else {
                         s = s + "<tr>";
@@ -418,6 +428,12 @@ function showeditor(element) {
                     editformdata = addeditforms();
                     editformcount = editformdata[1];
                     s = s + editformdata[0];
+
+                    //Add confidence slider
+                    if (editconfidence) {
+                        s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
+                    }
+
                     s = s + "</td></tr>";
 
                     //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
@@ -425,6 +441,11 @@ function showeditor(element) {
                     editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
                     if (annotation.type == 't') editdataitem.text = annotation.text;
                     if (annotation.id) editdataitem.id = annotation.id;
+                    if (annotation.hasOwnProperty('confidence')) {
+                        editdataitem.confidence = annotation.confidence;
+                    } else {
+                        editdataitem.confidence = "NONE"; //not set, FQL keyword
+                    }
 
                     //set default edit form (seteditform will be called later to affect the interface)
                     if (configuration.alloweditformcorrection) {
@@ -433,7 +454,7 @@ function showeditor(element) {
                         editdataitem.editform = 'direct';
                     } else {
                         editdataitem.editform = 'alternative';
-                    }            
+                    }
 
                     //Set the target elements for this annotation (it may concern more than the selected element after all)
                     editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy, hence the json parse/stringify)
@@ -448,7 +469,7 @@ function showeditor(element) {
                     }
 
                 }
-                
+
             });
             s = s + "<tr id=\"editrowplaceholder\"></tr>";
             idheader = "<div id=\"id\">" + element.id + "</div>";
@@ -462,6 +483,7 @@ function showeditor(element) {
             s = idheader + "<table>"  + s + "</table>";
             $('#editor div.body').html(s);
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
+
 
 
             if ((annotationfocus) && (!annotationfocusfound)) {
@@ -487,11 +509,20 @@ function showeditor(element) {
                 }
             }
 
+            //render confidence sliders
+            if (editconfidence) {
+                for (i = 0; i < editfields;i++){
+                    if (editdata[i].confidence !== "NONE") {
+                        setconfidenceslider(i, Math.round(editdata[i].confidence * 100));
+                    }
+                }
+            }
+
             //show the edit form buttons when there is more than one option, hide otherwise
             if ((editformcount > 1) || (editforms.correction)) {
-                $('.editforms').show();                
+                $('.editforms').show();
             } else {
-                $('.editforms').hide();                
+                $('.editforms').hide();
             }
 
             //configure interface actions and events for edit fields
@@ -517,7 +548,7 @@ function showeditor(element) {
                         $(o).attr('selected', arr[i].s);
                     });
                 }
-                
+
                 /*$('#editfield'+i).change(function(){
                     index = 0;
                     for (var i = 0; i < editfields;i++) { if (this.id == "editfield" + i) { index = i; break; } }
@@ -534,9 +565,9 @@ function showeditor(element) {
                     if (!$(this).hasClass("changed")) $(this).addClass("changed");
                 });*/
             }
-            
+
             //finally, show the editor
-            $('#editor').show();    
+            $('#editor').show();
             $('#editor').draggable();
         } else if (suggestinsertion[element.id]) {
             //suggestion for insertion:
@@ -547,7 +578,7 @@ function showeditor(element) {
             //now we manipulate the editor by adding the suggested text
             for (i = 0; i < editfields; i++) {
                 if (editdata[i].type == "t") {
-                    var newtext = editdata[i].text  + ' ' + $(element).find('.lbl').html().replace('&nbsp;',''); 
+                    var newtext = editdata[i].text  + ' ' + $(element).find('.lbl').html().replace('&nbsp;','');
                     $('#editfield' + i + 'text').val(newtext);
                     $('#editform' + i + 'correction').click(); //edit as correction
                     //select the right class:
@@ -555,7 +586,7 @@ function showeditor(element) {
                         if ($('#editform' + i + 'correctionclass')[0].type == 'select-one') {
                             //select
                             $('#editform' + i + 'correctionclass>option[value="' + suggestinsertion[element.id].class + '"]').prop('selected',true);
-                        } else{ 
+                        } else{
                             //simple free field
                             $('#editform' + i + 'correctionclass').val(suggestinsertion[element.id].class);
                         }
@@ -586,7 +617,7 @@ function closeeditor() {
 
 
 function addeditorfield(index) {
-    //add a new field to the editor, populated by setaddablefields() 
+    //add a new field to the editor, populated by setaddablefields()
     if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
     } else {
@@ -600,7 +631,7 @@ function addeditorfield(index) {
 
     var repeatreference = null;
     if (repeatmode) {
-        for (var i = 0; i < sentdata.length;i++) { 
+        for (var i = 0; i < sentdata.length;i++) {
             if ((sentdata[i].type === editoraddablefields[index].type) && (sentdata[i].set === editoraddablefields[index].set)) {
                 repeatreference = sentdata[i];
                 sentdata[i].used = true; //mark as used (unused elements will be added later)
@@ -637,6 +668,11 @@ function addeditorfield(index) {
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
     s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+
+    if (editconfidence) {
+        s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
+    }
+
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
 
@@ -644,7 +680,7 @@ function addeditorfield(index) {
     $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid], 'class':'', 'new': true, 'changed': true };
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true };
     editdata.push(editdataitem);
     setaddablefields();
 }
@@ -673,7 +709,7 @@ function showhistory() {
             $('#history').show();
             $('#history').draggable();
         },
-        error: function(req,err,exception) { 
+        error: function(req,err,exception) {
             $('#wait').hide();
             editor_error("Unable to obtain history");
         },
@@ -695,13 +731,33 @@ function revert(commithash) {
         success: function(data) {
             location.reload();
         },
-        error: function(req,err,exception) { 
+        error: function(req,err,exception) {
             $('#wait').hide();
             editor_error("Unable to revert");
         },
         dataType: "json"
     });
 
+}
+
+function setconfidenceslider(index, value) {
+    value = typeof value !== 'undefined' ? value : 50; //default value
+    var checked = $('#confidencecheck' + index).is(':checked');
+    if (checked) {
+        $('#confidenceslider' + index).html('<span id="confidencevalue' + index + '">' + value + '%</span>');
+        $('#confidenceslider' + index).slider({
+            'change': function(event, ui) { //update label when slider moves
+                var index = $(this).data('index');
+                $('#confidencevalue'+index).html(ui.value + '%');
+            },
+        });
+        $('#confidenceslider' + index).data("index",index);
+        $('#confidenceslider' + index).slider('value',value);
+        return true;
+    } else {
+        $('#confidenceslider' + index).html('(not set)');
+        return true;
+    }
 }
 
 function editor_onclick(element) {
@@ -730,7 +786,7 @@ function editor_onmouseenter(element) {
     /* Mouse cursor hovers over an element */
     if (!editoropen) {
         sethover(element);
-        showinfo(element); 
+        showinfo(element);
     }
 }
 
@@ -814,13 +870,13 @@ function editor_submit(addtoqueue) {
     /* Submit the annotation prepared in the editor dialog */
     //If addtoqueue is set, the annotation will not be performed yet but added to a queue (the console window), for later submission
     if (arguments.length === 0) {
-        addtoqueue = false; 
+        addtoqueue = false;
     }
 
 
-    //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend? 
+    //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
     var changes = false; //assume no changes, falsify:
-    for (var i = 0; i < editfields;i++) { 
+    for (var i = 0; i < editfields;i++) {
         if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
             //A class was changed
             //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
@@ -841,7 +897,7 @@ function editor_submit(addtoqueue) {
             //edit of correction class only, affects existing correction
             editdata[i].correctionclasschanged = true;
             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
-            editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
+            editdata[i].correctionset = $('#editformcorrectionset').val().trim();
             if (!editdata[i].correctionclass) {
                 editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                 return false;
@@ -854,8 +910,18 @@ function editor_submit(addtoqueue) {
                 editdata[i].oldtext = editdata[i].text; //will remain requal
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
             }
-        } 
-        
+        }
+        if ($('#confidencecheck' + i).is(':checked')) {
+            var confidence = $('#confidenceslider' + i).slider('value') / 100;
+            if (confidence != editdata[i].confidence) {
+                changes = true;
+            }
+            editdata[i].confidence = confidence;
+        } else if (editdata[i].confidence != "NONE") {
+            editdata[i].confidence = "NONE";
+            changes = true;
+        }
+
 
         if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
             //detect changes in span, and set the changed flag
@@ -866,17 +932,17 @@ function editor_submit(addtoqueue) {
             if (editdata[i].editform == 'correction') {
                 //editdata[i].editform = 'correction';
                 editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
-                editdata[i].correctionset = $('#editformcorrectionset').val().trim(); 
+                editdata[i].correctionset = $('#editformcorrectionset').val().trim();
                 if (!editdata[i].correctionclass) {
                     editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
                     return false;
                 }
-            } 
+            }
             if (editdata[i].type == 't') {
                 if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
                     //there is a space in a token! This can mean a number
                     //of things
-                    
+
                     //Is the leftmost word the same as the original word?
                     //Then the user wants to do an insertion to the right
                     if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
@@ -895,11 +961,11 @@ function editor_submit(addtoqueue) {
                         if (namespace == "testflat") {
                             editdata[i].dosplit = true; //no need to task for confirmation in test mode
                         } else {
-                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space."); 
+                            editdata[i].dosplit = confirm("A space was entered for the token text. This will imply the tokens will be split into two new ones. Annotations pertaining to the original words will have to reentered for the new tokens. Continue with the split? Otherwise the token will remain one but contain a space.");
                         }
-                    
+
                     }
-                    
+
                 }
             }
         }
@@ -910,7 +976,7 @@ function editor_submit(addtoqueue) {
 
 
     //gather edits that changed, and sort targets
-    sentdata = []; //will be used in repeatmode 
+    sentdata = []; //will be used in repeatmode
     for (var i = 0; i < editfields;i++) {  //jshint ignore:line
         if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
             if (editdata[i].new) editdata[i].editform = "new";
@@ -935,8 +1001,8 @@ function editor_submit(addtoqueue) {
             }
             editdata[i].targets = sortededittargets;
             sentdata.push(editdata[i]);
-            
-            //compose query  
+
+            //compose query
             var action = "";
             var returntype = "target";
             var query = "";
@@ -950,7 +1016,7 @@ function editor_submit(addtoqueue) {
             if (editdata[i].correctionclasschanged) {
                 //TODO: this will change ALL corrections under the element, too generic
                 action = "EDIT";
-                query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                 returntype = "ancestor-focus";
                 //set target expression
                 if (sortededittargets.length > 0) {
@@ -974,7 +1040,7 @@ function editor_submit(addtoqueue) {
                 action = "DELETE";
                 query += "DELETE w ID " + sortededittargets[0];
                 if (editdata[i].editform == "correction") {
-                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
                 }
                 returntype = "ancestor-focus";
             } else {
@@ -986,7 +1052,7 @@ function editor_submit(addtoqueue) {
                     action = "DELETE";
                     returntype = "ancestor-focus";
                 } else if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                    if (editdata[i].insertleft) { 
+                    if (editdata[i].insertleft) {
                         returntype = "ancestor-focus";
                         if (editsuggestinsertion) {
                             action = "SUBSTITUTE"; //substitute the correction for suggestion
@@ -1017,37 +1083,37 @@ function editor_submit(addtoqueue) {
                     if (editdata[i].insertright) { //APPEND (insertion)
                         query += " w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //PREPEND (insertion)
-                        query += " w"; 
+                        query += " w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else { //normal behaviour
                         query += " " +editdata[i].type;
                         if ((editdata[i].id) && ( editdata[i].editform != "new")) {
                             query += " ID " + editdata[i].id;
                         } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                            query += " OF " + editdata[i].set;                    
+                            query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                            query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
-                            //no deletion 
-                            query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            //no deletion
+                            query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     }
                 } else { //substitute
                     if (editdata[i].insertright) { //insertright as substitute
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //insertleft as substitue
-                        query += "SUBSTITUTE w"; 
+                        query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now";
+                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } if (editdata[i].dosplit) {
                         parts = editdata[i].text.split(" ");
@@ -1056,7 +1122,7 @@ function editor_submit(addtoqueue) {
                             query += "SUBSTITUTE w WITH text \"" + parts[j] + "\"";
                         }
                     } else if (editdata[i].targets.length > 1) { //MERGE
-                        query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\""; 
+                        query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\"";
                     }
                 }
                 if (isspan && editdata[i].id && (action == "EDIT")) {
@@ -1078,14 +1144,14 @@ function editor_submit(addtoqueue) {
 
                 //set AS expression
                 if ((editdata[i].editform == "correction") && (!editdata[i].correctionclasschanged)) {
-                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now)";
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
                 } else if (editdata[i].editform == "alternative") {
                     query += " (AS ALTERNATIVE)";
                 }
 
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
-                } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation 
+                } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
                     //set target expression
                     if (sortededittargets.length > 0) {
                         query += " FOR";
@@ -1108,15 +1174,15 @@ function editor_submit(addtoqueue) {
                         query += forids;
                     }
                 }
-                
+
             }
             //set format and return type
             query += " FORMAT flat RETURN " + returntype;
 
             //add to queries
             queries.push(query);
-                
-        } 
+
+        }
     }
 
     if ((addtoqueue) || ($('#openinconsole').prop('checked'))) {
@@ -1149,7 +1215,7 @@ function editor_submit(addtoqueue) {
     $('#wait span.msg').val("Submitting edits");
     $('#wait').show();
 
-    if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission  
+    if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission
         //submit queries
         $.ajax({
             type: 'POST',
@@ -1157,7 +1223,7 @@ function editor_submit(addtoqueue) {
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
-            data: JSON.stringify( { 'queries': queries}), 
+            data: JSON.stringify( { 'queries': queries}),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -1169,7 +1235,7 @@ function editor_submit(addtoqueue) {
                     $('#saveversion').show();
                 }
             },
-            error: function(req,err,exception) { 
+            error: function(req,err,exception) {
                 $('#wait').hide();
                 editor_error("Editor submission failed: " + req + " " + err + " " + exception);
             },
@@ -1180,8 +1246,8 @@ function editor_submit(addtoqueue) {
     }
 }
 
-function console_submit(savefunction) { 
-    var queries = $('#queryinput').val().split("\n"); 
+function console_submit(savefunction) {
+    var queries = $('#queryinput').val().split("\n");
     if ((queries.length === 1) && (queries[0] === "")) {
         closeeditor();
         if (arguments.length === 1) savefunction();
@@ -1197,7 +1263,7 @@ function console_submit(savefunction) {
         contentType: "application/json",
         //processData: false,
         headers: {'X-sessionid': sid },
-        data: JSON.stringify( { 'queries': queries}), 
+        data: JSON.stringify( { 'queries': queries}),
         success: function(data) {
             if (data.error) {
                 $('#wait').hide();
@@ -1216,7 +1282,7 @@ function console_submit(savefunction) {
                 }
             }
         },
-        error: function(req,err,exception) { 
+        error: function(req,err,exception) {
             $('#wait').hide();
             editor_error("Query failed: " + err + " " + exception + ": " + req.responseText);
         },
@@ -1238,7 +1304,7 @@ function saveversion() {
             $('#wait').hide();
             $('#saveversion').hide();
         },
-        error: function(req,err,exception) { 
+        error: function(req,err,exception) {
             $('#wait').hide();
             editor_error("save failed: " + req + " " + err + " " + exception);
         },
@@ -1298,6 +1364,7 @@ function editor_oninit() {
     editforms.correction = configuration.editformcorrection;
     editforms.alternative = configuration.editformalternative;
     editforms.new = configuration.editformnew;
+    editconfidence = (configuration.allowconfidence === true); //allow setting/editing confidence?
 
     Object.keys(editforms).forEach(function(editform){
         if (editforms[editform]) $('#editform' + editform).addClass('on');
@@ -1313,7 +1380,7 @@ function editor_oninit() {
                         s = s + "<option value=\"" + set + "\">" + shorten(set) + "</option>";
                     }
                 } else {
-                    if (!initialcorrectionset) { 
+                    if (!initialcorrectionset) {
                         s = "<option value=\"" + set + "\" selected=\"selected\">" + shorten(set) + "</option>";
                     } else {
                         s = "<option value=\"" + set + "\">" + shorten(set) + "</option>";
@@ -1349,7 +1416,7 @@ function editor_oninit() {
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
-            data: JSON.stringify( { 'queries': queries}), 
+            data: JSON.stringify( { 'queries': queries}),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -1362,7 +1429,7 @@ function editor_oninit() {
                     $('#saveversion').show();
                 }
             },
-            error: function(req,err,exception) { 
+            error: function(req,err,exception) {
                 $('#wait').hide();
                 $('#newdeclaration').hide();
                 editor_error("Declaration failed: " + req + " " + err + " " + exception);
@@ -1374,8 +1441,8 @@ function editor_oninit() {
     $('#consolesubmit').click(console_submit);
     $('#submitqueue').hide();
     $('#submitqueue').click(console_submit);
-    
-   
+
+
     $('#savebutton').click(function(){
         console_submit(saveversion); //will submit the queue and save (if there's no queue, it will just save)
     });

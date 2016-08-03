@@ -219,7 +219,7 @@ https://github.com/proycon/flat/blob/master/template.wsgi) and edit it for your
 situation, this script will be referenced from your web server's configuration.
 It is commented to guide you in the setup.
 
-**Apache2 with mod_wsgi**:
+**Apache 2.4 with mod_wsgi**:
 
 1) Install and enable the ``mod_wsgi`` module for Apache (corresponding also to the Python version
 you intend to use). On Debian/Ubuntu systems, install the package
@@ -236,12 +236,14 @@ directive. Create a file ``flat`` in ``/etc/apache2/sites-available/`` (or simil
         Alias /static/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/ 
         Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
         <Directory /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/>
-          Order deny,allow
-          Allow from all
+          Options All
+          AllowOverride All
+          Require all granted
         </Directory>
         <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/>
-          Order deny,allow
-          Allow from all
+          Options All
+          AllowOverride All
+          Require all granted
         </Directory>
     </VirtualHost>
 

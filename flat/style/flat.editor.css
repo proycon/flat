@@ -206,3 +206,12 @@ span.repeatnotice {
     color: yellow;
     font-size: 80%;
 }
+div.confidenceeditor {
+    width: 99%;
+}
+div.confidenceeditor div {
+    display: inline-block;
+    width: 60%;
+    font-size: 80%;
+    font-style: italic;
+}

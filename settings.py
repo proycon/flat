@@ -196,6 +196,8 @@ CONFIGURATIONS = {
     'alloweditformalternative': True, #boolean
     'alloweditformnew': True, #boolean
 
+    #Allow confidence values to be set/edited?
+    'allowconfidence': True,
 
     # FoLiA set to use fo corrections
     #'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
