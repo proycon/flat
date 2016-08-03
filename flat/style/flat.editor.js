@@ -516,6 +516,7 @@ function showeditor(element) {
             if (editconfidence) {
                 for (i = 0; i < editfields;i++){
                     if (editdata[i].type != 't' && editdata[i].confidence !== "NONE") {
+                        $('#confidencecheck' + i).attr('checked',true);
                         setconfidenceslider(i, Math.round(editdata[i].confidence * 100));
                     }
                 }
