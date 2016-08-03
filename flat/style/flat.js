@@ -8,7 +8,7 @@ var annotationtypenames = {
     's': 'Sentence',
     'p': 'Paragraph',
     'div': 'Division',
-    'entity': 'Named Entity',
+    'entity': 'Entity',
     'su': 'Syntax',
     'chunk': 'Chunk',
     'sense': 'Semantic Sense',
