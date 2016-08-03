@@ -448,12 +448,15 @@ function showeditor(element) {
                     }
 
                     //set default edit form (seteditform will be called later to affect the interface)
-                    if (configuration.alloweditformcorrection) {
+                    if (editforms.correction) {
                         editdataitem.editform = 'correction';
-                    } else if (configuration.alloweditformdirect) {
+                    } else if (editforms.direct) {
                         editdataitem.editform = 'direct';
-                    } else {
+                    } else if (editforms.alternative) {
                         editdataitem.editform = 'alternative';
+                    } else {
+                        //default fallback
+                        editdataitem.editform = 'direct';
                     }
 
                     //Set the target elements for this annotation (it may concern more than the selected element after all)
