@@ -430,8 +430,8 @@ function showeditor(element) {
                     s = s + editformdata[0];
 
                     //Add confidence slider
-                    if (editconfidence) {
-                        s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
+                    if (editconfidence && annotation.type != 't') {
+                        s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are in this annotation using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
                     }
 
                     s = s + "</td></tr>";
@@ -515,7 +515,7 @@ function showeditor(element) {
             //render confidence sliders
             if (editconfidence) {
                 for (i = 0; i < editfields;i++){
-                    if (editdata[i].confidence !== "NONE") {
+                    if (editdata[i].type != 't' && editdata[i].confidence !== "NONE") {
                         setconfidenceslider(i, Math.round(editdata[i].confidence * 100));
                     }
                 }
@@ -672,7 +672,7 @@ function addeditorfield(index) {
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
     s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
 
-    if (editconfidence) {
+    if (editconfidence &&  editoraddablefields[index].type != 't') {
         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
     }
 
