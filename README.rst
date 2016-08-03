@@ -32,6 +32,7 @@ Features
 * Concurrency (multiple users may edit the same document similtaneously)  [**not completed yet**]
 * Full versioning control for documents (using git), allowing limitless undo operations. (in foliadocserve)
 * Full annotator information, with timestamps, is stored in the FoLiA XML and can be displayed by the interface. The git log also contains verbose information on annotations.
+* Annotators can indicate their confidence for each annotation
 * Highly configurable interface; interface options may be disabled on a
   per-configuration basis. Multiple configurations can be deployed on a single
   installation
