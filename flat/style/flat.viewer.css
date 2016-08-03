@@ -180,6 +180,10 @@ div#info .datetime {
     font-style: italic;
     color: #72742d;
 }
+div#info .confidence {
+    font-style: italic;
+    color: #b363a7;
+}
 div#infoheader {
 
 }

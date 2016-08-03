@@ -239,6 +239,9 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 s = s + "<br/><span class=\"datetime\">" + correction.datetime +"</span>";
             }
         }
+        if (correction.confidence) {
+            s = s + "<br/><span class=\"confidence\">Confidence " + (correction.confidence * 100) +"%</span>";
+        }
         if (correction.specialtype) {
             s = s + "<span class=\"specialtype\">(" + correction.specialtype;
             if (correction.suggestmerge) {
@@ -396,6 +399,9 @@ function renderannotation(annotation, norecurse) {
         if (annotation.datetime) {
             s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
         }
+    }
+    if (annotation.confidence) {
+        s = s + "<br/><span class=\"confidence\">Confidence " + (annotation.confidence * 100) +"%</span>";
     }
     if (annotation.type == "str") {
         s = s + "<div class=\"strinfo\">";
