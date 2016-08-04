@@ -67,6 +67,7 @@ MODES = [
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
     ('structureeditor','Structure Editor'),
+    ('metadata','Metadata'),
 ]
 
 # The viewer and editor allow for different perspectives on the data.
