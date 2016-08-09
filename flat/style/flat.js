@@ -636,6 +636,11 @@ function index_click() {
     $('#wait').show();
 }
 
+function auto_grow(element) {
+    element.style.height = "5px";
+    element.style.height = (element.scrollHeight)+"px";
+}
+
 $(function() {
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){

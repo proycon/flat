@@ -205,7 +205,61 @@ function addeditforms(preselectcorrectionclass) {
     return [s,editformcount];
 }
 
+function renderhigherorderfields(index, annotation) {
+    var s = "";
+    var items = [];
+    if (annotation.type != 't' && annotation.type != 'ph') {
+        //Add menu for adding higher-order annotation
+        s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
+        s += "<ul>";
+        s += "<li onclick=\"addhigherorderfield(" + index + ",'comment')\">Add Comment</li>";
+        s += "<li onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
+        s += "</ul>";
+        s += "</div>";
 
+        //placeholder for higher order fields
+        s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
+        var ho_index = 0;
+        if (annotation.children) {
+            for (i = 0; i < annotation.children.length; i++) {
+                if (annotation.children[i].type) {
+                    var ho = "";
+                    if (annotation.children[i].type == 'comment') {
+                        ho = "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+                        if (annotation.children[i].value) ho += annotation.children[i].value;
+                        ho += "</textarea></td>";
+                    } else if (annotation.children[i].type == 'desc') {
+                        ho = "<td>Description:</td><td> <textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+                        if (annotation.children[i].value) ho += annotation.children[i].value;
+                        ho += "</textarea></td>";
+                    }
+                    if (ho) {
+                        s += "<tr class=\"higherorderrow\">" + ho + "</tr>";
+                        ho_index++;
+                        items.push(annotation.children[i]);
+                    }
+                }
+            }
+        }
+        s += "<tr id=\"higherorderfields" + index + "placeholder\"></tr>";
+        s += "</table></div>";
+    }
+    return {'output':s,'items': items};
+}
+
+function addhigherorderfield(index, type) {
+    var s = "<tr class=\"higherorderrow\">" ;
+    var ho_index = editdata[index].higherorder.length;
+    if (type == "comment") {
+         s = s +  "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
+        editdata[index].higherorder.push({'type:':type, 'value':""});
+    } else if (type == "description") {
+         s = s +  "<td>Description:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
+        editdata[index].higherorder.push({'type:':type, 'value':""});
+    }
+    s += "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
+    $('#higherorderfields' + index +  "placeholder").html(s);
+}
 
 function getclassesasoptions(c, selected) {
     //get classes pertaining to a set, from a set definition, as option elements (used in select)
@@ -430,15 +484,18 @@ function showeditor(element) {
                     s = s + editformdata[0];
 
                     //Add confidence slider
-                    if (editconfidence && annotation.type != 't') {
+                    if (editconfidence && annotation.type != 't' && annotation.type != 'ph') {
                         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are in this annotation using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
                     }
+
+                    ho_result = renderhigherorderfields(editfields, annotation);
+                    s  = s + ho_result.output;
 
                     s = s + "</td></tr>";
 
                     //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
                     editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
-                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false };
+                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'higherorder': ho_result.items };
                     if (annotation.type == 't') editdataitem.text = annotation.text;
                     if (annotation.id) editdataitem.id = annotation.id;
                     if (annotation.hasOwnProperty('confidence')) {
@@ -677,6 +734,9 @@ function addeditorfield(index) {
         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
     }
 
+    ho_result = renderhigherorderfields(editfields, editoraddablefields[index]);
+    s  = s + ho_result.output;
+
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
 
@@ -684,7 +744,7 @@ function addeditorfield(index) {
     $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true };
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'higherorder': ho_result.items };
     editdata.push(editdataitem);
     setaddablefields();
 }

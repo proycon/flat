@@ -81,6 +81,47 @@ div#editor span#editoraddfields button {
     color: #30677c;
     padding: 1px;
 }
+div#editor .addhigherordermenu {
+    float: right;
+    border-radius: 0;
+    background: transparent;
+    border: 1px solid #30677c;
+    color: #30677c;
+    padding: 1px;
+    clear: both;
+}
+.addhigherordermenu ul {
+    display: none;
+}
+.addhigherordermenu:hover ul {
+    display: block;
+    margin-top: -10px;
+    position: absolute;
+    min-width: 160px;
+    display: block;
+    background: black;
+    padding: 5px;
+    padding-left: 10px;
+    opacity: 0.9;
+}
+.addhigherordermenu li {
+    display: block;
+    list-style-type: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    font-weight: bold;
+    display: pointer;
+}
+.addhigherordermenu li:hover {
+    text-decoration: underline;
+}
+.higherorderrow {
+    vertical-align: top;
+}
+.higherorderrow textarea {
+    width: 100%;
+}
 
 div.selected span.lbl {
     background: yellow;
