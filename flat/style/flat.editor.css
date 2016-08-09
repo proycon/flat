@@ -1,7 +1,7 @@
 div#editor {
     position: absolute;
     display: none;
-    width: 480px;
+    width: 540px;
     padding: 10px;
     background: #cdcdcd; 
     color: #333;
@@ -88,6 +88,7 @@ div.selected span.lbl {
 #editor button.spanselector {
     background: #444;
     font-size: 80%;
+    float: right;
 }
 #editor button.selectoron {
     background: yellow;
