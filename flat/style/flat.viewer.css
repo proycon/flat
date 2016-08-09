@@ -170,10 +170,10 @@ div#info td {
     font-style: italic;
 }
 div#info .class {
-    font-style: italic;
     color: #3323cd;
 }
 div#info .text {
+    font-style: italic;
     color: #333;
 }
 div#info .annotator {

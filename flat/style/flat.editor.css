@@ -70,10 +70,11 @@ div#editor .buttoncontainer span {
     padding-left: 10px;
     padding-right: 10px;
 }
-div#editor input.textedit, div#editor select.textedit {
+div#editor input.textedit, div#editor select.textedit, div#editor .text {
     color: #333;
+    font-style: italic;
 }
-div#editor input.classedit, div#editor select.classedit {
+div#editor input.classedit, div#editor select.classedit, div#editor .class {
     color: #3323cd;
 }
 input.changed {
