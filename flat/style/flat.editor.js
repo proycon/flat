@@ -258,7 +258,7 @@ function addhigherorderfield(index, type) {
         editdata[index].higherorder.push({'type:':type, 'value':""});
     }
     s += "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
-    $('#higherorderfields' + index +  "placeholder").html(s);
+    $('#higherorderfields' + index +  "placeholder")[0].outerHTML = s;
 }
 
 function getclassesasoptions(c, selected) {
