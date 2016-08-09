@@ -173,7 +173,7 @@ div#info .class {
     font-style: italic;
     color: #3323cd;
 }
-div #info .text {
+div#info .text {
     color: #333;
 }
 div#info .annotator {

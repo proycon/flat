@@ -189,7 +189,7 @@ function addeditforms(preselectcorrectionclass) {
             });
             s = s + "</select>";
         } else {
-            s = s +  "<input type=\"text\" id=\"editform" + editfields + "correctionclass\" class=\"editformcorrectionclass\" placeholder=\"(enter correction class)\" />";
+            s = s +  "<input type=\"text\" id=\"editform" + editfields + "correctionclass\" class=\"editformcorrectionclass classedit\" placeholder=\"(enter correction class)\" />";
         }
         editformcount++;
     }
@@ -401,11 +401,11 @@ function showeditor(element) {
                         }
                         if (repeatmode) text_value = repeatreference.text;
                         if (annotation.class != "current") {
-                            s = s + "Class: <input id=\"editfield" + editfields + "\" value=\"" + class_value + "\"/><br/>Text:";
+                            s = s + "Class: <input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/><br/>Text:";
                         } else {
-                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" value=\"" + class_value + "\"/>";
+                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/>";
                         }
-                        s = s + "<input id=\"editfield" + editfields + "text\" value=\"" + text_value + "\"/>";
+                        s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
                     } else {
                         //Annotation concerns a class
                         if (annotation.targets.length > 1) {
@@ -416,7 +416,7 @@ function showeditor(element) {
                         }
                         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
                             //Annotation type uses a closed set of options, present a drop-down list
-                            s = s + "<select id=\"editfield" + editfields + "\" >";
+                            s = s + "<select id=\"editfield" + editfields + "\" class=\"classedit\">";
                             s = s + "<option value=\"\"></option>";
                             setdefinitions[annotation.set].classorder.forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid];
@@ -435,7 +435,7 @@ function showeditor(element) {
                                 class_value = repeatreference.class;
                                 if (annotation.class != class_value) { repeat_preset = true; }
                             }
-                            s = s + "<input id=\"editfield" + editfields + "\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
+                            s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
                         }
                     }
                     if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
@@ -709,7 +709,7 @@ function addeditorfield(index) {
     s =  s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
     if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
         //drop-down field
-        s = s + "<select id=\"editfield" + editfields + "\">";
+        s = s + "<select id=\"editfield" + editfields + "\" class=\"classedit\">";
         var selected_option;
         if ((!repeatmode) || (repeatreference === null) || (repeatreference.class === "")) {
             s = s + "<option selected=\"selected\" value=\"\"></option>";
@@ -725,7 +725,7 @@ function addeditorfield(index) {
         s = s + "</select>";
     } else {
         //text-field
-        s = s + "<input id=\"editfield" + editfields + "\" value=\"\"/>";
+        s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"\"/>";
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
     s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
