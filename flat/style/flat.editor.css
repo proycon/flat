@@ -194,9 +194,6 @@ span.editforms button {
 span.editforms button.selected {
     background: #30677c;
 }
-span.text {
-    color: #7c7639;
-}
 #submitoptionscontainer {
     font-size: 60%;
     color: #666;
