@@ -112,7 +112,8 @@ div.classother span.lbl, div#classotherlegend {
     background: #ccc; /*gray*/
 }
 div.hover span.lbl, div.hover>span.ab {
-    background: #b9d8d9;
+    background: black;
+    color: yellow;
 }
 div#connectioninfo {
     position: fixed;

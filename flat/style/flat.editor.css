@@ -125,6 +125,7 @@ div#editor .addhigherordermenu {
 
 div.selected span.lbl {
     background: yellow;
+    color: black;
 }
 #editor button.spanselector {
     background: #444;
