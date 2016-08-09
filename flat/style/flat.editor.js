@@ -988,9 +988,11 @@ function editor_submit(addtoqueue) {
                 changes = true;
             }
             editdata[i].confidence = confidence;
+            editdata[i].changed = true;
         } else if (editdata[i].confidence != "NONE") {
             editdata[i].confidence = "NONE";
             changes = true;
+            editdata[i].changed = true;
         }
 
 
