@@ -475,8 +475,7 @@ function showinfo(element) {
                 s = "<div id=\"id\">" + getannotationtypename(annotations[element.id].self.type) + " &bull; " + element.id + " &bull; " + annotations[element.id].self.class + "</div><table>";
                 Object.keys(annotations[element.id]).forEach(function(annotationid){
                     annotation = annotations[element.id][annotationid];
-                    if (annotationid != "self") {
-                        if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
+                    if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
                                 label = getannotationtypename(annotation.type);
                                 if (annotation.set) {
@@ -488,7 +487,6 @@ function showinfo(element) {
                                 s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                                 s = s + renderannotation(annotation);
                                 s = s + "</td></tr>";
-                        }
                         }
                     }
                 });

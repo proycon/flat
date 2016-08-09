@@ -4,7 +4,7 @@ var annotationtypenames = {
     'lemma': 'Lemma',
     't': 'Text',
     'ph': 'Phonetic Content',
-    'w': 'Token',
+    'w': 'Word/Token',
     's': 'Sentence',
     'p': 'Paragraph',
     'div': 'Division',
