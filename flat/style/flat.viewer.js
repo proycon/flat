@@ -429,6 +429,17 @@ function renderannotation(annotation, norecurse) {
         });
         s = s + "</div>";
     }
+    if (annotation.children) {
+        for (i = 0; i < annotation.children.length; i++) {
+            if (annotation.children[i].type) {
+                if (annotation.children[i].type == "comment") {
+                    s = s + "<br/><span class=\"higherorder\">Comment: " + annotation.children[i].value + "</span>";
+                } else if (annotation.children[i].type == "desc") {
+                    s = s + "<br/><span class=\"higherorder\">Description: " + annotation.children[i].value + "</span>";
+                }
+            }
+        }
+    }
     var renderedcorrections = [];
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it

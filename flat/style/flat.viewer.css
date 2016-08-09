@@ -184,6 +184,10 @@ div#info .confidence {
     font-style: italic;
     color: #b363a7;
 }
+div#info .higherorder {
+    font-style: italic;
+    color: #21006d;
+}
 div#infoheader {
 
 }
