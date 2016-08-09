@@ -992,6 +992,22 @@ function editor_submit(addtoqueue) {
             editdata[i].changed = true;
         }
 
+        editdata[i].higherorderchanged = false;
+        if (editdata[i].higherorder.length > 0) {
+            for (j = 0; j < editdata[i].higherorder; j++) {
+                editdata[i].higherorder[j].changed = false;
+                if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
+                    var value = $('#higherorderfield' + i +'_' + j).val();
+                    if ((editdata[i].higherorder[j].value) && (editdata[i].higherorder[j].value != value)) {
+                        editdata[i].higherorder[j].value = value;
+                        editdata[i].higherorder[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    }
+                }
+            }
+
+        }
+
         if (editdata[i].changed) {
             if (editdata[i].editform == 'correction') {
                 //editdata[i].editform = 'correction';
@@ -1246,6 +1262,27 @@ function editor_submit(addtoqueue) {
             //add to queries
             queries.push(query);
 
+        }
+        if (editdata[i].higherorderchanged) {
+            for (var j = 0; j < editdata[i].higherorder.length; j++) {
+                if (editdata[i].higherorder[j].changed) {
+                    if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
+                        //comments and descriptions
+                        if (editdata[i].higherorder[j].id) {
+                            if (editdata[i].higherorder[j].value) {
+                                //edit
+                                queries.push("EDIT " + editdata[i].higherorder[j].type + " WITH text \"" + editdata[i].higherorder[j].value + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now WHERE id=" + editdata[i].higherorder[j].id + " FORMAT flat RETURN ancestor-focus");
+                            } else {
+                                //delete 
+                                queries.push("DELETE " + editdata[i].higherorder[j].type + " WHERE id=" + editdata[i].higherorder[j].id + " FORMAT flat RETURN ancestor-focus");
+                            }
+                        } else {
+                            //add 
+                            queries.push("ADD " + editdata[i].higherorder[j].type + " WITH text \"" + editdata[i].higherorder[j].value + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN focus");
+                        }
+                    }
+                }
+            }
         }
     }
 
