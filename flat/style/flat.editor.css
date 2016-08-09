@@ -261,3 +261,16 @@ div.confidenceeditor div {
     font-size: 80%;
     font-style: italic;
 }
+#notice {
+    display: none;
+    width: 150px;
+    position: fixed;
+    right: 20px;
+    top: 250px;
+    background: #d3d498;
+    color: black;
+    padding: 10px;
+    font-weight: bold;
+    border: 2px dashed black;
+    text-align: center;
+}

@@ -10,6 +10,13 @@ var repeatmode = false;
 var sentdata = []; //list of the last submitted edits (js objects, pre-fql)
 
 
+function notice(msg) {
+    $('#notice').html(msg);
+    $('#notice').show();
+    $('#notice').delay(3000).hide(300);
+}
+
+
 function toggleeditform(editform) {
     if (editforms[editform]) {
         editforms[editform] = false;
@@ -1296,16 +1303,27 @@ function editor_submit(addtoqueue) {
 
     if ($('#openinconsole').prop('checked')) {
         //delegate-to-console is selected, we are done and can close the editor and open the console
+        if (queries.length === 0) {
+            notice("No changes");
+        } else {
+            notice("Queued (" + queries.length + ")");
+        }
         closeeditor();
         openconsole();
         if (namespace == "testflat") editor_error("Delegating to console not supported by tests");
         return false;
     } else if (addtoqueue) {
         //add to queue selected, just close editor
+        if (queries.length === 0) {
+            notice("No changes");
+        } else {
+            notice("Queued (" + queries.length + ")");
+        }
         closeeditor();
         return false;
     } else if ((queries.length === 0)) {
         //discard, nothing changed
+        notice("No changes");
         closeeditor();
         if (namespace == "testflat") editor_error("No queries were formulated");
         return false;
@@ -1313,6 +1331,7 @@ function editor_submit(addtoqueue) {
     //==========================================================================================
     //Queries are submitted now
 
+    notice("Submitting (" + queries.length + ")");
     $('#wait span.msg').val("Submitting edits");
     $('#wait').show();
 
@@ -1328,16 +1347,19 @@ function editor_submit(addtoqueue) {
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
+                    notice("Error");
                     editor_error("Received error from document server: " + data.error);
                 } else {
                     editfields = 0;
                     closeeditor();
+                    notice("Submitted");
                     update(data);
                     $('#saveversion').show();
                 }
             },
             error: function(req,err,exception) {
                 $('#wait').hide();
+                notice("Error");
                 editor_error("Editor submission failed: " + req + " " + err + " " + exception);
             },
             dataType: "json"
@@ -1350,6 +1372,7 @@ function editor_submit(addtoqueue) {
 function console_submit(savefunction) {
     var queries = $('#queryinput').val().split("\n");
     if ((queries.length === 1) && (queries[0] === "")) {
+        notice("No changes");
         closeeditor();
         if (arguments.length === 1) savefunction();
         return;
@@ -1368,12 +1391,14 @@ function console_submit(savefunction) {
         success: function(data) {
             if (data.error) {
                 $('#wait').hide();
+                notice("Error");
                 editor_error("Received error from document server whilst submitting queued queries: " + data.error);
             } else {
                 $('.queued').removeClass('queued');
                 $('#queryinput').val("");
                 editfields = 0;
                 closeeditor();
+                notice("Submitted");
                 update_queue_info();
                 update(data); //will unhide the wait shroud
                 if (arguments.length === 1) {
@@ -1385,6 +1410,7 @@ function console_submit(savefunction) {
         },
         error: function(req,err,exception) {
             $('#wait').hide();
+            notice("Error");
             editor_error("Query failed: " + err + " " + exception + ": " + req.responseText);
         },
         dataType: "json"
@@ -1403,10 +1429,12 @@ function saveversion() {
         data: {'message': $('#versionlabel').val() },
         success: function(data) {
             $('#wait').hide();
+            notice("Saved");
             $('#saveversion').hide();
         },
         error: function(req,err,exception) {
             $('#wait').hide();
+            notice("Error");
             editor_error("save failed: " + req + " " + err + " " + exception);
         },
         dataType: "json"
