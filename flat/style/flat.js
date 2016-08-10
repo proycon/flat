@@ -109,16 +109,16 @@ function hash(s){
 function getannotationid(annotation) {
     if (annotation.self) {
         return "self";
-    } 
+    }
     if (annotation.id)  {
         return annotation.id;
-    } 
+    }
     if (annotation.type === 't') {
         return annotation.type + '/' + annotation.set + ':' + annotation.class;
-    } 
+    }
     if (annotation.set) {
         return annotation.type + '/' + annotation.set;
-    } 
+    }
     if (annotation.type) {
         return annotation.type;
     }
@@ -255,7 +255,7 @@ function rendertextclass() {
 
 function setupcorrection(correction) {
     if (!((correction.original) || (correction.new) || (correction.current) || (correction.suggestions))) {
-        //process 
+        //process
         correction.children.forEach(function(correctionchild){
             if (correctionchild.type == "new") {
                 correction.new = correctionchild.children;
@@ -310,7 +310,7 @@ function update(data) {
     if (data.elements) {
         reregisterhandler = false;
         data.elements.forEach(function(returnitem){
-            if ((returnitem.html) && (returnitem.elementid)) { 
+            if ((returnitem.html) && (returnitem.elementid)) {
                 var selector = $('#' + valid(returnitem.elementid));
                 if (selector.length == 1) {
                     //structure exists
@@ -378,7 +378,7 @@ function loadcontent(perspective, ids, start, end) {
         }
     }
     query += " FORMAT flat";
-    
+
 
     $.ajax({
         type: 'POST',
@@ -386,7 +386,7 @@ function loadcontent(perspective, ids, start, end) {
         contentType: "application/json",
         //processData: false,
         headers: {'X-sessionid': sid },
-        data: JSON.stringify( { 'queries': [query]}), 
+        data: JSON.stringify( { 'queries': [query]}),
         success: function(data) {
             if (data.error) {
                 $('#wait').hide();
@@ -404,7 +404,7 @@ function loadcontent(perspective, ids, start, end) {
                 $('#wait').hide();
             }
         },
-        error: function(req,err,exception) { 
+        error: function(req,err,exception) {
             $('#wait').hide();
             alert("Obtaining document data failed: " + req + " " + err + " " + exception);
         },
@@ -419,9 +419,9 @@ function settextclassselector(data) {
             var s = "<span class=\"title\">Text class</span><select id=\"textclass\">";
             var found = false;
             var hascurrent = false;
-            for (i = 0; i < data.textclasses.length; i++) { 
+            for (i = 0; i < data.textclasses.length; i++) {
                 if (textclass == data.textclasses[i]) {
-                    found = true; 
+                    found = true;
                 }
                 if (data.textclasses[i] == 'current') {
                     hascurrent = true;
@@ -429,12 +429,12 @@ function settextclassselector(data) {
             }
             if (!found) {
                 if (hascurrent) {
-                    textclass = "current";  
-                } else {  
+                    textclass = "current";
+                } else {
                     textclass = data.textclasses[0];
                 }
             }
-            for (i = 0; i < data.textclasses.length; i++) { 
+            for (i = 0; i < data.textclasses.length; i++) {
                 var extra ="";
                 if (textclass == data.textclasses[i]) {
                     extra = " selected=\"selected\"";
@@ -453,9 +453,9 @@ function settextclassselector(data) {
 }
 
 $(document).mousemove( function(e) {
-   mouseX = e.pageX; 
+   mouseX = e.pageX;
    mouseY = e.pageY;
-});  
+});
 
 function rendertoc(tocitem, depth) {
     var opts = "<option value=\"div:" + tocitem.id + "\"";
@@ -641,6 +641,10 @@ function auto_grow(element) {
     element.style.height = (element.scrollHeight)+"px";
 }
 
+function escape_fql_value(v) {
+    return v.replace('"','\\"');
+}
+
 $(function() {
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){
@@ -658,7 +662,7 @@ $(function() {
                 perspective_start = slices[perspective][0];
                 perspective_end = slices[perspective][1];
             }
-            loadcontent(perspective, perspective_ids, perspective_start, perspective_end); 
+            loadcontent(perspective, perspective_ids, perspective_start, perspective_end);
         }
         if (function_exists(mode + '_oninit')) {
             f = eval(mode + '_oninit');

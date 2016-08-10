@@ -1008,6 +1008,11 @@ function editor_submit(addtoqueue) {
                 if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
                     var value = $('#higherorderfield' + i +'_' + j).val();
                     if (((editdata[i].higherorder[j].value) && (editdata[i].higherorder[j].value != value)) || (!editdata[i].higherorder[j].value)) {
+                        if (editdata[i].higherorder[j].value) { 
+                            editdata[i].higherorder[j].oldvalue =  editdata[i].higherorder[j].value;
+                        } else {
+                            editdata[i].higherorder[j].oldvalue = null;
+                        }
                         editdata[i].higherorder[j].value = value;
                         editdata[i].higherorder[j].changed = true;
                         editdata[i].higherorderchanged = true;
@@ -1129,7 +1134,7 @@ function editor_submit(addtoqueue) {
                 action = "DELETE";
                 query += "DELETE w ID " + sortededittargets[0];
                 if (editdata[i].editform == "correction") {
-                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
                 }
                 returntype = "ancestor-focus";
             } else {
@@ -1172,12 +1177,12 @@ function editor_submit(addtoqueue) {
                     if (editdata[i].insertright) { //APPEND (insertion)
                         query += " w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //PREPEND (insertion)
                         query += " w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else { //normal behaviour
                         query += " " +editdata[i].type;
@@ -1187,31 +1192,31 @@ function editor_submit(addtoqueue) {
                             query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                            query += " WITH text \"" + editdata[i].text + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
                             //no deletion
-                            query += " WITH class \"" + editdata[i].class + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     }
                 } else { //substitute
                     if (editdata[i].insertright) { //insertright as substitute
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + editdata[i].insertright + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //insertleft as substitue
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + editdata[i].insertleft + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         }
                     } if (editdata[i].dosplit) {
                         parts = editdata[i].text.split(" ");
                         for (var j = 0; j < parts.length; j++) { //SPLIT
                             if (j > 0) query += " ";
-                            query += "SUBSTITUTE w WITH text \"" + parts[j] + "\"";
+                            query += "SUBSTITUTE w WITH text \"" + escape_fql_value(parts[j]) + "\"";
                         }
                     } else if (editdata[i].targets.length > 1) { //MERGE
-                        query += "SUBSTITUTE w WITH text \"" + editdata[i].text + "\"";
+                        query += "SUBSTITUTE w WITH text \"" + escape_fql_value(editdata[i].text) + "\"";
                     }
                 }
                 if (isspan && editdata[i].id && (action == "EDIT")) {
@@ -1233,7 +1238,7 @@ function editor_submit(addtoqueue) {
 
                 //set AS expression
                 if ((editdata[i].editform == "correction") && (!editdata[i].correctionclasschanged)) {
-                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + escape_fql_value(editdata[i].correctionclass) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
                 } else if (editdata[i].editform == "alternative") {
                     query += " (AS ALTERNATIVE)";
                 }
@@ -1277,17 +1282,17 @@ function editor_submit(addtoqueue) {
                 if (editdata[i].higherorder[j].changed) {
                     if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
                         //comments and descriptions
-                        if (editdata[i].higherorder[j].id) {
+                        if (editdata[i].higherorder[j].oldvalue) {
                             if (editdata[i].higherorder[j].value) {
                                 //edit
-                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WITH text \"" + editdata[i].higherorder[j].value + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now WHERE id=" + editdata[i].higherorder[j].id + " FORMAT flat RETURN ancestor-focus");
+                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now WHERE text=\"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
                                 queries.push("USE " + namespace + "/" + docid + " DELETE " + editdata[i].higherorder[j].type + " WHERE id=" + editdata[i].higherorder[j].id + " FORMAT flat RETURN ancestor-focus");
                             }
                         } else {
                             //add 
-                            queries.push("USE " + namespace + "/" + docid + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + editdata[i].higherorder[j].value + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN focus");
+                            queries.push("USE " + namespace + "/" + docid + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
                         }
                     }
                 }
