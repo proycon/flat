@@ -1285,10 +1285,10 @@ function editor_submit(addtoqueue) {
                         if (editdata[i].higherorder[j].oldvalue) {
                             if (editdata[i].higherorder[j].value) {
                                 //edit
-                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
+                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now  FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
-                                queries.push("USE " + namespace + "/" + docid + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = " + escape_fql_value(editdata[i].higherorder[j].oldvalue) + " FORMAT flat RETURN ancestor-focus");
+                                queries.push("USE " + namespace + "/" + docid + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
                             }
                         } else {
                             //add 
