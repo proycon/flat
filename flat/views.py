@@ -149,7 +149,7 @@ def query(request,namespace, docid):
                 try:
                     query = fql.Query(query)
                 except fql.SyntaxError as e:
-                    return HttpResponseForbidden("FQL Syntax Error: " + e)
+                    return HttpResponseForbidden("FQL Syntax Error: " + str(e))
                 needwritepermission = query.declarations or query.action and query.action.action != "SELECT"
             else:
                 needwritepermission = False
