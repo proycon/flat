@@ -804,7 +804,7 @@ function revert(commithash) {
         },
         error: function(req,err,exception) {
             $('#wait').hide();
-            editor_error("Unable to revert");
+            editor_error("Unable to revert: " + req.responseText);
         },
         dataType: "json"
     });
@@ -1285,10 +1285,10 @@ function editor_submit(addtoqueue) {
                         if (editdata[i].higherorder[j].oldvalue) {
                             if (editdata[i].higherorder[j].value) {
                                 //edit
-                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now WHERE text=\"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
+                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
-                                queries.push("USE " + namespace + "/" + docid + " DELETE " + editdata[i].higherorder[j].type + " WHERE id=" + editdata[i].higherorder[j].id + " FORMAT flat RETURN ancestor-focus");
+                                queries.push("USE " + namespace + "/" + docid + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = " + escape_fql_value(editdata[i].higherorder[j].oldvalue) + " FORMAT flat RETURN ancestor-focus");
                             }
                         } else {
                             //add 
@@ -1367,7 +1367,7 @@ function editor_submit(addtoqueue) {
             error: function(req,err,exception) {
                 $('#wait').hide();
                 notice("Error");
-                editor_error("Editor submission failed: " + req + " " + err + " " + exception);
+                editor_error("Editor submission failed: " + req.responseText);
             },
             dataType: "json"
         });
@@ -1442,7 +1442,7 @@ function saveversion() {
         error: function(req,err,exception) {
             $('#wait').hide();
             notice("Error");
-            editor_error("save failed: " + req + " " + err + " " + exception);
+            editor_error("save failed: " + req.responseText);
         },
         dataType: "json"
     });
@@ -1572,7 +1572,7 @@ function editor_oninit() {
             error: function(req,err,exception) {
                 $('#wait').hide();
                 $('#newdeclaration').hide();
-                editor_error("Declaration failed: " + req + " " + err + " " + exception);
+                editor_error("Declaration failed: " + req.responseText);
             },
             dataType: "json"
         });
