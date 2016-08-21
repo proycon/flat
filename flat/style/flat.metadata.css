@@ -27,3 +27,10 @@
 #metadata table input {
     width: 95%;
 }
+#metadata .buttons {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
