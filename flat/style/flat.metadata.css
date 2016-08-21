@@ -1,4 +1,5 @@
 #metadata h2 {
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
 }
@@ -7,6 +8,7 @@
     margin-left: auto;
     margin-right: auto;
     border: 1px solid #416887;
+    background: #b3d0db;
 }
 #metadata .key {
     width: 29%;
