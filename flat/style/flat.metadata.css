@@ -1,0 +1,27 @@
+#metadata h2 {
+    margin-left: auto;
+    margin-right: auto;
+}
+#metadata table {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #416887;
+}
+#metadata .key {
+    width: 29%;
+}
+#metadata .key  input {
+    color: #416887;
+    font-style: italic;
+    font-weight: bold;
+}
+#metadata .value {
+    width: 69%;
+}
+#metadata .value  input {
+    font-style: italic;
+}
+#metadata table input {
+    width: 95%;
+}
