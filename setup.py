@@ -26,7 +26,7 @@ setup(
     license = "GPL",
     keywords = "flat linguistic annotation nlp computational_linguistics folia annotator web",
     url = "https://github.com/proycon/flat",
-    packages=['flat','flat.modes','flat.modes.structureeditor','flat.modes.viewer','flat.modes.editor','flat.users'],
+    packages=['flat','flat.modes','flat.modes.structureeditor','flat.modes.viewer','flat.modes.editor','flat.modes.metadata','flat.users'],
     long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 4 - Beta",

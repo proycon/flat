@@ -117,6 +117,7 @@ MODES = [
     ('viewer','Viewer'),
     ('editor','Annotation Editor'),
     ('structureeditor','Structure Editor'),
+    ('metadata','Metadata Editor'),
 ]
 
 
