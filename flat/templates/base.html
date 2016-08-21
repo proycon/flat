@@ -38,6 +38,9 @@
             {% if setdefinitions %}
             setdefinitions = {{ setdefinitions|safe }};
             {% endif %}
+            {% if metadata %}
+            metadata = {{ metadata|safe }};
+            {% endif %}
             {% if toc %}
             toc = {{ toc|safe }};
             {% endif %}
