@@ -42,6 +42,7 @@ Features
 * Supports FoLiA Set Definitions to display label sets. Sets are not predefined
   in FoLiA and anybody can create their own.
 * Supports Token Annotation and Span Annotation
+* Simple metadata editor for editing/adding arbitrary metadata to a document
 
 ============================================
 Architecture
