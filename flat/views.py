@@ -95,6 +95,7 @@ def initdoc(request, namespace, docid, mode, template, context=None):
     flatargs = {
         'setdefinitions': True,
         'declarations': True,
+        'metadata': True,
         'toc': True,
         'slices': request.GET.get('slices',settings.CONFIGURATIONS[request.session['configuration']].get('slices','p:25,s:100')), #overriden either by configuration or by user
         'customslicesize': 0, #disabled for initial probe
