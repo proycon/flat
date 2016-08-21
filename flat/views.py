@@ -146,7 +146,7 @@ def query(request,namespace, docid):
             elif docselector[0] != namespace:
                 return HttpResponseForbidden("Query would affect a different namespace than your current one, forbidden!")
 
-            if query != "GET" and query[:4] != "CQL ":
+            if query != "GET" and query[:4] != "CQL " and query[:4] != "META":
                 #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
                 try:
                     query = fql.Query(query)
