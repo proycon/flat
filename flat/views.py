@@ -30,6 +30,7 @@ def getcontext(request,namespace,docid, doc, mode):
             'perspectives_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]['perspectives']),
             'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
+            'metadata': json.dumps(doc['metadata']) if 'metadata' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
             'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",
             'rtl': True if 'rtl' in doc and doc['rtl'] else False,
