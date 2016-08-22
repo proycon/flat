@@ -80,7 +80,7 @@ function setaddablefields() {
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
-                if ((setdefinitions) && (setdefinition[set]) && (setdefinitions[set].label)) {
+                if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
                     label = setdefinitions[set].label;
                 } else {
                     label = getannotationtypename(annotationtype);
@@ -376,7 +376,7 @@ function showeditor(element) {
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
 
                     //Get the human-presentable label for the annotation type
-                    if ((setdefinitions) && (setdefinition[annotation.set]) && (setdefinitions[annotation.set].label)) {
+                    if ((setdefinitions) && (setdefinitions[annotation.set]) && (setdefinitions[annotation.set].label)) {
                         label = setdefinitions[annotation.set].label;
                     } else {
                         label = getannotationtypename(annotation.type);
@@ -695,7 +695,7 @@ function closeeditor() {
 
 function addeditorfield(index) {
     //add a new field to the editor, populated by setaddablefields()
-    if ((setdefinitions) && (setdefinition[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].label)) {
+    if ((setdefinitions) && (setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].label)) {
         label = setdefinitions[editoraddablefields[index].set].label;
     } else if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
@@ -910,7 +910,7 @@ function editor_loadmenus() {
             if ((configuration.initialeditannotations === true) || (configuration.initialeditannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialeditannotations.indexOf(annotationtype) != -1)) {
                 editannotations[annotationtype + "/" + set] = true;
             }
-            if ((setdefinitions) && (setdefinition[set]) && (setdefinitions[set].label)) {
+            if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
                 label = setdefinitions[set].label;
             } else {
                 label = getannotationtypename(annotationtype);

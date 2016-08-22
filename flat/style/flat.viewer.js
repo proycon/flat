@@ -477,7 +477,7 @@ function showinfo(element) {
                     annotation = annotations[element.id][annotationid];
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                                if ((setdefinitions) && (setdefinition[annotation.set]) && (setdefinitions[annotation.set].label)) {
+                                if ((setdefinitions) && (setdefinitions[annotation.set]) && (setdefinitions[annotation.set].label)) {
                                     label = setdefinitions[annotation.set].label;
                                 } else {
                                     label = getannotationtypename(annotation.type);
@@ -943,7 +943,7 @@ function viewer_loadmenus() {
             } else {
                 state = "";
             }
-            if ((setdefinitions) && (setdefinition[set]) && (setdefinitions[set].label)) {
+            if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
                 label = setdefinitions[set].label;
             } else {
                 label = getannotationtypename(annotationtype);
