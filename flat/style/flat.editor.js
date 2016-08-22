@@ -999,7 +999,7 @@ function editor_submit(addtoqueue) {
         }
         if ($('#confidencecheck' + i).is(':checked')) {
             var confidence = $('#confidenceslider' + i).slider('value') / 100;
-            if (confidence != editdata[i].confidence) {
+            if ((confidence != editdata[i].confidence) && (Math.abs(editdata[i].confidence - confidence) >= 0.01))  { //compensate for lack of slider precision: very small changes do not count
                 changes = true;
                 editdata[i].changed = true;
             }
