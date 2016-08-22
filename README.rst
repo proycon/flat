@@ -202,6 +202,12 @@ After all this is done, the *development server* can be started now using your `
 FLAT will advertise the host and port it is running on (as configured in your
 ``settings.py``), and you can access it in your browser.
 
+---------------------------
+Tests
+---------------------------
+
+FLAT has integration and automatic interface tests for the annotation editor, point your
+browser to ``http://127.0.0.1:8000/editor/testflat/testflat`` to execute all tests.
 
 ---------------------------
 Deployment in Production
