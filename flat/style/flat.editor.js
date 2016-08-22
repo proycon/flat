@@ -1001,9 +1001,9 @@ function editor_submit(addtoqueue) {
             var confidence = $('#confidenceslider' + i).slider('value') / 100;
             if (confidence != editdata[i].confidence) {
                 changes = true;
+                editdata[i].changed = true;
             }
             editdata[i].confidence = confidence;
-            editdata[i].changed = true;
         } else if (editdata[i].confidence != "NONE") {
             editdata[i].confidence = "NONE";
             changes = true;
