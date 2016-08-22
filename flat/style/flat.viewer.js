@@ -6,7 +6,7 @@ var annotatordetails = false; //show annotor details
 var showoriginal = false; //show originals instead of corrections
 var showdeletions = false; //show deletions
 var hover = null;
-var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from high to low
+var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from top to bottom
 var hoverstr = null; //ID of string element we're currently hovering over
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 var NROFCLASSES = 7; //number of coloured classes
@@ -477,7 +477,11 @@ function showinfo(element) {
                     annotation = annotations[element.id][annotationid];
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                                label = getannotationtypename(annotation.type);
+                                if ((setdefinitions) && (setdefinition[annotation.set]) && (setdefinitions[annotation.set].label)) {
+                                    label = setdefinitions[annotation.set].label;
+                                } else {
+                                    label = getannotationtypename(annotation.type);
+                                }
                                 if (annotation.set) {
                                     setname = annotation.set;
                                 } else {
@@ -939,7 +943,11 @@ function viewer_loadmenus() {
             } else {
                 state = "";
             }
-            label = getannotationtypename(annotationtype);
+            if ((setdefinitions) && (setdefinition[set]) && (setdefinitions[set].label)) {
+                label = setdefinitions[set].label;
+            } else {
+                label = getannotationtypename(annotationtype);
+            }
             s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
             if (globannotationsorder.indexOf(annotationtype) != -1) {
                 if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {

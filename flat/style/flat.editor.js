@@ -78,9 +78,13 @@ function setaddablefields() {
     editoraddablefields_options = "";
     editoraddablefields = [];
     Object.keys(declarations).forEach(function(annotationtype){
-        label = getannotationtypename(annotationtype);
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
+                if ((setdefinitions) && (setdefinition[set]) && (setdefinitions[set].label)) {
+                    label = setdefinitions[set].label;
+                } else {
+                    label = getannotationtypename(annotationtype);
+                }
                 setname = shorten(set);
                 //check if it already exists
                 found = false;
@@ -372,7 +376,12 @@ function showeditor(element) {
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
 
                     //Get the human-presentable label for the annotation type
-                    label = getannotationtypename(annotation.type);
+                    if ((setdefinitions) && (setdefinition[annotation.set]) && (setdefinitions[annotation.set].label)) {
+                        label = setdefinitions[annotation.set].label;
+                    } else {
+                        label = getannotationtypename(annotation.type);
+                    }
+
                     if (annotation.set) {
                         setname = annotation.set;
                     } else {
@@ -686,7 +695,9 @@ function closeeditor() {
 
 function addeditorfield(index) {
     //add a new field to the editor, populated by setaddablefields()
-    if (annotationtypenames[editoraddablefields[index].type]) {
+    if ((setdefinitions) && (setdefinition[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].label)) {
+        label = setdefinitions[editoraddablefields[index].set].label;
+    } else if (annotationtypenames[editoraddablefields[index].type]) {
         label = annotationtypenames[editoraddablefields[index].type];
     } else {
         label = editoraddablefields[index].type;
@@ -899,7 +910,11 @@ function editor_loadmenus() {
             if ((configuration.initialeditannotations === true) || (configuration.initialeditannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialeditannotations.indexOf(annotationtype) != -1)) {
                 editannotations[annotationtype + "/" + set] = true;
             }
-            label = getannotationtypename(annotationtype);
+            if ((setdefinitions) && (setdefinition[set]) && (setdefinitions[set].label)) {
+                label = setdefinitions[set].label;
+            } else {
+                label = getannotationtypename(annotationtype);
+            }
             s = s +  "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
         }
       });
