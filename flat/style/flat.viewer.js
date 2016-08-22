@@ -629,7 +629,9 @@ function setclasscolors() {
     var legendtype = annotationfocus.type;
     var legendset = annotationfocus.set;
     var legendtitle;
-    if (annotationtypenames[legendtype]) {
+    if ((setdefinitions[legendset]) && (setdefinitions[legendset].label)) {
+        legendtitle = setdefinitions[legendset].label;
+    } else if (annotationtypenames[legendtype]) {
         legendtitle = annotationtypenames[legendtype];
     } else {
         legendtitle = annotationfocus.type;
