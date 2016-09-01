@@ -223,8 +223,8 @@ function renderhigherorderfields(index, annotation) {
         //Add menu for adding higher-order annotation
         s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
         s += "<ul>";
-        s += "<li onclick=\"addhigherorderfield(" + index + ",'comment')\">Add Comment</li>";
-        s += "<li onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
+        s += "<li id=\"editoraddhigherorder" + index + "_comment\" onclick=\"addhigherorderfield(" + index + ",'comment')\">Add Comment</li>";
+        s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
         s += "</ul>";
         s += "</div>";
 
