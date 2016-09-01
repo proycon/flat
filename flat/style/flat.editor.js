@@ -999,7 +999,7 @@ function editor_submit(addtoqueue) {
         }
         if ($('#confidencecheck' + i).is(':checked')) {
             var confidence = $('#confidenceslider' + i).slider('value') / 100;
-            if ((confidence != editdata[i].confidence) && (Math.abs(editdata[i].confidence - confidence) >= 0.01))  { //compensate for lack of slider precision: very small changes do not count
+            if ((confidence != editdata[i].confidence) && ((editdata[i].confidence == "NONE") || (Math.abs(editdata[i].confidence - confidence) >= 0.01)))  { //compensate for lack of slider precision: very small changes do not count
                 changes = true;
                 editdata[i].changed = true;
             }
@@ -1122,7 +1122,13 @@ function editor_submit(addtoqueue) {
             var returntype = "target";
             var query = useclause + " ";
             var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
-            if (isspan) returntype = "ancestor-target";
+            if (isspan) {
+                if (editdata[i].id) {
+                    returntype = "ancestor-focus";
+                } else {
+                    returntype = "ancestor-target";
+                }
+            }
             if ((editdata[i].correctionclasschanged) && (!editdata[i].respan)) {
                 //TODO: this will change ALL corrections under the element, too generic
                 action = "EDIT";
