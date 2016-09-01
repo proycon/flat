@@ -1014,6 +1014,7 @@ function editor_submit(addtoqueue) {
         if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
             //detect changes in span, and set the changed flag
             editdata[i].changed = true;
+            editdata[i].respan = true;
         }
 
         editdata[i].higherorderchanged = false;
@@ -1122,7 +1123,7 @@ function editor_submit(addtoqueue) {
             }
             var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
             if (isspan) returntype = "ancestor-target";
-            if (editdata[i].correctionclasschanged) {
+            if ((editdata[i].correctionclasschanged) && (!editdata[i].respan)) {
                 //TODO: this will change ALL corrections under the element, too generic
                 action = "EDIT";
                 query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
@@ -1234,7 +1235,7 @@ function editor_submit(addtoqueue) {
                         query += "SUBSTITUTE w WITH text \"" + escape_fql_value(editdata[i].text) + "\"";
                     }
                 }
-                if (isspan && editdata[i].id && (action == "EDIT")) {
+                if (editdata[i].respan) { //isspan && editdata[i].id && (action == "EDIT")) {
                     //we edit a span annotation, edittargets reflects the new span:
                     if (sortededittargets.length > 0) {
                         query += " RESPAN ";
@@ -1252,7 +1253,7 @@ function editor_submit(addtoqueue) {
 
 
                 //set AS expression
-                if ((editdata[i].editform == "correction") && (!editdata[i].correctionclasschanged)) {
+                if ((editdata[i].editform == "correction") && ((!editdata[i].correctionclasschanged) || (editdata[i].respan))) {
                     query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + escape_fql_value(editdata[i].correctionclass) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
                 } else if (editdata[i].editform == "alternative") {
                     query += " (AS ALTERNATIVE)";
