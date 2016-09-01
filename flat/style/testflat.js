@@ -319,6 +319,13 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
     ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Adding a comment to a span annotation",function(assert){
+    testinit("comment_span",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.3');
+    ui_click('#editoraddhigherorder4_comment');
+    ui_edit('#higherorderfield4_0',"This is a comment"); 
+    ui_click('#editorsubmit'); 
+});
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
@@ -457,7 +464,10 @@ function testeval(data) {
         } else {
             globalassert.ok(false, "Finding named entity on new word");
         }
-
+    } else if ((testname == "comment_span") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children.length, 1);
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].type, "comment");
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].value, "This is a comment");
     }
     
     console.log("(testeval) (qunit.start)");

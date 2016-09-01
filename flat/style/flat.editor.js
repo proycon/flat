@@ -1083,7 +1083,12 @@ function editor_submit(addtoqueue) {
     }
 
     var queries = []; //will hold the FQL queries to be send to the backend
-
+    var useclause;
+    if ((namespace == "testflat") && (docid != "manual")) {
+        useclause = "USE testflat/" + testname;
+    } else {
+        useclause = "USE " + namespace + "/" + docid;
+    }
 
     //gather edits that changed, and sort targets
     sentdata = []; //will be used in repeatmode
@@ -1115,12 +1120,7 @@ function editor_submit(addtoqueue) {
             //compose query
             var action = "";
             var returntype = "target";
-            var query = "";
-            if ((namespace == "testflat") && (docid != "manual")) {
-                query += "USE testflat/" + testname + " ";
-            } else {
-                query += "USE " + namespace + "/" + docid + " ";
-            }
+            var query = useclause + " ";
             var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
             if (isspan) returntype = "ancestor-target";
             if ((editdata[i].correctionclasschanged) && (!editdata[i].respan)) {
@@ -1301,14 +1301,14 @@ function editor_submit(addtoqueue) {
                         if (editdata[i].higherorder[j].oldvalue) {
                             if (editdata[i].higherorder[j].value) {
                                 //edit
-                                queries.push("USE " + namespace + "/" + docid + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now  FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now  FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
-                                queries.push("USE " + namespace + "/" + docid + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
                             }
                         } else {
                             //add 
-                            queries.push("USE " + namespace + "/" + docid + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
                         }
                     }
                 }
