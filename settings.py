@@ -6,6 +6,7 @@
 #---------------------------------------------------------------------------
 #               PREAMBLE (don't edit this part)
 #---------------------------------------------------------------------------
+from django import VERSION as DJANGOVERSION
 from socket import gethostname
 import os.path
 from os import environ
@@ -243,7 +244,6 @@ DEBUG = True #Set to False for production environments!!!!
 # Feel free to tweak settings here, but the defaults should be enough
 
 MANAGERS = ADMINS
-TEMPLATE_DEBUG = DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -349,6 +349,31 @@ for mode,_ in MODES:
         TEMPLATE_DIRS.append(BASE_DIR + '/flat/modes/' + mode + '/templates/')
 
 TEMPLATE_DIRS = tuple(TEMPLATE_DIRS)
+
+if DJANGOVERSION[0] > 1 or DJANGOVERSION[1] >=8: #Django 1.8 and above
+   TEMPLATES = [{
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'DIRS': TEMPLATE_DIRS,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },]
+   del TEMPLATE_DIRS
+else:
+    # List of callables that know how to import templates from various sources.
+    TEMPLATE_LOADERS = (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    #     'django.template.loaders.eggs.Loader',
+    )
+    TEMPLATE_DEBUG = DEBUG
+
 
 INSTALLED_APPS = [
     'django.contrib.auth',

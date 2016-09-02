@@ -6,6 +6,7 @@
 #---------------------------------------------------------------------------
 #               PREAMBLE (don't edit this part)
 #---------------------------------------------------------------------------
+from django import VERSION as DJANGOVERSION
 from socket import gethostname
 import os.path
 from os import environ
@@ -345,7 +346,6 @@ SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
 
 
 MANAGERS = ADMINS
-TEMPLATE_DEBUG = DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -415,12 +415,6 @@ STATICFILES_FINDERS = (
 
 LOGIN_URL = "/login/"
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -448,6 +442,31 @@ for mode,_ in MODES:
         TEMPLATE_DIRS.append(BASE_DIR + '/modes/' + mode + '/templates/')
 
 TEMPLATE_DIRS = tuple(TEMPLATE_DIRS)
+
+if DJANGOVERSION[0] > 1 or DJANGOVERSION[1] >=8: #Django 1.8 and above
+   TEMPLATES = [{
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'DIRS': TEMPLATE_DIRS,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },]
+   del TEMPLATE_DIRS
+else:
+    # List of callables that know how to import templates from various sources.
+    TEMPLATE_LOADERS = (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    #     'django.template.loaders.eggs.Loader',
+    )
+    TEMPLATE_DEBUG = DEBUG
+
 
 
 INSTALLED_APPS = [
