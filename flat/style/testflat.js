@@ -128,6 +128,20 @@ QUnit.asyncTest("Text Change", function(assert){
     ui_click('#editform1direct'); 
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Class change (token annotation)", function(assert){
+    testinit("classchange_token",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.2');
+    ui_edit('#editfield3',"mijn");  //lemma
+    ui_click('#editform3direct'); 
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Class change (span annotation)", function(assert){
+    testinit("classchange_span",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.3');
+    ui_choose('#editfield4',21); 
+    ui_click('#editform4direct'); 
+    ui_click('#editorsubmit'); 
+});
 QUnit.asyncTest("Text Change (Merging multiple words)", function(assert){
     testinit("textmerge",assert);
     ui_click('#untitleddoc.p.3.s.1.w.5');
@@ -230,6 +244,28 @@ QUnit.asyncTest("Span deletion", function(assert){
     ui_click('#editform8direct'); 
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Setting confidence",function(assert){
+    testinit("confidence_set",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.3');
+    ui_click('#confidencecheck3');
+    $('#confidenceslider3').slider('value',88);
+    ui_click('#editform3direct'); 
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Editing confidence",function(assert){
+    testinit("confidence_edit",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.3');
+    $('#confidenceslider4').slider('value',88);
+    ui_click('#editform4direct'); 
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Unsetting confidence",function(assert){
+    testinit("confidence_unset",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.3');
+    ui_click('#confidencecheck4');
+    ui_click('#editform4direct'); 
+    ui_click('#editorsubmit'); 
+});
 QUnit.asyncTest("[As correction] Text Change", function(assert){
     testinit("correction_textchange",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
@@ -319,6 +355,14 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
     ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("[Higher order] Adding a comment to a span annotation",function(assert){
+    testinit("comment_span",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.3');
+    ui_click('#editform4direct'); 
+    ui_click('#editoraddhigherorder4_comment');
+    ui_edit('#higherorderfield4_0',"This is a comment"); 
+    ui_click('#editorsubmit'); 
+});
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
@@ -349,6 +393,10 @@ function testeval(data) {
 
     if ((testname == "textchange") || (testname == "correction_textchange")) {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
+    } else if (testname == "classchange_token") {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "mijn");
+    } else if (testname == "classchange_span") {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].class, "X");
     } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
     } else if ((testname == "correction_textmerge")) {
@@ -457,7 +505,16 @@ function testeval(data) {
         } else {
             globalassert.ok(false, "Finding named entity on new word");
         }
-
+    } else if ((testname == "comment_span") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children.length, 1);
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].type, "comment");
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].value, "This is a comment");
+    } else if ((testname == "confidence_set") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].confidence, 0.88);
+    } else if ((testname == "confidence_edit") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, 0.88);
+    } else if ((testname == "confidence_unset") ) {
+        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, undefined);
     }
     
     console.log("(testeval) (qunit.start)");
