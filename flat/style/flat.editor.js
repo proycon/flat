@@ -1265,6 +1265,7 @@ function editor_submit(addtoqueue) {
                     query += " (AS ALTERNATIVE)";
                 }
 
+
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
                 } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
@@ -1314,7 +1315,35 @@ function editor_submit(addtoqueue) {
                             }
                         } else {
                             //add 
-                            queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            if (editdata[i].id !== undefined) {
+                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            } else {
+                                //undefined ID, means parent annotation is new as well, select it by value:
+                                parentselector = editdata[i].type;
+                                if ((editdata[i].id) && ( editdata[i].editform != "new")) {
+                                    parentselector += " ID " + editdata[i].id;
+                                } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
+                                    parentselector += " OF " + editdata[i].set;
+                                }
+                                if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
+                                    parentselector += " WHERE text = \"" + escape_fql_value(editdata[i].text) + "\"";
+                                } else if (editdata[i].class !== "") {
+                                    //no deletion
+                                    parentselector += " WHERE class = \"" + escape_fql_value(editdata[i].class) + "\"";
+                                }
+                                if (sortededittargets.length > 0) {
+                                    parentselector += " FOR";
+                                    var forids = ""; //jshint ignore:line
+                                    sortededittargets.forEach(function(t){
+                                        if (forids) {
+                                            forids += " ,";
+                                        }
+                                        forids += " ID " + t;
+                                    });
+                                    parentselector += forids;
+                                }
+                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
+                            }
                         }
                     }
                 }
