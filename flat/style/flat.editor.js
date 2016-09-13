@@ -264,7 +264,7 @@ function addhigherorderfield(index, type) {
     if (type == "comment") {
          s = s +  "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
         editdata[index].higherorder.push({'type':type, 'value':""});
-    } else if (type == "description") {
+    } else if (type == "desc") {
          s = s +  "<td>Description:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
         editdata[index].higherorder.push({'type':type, 'value':""});
     }
