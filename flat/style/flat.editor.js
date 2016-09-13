@@ -1335,10 +1335,8 @@ function editor_submit(addtoqueue) {
                                     parentselector += " FOR";
                                     var forids = ""; //jshint ignore:line
                                     sortededittargets.forEach(function(t){
-                                        if (forids) {
-                                            forids += " ,";
-                                        }
                                         forids += " ID " + t;
+                                        return; //only one should be enough
                                     });
                                     parentselector += forids;
                                 }
