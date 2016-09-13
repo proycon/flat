@@ -143,6 +143,9 @@ To update your existing instalation of flat, run::
 In production environments, you will then also need to update your configuration to point
 to the right version.
 
+Note that newer FLAT versions may introduce new configuration variables for your
+``settings.py`` (see next section).  
+
 -------------------------
 FLAT Configuration
 -------------------------
