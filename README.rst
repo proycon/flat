@@ -133,15 +133,22 @@ of the above steps:
 * django (https://www.djangoproject.com)
 
 ----------------
-Updating
+Upgrade
 ----------------
 
-To update your existing instalation of flat, run::
+To upgrade your existing instalation of flat to the latest version, run::
 
     $ pip install -U FoLiA-Linguistic-Annotation-Tool
 
-In production environments, you will then also need to update your configuration to point
-to the right version.
+In production environments, you may also need to update your webserver configuration to point
+to the right version, if explicit version numbers are used.
+
+New versions of FLAT may introduce new configuration options for your
+``settings.py``. Please inspect the differences between your variant of
+``settings.py`` and the one provided with FLAT, and copy what is needed.
+
+Don't forget to restart your webserver as well as the FoLiA Document Server
+(``foliadocserve``) after each upgrade.
 
 Note that newer FLAT versions may introduce new configuration variables for your
 ``settings.py`` (see next section).  
