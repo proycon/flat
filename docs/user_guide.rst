@@ -188,7 +188,9 @@ not worry about this usually.
 The actual annotation may be a FoLiA *class* value (in blue text), such as a label
 from a part-of-speech tagset, or it can be textual content (in black text). For
 the former, the value may either be free-fill (as in the image above) or selectable from a pull down
-list in case a closed set is defined (as in the image below). 
+list in case a closed set is defined (as in the image below).  Note that if you
+want to *delete* an annotation, simply clear the class or text field (remove
+the existing value or select an empty value).
 
 Many annotation types span over multiple words. Examples are named entities,
 syntax, chunks, etc...  To apply your annotation over multiple words, press the
