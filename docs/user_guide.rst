@@ -111,13 +111,47 @@ on the left side of the document. An example for part-of-speech tags:
     :alt: FLAT screenshot
     :align: center
 
+--------------
+Perspectives
+--------------
+
+FLAT allows, depending on your configuration, for different *perspectives* on
+your document. A perspective determines what structural elements you see, and
+how much of them you see. The broadest perspective is the *document*
+perspective, which simply shows the whole document, provided it is not too
+large. Other perspectives can be the *paragraph* or *sentence* perspective,
+showing only these elements. For documents with a large number of paragraphs or
+sentences, you can page over multiple pages.
+
+On the left-hand side of the screen, you can choose the perspectives that
+administrators have predefined for you:
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/perspectivemenu.png
+    :alt: Perspectives in FLAT
+    :align: center
+
+The pager is shown below once you select a pagable perspective. In the
+following example, a sentence perspective is selected. You will notice that the
+sentences are now visually separated and lightly boxed:
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/sentenceperspective.png
+    :alt: Perspectives in FLAT
+    :align: center
+
+A special perspective, available only on documents properly segmented into
+divisions, is offered in the same menu by means of a table of contents.
+
+--------------------
+Tools and Options
+--------------------
+
 The **Tools & Options** menu offers extra facilities for viewing. You can for
 instance enable the toggle **Show annotator details** to show who annotated a
 particular annotation when you hover over it, and when exactly this was done.
 
---------
+~~~~~~~~~
 Search
---------
+~~~~~~~~~
 
 You can access the search function through the **Tools & Options** menu. The
 search dialogue allows you to enter complex queries using CQL, the Corpus Query
