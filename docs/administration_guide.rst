@@ -3,10 +3,11 @@ FLAT Administration Guide
 *****************************************
 
 After FLAT has been properly installed, administration entails the following
-two parts:
+parts:
 
 1. Setting up configuration(s) for your annotation task(s) in ``settings.py``
-2. Managing user accounts and permissions
+2. Managing user accounts and permissions using the administrative webinterface (``http://your.flat.url/admin/``)
+3. Preparing your data in FoLiA
 
 Note that this documentation does not cover installation and the initial setup!
 Those are already documented in the `README
@@ -26,9 +27,9 @@ Although ``settings.py`` is a Python script, no Python knowledge is necessary.
 It may help some to know that, the pythonic configuration syntax is also very
 similar to JSON.
 
-~~~~~~~~~~~
+-----------
 Modes
-~~~~~~~~~~~
+-----------
 
 FLAT is composed of various modules, exposed as modes to the user. The user always chooses
 a mode to work in from the menu.
@@ -55,9 +56,9 @@ below) can in turn pick a subset of the modes, if not all of them:
 The pairs correspond to the internal name for the mode, and a human readable
 label.
 
-~~~~~~~~~~~~~~~~~~~~~
+-----------------
 Configurations
-~~~~~~~~~~~~~~~~~~~~~
+-----------------
 
 FLAT supports multiple so-called *configurations*. The user selects what
 configuration to use upon login.
@@ -86,10 +87,13 @@ We will discuss the individual configuration options here:
 
 * ``name`` - The name of the configuration, this is what users will see in the login screen, make sure the name is indicative of your annotation project, if any.
 * ``modes`` - This defines the modes that are enabled for this configuration.  The syntax equals that of ``MODES`` above.
-* ``perspectives`` - The viewer and editor allow for different perspectives on the data. This option determines what perspectives may be selected. This is a list of the following items:
+* ``perspectives`` - The viewer and editor allow for different perspectives on the data. This option determines what perspectives may be selected. This is list (of strings) of the following items:
    * ``document``: a view of the entire document
    * ``toc``: a view of a named subsection of the document (a table of contents will be automatically constructed)
-   * or any other FoLiA XML tag corresponding to a structural element. 
+   * or any other FoLiA XML tag corresponding to a structural element , such as ``s`` for sentence, ``p`` for paragraphs, ``event`` for events.
+* ``allowupload`` - Boolean value indicating whether users may upload their own FoLiA documents or not
+* ``annotationfocustype`` - Sets the annotation type for the default annotation focus, effectively highlighting annotations of this type immediately upon opening the document. The type needs to be a valid FoLiA tag name (see the FoLiA documentation at https://proycon.github.io/folia), such as ``pos``, ``lemma``, ``entity``, etc...  If you set this, also set the next option.
+* ``annotationfocusset`` - Sets the set for the default annotation focus. The set is a URL pointing to a FoLiA Set Definition file. Set to ``None`` if not used, use with the above otherwise.
 
 (yet to be written)
 
@@ -102,6 +106,46 @@ User permissions
 
 
 
+===============================
+Preparing your data in FoLiA
+===============================
 
+----------------
+Introduction
+----------------
 
+We urge people wanting to set up FLAT to familiarise themselves with `FoLiA
+<https://proycon.github.io/folia>`_, as
+the tool is specifically designed around this format. A main characteristic of FoLiA is
+the **class/set paradigm** and the distinction of a large number of specific
+**annotation types**, such as for example part-of-speech, lemma, dependencies,
+syntax, co-references, semantic roles, and many more...
 
+The values of annotations, of whatever type, are known as **classes**, which in
+turn are the elements of **sets**. A set thus defines what classes exist. A set
+is for example a part-of-speech tagset, and the invidual part-of-speech tags
+would be the classes. **FoLiA itself never prescribes sets**, only annotation
+types, it is up to the user to decide what set to use and anybody can freely
+create sets! This offers a great deal of flexibility, as you can use FLAT and
+FoLiA with whatever tagset you desire (provided you make a set definition for
+it).
+
+Sets are defined in Set Definition files, these tie the classes to nice human
+presentable labels (they may also impose taxonomies, put constraints on class
+combinations,  and link to data category registries). FLAT relies on
+these set definitions a great deal, as it uses them to present the labels for
+the classes. Examples of set definitions can be found here:
+https://github.com/proycon/folia/tree/master/setdefinitions 
+
+For more information about FoLiA, see https://proycon.github.io/folia , the
+format itself is extensively documented.
+
+-----------------------
+Right-to-left support
+-----------------------
+
+FLAT has proper right-to-left support for languages such as Arabic, Farsi and Hebrew.
+This relies on the FoLiA document having either a metadata attribute
+*direction* set to ``rtl``, or a properly set *language* field in the
+metadata with a iso-639-1 or iso-639-3 language code of a known right-to-left
+language.

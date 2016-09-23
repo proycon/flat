@@ -172,6 +172,7 @@ Annotation is always initiated by clicking on a word you want to annotate. If
 you want to annotate a span of multiple words, start by just clicking on the
 first one. This will open the **Annotation Editor dialog**.
 
+(TODO: yet to be written)
 
 --------------
 Edit Forms
