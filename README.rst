@@ -108,9 +108,9 @@ Documentation
 
 FLAT Documentation can be found in the form of the following three guides:
 
-* `Installation Guide <https://github.com/proycon/flat/blob/master/docs/installation_guide.rst>`_. - Explains how to install FLAT.
-* `Administration Guide <https://github.com/proycon/flat/blob/master/docs/administration_guide.rst>`_. - Explains how to configure FLAT for your annotation task.
-* `User Guide <https://github.com/proycon/flat/blob/master/docs/user_guide.rst>`_. - Explains how to use FLAT.
+* `Installation Guide <http://flat.readthedocs.io/en/latest/installation_guide.html>`_. - Explains how to install FLAT.
+* `Administration Guide <http://flat.readthedocs.io/en/latest/administration_guide.html>`_. - Explains how to configure FLAT for your annotation task.
+* `User Guide <http://flat.readthedocs.io/en/latest/user_guide.html>`_. - Explains how to use FLAT.
 
 =============================================
 Screenshots
