@@ -304,6 +304,9 @@ side of the screen:
     :alt: Queued Submission
     :align: center
 
+Do be aware that if you neglect to submit the annotations you delayed, or close
+your browser, they will be lost!
+
 In addition to queued submissions, the editor dialog also has an option
 **Repeat this annotation for the next target**, which you can tick. If you do
 so, the next time you click a word, the edit dialog will auto-fill the fields
