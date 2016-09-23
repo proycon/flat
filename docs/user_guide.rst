@@ -107,6 +107,8 @@ on the left side of the document. An example for part-of-speech tags:
     :alt: FLAT screenshot
     :align: center
 
+And for a shallow parse/chunking:
+
 .. image:: highlight2.png
     :alt: FLAT screenshot
     :align: center
