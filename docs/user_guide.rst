@@ -26,7 +26,10 @@ Document Index
 
 After logging in, you will see an index of all your documents, organised into
 folders and possibly subfolders. By default, there will be one folder
-corresponding to your username. This is your personal workspace.
+corresponding to your username. This is your personal workspace. 
+
+You can select a file to load it into the tool, this will usually present you
+the annotation editor.
 
 You may also see directories of others if the administrators have given you
 explicit rights to do so.
@@ -45,6 +48,91 @@ and selecting a local file to upload. Note that only `FoLiA
 supported, a very specific file format for linguistic annotation.
 
 Administrators may have disabled this functionality.
+
+===================
+Modes
+===================
+
+FLAT supports various modes that determines what tools you are presented. Often
+the default mode is the annotation editor, but there is also a viewer (with no
+edit functionality), a simple metadata editor and a structure editor (still under
+development). You may switch modes in the menu:
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/menu_modes.png
+    :alt: Modes in FLAT
+    :align: center
+
+Administrators determine what modes are available in your configuration.
+
+=======================
+Viewing a document
+=======================
+
+The annotation viewer shows a FoLiA document and all of its linguistic
+annotations. You will see the text of the document and find that you can hover
+over all the words and elements to see more detailed information about them.
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/hover.png
+    :alt: Local annotations in FLAT
+    :align: center
+
+Viewing a document seems trivial, but it is a bit more involved,
+as FLAT allows to fine-tune precisely what annotations you want to see. 
+
+The information you see when hovering over elements can be switched on and off
+in the **Local annotations** menu, each annotation type is a toggle that turns
+green when enabled. The administrators usually have configured sane defaults,
+so you will not have to go here often.
+
+To see linguistic information without needing to hover over elements, you can enable the
+toggles in the **Global annotations** menu. In the following screenshot we
+enabled lemmas and part of speech tags:
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/globalannotations.png
+    :alt: Global annotations in FLAT
+    :align: center
+
+And this shows a representation for dependency relations (purple) and syntactic/constituency parses (blue):
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/globalannotations2.png
+    :alt: Global annotations in FLAT
+    :align: center
+
+Last, but not least is the **Annotation Focus** menu. Here you can select a
+single annotation type that is the focus of your attention. The various classes
+of this annotation type in the text will then be coloured and a legend appears
+on the left side of the document. An example for part-of-speech tags:
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/highlight1.png
+    :alt: FLAT screenshot
+    :align: center
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/highlight2.png
+    :alt: FLAT screenshot
+    :align: center
+
+The **Tools & Options** menu offers extra facilities for viewing. You can for
+instance enable the toggle **Show annotator details** to show who annotated a
+particular annotation when you hover over it, and when exactly this was done.
+
+--------
+Search
+--------
+
+You can access the search function through the **Tools & Options** menu. The
+search dialogue allows you to enter complex queries using CQL, the Corpus Query
+Language, or FQL, the FoLiA Query Language.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
