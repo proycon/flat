@@ -130,9 +130,10 @@ administrators have predefined for you:
     :alt: Perspectives in FLAT
     :align: center
 
-The pager is shown below once you select a pagable perspective. In the
-following example, a sentence perspective is selected. You will notice that the
-sentences are now visually separated and lightly boxed:
+The pager is shown below the perspective selector, once you have selected a
+pagable perspective. In the following example, a sentence perspective is
+selected. You will notice that the sentences are now visually separated and
+lightly boxed:
 
 .. image:: https://raw.github.com/proycon/flat/master/docs/sentenceperspective.png
     :alt: Perspectives in FLAT
