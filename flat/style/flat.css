@@ -27,6 +27,9 @@ body {
     padding-left: 20px;
     padding-right: 20px;
 }
+#topbar li:hover {
+    background: #444;
+}
 #topbar .left {
     float: left;
     margin-left: 20px;
