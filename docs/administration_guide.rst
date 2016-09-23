@@ -88,20 +88,43 @@ We will discuss the individual configuration options here:
 * ``perspectives`` - The viewer and editor allow for different perspectives on the data. This option determines what perspectives may be selected. This is list (of strings) of the following items:
    * ``document``: a view of the entire document
    * ``toc``: a view of a named subsection of the document (a table of contents will be automatically constructed)
-   * or any other FoLiA XML tag corresponding to a structural element , such as ``s`` for sentence, ``p`` for paragraphs, ``event`` for events.
+   * or any other FoLiA XML tag corresponding to a structural element , such as ``'s'`` for sentence, ``'p'`` for paragraphs, ``'event'`` for events.
 * ``allowupload`` - Boolean value indicating whether users may upload their own FoLiA documents or not
-* ``annotationfocustype`` - Sets the annotation type for the default annotation focus, effectively highlighting annotations of this type immediately upon opening the document. The type needs to be a valid FoLiA tag name (see the FoLiA documentation at https://proycon.github.io/folia), such as ``pos``, ``lemma``, ``entity``, etc...  If you set this, also set the next option.
+* ``annotationfocustype`` - Sets the annotation type for the default annotation focus, effectively highlighting annotations of this type immediately upon opening the document. The type needs to be a valid FoLiA tag name (see the FoLiA documentation at https://proycon.github.io/folia), such as ``'pos'``, ``'lemma'``, ``'entity'``, etc...  If you set this, also set the next option.
 * ``annotationfocusset`` - Sets the set for the default annotation focus. The set is a URL pointing to a FoLiA Set Definition file. Set to ``None`` if not used, use with the above otherwise.
-
-(yet to be written)
-
+* ``allowannotationfocus`` - List of FoLiA annotation types (corresponding to the xml tags) that are allowed as annotation focus, i.e. that can be selected by the user through the menu. Set to ``True`` to enable all. 
+* ``initialviewannotation`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the local annotation viewer, i.e. the pop-up when the user hovers over elements. Set to ``True`` to enable all.
+* ``initialglobviewannotations`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the global annotation viewers (the annotation boxes above the words).
+* ``allowedviewannotation`` - List of FoLiA annotation types (xml tags) that are allowed to be viewed,  a superset of initialviewannotations/initialglobviewannotations. Users can enable/disable each as they see fit. Set to ``True`` to enable all.
+* ``initialeditannotations`` - List of FoLiA annotation types (xml tags) that are initially enabled in the editor dialog (when users click an element for editing), set to ``True`` to enable all.
+* ``allowededitannotations`` - List of FoLiA annotation types (xml tags) that are allowed in the editor dialog (the user can enable/disable each as he/she sees fit), set to ``True`` to enable all.
+* ``allowaddfields`` - Boolean value, allow the user to add annotation types not yet present on a certain element? 
+* ``allowdeclare`` -- Boolean value, allow the user to add annotation types not yet present in the document?
+* ``editformdirect`` -- Boolean, enable the direct editing form (this is the default and most basic form of editing, consult the user guide). It should be ``True`` unless you want to force other editing forms.
+* ``editformcorrection`` -- Boolean, enable editing as correction.
+* ``editformalternative`` -- Boolean, enable editing as alternative.
+* ``editformnew`` -- Boolean, enable editing as new annotation, this allows for adding multiple or overlapping annotations of the same type/set.
+* ``alloweditformdirect`` -- Boolean, allow the user the enable/disable direct editing himself/herself.
+* ``alloweditformcorrection`` -- Boolean, allow the user the enable/disable correction editing himself/herself.
+* ``alloweditformalternative`` -- Boolean, allow the user the enable/disable alternative editing himself/herself.
+* ``alloweditformnew`` -- Boolean, allow the user the enable/disable new editing himself/herself.
+* ``allowconfidence`` -- Boolean, allow confidence values to be set/added?
+* ``initialcorrectionset`` - String to the set definition used for corrections.
+* ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone) 
+  
 
 =====================
 User permissions
 =====================
 
-(yet to be written)
 
+FLAT comes with a simple administrative webinterface that allows to configure
+user permissions. The administrative interface is accessible only by administrators
+and can be found at ``http://your.flat.url/admin/``.
+
+You can configure which users may access which namespaces/directories.
+
+(TODO: elaborate)
 
 
 ===============================
