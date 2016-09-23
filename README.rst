@@ -1,3 +1,7 @@
+.. image:: http://readthedocs.org/projects/flat/badge/?version=latest
+	:target: http://flat.readthedocs.io/en/latest/?badge=latest
+	:alt: Documentation Status
+
 .. image:: http://applejack.science.ru.nl/lamabadge.php/flat
    :target: http://applejack.science.ru.nl/languagemachines/
 
