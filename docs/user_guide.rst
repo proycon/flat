@@ -155,7 +155,7 @@ Search
 ~~~~~~~~~
 
 You can access the search function through the **Tools & Options** menu. The
-search dialogue allows you to enter complex queries using CQL, the Corpus Query
+search dialog allows you to enter complex queries using CQL, the Corpus Query
 Language, or FQL, the FoLiA Query Language.
 
 (TODO: needs further documentation)
@@ -168,11 +168,81 @@ The annotation editor builds upon the viewer discussed in the previous section
 and adds advanced editing facilities. Make sure you are familiar with the
 viewer already.
 
-Annotation is always initiated by clicking on a word you want to annotate. If
+Annotation is always initiated by clicking on a word you want to annotate,
+which will subsequently turn bright yellow. If
 you want to annotate a span of multiple words, start by just clicking on the
-first one. This will open the **Annotation Editor dialog**.
+first one. This will open the **Annotation Editor dialog**, as shown below:
 
-(TODO: yet to be written)
+.. image:: editdialog.png
+    :alt: The edit dialog
+    :align: center
+
+The editor dialog shows annotations that are relevant for the word you clicked
+on, each annotation type and set on one row, which annotations are shown
+exactly is determined by the various toggles in the **Editor annotations**
+menu. The administrator is responsible for choosing sane defaults so you need
+not worry about this usually.
+
+The actual annotation may be a FoLiA *class* value (in blue text), such as a label
+from a part-of-speech tagset, or it can be textual content (in black text). For
+the former, the value may either be free-fill (as in the image above) or selectable from a pull down
+list in case a closed set is defined (as in the image below). 
+
+Many annotation types span over multiple words. Examples are named entities,
+syntax, chunks, etc...  To apply your annotation over multiple words, press the
+**select span** button for the corresponding annotation (each has their own
+button), and subsequently click on the words in the document that you want to
+include in the span. They too will turn yellow. The following screenshot
+illustrates this for named entity annotation from a closed set:
+
+.. image:: spanselect.png
+    :alt: Span selection from a closed set.
+    :align: center
+
+If you are modifying an existing annotation that spans multiple words, it will
+be highlighted when you press **select span** and you can modify the span by
+clicking words to add or remove them from the span. Selecting spans that are
+not continuous is also allowed in this fashion.
+
+For each row in the editor dialog, you may see several small buttons with
+capital letters D,N,C or A, these represent the various **edit forms** that are
+enabled, and will be discussed in aiseparate subsection below.
+
+You can also assign a **confidence value**, expressing the confidence you as annotator hold in the
+particular annotation you are making. This is set by ticking the checkbox before confidence and
+moving the slider that appears on a scale from 0% confidence to 100% confidence. 
+
+.. image:: confidenceslider.png
+    :alt: Confidence slider
+    :align: center
+
+When you are done with adding or editing annotations, press the **Ok** button to submit your result.
+
+
+------------------------
+Adding new annotations
+------------------------
+
+Whenever you click a word and an **Annotation focus** is set in the menu,
+empty fields will automatically be created in the editor to allow you to add an
+annotation of that type. In other cases, you may add fields by explicitly by
+selecting  an annotation type and set in the **New** box at the bottom of the editor dialog and
+subsequently pressing the **+** button:
+
+.. image:: newannotation.png
+    :alt: New annotation
+    :align: center
+
+The new annotations in this list are annotations of a type and set that is already declared to be used in the document. If you want to add
+a whole new annotation type and set that has not been used at all yet, you need
+to *declare* it by clicking the **Tools & Options** menu and choosing **Add new
+Annotation Type**. It will open a dialog that allows you to select the
+annotation type and asks you for a URL to your FoLiA set definition:
+
+
+.. image:: newdeclaration.png
+    :alt: New declaration
+    :align: center
 
 --------------
 Edit Forms
@@ -192,10 +262,66 @@ them can be activated:
     :alt: Perspectives in FLAT
     :align: center
 
+Which edit forms are available is determined by the administratori, as well as
+by the toggles in the **Edit form** menu.
 
---------------------
-Tools and Options
---------------------
+-------------------------
+Higher order annotation
+-------------------------
+
+FLAT allows you to put annotations on annotations. A notable example is the
+ability to assign arbitrary human readable comments or descriptions with any
+annotation. In order to add such an annotation, access the higher order
+annotation menu on the right of every annotation: 
+
+.. image:: higherorderbutton.png
+    :alt: Higher order button
+    :align: center
+
+Selecting an option from the menu will add a higher order annotation of the
+specfied type:
+
+.. image:: higherordercomment.png
+    :alt: Higher order comment
+    :align: center
+
+
+------------------------------------------------------------------
+Queued submissions, Repeated Annotations, and the Query Console
+------------------------------------------------------------------
+
+When you press **Ok** in the edit dialog, any changes you made will be
+submitted to the server immediately, unless you tick the option **Queue for
+later submission**.
+
+Queuing submissions allows you to circumvent the typical 1-2 second delay that
+is inherent in communication with the server, saving precious time if you are
+doing fast-paced annotation. When an annotation is queued, the word it covers
+will be highlighted in red. A new button for submission appears on the right
+side of the screen:
+
+.. image:: queuedsubmission.png
+    :alt: Queued Submission
+    :align: center
+
+In addition to queued submissions, the editor dialog also has an option
+**Repeat this annotation for the next target**, which you can tick. If you do
+so, the next time you click a word, the edit dialog will auto-fill the fields
+in the same way as you did manually the first time. The only thing left to do
+is to click the Ok button. In combination with queued submission, this offers a
+powerful solution for fast-paced annotation.
+
+Last, but not least, we want to introduce the **Query Console**, for advanced
+users. This is accessible through the **Tools & Options** menu and will show
+all queued submissions in the FoLiA Query Language (FQL). Highly technical
+users may be pleased to hear that all operations in the interface are
+translated to FQL to be sent to the server, and you are free to compose your
+own FQL queries manually as well. The syntax is described as part of the `FoLiA
+documentation <https://proycon.github.io/folia>`_.
+
+------------------------------
+Versioning (History & Undo)
+------------------------------
 
 (TODO: yet to be written)
 
