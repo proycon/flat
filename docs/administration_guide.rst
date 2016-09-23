@@ -10,8 +10,6 @@ parts:
 3. Preparing your data in FoLiA
 
 Note that this documentation does not cover installation and the initial setup!
-Those are already documented in the `README
-<https://github.com/proycon/flat/blob/master/README.rst>`_.
 
 =============================================
 Configuration

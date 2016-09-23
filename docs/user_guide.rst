@@ -12,7 +12,7 @@ want to use. FLAT supports multiple *configurations*, which allows
 for using the same FLAT installation for multiple annotation projects, choose
 the configuration that corresponds to your project.
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/login_configuration.png
+.. image:: login_configuration.png
     :alt: Configuration selection in the FLAT login screen
     :align: center
 
@@ -26,7 +26,7 @@ Document Index
 
 After logging in, you will see an index of all your documents, organised into
 folders and possibly subfolders. By default, there will be one folder
-corresponding to your username. This is your personal workspace. 
+corresponding to your username. This is your personal workspace.
 
 You can select a file to load it into the tool, this will usually present you
 the annotation editor.
@@ -34,7 +34,7 @@ the annotation editor.
 You may also see directories of others if the administrators have given you
 explicit rights to do so.
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/mydocuments.png
+.. image:: mydocuments.png
     :alt: Document index in FLAT
     :align: center
 
@@ -58,7 +58,7 @@ the default mode is the annotation editor, but there is also a viewer (with no
 edit functionality), a simple metadata editor and a structure editor (still under
 development). You may switch modes in the menu:
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/menu_modes.png
+.. image:: menu_modes.png
     :alt: Modes in FLAT
     :align: center
 
@@ -72,12 +72,12 @@ The annotation viewer shows a FoLiA document and all of its linguistic
 annotations. You will see the text of the document and find that you can hover
 over all the words and elements to see more detailed information about them.
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/hover.png
+.. image:: hover.png
     :alt: Local annotations in FLAT
     :align: center
 
 Viewing a document seems trivial, but it is a bit more involved,
-as FLAT allows to fine-tune precisely what annotations you want to see. 
+as FLAT allows to fine-tune precisely what annotations you want to see.
 
 The information you see when hovering over elements can be switched on and off
 in the **Local annotations** menu, each annotation type is a toggle that turns
@@ -88,13 +88,13 @@ To see linguistic information without needing to hover over elements, you can en
 toggles in the **Global annotations** menu. In the following screenshot we
 enabled lemmas and part of speech tags:
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/globalannotations.png
+.. image:: globalannotations.png
     :alt: Global annotations in FLAT
     :align: center
 
 And this shows a representation for dependency relations (purple) and syntactic/constituency parses (blue):
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/globalannotations2.png
+.. image:: globalannotations2.png
     :alt: Global annotations in FLAT
     :align: center
 
@@ -103,11 +103,11 @@ single annotation type that is the focus of your attention. The various classes
 of this annotation type in the text will then be coloured and a legend appears
 on the left side of the document. An example for part-of-speech tags:
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/highlight1.png
+.. image:: highlight1.png
     :alt: FLAT screenshot
     :align: center
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/highlight2.png
+.. image:: highlight2.png
     :alt: FLAT screenshot
     :align: center
 
@@ -126,7 +126,7 @@ sentences, you can page over multiple pages.
 On the left-hand side of the screen, you can choose the perspectives that
 administrators have predefined for you:
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/perspectivemenu.png
+.. image:: perspectivemenu.png
     :alt: Perspectives in FLAT
     :align: center
 
@@ -135,7 +135,7 @@ pagable perspective. In the following example, a sentence perspective is
 selected. You will notice that the sentences are now visually separated and
 lightly boxed:
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/sentenceperspective.png
+.. image:: sentenceperspective.png
     :alt: Perspectives in FLAT
     :align: center
 
@@ -182,13 +182,13 @@ When annotating, there are four different edit forms:
 
 * **Direct editing** -- This is the simplest edit form, it either adds a new annotation or edits an existing annotation.
 * **New annotation** -- This edit form is used when you want to explicitly add a new annotation rather than edit an existing annotation of the same type. It is used when defining overlapping spans for the same annotation type.
-* **Correction** -- This edit forms introduces a correction of the annotation, the original version will be preserved and marked as corrected. When this edit form is choosen a field will appear to choose the class for the correction, indicating what type of correction it is. 
+* **Correction** -- This edit forms introduces a correction of the annotation, the original version will be preserved and marked as corrected. When this edit form is choosen a field will appear to choose the class for the correction, indicating what type of correction it is.
 * **Alternative** -- This edit form marks an annotation as alternative, meaning it is not the primary authoritative annotation.
 
 The edit forms are represented by options buttons with a capital letter, only one of
 them can be activated:
 
-.. image:: https://raw.github.com/proycon/flat/master/docs/editforms.png
+.. image:: editforms.png
     :alt: Perspectives in FLAT
     :align: center
 
