@@ -65,7 +65,7 @@ development). You may switch modes in the menu:
 Administrators determine what modes are available in your configuration.
 
 =======================
-Viewing a document
+Annotation Viewer
 =======================
 
 The annotation viewer shows a FoLiA document and all of its linguistic
@@ -158,8 +158,52 @@ You can access the search function through the **Tools & Options** menu. The
 search dialogue allows you to enter complex queries using CQL, the Corpus Query
 Language, or FQL, the FoLiA Query Language.
 
+(TODO: needs further documentation)
+
+=======================
+Annotation Editor
+=======================
+
+The annotation editor builds upon the viewer discussed in the previous section
+and adds advanced editing facilities. Make sure you are familiar with the
+viewer already.
+
+Annotation is always initiated by clicking on a word you want to annotate. If
+you want to annotate a span of multiple words, start by just clicking on the
+first one. This will open the **Annotation Editor dialog**.
 
 
+--------------
+Edit Forms
+--------------
+
+When annotating, there are four different edit forms:
+
+* **Direct editing** -- This is the simplest edit form, it either adds a new annotation or edits an existing annotation.
+* **New annotation** -- This edit form is used when you want to explicitly add a new annotation rather than edit an existing annotation of the same type. It is used when defining overlapping spans for the same annotation type.
+* **Correction** -- This edit forms introduces a correction of the annotation, the original version will be preserved and marked as corrected. When this edit form is choosen a field will appear to choose the class for the correction, indicating what type of correction it is. 
+* **Alternative** -- This edit form marks an annotation as alternative, meaning it is not the primary authoritative annotation.
+
+The edit forms are represented by options buttons with a capital letter, only one of
+them can be activated:
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/editforms.png
+    :alt: Perspectives in FLAT
+    :align: center
+
+
+--------------------
+Tools and Options
+--------------------
+
+(TODO: yet to be written)
+
+
+=======================
+Metadata Editor
+=======================
+
+(TODO: yet to be written)
 
 
 
