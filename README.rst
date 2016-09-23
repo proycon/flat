@@ -23,7 +23,9 @@ webservice.
 
 FLAT is open source software developed at the Centre of Language and Speech
 Technology, Radboud University Nijmegen. It is licensed under the GNU Public
-License v3
+License v3. The project is funded in the scope of the larger `CLARIAH
+<http://clariah.nl>`_ project.
+
 
 =============================================
 Features
