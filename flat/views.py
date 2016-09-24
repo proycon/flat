@@ -4,11 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpRequest
 import django.contrib.auth
 from pynlpl.formats import fql
+import os
 import json
 import datetime
 from django.conf import settings
 import flat.comm
 import flat.users
+from flat.converters import get_converters
 import lxml.html
 import sys
 if sys.version < '3':
@@ -291,15 +293,62 @@ def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(request.user.username, namespace, request) and 'file' in request.FILES:
+            if request.POST['inputformat'] != 'folia':
+                #we need to convert the input
+                converter = None
+                for cv in get_converters(request):
+                    if request.POST['inputformat'] == cv.module + '.' + cv.function:
+                        converter = cv
+                if not converter:
+                    return fatalerror(request, "Converter not found or specified",404)
+
+                try:
+                    parameters = converter.parse_parameters(request.POST['parameters'])
+                except:
+                    return fatalerror(request, "Invalid syntax for conversion parameters",403)
+
+                if 'TMPDIR' in os.environ:
+                    tmpdir = os.environ['TMPDIR']
+                else:
+                    tmpdir = '/tmp'
+
+                tmpinfile = os.path.join(tmpdir, request.FILES['file'].name)
+                with open(tmpinfile,'wb') as f_tmp:
+                    for chunk in request.FILES['file'].chunks():
+                        f_tmp.write(chunk)
+
+                tmpoutfile = converter.get_output_name(os.path.join(tmpdir, request.FILES['file'].name))
+                success, msg = converter.convert(tmpinfile, tmpoutfile)
+                if not success:
+                    return fatalerror(request, "Input conversion failed: " + msg,403)
+
+                #removing temporary input file
+                os.unlink(tmpinfile)
+
+                #reading temporary output file
+                f_folia =  open(tmpoutfile, 'rb')
+            else:
+                f_folia = request.FILES['file']
+
             #if sys.version < '3':
             #    data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
             #else:
             #    data = str(request.FILES['file'].read(),'utf-8')
+            failed = False
             try:
-                response = flat.comm.postxml(request,"upload/" + namespace , request.FILES['file'])
+                response = flat.comm.postxml(request,"upload/" + namespace , f_folia)
             except Exception as e:
-                return fatalerror(request,e)
-            if 'error' in response and response['error']:
+                failed = True
+                response = fatalerror(request,e)
+
+            if request.POST['inputformat'] != 'folia':
+                f_folia.close()
+                #removing temporary output file after conversion
+                os.unlink(tmpoutfile)
+
+            if failed:
+                return response
+            elif 'error' in response and response['error']:
                 return fatalerror(request, response['error'],403)
             else:
                 docid = response['docid']

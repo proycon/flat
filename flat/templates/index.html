@@ -13,6 +13,9 @@
         {% csrf_token %}
         <label>Select file:</label> <input type="file" name="file" />
         <label>Namespace:</label> <input type="text" name="namespace" value="{{ username }}" />
+        <label>Input format:</label> <select name="inputformat">
+            <option value="folia" selected="selected">FoLiA XML</option>
+        </select>
         <div class="buttoncontainer">
             <input id="uploadbutton" class="button" type="submit" value="Upload" onclick="$('#wait .msg').html('Uploading document...'); $('#wait').show()" />
             <button id="cancelupload" class="button">Cancel</button>

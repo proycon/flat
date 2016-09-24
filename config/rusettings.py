@@ -284,6 +284,15 @@ CONFIGURATIONS = {
     'modes': [ ('editor','Annotation Editor')],
     'perspectives': ['s'],
     'slices': 's:100',
+    'convertors': [
+        { 'module': 'tsv2folia.tsv2folia',
+          'function': 'flat_convert',
+          'name': "PARSEME TSV",
+          'parameter_help': 'Set rtl: true for right-to left languages',
+          'parameter_default': 'rtl: false',
+          'inputextensions': ['tsv'],
+        }
+    ]
 },
 'sinfex': {
     'name': 'Sinfex Annotation Task',
