@@ -10,7 +10,7 @@ import datetime
 from django.conf import settings
 import flat.comm
 import flat.users
-from flat.converters import get_converters
+from flat.converters import get_converters, inputformatchangefunction
 import lxml.html
 import sys
 if sys.version < '3':
@@ -280,7 +280,7 @@ def index(request, namespace=""):
     else:
         parentdir = ""
 
-    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
+    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'version': settings.VERSION})
 
 @login_required
 def download(request, namespace, docid):
@@ -297,7 +297,7 @@ def upload(request):
                 #we need to convert the input
                 converter = None
                 for cv in get_converters(request):
-                    if request.POST['inputformat'] == cv.module + '.' + cv.function:
+                    if request.POST['inputformat'] == cv.id:
                         converter = cv
                 if not converter:
                     return fatalerror(request, "Converter not found or specified",404)

@@ -7,15 +7,23 @@
 <div id="uploadform" class="dialog">
     <h3>Upload</h3>
     <p>
-    Here you can upload a new FoLiA XML document to the editor.
+    Here you can upload a new document to the editor.
     </p>
     <form action="/upload/" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <label>Select file:</label> <input type="file" name="file" />
         <label>Namespace:</label> <input type="text" name="namespace" value="{{ username }}" />
-        <label>Input format:</label> <select name="inputformat">
+        <label>Input format:</label> <select name="inputformat" onchange="{{inputformatchangefunction|safe}}">
             <option value="folia" selected="selected">FoLiA XML</option>
+            {% for converter in converters %}
+                <option value="er.function}}">{{converter.name}}</option>
+            {% endfor %}
         </select>
+        <div id="convparameterhelp">
+        </div>
+        <div id="convparameters">
+            <label>Conversion parameters:</label> <input type="text" name="parameters" value="" />
+        </div>
         <div class="buttoncontainer">
             <input id="uploadbutton" class="button" type="submit" value="Upload" onclick="$('#wait .msg').html('Uploading document...'); $('#wait').show()" />
             <button id="cancelupload" class="button">Cancel</button>

@@ -312,4 +312,6 @@ div#leftpane .title {
 #perspectivemenu {
     max-width: 160px;
 }
-
+#convparameterhelp, #convparameters {
+   display: none;
+}

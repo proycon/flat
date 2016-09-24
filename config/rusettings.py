@@ -284,13 +284,14 @@ CONFIGURATIONS = {
     'modes': [ ('editor','Annotation Editor')],
     'perspectives': ['s'],
     'slices': 's:100',
-    'convertors': [
-        { 'module': 'tsv2folia.tsv2folia',
-          'function': 'flat_convert',
-          'name': "PARSEME TSV",
-          'parameter_help': 'Set rtl: true for right-to left languages',
-          'parameter_default': 'rtl: false',
-          'inputextensions': ['tsv'],
+    'convertors': [ 
+        { 'id': 'parseme_tsv',  #a unique identifier for internal use
+          'module': 'tsv2folia.tsv2folia', #the python module where the converter is implemented
+          'function': 'flat_convert', #the python function (in the above module) that implements the conversion hook
+          'name': "PARSEME TSV", #a human readable named, to appear in the input format drop down list
+          'parameter_help': 'Set <em>rtl: true</em> for right-to left languages', #human readable help for parameters
+          'parameter_default': 'rtl: false', #default parameter, JSON syntax without the envelopping {}
+          'inputextensions': ['tsv'], #input extensions that must be adhered to, and will be stripped for determining the output filename
         }
     ]
 },

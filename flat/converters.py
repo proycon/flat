@@ -3,7 +3,8 @@ import importlib
 from django.conf import settings
 
 class Converter:
-    def __init__(self, module, function, name, parameter_help="", parameter_default="", inputextensions=None):
+    def __init__(self, id, module, function, name, parameter_help="", parameter_default="", inputextensions=None): #pylint: disable=redefined-builtin
+        self.id = id
         self.module = module
         self.function = function
         self.name = name
@@ -53,4 +54,22 @@ class Converter:
 def get_converters(request):
     if 'converters' in settings.CONFIGURATIONS[request.session['configuration']]:
         for converter in settings.CONFIGURATIONS[request.session['configuration']]['converters']:
-            yield Converter(converter['module'], converter['function'], converter['name'], converter['parameter_help'] if 'parameter_help' in converter else "", converter['parameter_default'] if 'parameter_default' in converter else "", converter['inputextensions'] if 'inputextensions' in converter else [])
+            yield Converter(converter['id'] if 'id' in converter else converter['module'] +'.' + converter['function'], converter['module'], converter['function'], converter['name'], converter['parameter_help'] if 'parameter_help' in converter else "", converter['parameter_default'] if 'parameter_default' in converter else "", converter['inputextensions'] if 'inputextensions' in converter else [])
+
+
+def inputformatchangefunction(request):
+    def htmlescape(s):
+        s = s.replace("'","&39;")
+        s = s.replace('"',"&quot;")
+        return s
+
+    def escape(s):
+        s = s.replace("'",r"\'")
+        s = s.replace('"',r'\'')
+        return s
+
+    js = "if(this.value=='folia'){$('#convparameters').hide();$('#convparameterhelp').hide()};"
+    for converter in get_converters(request):
+        js += "if(this.value=='" + converter.id + "'){$('#convparameterhelp').html('" + htmlescape(converter.parameter_help) + "').show();$('#convparameters input').val('" + escape(converter.parameter_default) + "');$('#convparameters').show()};"
+
+    return js
