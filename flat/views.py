@@ -300,14 +300,14 @@ def upload(request):
             except Exception as e:
                 return fatalerror(request,e)
             if 'error' in response and response['error']:
-                return fatalerror(response['error'],403)
+                return fatalerror(request, response['error'],403)
             else:
                 docid = response['docid']
                 return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:
-            return fatalerror("Permission denied",403)
+            return fatalerror(request, "Permission denied",403)
     else:
-        return fatalerror("Permission denied",403)
+        return fatalerror(request, "Permission denied",403)
 
 
 @login_required
