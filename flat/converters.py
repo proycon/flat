@@ -24,8 +24,11 @@ class Converter:
         return inputfilename + '.folia.xml' #default, just append
 
 
-    def parse_parameters(self, parameterstring):
-        return json.loads('{' + parameterstring + '}')
+    def parse_parameters(self, request, parameterfield, method='POST'):
+        parameters =  json.loads('{' + getattr(request,method)['parameterfield'] + '}')
+        parameters['flatuser'] = request.user.username
+        parameters['flatconfiguration'] =  settings.CONFIGURATIONS[request.session['configuration']]
+        return parameters
 
     def convert(self, inputfilename, outputfilename, *args, **kwargs):
         try:

@@ -303,7 +303,7 @@ def upload(request):
                     return fatalerror(request, "Converter not found or specified",404)
 
                 try:
-                    parameters = converter.parse_parameters(request.POST['parameters'])
+                    parameters = converter.parse_parameters(request, 'parameters')
                 except:
                     return fatalerror(request, "Invalid syntax for conversion parameters",403)
 
@@ -318,7 +318,7 @@ def upload(request):
                         f_tmp.write(chunk)
 
                 tmpoutfile = converter.get_output_name(os.path.join(tmpdir, request.FILES['file'].name))
-                success, msg = converter.convert(tmpinfile, tmpoutfile)
+                success, msg = converter.convert(tmpinfile, tmpoutfile, **parameters)
                 if not success:
                     return fatalerror(request, "Input conversion failed: " + msg,403)
 
