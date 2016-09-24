@@ -121,7 +121,7 @@ def query(request,namespace, docid):
         'customslicesize': request.POST.get('customslicesize',settings.CONFIGURATIONS[request.session['configuration']].get('customslicesize','50')), #for pagination of search results
     }
 
-    if flat.users.models.hasreadpermission(request.user.username, namespace):
+    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
 
         #stupid compatibility stuff
         if sys.version < '3':
@@ -156,7 +156,7 @@ def query(request,namespace, docid):
             else:
                 needwritepermission = False
 
-        if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace):
+        if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace, request):
             return HttpResponseForbidden("Permission denied, no write access")
 
         query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
@@ -249,10 +249,10 @@ def index(request, namespace=""):
                 except Exception as e:
                     return fatalerror(request,e)
 
-    readpermission = flat.users.models.hasreadpermission(request.user.username, namespace)
+    readpermission = flat.users.models.hasreadpermission(request.user.username, namespace, request)
     dirs = []
     for ns in sorted(namespaces['namespaces']):
-        if readpermission or flat.users.models.hasreadpermission(request.user.username, os.path.join(namespace, ns)):
+        if readpermission or flat.users.models.hasreadpermission(request.user.username, os.path.join(namespace, ns), request):
             dirs.append(ns)
     dirs.sort()
 
@@ -288,7 +288,7 @@ def download(request, namespace, docid):
 def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
-        if flat.users.models.haswritepermission(request.user.username, namespace) and 'file' in request.FILES:
+        if flat.users.models.haswritepermission(request.user.username, namespace, request) and 'file' in request.FILES:
             #if sys.version < '3':
             #    data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
             #else:
@@ -313,7 +313,7 @@ def addnamespace(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         newdirectory = request.POST['newdirectory'].replace('/','').replace('..','.').replace(' ','').replace('&','')
-        if flat.users.models.haswritepermission(request.user.username, namespace):
+        if flat.users.models.haswritepermission(request.user.username, namespace, request):
             try:
                 response = flat.comm.get(request,"createnamespace/" + namespace + "/" + newdirectory)
             except Exception as e:
