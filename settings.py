@@ -114,7 +114,7 @@ CONFIGURATIONS = {
     'allowupload': True, #boolean
 
     #Automatically create namespaces for all the groups a user is in and has write permission for,
-    'creategroupnamespace': True, #boolean
+    'creategroupnamespaces': True, #boolean
 
     # The default annotation focus upon loading a document
     # The annotation type that has is set as annotation focus will be
