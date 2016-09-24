@@ -54,10 +54,16 @@ to the right version, if explicit version numbers are used.
 New versions of FLAT may introduce new configuration options for your
 ``settings.py`` (introduced in next section). Please inspect the differences
 between your variant of ``settings.py`` and the one provided with FLAT, and
-copy what is needed.
+copy what is needed. New versions may also introduce database migrations. To
+run these, set ``PYTHONPATH`` to the directory that contains your
+``settings.py``, and ``DJANGO_SETTINGS_MODULE`` to the name of the file without the extension::
 
-Don't forget to restart your webserver as well as the FoLiA Document Server
-(``foliadocserve``) after each upgrade.
+    $ export PYTHONPATH=/your/settings/path/
+    $ export DJANGO_SETTINGS_MODULE=settings
+    $ django-admin migrate
+
+Don't forget to restart your webserver or development server, as well as the
+FoLiA Document Server (``foliadocserve``) after each upgrade.
 
 ---------------------------
 FLAT Configuration
@@ -85,10 +91,12 @@ to access and modify the database, in your database management system.
 
 Before you start FLAT for the first time, this database needs to be
 populated. Set ``PYTHONPATH`` to the directory that contains your
-``settings.py`` and initialise the database::
+``settings.py``, and ``DJANGO_SETTINGS_MODULE`` to the name of the file without the extension::
 
     $ export PYTHONPATH=/your/settings/path/
-    $ django-admin syncdb --settings settings
+    $ export DJANGO_SETTINGS_MODULE=settings
+    $ django-admin makemigrations
+    $ django-admin migrate
 
 --------------------------------
 Starting the Document Server
@@ -115,10 +123,12 @@ Starting FLAT (development server)
 -------------------------------------
 
 After all this is done, the *development server* can be started now using your ``settings.py`` by setting
-``PYTHONPATH`` to the directory that contains it::
+``PYTHONPATH`` to the directory that contains it, and
+``DJANGO_SETTINGS_MODULE`` to the name of the file without the extension::
 
     $ export PYTHONPATH=/your/settings/path/
-    $ django-admin runserver --settings settings
+    $ export DJANGO_SETTINGS_MODULE=settings
+    $ django-admin runserver
 
 FLAT will advertise the host and port it is running on (as configured in your
 ``settings.py``), and you can access it in your browser.
