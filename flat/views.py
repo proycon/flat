@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpRequest
 import django.contrib.auth
 from pynlpl.formats import fql
 import json
@@ -220,10 +220,11 @@ def register(request):
     })
 
 def fatalerror(request, e,code=404):
+    assert isinstance(request, HttpRequest)
     if isinstance(e, Exception):
         response = render(request,'base.html', docserveerror(e))
     else:
-        response = render(request,'base.html', {'fatalerror': e})
+        response = render(request,'base.html', {'fatalerror': str(e)})
     response.status_code = code
     return response
 
@@ -326,6 +327,6 @@ def addnamespace(request):
             else:
                 return HttpResponseRedirect("/index/" + newdirectory  )
         else:
-            return fatalerror("Permission denied",403)
+            return fatalerror(request, "Permission denied",403)
     else:
-        return fatalerror("Permission denied",403)
+        return fatalerror(request, "Permission denied",403)
