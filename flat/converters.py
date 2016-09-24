@@ -65,11 +65,6 @@ def inputformatchangefunction(request):
         s = s.replace('"',"&quot;")
         return s
 
-    def escape(s):
-        s = s.replace("'",r"\'")
-        s = s.replace('"',r'\"')
-        return s
-
     js = "if(this.value=='folia'){$('#convparameters').hide();$('#convparameterhelp').hide()};"
     for converter in get_converters(request):
         js += "if(this.value=='" + converter.id + "'){$('#convparameterhelp').html('" + htmlescape(converter.parameter_help) + "').show();$('#convparameters input').val('" + htmlescape(converter.parameter_default) + "');$('#convparameters').show()};"
