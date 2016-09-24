@@ -11,9 +11,9 @@ class Converter:
         self.parameter_help = parameter_help
         self.parameter_default = parameter_default
         if isinstance(inputextensions,str):
-            self.inputextensions = [self.inputextensions]
-        elif self.inputextensions:
-            self.inputextensions = self.inputextensions
+            self.inputextensions = [inputextensions]
+        elif inputextensions:
+            self.inputextensions = inputextensions
         else:
             self.inputextensions = []
 
@@ -26,7 +26,7 @@ class Converter:
 
 
     def parse_parameters(self, request, parameterfield, method='POST'):
-        parameters =  json.loads('{' + getattr(request,method)['parameterfield'] + '}')
+        parameters =  json.loads('{' + getattr(request,method)[parameterfield] + '}')
         parameters['flatuser'] = request.user.username
         parameters['flatconfiguration'] =  settings.CONFIGURATIONS[request.session['configuration']]
         return parameters
@@ -52,6 +52,8 @@ class Converter:
 
 
 def get_converters(request):
+    if 'convertors' in settings.CONFIGURATIONS[request.session['configuration']]:
+        settings.CONFIGURATIONS[request.session['configuration']]['converters'] = settings.CONFIGURATIONS[request.session['configuration']]['convertors']
     if 'converters' in settings.CONFIGURATIONS[request.session['configuration']]:
         for converter in settings.CONFIGURATIONS[request.session['configuration']]['converters']:
             yield Converter(converter['id'] if 'id' in converter else converter['module'] +'.' + converter['function'], converter['module'], converter['function'], converter['name'], converter['parameter_help'] if 'parameter_help' in converter else "", converter['parameter_default'] if 'parameter_default' in converter else "", converter['inputextensions'] if 'inputextensions' in converter else [])
@@ -65,11 +67,11 @@ def inputformatchangefunction(request):
 
     def escape(s):
         s = s.replace("'",r"\'")
-        s = s.replace('"',r'\'')
+        s = s.replace('"',r'\"')
         return s
 
     js = "if(this.value=='folia'){$('#convparameters').hide();$('#convparameterhelp').hide()};"
     for converter in get_converters(request):
-        js += "if(this.value=='" + converter.id + "'){$('#convparameterhelp').html('" + htmlescape(converter.parameter_help) + "').show();$('#convparameters input').val('" + escape(converter.parameter_default) + "');$('#convparameters').show()};"
+        js += "if(this.value=='" + converter.id + "'){$('#convparameterhelp').html('" + htmlescape(converter.parameter_help) + "').show();$('#convparameters input').val('" + htmlescape(converter.parameter_default) + "');$('#convparameters').show()};"
 
     return js

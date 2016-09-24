@@ -16,7 +16,7 @@
         <label>Input format:</label> <select name="inputformat" onchange="{{inputformatchangefunction|safe}}">
             <option value="folia" selected="selected">FoLiA XML</option>
             {% for converter in converters %}
-                <option value="er.function}}">{{converter.name}}</option>
+                <option value="{{converter.id}}">{{converter.name}}</option>
             {% endfor %}
         </select>
         <div id="convparameterhelp">

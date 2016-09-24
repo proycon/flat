@@ -302,10 +302,10 @@ def upload(request):
                 if not converter:
                     return fatalerror(request, "Converter not found or specified",404)
 
-                try:
-                    parameters = converter.parse_parameters(request, 'parameters')
-                except:
-                    return fatalerror(request, "Invalid syntax for conversion parameters",403)
+                #try:
+                parameters = converter.parse_parameters(request, 'parameters')
+                #except:
+                #return fatalerror(request, "Invalid syntax for conversion parameters",403)
 
                 if 'TMPDIR' in os.environ:
                     tmpdir = os.environ['TMPDIR']
