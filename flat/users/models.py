@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User, Group
+from django.core.exceptions import ObjectDoesNotExist
 
 class ReadPermissions(models.Model):
     username = models.CharField(max_length=50)
@@ -14,10 +16,31 @@ class WritePermissions(models.Model):
     def __unicode__(self):
         return self.username + " may write to " + self.namespace
 
-def hasreadpermission(username, namespace):
+
+def hasreadpermission(username, namespace, request):
     if username == namespace or namespace == "testflat":
         return True
     else:
+        #new group-based system
+        groupread = request.user.has_perm('groupread')
+        if groupread:
+            try:
+                #is the namespace a group namespace?
+                groupnamespace = Group.objects.get(name=namespace.split('/')[0])
+                #are we a member of it?
+                if request.user.groups.filter(name=groupnamespace.name).exists():
+                    return True
+            except ObjectDoesNotExist:
+                try:
+                    #is the namespace a user namespace?
+                    usernamespace = User.objects.get(username=namespace.split('/')[0])
+                    #user's namespace must share a group with us
+                    if usernamespace.groups.filter(name__in=(g.name for g in request.user.groups.all())).exists():
+                        return True
+                except ObjectDoesNotExist:
+                    pass
+
+        #old system
         try:
             perms = ReadPermissions.objects.get(username=username, namespace='ALL')
         except:
@@ -34,17 +57,37 @@ def hasreadpermission(username, namespace):
                     pass
         return False
 
-def haswritepermission(username, namespace):
+def haswritepermission(username, namespace, request):
     if username == namespace or namespace == "testflat":
         return True
     else:
+        #new group-based system
+        groupwrite = request.user.has_perm('groupwrite')
+        if groupwrite:
+            try:
+                #is the namespace a group namespace?
+                groupnamespace = Group.objects.get(name=namespace.split('/')[0])
+                #are we a member of it?
+                if request.user.groups.filter(name=groupnamespace.name).exists():
+                    return True
+            except ObjectDoesNotExist:
+                try:
+                    #is the namespace a user namespace?
+                    usernamespace = User.objects.get(username=namespace.split('/')[0])
+                    #user's namespace must share a group with us
+                    if usernamespace.groups.filter(name__in=(g.name for g in request.user.groups.all())).exists():
+                        return True
+                except ObjectDoesNotExist:
+                    pass
+
+        #old system
         try:
             perms = WritePermissions.objects.get(username=username, namespace='ALL')
         except:
             nsparts = namespace.split('/')
             namespace = ""
             for i, nspart in enumerate(nsparts):
-                if i == 0 and nspart == username: 
+                if i == 0 and nspart == username:
                     return True
                 namespace = (namespace + '/' + nspart).strip('/')
                 try:

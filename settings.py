@@ -113,6 +113,9 @@ CONFIGURATIONS = {
     # Allow users to upload FoLiA documents?
     'allowupload': True, #boolean
 
+    #Automatically create namespaces for all the groups a user is in and has write permission for,
+    'creategroupnamespace': True, #boolean
+
     # The default annotation focus upon loading a document
     # The annotation type that has is set as annotation focus will be
     # visualised. Set to a valid FoLiA tag name (see the FoLiA documentation at

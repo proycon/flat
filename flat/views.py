@@ -242,12 +242,18 @@ def index(request, namespace=""):
             except Exception as e:
                 return fatalerror(request,e)
 
+        if 'creategroupnamespaces' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['creategroupnamespaces'] and request.user.has_perm('groupwrite'):
+            for group in request.user.groups.all():
+                try:
+                    flat.comm.get(request, "createnamespace/" + group, False)
+                except Exception as e:
+                    return fatalerror(request,e)
+
     readpermission = flat.users.models.hasreadpermission(request.user.username, namespace)
     dirs = []
     for ns in sorted(namespaces['namespaces']):
         if readpermission or flat.users.models.hasreadpermission(request.user.username, os.path.join(namespace, ns)):
             dirs.append(ns)
-
     dirs.sort()
 
     docs = []
