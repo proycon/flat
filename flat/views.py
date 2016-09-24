@@ -246,7 +246,7 @@ def index(request, namespace=""):
         if 'creategroupnamespaces' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['creategroupnamespaces'] and request.user.has_perm('groupwrite'):
             for group in request.user.groups.all():
                 try:
-                    flat.comm.get(request, "createnamespace/" + group, False)
+                    flat.comm.get(request, "createnamespace/" + group.name, False)
                 except Exception as e:
                     return fatalerror(request,e)
 
