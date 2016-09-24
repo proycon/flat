@@ -35,6 +35,7 @@ def getcontext(request,namespace,docid, doc, mode):
             'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",
             'rtl': True if 'rtl' in doc and doc['rtl'] else False,
             'loggedin': request.user.is_authenticated(),
+            'isadmin': request.user.is_staff,
             'version': settings.VERSION,
             'username': request.user.username,
             'waitmessage': "Loading document on server and initialising web-environment...",
@@ -276,7 +277,7 @@ def index(request, namespace=""):
     else:
         parentdir = ""
 
-    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
+    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'version': settings.VERSION})
 
 @login_required
 def download(request, namespace, docid):

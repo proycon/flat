@@ -90,6 +90,9 @@
             {% endblock %}
             {% if loggedin %}
             <li><a href="/">Document Index</a></li>
+            {% if isadmin %}
+            <li><a href="/admin/">Administration</a></li>
+            {% endif %}
             <li><a href="/logout/">Log out {{ username }}</a></li>
             {% endif %}
             </ul>
