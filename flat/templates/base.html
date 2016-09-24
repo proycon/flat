@@ -89,13 +89,22 @@
             {% block topbar_right %}
             {% endblock %}
             {% if loggedin %}
-            <li><a href="/">Document Index</a></li>
-            {% if isadmin %}
-            <li><a href="/admin/">Administration</a></li>
-            {% endif %}
-            <li><a href="/logout/">Log out {{ username }}</a></li>
-            {% endif %}
             </ul>
+            <nav>
+            <ul>
+            <li><a href="/">Document Index</a></li>
+            <li>{{ username }}
+                <ul>
+                {% if isadmin %}
+                <li><a href="/admin/">Administation</a></li>
+                {% endif %}
+                <li><a href="/account/password_change/">Change password</a></li>
+                <li><a href="/logout/">Log out</a></li>
+                </ul>
+            </li>
+            </ul>
+            </nav>
+            {% endif %}
             </div>
             <span style="clear: both"></span>
         </div>

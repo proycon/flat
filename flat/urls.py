@@ -1,6 +1,6 @@
 from django import VERSION
 
-from django.contrib import admin
+from django.contrib import admin, auth
 
 if VERSION[0] >= 2 or VERSION[1] >= 8: #Django 1.8 and higher
     from django.conf.urls import url, include
@@ -22,6 +22,9 @@ urlpatterns = [
     url(r'^index/(?P<namespace>[\w\d\-_\./]+)/?$', flat.views.index, name='index'),
     url(r'^login/?$', flat.views.login, name='login'),
     url(r'^logout/?$', flat.views.logout, name='logout'),
+    url(r'^account/', include('django.contrib.auth.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^register/?$', flat.views.register, name='register'),
     url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)\.folia\.xml/?$', flat.views.download, name='download'),
     url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.views.download, name='download'),
@@ -30,11 +33,6 @@ urlpatterns = [
     url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.query, name='query'), #generic query function
     # url(r'^flat/', include('flat.foo.urls')),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
 ]
 
 if VERSION[0] == 1 and VERSION[1] < 8: #Django <1.8
