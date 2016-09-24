@@ -81,9 +81,23 @@
     {% if docs %}
         <ul id="doclist">
         {% for doc, size, timestamp  in docs %}
-            <li><a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+        <li>{%if allowcopy or allowdelete %}<input type="checkbox" name="{{forloop.counter0}}" value="{{namespace}}/{{doc}}"/>{%endif%} <a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
         {% endfor %}
         </ul>
+    {% endif %}
+    {% if allowcopy or allowdelete %}
+    <div id="filemanagement">
+        <h4>File Management Operations</h4>
+        {% if allowcopy %}
+        <button id="copybutton">Copy</button> selected files to <input name="copytarget" /> <br/>
+        {% endif %}
+        {% if allowcopy and allowdelete %}
+        <button id="movebutton">Move</button> selected files to <input name="movetarget" /> <br/>
+        {% endif %}
+        {% if allowdelete %}
+        <button id="deletebutton">Delete</button> selected files<br/>
+        {% endif %}
+    </div>
     {% endif %}
 </div>
 
