@@ -18,9 +18,9 @@ import json
 @login_required
 def view(request, namespace, docid):
     """The initial view, does not provide the document content yet"""
-    if flat.users.models.hasreadpermission(request.user.username, namespace):
+    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
-            if flat.users.models.haswritepermission(request.user.username, namespace):
+            if flat.users.models.haswritepermission(request.user.username, namespace, request):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     try:
                         r = flat.comm.query(request, "USE " + namespace + "/" + docid + " DECLARE " + annotationtype + " OF " + set)
@@ -34,7 +34,7 @@ def view(request, namespace, docid):
 
 @login_required
 def history(request,namespace, docid):
-    if flat.users.models.hasreadpermission(request.user.username, namespace):
+    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
         try:
             if hasattr(request, 'body'):
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
@@ -48,7 +48,7 @@ def history(request,namespace, docid):
 
 @login_required
 def revert(request,namespace, docid, commithash):
-    if flat.users.models.haswritepermission(request.user.username, namespace):
+    if flat.users.models.haswritepermission(request.user.username, namespace, request):
         try:
             if hasattr(request, 'body'):
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/?commithash=' + commithash,False)
@@ -62,7 +62,7 @@ def revert(request,namespace, docid, commithash):
 
 @login_required
 def save(request,namespace, docid):
-    if flat.users.models.haswritepermission(request.user.username, namespace):
+    if flat.users.models.haswritepermission(request.user.username, namespace, request):
         if 'message' in request.GET:
             message = request.GET['message']
         else:

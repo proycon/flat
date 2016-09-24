@@ -17,9 +17,9 @@ import json
 @login_required
 def view(request, namespace, docid):
     """The initial view, does not provide the document content yet"""
-    if flat.users.models.hasreadpermission(request.user.username, namespace):
+    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
-            if flat.users.models.haswritepermission(request.user.username, namespace):
+            if flat.users.models.haswritepermission(request.user.username, namespace, request):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     try:
                         r = flat.comm.query(request, "USE " + namespace + "/" + docid + " DECLARE " + annotationtype + " OF " + set)

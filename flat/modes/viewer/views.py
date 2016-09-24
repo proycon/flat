@@ -22,7 +22,7 @@ def view(request, namespace, docid):
 
 @login_required
 def poll(request, namespace, docid):
-    if flat.users.models.hasreadpermission(request.user.username, namespace):
+    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
         try:
             r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', False)
         except URLError:
