@@ -282,8 +282,8 @@ annotation menu on the right of every annotation:
     :alt: Higher order button
     :align: center
 
-Selecting an option from the menu will add a higher order annotation of the
-specfied type:
+Selecting an option from the menu will add fields for a higher order annotation of the
+specified type:
 
 .. image:: higherordercomment.png
     :alt: Higher order comment
