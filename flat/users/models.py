@@ -9,12 +9,26 @@ class ReadPermissions(models.Model):
     def __unicode__(self):
         return self.username + " may read " + self.namespace
 
+    def __str__(self):
+        return self.username + " may read " + self.namespace
+
+    class Meta:
+        verbose_name = "Legacy read permission"
+        verbose_name_plural = "Legacy read permissions"
+
 class WritePermissions(models.Model):
     username = models.CharField(max_length=50)
     namespace = models.CharField(max_length=50)
 
     def __unicode__(self):
         return self.username + " may write to " + self.namespace
+
+    def __str__(self):
+        return self.username + " may write to  " + self.namespace
+
+    class Meta:
+        verbose_name = "Legacy write permission"
+        verbose_name_plural = "Legacy write permissions"
 
 
 def hasreadpermission(username, namespace, request):
