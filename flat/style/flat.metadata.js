@@ -71,7 +71,7 @@ function metadata_submit() {
                     $('#wait').hide();
                     alert("Received error from document server: " + data.error);
                 } else {
-                    location.reload(true); //refresh the page
+                    location.reload(true); //refresh the page, the reload will also update the metadata index if used
                 }
             },
             error: function(req,err,exception) {
