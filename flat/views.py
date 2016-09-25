@@ -114,6 +114,11 @@ def initdoc(request, namespace, docid, mode, template, context=None):
         context.update(getcontext(request,namespace,docid, doc, mode))
     except Exception as e:
         context.update(docserveerror(e))
+    dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
+    if dometadataindex:
+        for metakey in settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']:
+            if metakey in context['metadata']:
+                MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,value=context['metadata'][metakey])
     response = render(request, template, context)
     if 'fatalerror' in context:
         response.status_code = 500
@@ -282,8 +287,8 @@ def index(request, namespace=""):
     dirs.sort()
     recursivedirs.sort()
 
-    dometaindex = 'metaindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metaindex']
-    if dometaindex:
+    dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
+    if dometadataindex:
         metadataindex = defaultdict(list)
         for m in MetadataIndex.objects.filter(namespace=namespace):
             metadataindex[m.docid].append( (m.key, m.value) )
@@ -296,7 +301,7 @@ def index(request, namespace=""):
             return fatalerror(request,e)
         for d in sorted(r['documents']):
             docid =  os.path.basename(d.replace('.folia.xml',''))
-            if dometaindex and docid in metadataindex:
+            if dometadataindex and docid in metadataindex:
                 metaitems = metadataindex[docid]
             else:
                 metaitems = []
