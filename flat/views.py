@@ -354,9 +354,9 @@ def upload(request):
                 docid = response['docid']
                 return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
         else:
-            return fatalerror(request, "Permission denied",403)
+            return fatalerror(request, "Write permission denied",403)
     else:
-        return fatalerror(request, "Permission denied",403)
+        return fatalerror(request, "Read permission denied",403)
 
 
 @login_required
