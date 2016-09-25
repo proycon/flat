@@ -89,6 +89,7 @@
         </ul>
     {% endif %}
     <form id="filemanform" action="/filemanagement/" method="post"/>
+    {% csrf_token %}
     {% if docs %}
         <ul id="doclist">
         {% for doc, size, timestamp  in docs %}
@@ -96,6 +97,7 @@
         {% endfor %}
         </ul>
     {% endif %}
+    {% if namespace %}
     {% if allowcopy or allowdelete %}
     <div id="filemanagement">
         <h4>Document Management Operations</h4>
@@ -104,7 +106,9 @@
         <button id="copybutton" onclick="submitfilemanager('copy')">Copy</button> selected documents to 
         <select name="copytarget">
             {% for dir in recursivedirs %}
+            {% if dir != namespace %}
             <option value="{{dir}}">{{dir}}</option>
+            {% endif %}
             {% endfor %}
         </select><br/>
         {% endif %}
@@ -112,7 +116,9 @@
         <button id="movebutton" onclick="submitfilemanager('move')">Move</button> selected documents to 
         <select name="movetarget">
             {% for dir in recursivedirs %}
+            {% if dir != namespace %}
             <option value="{{dir}}">{{dir}}</option>
+            {% endif %}
             {% endfor %}
         </select> <br/>
         {% endif %}
@@ -121,6 +127,7 @@
         {% endif %}
     </div>
     </form>
+    {% endif %}
     {% endif %}
 </div>
 
