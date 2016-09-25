@@ -253,6 +253,15 @@ def index(request, namespace=""):
                 except Exception as e:
                     return fatalerror(request,e)
 
+        if request.user.has_perm('groupwrite') and (request.user.has_perm('allowcopy') or request.user.has_perm('allowmove')):
+            #create namespaces for all the users in our groups, since we may want to copy there
+            for group in request.user.groups.all():
+                for user in django.contrib.auth.models.User.objects.filter(groups__name=group.name):
+                    try:
+                        flat.comm.get(request, "createnamespace/" + user.username, False)
+                    except Exception as e:
+                        return fatalerror(request,e)
+
     readpermission = flat.users.models.hasreadpermission(request.user.username, namespace, request)
     dirs = []
     for ns in sorted(namespaces['namespaces']):
