@@ -9,3 +9,4 @@ class MetadataIndex(models.Model):
     class Meta:
         verbose_name = "Metadata Index"
         verbose_name_plural = "Metadata Index"
+        unique_together = (('namespace','docid','key'),)
