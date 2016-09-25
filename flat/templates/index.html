@@ -92,8 +92,13 @@
     {% csrf_token %}
     {% if docs %}
         <ul id="doclist">
-        {% for doc, size, timestamp  in docs %}
-        <li>{%if allowcopy or allowdelete %}<input type="checkbox" name="docselect{{forloop.counter0}}" value="{{namespace}}/{{doc}}"/>{%endif%} <a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+        {% for doc, size, timestamp, metaitems  in docs %}
+        <li>{%if allowcopy or allowdelete %}<input type="checkbox" name="docselect{{forloop.counter0}}" value="{{namespace}}/{{doc}}"/>{%endif%} <a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span>
+            <span>
+            {% for key, value in metaitems %}
+            {{key}}: {{value}} &nbsp;
+            {% endfor %} 
+            </span> </li>
         {% endfor %}
         </ul>
     {% endif %}

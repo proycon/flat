@@ -1,23 +1,27 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
+import os
+import json
+import datetime
+import sys
+from collections import defaultdict
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpRequest
 import django.contrib.auth
-from pynlpl.formats import fql
-import os
-import json
-import datetime
 from django.conf import settings
+
+from pynlpl.formats import fql
+
 import flat.comm
 import flat.users
 from flat.converters import get_converters, inputformatchangefunction
+from flat.modes.metadata.models import MetadataIndex
 import lxml.html
-import sys
 if sys.version < '3':
     from urllib2 import URLError, HTTPError #pylint: disable=import-error
 else:
     from urllib.error import URLError, HTTPError
-import os
 
 def getcontext(request,namespace,docid, doc, mode):
     return {
@@ -278,6 +282,12 @@ def index(request, namespace=""):
     dirs.sort()
     recursivedirs.sort()
 
+    dometaindex = 'metaindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metaindex']
+    if dometaindex:
+        metadataindex = defaultdict(list)
+        for m in MetadataIndex.objects.filter(namespace=namespace):
+            metadataindex[m.docid].append( (m.key, m.value) )
+
     docs = []
     if namespace and readpermission:
         try:
@@ -286,7 +296,11 @@ def index(request, namespace=""):
             return fatalerror(request,e)
         for d in sorted(r['documents']):
             docid =  os.path.basename(d.replace('.folia.xml',''))
-            docs.append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M") ) )
+            if dometaindex and docid in metadataindex:
+                metaitems = metadataindex[docid]
+            else:
+                metaitems = []
+            docs.append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M"), metaitems ) )
 
     if not 'configuration' in request.session:
         return logout(request)

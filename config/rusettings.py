@@ -293,7 +293,8 @@ CONFIGURATIONS = {
           'parameter_default': '"rtl": false', #default parameter, JSON syntax without the envelopping {}
           'inputextensions': ['tsv'], #input extensions that must be adhered to, and will be stripped for determining the output filename
         }
-    ]
+    ],
+    'metadataindex': ['status'],
 },
 'sinfex': {
     'name': 'Sinfex Annotation Task',
