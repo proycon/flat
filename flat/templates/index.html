@@ -78,26 +78,29 @@
         {% endfor %}
         </ul>
     {% endif %}
+    <form id="filemanform" action="/filemanagement/" method"post"/>
     {% if docs %}
         <ul id="doclist">
         {% for doc, size, timestamp  in docs %}
-        <li>{%if allowcopy or allowdelete %}<input type="checkbox" name="{{forloop.counter0}}" value="{{namespace}}/{{doc}}"/>{%endif%} <a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
+        <li>{%if allowcopy or allowdelete %}<input type="checkbox" name="docselect{{forloop.counter0}}" value="{{namespace}}/{{doc}}"/>{%endif%} <a href="/{{ defaultmode }}/{{ namespace }}/{{ doc }}/" onclick="index_click();">{{ doc }}</a> <span>{{size}}MB &nbsp;&nbsp; <em>{{ timestamp }}</em></span> <span>[<a href="/download/{{ namespace }}/{{ doc }}.folia.xml">Download</a>]</span></li>
         {% endfor %}
         </ul>
     {% endif %}
     {% if allowcopy or allowdelete %}
     <div id="filemanagement">
         <h4>Document Management Operations</h4>
+        <input type="hidden" name="filemanmode" value="" />
         {% if allowcopy %}
-        <button id="copybutton">Copy</button> selected documents to <input name="copytarget" /> <br/>
+        <button id="copybutton" onclick="submitfilemanager('copy')">Copy</button> selected documents to <input name="copytarget" /> <br/>
         {% endif %}
         {% if allowcopy and allowdelete %}
-        <button id="movebutton">Move</button> selected documents to <input name="movetarget" /> <br/>
+        <button id="movebutton" onclick="submitfilemanager('move')">Move</button> selected documents to <input name="movetarget" /> <br/>
         {% endif %}
         {% if allowdelete %}
-        <button id="deletebutton">Delete</button> selected documents<br/>
+        <button id="deletebutton" onclick="submitfilemanager('delete')">Delete</button> selected documents<br/>
         {% endif %}
     </div>
+    </form>
     {% endif %}
 </div>
 
