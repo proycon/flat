@@ -316,6 +316,13 @@ div#leftpane .title {
    display: none;
 }
 #filemanagement {
+    border: #30677c 1px solid;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 5px;
+    color: black;
+    clear: both; 
     font-size: 80%;
-    margin-left: 30px;
+    padding-left: 30px;
+    padding-bottom: 30px;
 }
