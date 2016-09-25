@@ -315,3 +315,7 @@ div#leftpane .title {
 #convparameterhelp, #convparameters {
    display: none;
 }
+#filemanagement {
+    font-size: 80%;
+    margin-left: 30px;
+}
