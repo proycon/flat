@@ -287,11 +287,64 @@ def download(request, namespace, docid):
     data = flat.comm.query(request, "USE " + namespace + "/" + docid + " GET",False)
     return HttpResponse(data, content_type='text/xml')
 
+@login_required
+def filemanagement(request):
+    if request.method == 'POST':
+        if 'filemanmode' in request.POST:
+            if request.POST['filemanmode'] == 'delete':
+                targetnamespace = None
+            elif request.POST['filemanmode'] == 'copy' and 'copytarget' in request.POST and request.POST['copytarget']:
+                targetnamespace = request.POST['copytarget'].replace('..','.').replace(' ','').replace('&','')
+            elif request.POST['filemanmode'] == 'move' and 'movetarget' in request.POST and request.POST['movetarget']:
+                targetnamespace = request.POST['movetarget'].replace('..','.').replace(' ','').replace('&','')
+            else:
+                return fatalerror(request, "Invalid operation",404)
+ 
+            docs = []
+            for key, value in request.POST.items():
+                if key.startswith('docselect'):
+                    docs.append(value)
+            if not docs:
+                return fatalerror(request, "No documents selected",404)
+
+            if targetnamespace:
+                if not flat.users.models.haswritepermission(request.user.username, targetnamespace, request):
+                    return fatalerror(request, "Write permission denied for " + targetnamespace,403)
+
+            namespace = None
+            for doc in docs:
+                namespace, docid = doc.rsplit('/', 1)
+                if targetnamespace:
+                    data = {'target': targetnamespace + '/' + docid}
+                else:
+                    data = {}
+
+                if not flat.users.models.hasreadpermission(request.user.username, namespace, request):
+                    return fatalerror(request, "Read permission denied for " + docid,403)
+                if request.POST['filemanmode'] in ('delete','move') and not flat.users.models.haswritepermission(request.user.username, targetnamespace, request):
+                    return fatalerror(request, "Write permission denied for " + docid,403)
+
+                try:
+                    flat.comm.filemanagement(request,request.POST['filemanmode'], namespace, docid, **data)
+                except Exception as e:
+                    return fatalerror(request,e)
+
+            if targetnamespace:
+                return HttpResponseRedirect("/index/" + targetnamespace )
+            elif namespace:
+                return HttpResponseRedirect("/index/" + namespace )
+            else:
+                return HttpResponseRedirect("/")
+
+        else:
+            return fatalerror(request, "No mode specified",403)
+    else:
+        return fatalerror(request, "Method denied",403)
 
 @login_required
 def upload(request):
     if request.method == 'POST':
-        namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
+        namespace = request.POST['namespace'].replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(request.user.username, namespace, request) and 'file' in request.FILES:
             if request.POST['inputformat'] != 'folia':
                 #we need to convert the input
@@ -356,7 +409,7 @@ def upload(request):
         else:
             return fatalerror(request, "Write permission denied",403)
     else:
-        return fatalerror(request, "Read permission denied",403)
+        return fatalerror(request, "Method denied",403)
 
 
 @login_required

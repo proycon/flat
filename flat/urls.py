@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)\.folia\.xml/?$', flat.views.download, name='download'),
     url(r'^download/(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.views.download, name='download'),
     url(r'^upload/?$', flat.views.upload, name='upload'),
+    url(r'^filemanagement/?$', flat.views.filemanagement, name='filemanagement'),
     url(r'^addnamespace/?$', flat.views.addnamespace, name='addnamespace'),
     url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.query, name='query'), #generic query function
     # url(r'^flat/', include('flat.foo.urls')),

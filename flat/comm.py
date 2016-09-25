@@ -58,6 +58,7 @@ def query(request, query, parsejson=True, **extradata):
 
 
 
+
 def get( request, url, parsejson=True):
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
     setsid(docservereq, getsid(request))
@@ -80,6 +81,27 @@ def get( request, url, parsejson=True):
             return None
         else:
             return ""
+
+def filemanagement(request, filemanmode, namespace, doc, **data):
+    if sys.version < '3':
+        #encode for python 2
+        for key, value in data.items():
+            if isinstance(value,unicode): #pylint: disable=undefined-variable
+                data[key] = value.encode('utf-8')
+
+    docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + filemanmode + "/")
+    setsid(docservereq, getsid(request))
+    f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
+    if sys.version < '3':
+        contents = unicode(f.read(),'utf-8') #pylint: disable=undefined-variable
+    else:
+        contents = str(f.read(),'utf-8')
+    f.close()
+    if contents and contents[0] in ('{','['):
+        return json.loads(contents)
+    else:
+        return None
+
 
 def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
