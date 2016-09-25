@@ -87,15 +87,15 @@
     {% endif %}
     {% if allowcopy or allowdelete %}
     <div id="filemanagement">
-        <h4>File Management Operations</h4>
+        <h4>Document Management Operations</h4>
         {% if allowcopy %}
-        <button id="copybutton">Copy</button> selected files to <input name="copytarget" /> <br/>
+        <button id="copybutton">Copy</button> selected documents to <input name="copytarget" /> <br/>
         {% endif %}
         {% if allowcopy and allowdelete %}
-        <button id="movebutton">Move</button> selected files to <input name="movetarget" /> <br/>
+        <button id="movebutton">Move</button> selected documents to <input name="movetarget" /> <br/>
         {% endif %}
         {% if allowdelete %}
-        <button id="deletebutton">Delete</button> selected files<br/>
+        <button id="deletebutton">Delete</button> selected documents<br/>
         {% endif %}
     </div>
     {% endif %}
