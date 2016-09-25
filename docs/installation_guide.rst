@@ -60,7 +60,7 @@ run these, set ``PYTHONPATH`` to the directory that contains your
 
     $ export PYTHONPATH=/your/settings/path/
     $ export DJANGO_SETTINGS_MODULE=settings
-    $ django-admin migrate
+    $ django-admin migrate --run-syncdb
 
 Don't forget to restart your webserver or development server, as well as the
 FoLiA Document Server (``foliadocserve``) after each upgrade.

@@ -116,9 +116,10 @@ def initdoc(request, namespace, docid, mode, template, context=None):
         context.update(docserveerror(e))
     dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
     if dometadataindex:
+        metadata = json.loads(context['metadata'])
         for metakey in settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']:
-            if metakey in context['metadata']:
-                MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,value=context['metadata'][metakey])
+            if metakey in metadata:
+                MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,value=metadata[metakey])
     response = render(request, template, context)
     if 'fatalerror' in context:
         response.status_code = 500
