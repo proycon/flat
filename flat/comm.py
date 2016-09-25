@@ -89,7 +89,7 @@ def filemanagement(request, filemanmode, namespace, doc, **data):
             if isinstance(value,unicode): #pylint: disable=undefined-variable
                 data[key] = value.encode('utf-8')
 
-    docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + filemanmode + "/")
+    docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + filemanmode + "/" + namespace + "/" + doc)
     setsid(docservereq, getsid(request))
     f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
     if sys.version < '3':

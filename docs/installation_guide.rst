@@ -108,7 +108,7 @@ required component that needs not necessarily be on the same host. Your copy of
 ``settings.py`` should point to the host and port where FLAT can reach the
 document server, start it as follows::
 
-    $ foliadocserve -d /path/to/document/root -p 8080
+    $ foliadocserve -d /path/to/document/root -p 8080 --git 
 
 The document path will be a directory that will contain all FoLiA documents.
 Create a root directory and ensure the user the foliadocserve is running under has
@@ -117,6 +117,10 @@ configuration. Note that it does not provide any authentication features so it
 should run somewhere where the outside world **can NOT reach** it, only FLAT needs
 to be able to connect to it. Often, FLAT and the document server run on the
 same host, so a localhost connection is sufficient.
+
+The ``--git`` option enables git versioning support, allowing users to undo annotations
+and go back to previous revisions, it requires ``git`` to be installed on the
+system.
 
 -------------------------------------
 Starting FLAT (development server)

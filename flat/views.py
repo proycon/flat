@@ -339,7 +339,7 @@ def filemanagement(request):
 
                 if not flat.users.models.hasreadpermission(request.user.username, namespace, request):
                     return fatalerror(request, "Read permission denied for " + docid,403)
-                if request.POST['filemanmode'] in ('delete','move') and not flat.users.models.haswritepermission(request.user.username, targetnamespace, request):
+                if request.POST['filemanmode'] in ('delete','move') and not flat.users.models.haswritepermission(request.user.username, namespace, request):
                     return fatalerror(request, "Write permission denied for " + docid,403)
 
                 try:
