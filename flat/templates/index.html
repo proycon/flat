@@ -11,8 +11,18 @@
     </p>
     <form action="/upload/" enctype="multipart/form-data" method="post">
         {% csrf_token %}
-        <label>Select file:</label> <input type="file" name="file" />
-        <label>Namespace:</label> <input type="text" name="namespace" value="{{ username }}" />
+        <label>Select file:</label> <input type="file" name="file" /><br/>
+        <label>Namespace:</label> 
+        <select name="namespace">
+            {% if namespace %}
+            <option value="{{namespace}}" selected="selected">{{namespace}}</option>
+            {% endif %}
+            {% for dir in recursivedirs %}
+                {% if dir != namespace %}
+                <option value="{{dir}}">{{dir}}</option>
+                {% endif %}
+            {% endfor %}
+        </select> <br/>
         <label>Input format:</label> <select name="inputformat" onchange="{{inputformatchangefunction|safe}}">
             <option value="folia" selected="selected">FoLiA XML</option>
             {% for converter in converters %}
@@ -56,7 +66,7 @@
         <button id="newbutton" class="button">New document</button>
     {% endif %}
     {% if configuration.allowupload %}
-        <button id="showuploadbutton" class="button">Upload document</button>
+        <button id="showuploadbutton" class="button">Add document</button>
     {% endif %}
     {% if configuration.allowupload or configuration.allownew %}
         <button id="adddirectorybutton" class="button">Add new directory</button>
@@ -64,12 +74,12 @@
     </div>
     {% if namespace %}<h4>{{ namespace }}</h4>{% endif %}
 
-    {% if namespace or dirs %}
+    {% if namespace or subdirs %}
         <ul id="dirlist">
         {% if namespace %}
             <li><a href="/index/{{parentdir}}">../</a></li>
         {% endif %}
-        {% for dir in dirs %}
+        {% for dir in subdirs %}
             {% if namespace %}
                 <li><a href="/index/{{namespace}}/{{dir}}">{{dir}}/</a></li>
             {% else %}
@@ -91,10 +101,20 @@
         <h4>Document Management Operations</h4>
         <input type="hidden" id="filemanmode" name="filemanmode" value="" />
         {% if allowcopy %}
-        <button id="copybutton" onclick="submitfilemanager('copy')">Copy</button> selected documents to <input name="copytarget" /> <br/>
+        <button id="copybutton" onclick="submitfilemanager('copy')">Copy</button> selected documents to 
+        <select name="copytarget">
+            {% for dir in recursivedirs %}
+            <option value="{{dir}}">{{dir}}</option>
+            {% endfor %}
+        </select><br/>
         {% endif %}
         {% if allowcopy and allowdelete %}
-        <button id="movebutton" onclick="submitfilemanager('move')">Move</button> selected documents to <input name="movetarget" /> <br/>
+        <button id="movebutton" onclick="submitfilemanager('move')">Move</button> selected documents to 
+        <select name="movetarget">
+            {% for dir in recursivedirs %}
+            <option value="{{dir}}">{{dir}}</option>
+            {% endfor %}
+        </select> <br/>
         {% endif %}
         {% if allowdelete %}
         <button id="deletebutton" onclick="submitfilemanager('delete')">Delete</button> selected documents<br/>
