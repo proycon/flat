@@ -1253,7 +1253,7 @@ function editor_submit(addtoqueue) {
                             forids += " ID " + t;
                         });
                         query += forids;
-                    }
+                    } 
                     returntype = "ancestor-focus";
                 }
 
