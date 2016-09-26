@@ -1011,7 +1011,7 @@ function editor_submit(addtoqueue) {
         }
 
 
-        if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin))) {
+        if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin)) && (editdata[i].editform != 'new')) {
             //detect changes in span, and set the changed flag
             editdata[i].changed = true;
             editdata[i].respan = true;
@@ -1253,7 +1253,7 @@ function editor_submit(addtoqueue) {
                             forids += " ID " + t;
                         });
                         query += forids;
-                    }
+                    } 
                     returntype = "ancestor-focus";
                 }
 
