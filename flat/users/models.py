@@ -36,15 +36,15 @@ def hasreadpermission(username, namespace, request):
         return True
     else:
         #new group-based system
-        groupread = request.user.has_perm('groupread')
-        if groupread:
-            try:
-                #is the namespace a group namespace?
-                groupnamespace = Group.objects.get(name=namespace.split('/')[0])
-                #are we a member of it?
-                if request.user.groups.filter(name=groupnamespace.name).exists():
-                    return True
-            except ObjectDoesNotExist:
+        try:
+            #is the namespace a group namespace?
+            groupnamespace = Group.objects.get(name=namespace.split('/')[0])
+            #are we a member of it?
+            if request.user.groups.filter(name=groupnamespace.name).exists():
+                return True
+        except ObjectDoesNotExist:
+            groupread = request.user.has_perm('groupread')
+            if groupread:
                 try:
                     #is the namespace a user namespace?
                     usernamespace = User.objects.get(username=namespace.split('/')[0])
@@ -76,15 +76,15 @@ def haswritepermission(username, namespace, request):
         return True
     else:
         #new group-based system
-        groupwrite = request.user.has_perm('groupwrite')
-        if groupwrite:
-            try:
-                #is the namespace a group namespace?
-                groupnamespace = Group.objects.get(name=namespace.split('/')[0])
-                #are we a member of it?
-                if request.user.groups.filter(name=groupnamespace.name).exists():
-                    return True
-            except ObjectDoesNotExist:
+        try:
+            #is the namespace a group namespace?
+            groupnamespace = Group.objects.get(name=namespace.split('/')[0])
+            #are we a member of it?
+            if request.user.groups.filter(name=groupnamespace.name).exists():
+                return True
+        except ObjectDoesNotExist:
+            groupwrite = request.user.has_perm('groupwrite')
+            if groupwrite:
                 try:
                     #is the namespace a user namespace?
                     usernamespace = User.objects.get(username=namespace.split('/')[0])

@@ -111,7 +111,8 @@ We will discuss the individual configuration options here:
 * ``allowconfidence`` -- Boolean, allow confidence values to be set/added?
 * ``initialcorrectionset`` - String to the set definition used for corrections.
 * ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone) 
-  
+* ``creategroupnamespaces`` -- Boolean, automatically create namespace directories for all groups the user belong to (upon login). The directory name corresponds to the group name.
+
 
 =====================
 User permissions
@@ -119,12 +120,29 @@ User permissions
 
 
 FLAT comes with a simple administrative webinterface that allows to configure
-user permissions. The administrative interface is accessible only by administrators
-and can be found at ``http://your.flat.url/admin/``.
+user permissions. The administrative interface is accessible only by
+administrators, after login, it is accessible from the right-most menu
+(featuring your username).
 
-You can configure which users may access which namespaces/directories.
+The initial administrator should have been during installation, additional
+administrators can be added by ticking the **staff** or **superuser** boxes in
+the **Users** section. Users can be added manually by administrators or they may register
+themselves from the login screen. When a user logs in, a personal namespace
+directory will automatically be created.
 
-(TODO: elaborate)
+Additionaly, you can create groups and assign users to groups. By default,
+users may read and write to the group namespaces they are a member of.
+Additionally, is the **groupread**/**groupwrite** permissions are set, from the
+**Users** section of the administration page, they may read/write in the user
+namespaces of other members of the group.
+
+Permissions for user/group namespaces apply to all subdirectories under it as
+well.
+
+If you set the ``creategroupnamespaces`` configuration option in
+``settings.py``, group namespaces will be created automatically when a user
+logs in.
+
 
 
 ===============================
