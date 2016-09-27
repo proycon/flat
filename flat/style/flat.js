@@ -1,4 +1,6 @@
 // jshint evil:true
+
+//Defines the human-readable labels for annotation types
 var annotationtypenames = {
     'pos': 'Part-of-Speech',
     'lemma': 'Lemma',
@@ -35,6 +37,8 @@ var annotationtypenames = {
     'metric': 'Metric',
     'str': 'String'
 };
+//
+//Defines whether elements are span elements or not
 var annotationtypespan = {
     'pos': false,
     'lemma': false,
@@ -54,18 +58,21 @@ var annotationtypespan = {
     'dependency': true,
     'coreferencechain': true,
 };
+//Defines elements that are structural elements
 var annotationtypestructure = ['p','w','s','div','event','utt'];
+//Defines span role elements for span annotation elementes
 var spanroles = {
     'coreferencechain': ['coreferencelink'],
     'dependency': ['hd','dep'],
 };
 
 
-var sid = ((Math.random() * 1e9) | 0); //session id
+//A random session ID
+var sid = ((Math.random() * 1e9) | 0); 
 
 var havecontent = false; //we start assuming we have no content
 var closewait = true; //close the wait mask when we are done loading
-var textclass = "current";
+var textclass = "current"; //the default text class: "current"
 
 var perspective = 'document'; //initial perspective (will be overriden from config in init anyway)
 var perspective_ids = null;
@@ -82,6 +89,7 @@ var mouseX = 0;
 var mouseY = 0;
 
 function getannotationtypename(t) {
+    //Get the human-readable label for an annotation type (corresponding to XML tag), if defined
     if (annotationtypenames[t]) {
         return annotationtypenames[t];
     }
@@ -89,6 +97,7 @@ function getannotationtypename(t) {
 }
 
 function function_exists(functionName) {
+    //Test if a function exists
     if(eval("typeof(" + functionName + ") == typeof(Function)")) {
         return true;
     }
@@ -96,10 +105,12 @@ function function_exists(functionName) {
 
 
 function isstructure(annotationtype) {
+    //Is the given element a structural element?
     return (annotationtypestructure.indexOf(annotationtype) !== -1);
 }
 
 function hash(s){
+  //Generic hash function
   if (s) {
     return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);  //jshint ignore:line
   }
@@ -107,6 +118,9 @@ function hash(s){
 }
 
 function getannotationid(annotation) {
+    //Gets the ID for the annotation. It will be used by FLAT internally in
+    //many places. This may be a FoLiA ID but if there is no FoLiA ID it
+    //corresponds to other constructs like type/set
     if (annotation.self) {
         return "self";
     }
@@ -126,6 +140,7 @@ function getannotationid(annotation) {
 }
 
 function onfoliaclick() {
+    //Called when an element (often a word) is clicked, delegates to *_onclick methods of the enabled mode
     if (function_exists(mode + '_onclick')) {
         var f = eval(mode + '_onclick');
         f(this);
@@ -133,6 +148,7 @@ function onfoliaclick() {
     return false;
 }
 function onfoliadblclick() {
+    //Called when an element (often a word) is double clicked, delegates to *_ondblclick methods of the enabled mode
     if (function_exists(mode + '_ondblclick')) {
         var f = eval(mode + '_ondblclick');
         f(this);
@@ -140,6 +156,7 @@ function onfoliadblclick() {
     return false;
 }
 function onfoliamouseenter() {
+    //Called when an element (often a word) is entered with the cursor, delegates to *_mouseenter methods of the enabled mode
     if (function_exists(mode + '_onmouseenter')) {
         var f = eval(mode + '_onmouseenter');
         f(this);
@@ -147,6 +164,7 @@ function onfoliamouseenter() {
     return false;
 }
 function onfoliamouseleave() {
+    //Called when an element (often a word) is exited with the cursor, delegates to *_mouseleave methods of the enabled mode
     if (function_exists(mode + '_onmouseleave')) {
         var f = eval(mode + '_onmouseleave');
         f(this);
@@ -155,7 +173,7 @@ function onfoliamouseleave() {
 }
 
 function loadtext(annotationlist) {
-    //reload text into the structure
+    //reload text from the annotation data response back into the DOM structure, called by update()
     annotationlist.forEach(function(annotation){
         if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
             if (annotation.targets) {
@@ -172,7 +190,7 @@ function loadtext(annotationlist) {
 }
 
 function loadannotations(annotationlist) {
-    //load annotations in memory
+    //load annotations from the annotation data response in memory, called by update()
     var annotationexists = {};
 
     annotationlist.forEach(function(annotation){
@@ -224,6 +242,7 @@ function loadannotations(annotationlist) {
 
 
 function loaddeclarations(declarationlist) {
+    //parse the metadata response and populate the declarations structure in memory, declarationlist is supplied through the server-side template on page load
     declarationlist.forEach(function(declaration){
         if (!declarations[declaration.annotationtype])  declarations[declaration.annotationtype] =  {};
         declarations[declaration.annotationtype][declaration.set] = { 'settype': 'open', 'classes': [] }; //this will hold proper set definitions later on
@@ -231,6 +250,7 @@ function loaddeclarations(declarationlist) {
 }
 
 function rendertextclass() {
+    //Renders the right text label based on the text class (currenet by default)
     Object.keys(annotations).forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationid){
             var annotation = annotations[target][annotationid];
@@ -247,6 +267,7 @@ function rendertextclass() {
         });
     });
     $('div.deepest>span.lbl').show();
+    //Delegate to mode's callback function
     if (function_exists(mode + '_onrendertextclass')) {
         f = eval(mode + '_onrendertextclass');
         f();
@@ -276,15 +297,18 @@ function setupcorrection(correction) {
 }
 
 function registerhandlers() {
+    //Registers all event handlers on elements (mostly words)
     $('.F').off(); //prevent duplicates
     $('.F').click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
 }
 
 function valid(id){
+    //Validate a HTML DOM element ID  for use in javascript (dots need to be escaped)
     return id.replace(/\./g,'\\.');
 }
 
 function shorten(s) {
+    //Shorten set URLs for presentation
     if (s.length > 30) {
         if (s.substr(s.length -13) == ".foliaset.xml") {
             s = s.substr(0,s.length-13) + '..';
@@ -300,7 +324,7 @@ function shorten(s) {
 }
 
 function update(data) {
-    //partial update
+    //Process data response from the server, does a partial update, called through loadcontent() on initialisation
     if (data.error) {
         alert(data.error);
     }
@@ -337,29 +361,33 @@ function update(data) {
         });
         if (reregisterhandlers) registerhandlers();
         havecontent = true;
+        //Call mode-specific callback function for further processing
         if (function_exists(mode + '_onupdate')) {
             f = eval(mode + '_onupdate');
             f();
         }
     }
     if (data.aborted) {
+        //If not all data could be loaded, show a note to that effect
         $('#aborted').show();
     }
 }
 
 
 function loadcontent(perspective, ids, start, end) {
-    //get query depending on the perspective
-    //  triggered on first page load and on change of perspective
+    //Formulates and submits an FQL query to the backend to retrieve the
+    //content, depending on the perspective
+    //  Triggered on first page load and on change of perspective/page
     //
     $('#wait .msg').html("Obtaining document data...");
     $('#wait').show();
     $('#aborted').hide();
 
     havecontent = false; //global variable to indicate we have no content (anymore)
-    annotations = {};
+    annotations = {}; //clear all annotations in memory
     $('#document').html(""); //clear document
 
+    //Formulate FQL query
     var query = "USE " + namespace + "/" + docid + " SELECT FOR";
     if (perspective == "document") {
         query += " ALL";
@@ -380,6 +408,7 @@ function loadcontent(perspective, ids, start, end) {
     query += " FORMAT flat";
 
 
+    //Submit to backend
     $.ajax({
         type: 'POST',
         url: "/" + namespace + "/"+ docid + "/query/",
@@ -393,12 +422,16 @@ function loadcontent(perspective, ids, start, end) {
                 alert("Received error from document server: " + data.error);
             } else {
                 settextclassselector(data);
-                update(data);
+                update(data); //main function to  update all elements according to the data response
+
+                //Delegate to mode-specific callbacks
                 if (function_exists(mode + '_contentloaded')) {
                     f = eval(mode + '_contentloaded');
                     f(data);
                 }
                 if (rtl) {
+                    //Trigger right-to-left presentation for languages such as Arabic, Hebrew, Farsi,
+                    //rtl is set based on FoLiA metadata
                     $('#document').css({'direction':'rtl'} );
                 }
                 $('#wait').hide();
@@ -413,6 +446,7 @@ function loadcontent(perspective, ids, start, end) {
 }
 
 function settextclassselector(data) {
+    //Populate the text class selector and render text classes
     $('#textclassselector').hide();
     if (data.textclasses) {
         if (data.textclasses.length > 1) {
@@ -458,6 +492,7 @@ $(document).mousemove( function(e) {
 });
 
 function rendertoc(tocitem, depth) {
+    //Render Table of Contents in perspectivemenu (called by loadperspectivemenu())
     var opts = "<option value=\"div:" + tocitem.id + "\"";
     if ((perspective_ids) && (perspective_ids.indexOf(tocitem.id) != -1)) {
         opts += " selected=\"selected\">";
@@ -474,6 +509,7 @@ function rendertoc(tocitem, depth) {
 }
 
 function loadperspectivemenu() {
+    //Create and populate the perspective menu and pager
     var s = "<span class=\"title\">Perspective</span>";
     s += "<select id=\"perspectivemenu\">";
     var opts = "";
@@ -537,6 +573,8 @@ function loadperspectivemenu() {
 }
 
 function loadpager() {
+    //Create and populate the pager, to page through multiple pages of the
+    //document (called by loadperspectivemenu())
     if (!slices[perspective]) {
         alert("Error: No slices available for perspective " + perspective + ". If you are the administrator, make sure to define this perspective in the slices in the configuration");
         return false;
@@ -561,6 +599,7 @@ function loadpager() {
 }
 
 $(document).ajaxSend(function(event, xhr, settings) {
+    //Generic AJAX send function, with
     //CSRF token support for jquery AJAX request to Django
     function getCookie(name) {
         var cookieValue = null;
@@ -600,6 +639,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
 
 
 $.fn.sortOptions = function(){
+    //Generic alphabetic sort function for option elements in select
     var sel = $(this).val();
     $(this).each(function(){
         var op = $(this).children("option");
@@ -612,6 +652,7 @@ $.fn.sortOptions = function(){
 };
 
 function bySortedValue(obj, callback, context) {
+    //Generic sort by value function
     var tuples = [];
 
     for (var key in obj) tuples.push([key, obj[key]]);
@@ -637,28 +678,33 @@ function index_click() {
 }
 
 function submitfilemanager(filemanmode) {
+    //Submit a file management operation (sets a mode and submits the HTML form)
     $('#filemanmode').val(filemanmode);
     $('#filemanform').submit();
 }
 
 function auto_grow(element) {
+    //Generic auto-grow function for elements
     element.style.height = "5px";
     element.style.height = (element.scrollHeight)+"px";
 }
 
 function escape_fql_value(v) {
+    //Escape values in FQL
     return v.replace('"','\\"');
 }
 
 $(function() {
+    //on document load
+    //
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){
             $('>ul',this).css('left', mouseX-30);
         });
 
-        //loadtext(initialannotationlist);
-        //loadannotations(initialannotationlist);
+        //Load the declarations, set definitions
         loaddeclarations(initialdeclarationlist);
+        //Register handlers for all elements
         registerhandlers();
         if ((namespace != "testflat")  || (docid == "manual")) {
             //get the data first of all (will take a while anyway)
@@ -667,8 +713,10 @@ $(function() {
                 perspective_start = slices[perspective][0];
                 perspective_end = slices[perspective][1];
             }
+            //Request content to be loaded (will be a call to server) and eventually calls update()
             loadcontent(perspective, perspective_ids, perspective_start, perspective_end);
         }
+        //Delegate to mode-specific callback
         if (function_exists(mode + '_oninit')) {
             f = eval(mode + '_oninit');
             f();
