@@ -963,7 +963,7 @@ function editor_submit(addtoqueue) {
     //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
     var changes = false; //assume no changes, falsify:
     for (var i = 0; i < editfields;i++) {
-        if ($('#editfield' + i) && ($('#editfield' + i).val() != editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
+        if ($('#editfield' + i) && (($('#editfield' + i).val() != editdata[i].class) || (editdata[i].editform == 'new') ) && ($('#editfield' + i).val() != 'undefined') ) {
             //A class was changed
             //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
             editdata[i].oldclass = editdata[i].class;
