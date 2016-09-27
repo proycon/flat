@@ -691,7 +691,7 @@ function auto_grow(element) {
 
 function escape_fql_value(v) {
     //Escape values in FQL
-    return v.replace('"','\\"');
+    return v.replace('"','\\"').replace("\n","\\n");
 }
 
 $(function() {
