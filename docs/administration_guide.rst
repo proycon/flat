@@ -113,7 +113,8 @@ We will discuss the individual configuration options here:
 * ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone) 
 * ``requiredeclaration`` -- Require that documents already have the specified declarations, and if not, refuse to load them. This is a more or less the oppossite of ``autodeclare`` and is also a list of 2-tuples ``(tag,set)``.
 * ``creategroupnamespaces`` -- Boolean, automatically create namespace directories for all groups the user belongs to (upon login). The directory name corresponds to the group name.
-
+* ``metadataindex`` -- List of metadata keys that will be shown in the document index (there is only space for a limited few). 
+* ``metadataconstraints``  -- Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example: ``'metadataconstraints': {'language': ['fr','en,'es']}``
 
 =====================
 User permissions

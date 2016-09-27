@@ -204,7 +204,7 @@ CONFIGURATIONS = {
     #Allow confidence values to be set/edited?
     'allowconfidence': True,
 
-    # FoLiA set to use fo corrections
+    # FoLiA set to use for corrections
     #'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
 
     # List of 2-tuples (tag,set) that specify what annotation types and with
@@ -216,6 +216,22 @@ CONFIGURATIONS = {
     #    ('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml')
     #    ('entity', 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')
     #],
+
+    # List of 2-tuples (tag,set) that specify what annotation types and with
+    # what are required sets to be already present for each document that is
+    # opened. This is more or less the opposite of autodeclare
+
+    #'requiredeclaration': [
+    #    ('correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml')
+    #    ('entity', 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml')
+    #],
+
+    #List of metadata keys (in  FoLiA's native metadata) to show in the
+    # document index.
+    #'metadataindex': ['status','language','title'],
+
+    #Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example:
+    #'metadataconstraints': {'language': ['fr','en','es'], 'status':['completed','inprogress']}
 
 },
 }
