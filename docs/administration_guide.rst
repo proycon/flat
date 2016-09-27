@@ -136,9 +136,10 @@ automatically be created.
 
 Additionaly, you can create groups and assign users to groups. By default,
 users may read and write to the group namespaces they are a member of.
-Additionally, is the **groupread**/**groupwrite** permissions are set, from the
-**Users** section of the administration page, they may read/write in the user
-namespaces of other members of the group.
+Additionally, if the permission *User may read documents of others in his/her
+group* or *User may write documents of others in his/her group* is assigned
+from the user section of the administration page, users may read/write in the
+user namespaces of other members of the group.
 
 Permissions for user/group namespaces apply to all subdirectories under it as
 well.
@@ -147,6 +148,15 @@ If you set the ``creategroupnamespaces`` configuration option in
 ``settings.py``, group namespaces will be created automatically when a user
 logs in.
 
+-----------------
+File Management
+-----------------
+
+The document index provides simple file management operations such as copying,
+moving and deleting documents. By default these options are disabled except for
+administators, to enable them for specific users, assign the *User may copy
+documents wherever he/she has write permission* and *User may delete documents
+wherever he/she has write permission*.
 
 
 ===============================

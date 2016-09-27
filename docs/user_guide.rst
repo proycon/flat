@@ -32,7 +32,8 @@ You can select a file to load it into the tool, this will usually present you
 the annotation editor.
 
 You may also see directories of others if the administrators have given you
-explicit rights to do so.
+explicit rights to do so. Moreover, if you have sufficient permission, you will
+see tools to copy/move/delete selected documents.
 
 .. image:: mydocuments.png
     :alt: Document index in FLAT
