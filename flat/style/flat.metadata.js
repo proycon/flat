@@ -10,7 +10,27 @@ function metadata_oninit() {
 
     var i = 0;
     Object.keys(metadata).forEach(function(key){
-        s = s + "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"" + key + "\" /></td><td class=\"value\"><input id=\"metavalue" + i + "\" value=\"" + metadata[key] + "\" /></td></tr>\n";
+        s = s + "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"" + key + "\" /></td><td class=\"value\">";
+        if ((configuration.metadataconstraints) && (configuration.metadataconstraints[key])) {
+            s = s + "<select id=\"metavalue" + i +">";
+            var found = false;
+            for (j = 0; j < configuration.metadataconstraints[key].length; j++) {
+                if (configuration.metadataconstraints[key][j] == metadata[key]) {
+                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\" selected=\"selected\">" + configuration.metadataconstraints[key][j] + "</option>";
+                    found = true;
+                } else {
+                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\">" + configuration.metadataconstraints[key][j] + "</option>";
+                }
+            }
+            if (!found) {
+                //value not in constraints but it has been set anyway, add it to the list
+                s = s + "<option value=\"" + metadata[key] + "\" selected=\"selected\">" + metadata[key] + "</option>";
+            }
+            s = s + "</select>";
+        } else {
+            s = s + "<input id=\"metavalue" + i + "\" value=\"" + metadata[key] + "\" />";
+        }
+        s = s + "</td></tr>\n";
         i++;
     });
     metadatafields = i;

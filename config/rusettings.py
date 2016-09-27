@@ -284,7 +284,7 @@ CONFIGURATIONS = {
     'requiredeclaration': [
         ('entity', 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml')
     ],
-    'modes': [ ('editor','Annotation Editor')],
+    'modes': [ ('editor','Annotation Editor'), ('metadata', 'Metadata Editor')],
     'perspectives': ['s'],
     'slices': 's:100',
     'converters': [ 
