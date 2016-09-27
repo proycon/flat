@@ -298,6 +298,7 @@ CONFIGURATIONS = {
         }
     ],
     'metadataindex': ['status'],
+    'metadataconstraints': {'status':['converted','completed']},
 },
 'sinfex': {
     'name': 'Sinfex Annotation Task',

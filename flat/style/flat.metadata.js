@@ -12,7 +12,7 @@ function metadata_oninit() {
     Object.keys(metadata).forEach(function(key){
         s = s + "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"" + key + "\" /></td><td class=\"value\">";
         if ((configuration.metadataconstraints) && (configuration.metadataconstraints[key])) {
-            s = s + "<select id=\"metavalue" + i +">";
+            s = s + "<select id=\"metavalue" + i +"\">";
             var found = false;
             for (j = 0; j < configuration.metadataconstraints[key].length; j++) {
                 if (configuration.metadataconstraints[key][j] == metadata[key]) {
