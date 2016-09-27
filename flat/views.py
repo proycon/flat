@@ -125,7 +125,7 @@ def initdoc(request, namespace, docid, mode, template, context=None):
                 if annotationtype == d['annotationtype'] and (not annotationset or annotationset == d['set']):
                     found = True
                     break
-            if found:
+            if not found:
                 if annotationset:
                     return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype + "/" + annotationset)
                 else:
