@@ -116,9 +116,16 @@ def initdoc(request, namespace, docid, mode, template, context=None):
         context.update(docserveerror(e))
     dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']
     if dorequiredeclaration:
-        declarations = json.loads(context['declarations'])
+        if not 'declarations' in doc:
+            return fatalerror(request, "Refusing to load document, missing expected declarations, none declared")
+        declarations = doc['declarations']
         for annotationtype, annotationset in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
-            if annotationtype not in declarations or (annotationset and annotationset not in declarations[annotationtype]):
+            found = False
+            for d in declarations:
+                if annotationtype == d['annotationtype'] and (not annotationset or annotationset == d['set']):
+                    found = True
+                    break
+            if found:
                 if annotationset:
                     return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype + "/" + annotationset)
                 else:
