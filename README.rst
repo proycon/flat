@@ -53,6 +53,7 @@ Features
   in FoLiA and anybody can create their own.
 * Supports Token Annotation and Span Annotation
 * Simple metadata editor for editing/adding arbitrary metadata to a document
+* Allows converter extensions to convert from other formats to FoLiA on upload
 
 ============================================
 Architecture

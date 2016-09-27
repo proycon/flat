@@ -115,6 +115,7 @@ We will discuss the individual configuration options here:
 * ``creategroupnamespaces`` -- Boolean, automatically create namespace directories for all groups the user belongs to (upon login). The directory name corresponds to the group name.
 * ``metadataindex`` -- List of metadata keys that will be shown in the document index (there is only space for a limited few). 
 * ``metadataconstraints``  -- Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example: ``'metadataconstraints': {'language': ['fr','en,'es']}``
+* ``converters`` -- List of converters that can convert from arbitrary formats to FoLiA XML on document upload. See the section on converters further below for syntax.
 
 =====================
 User permissions
@@ -191,3 +192,62 @@ This relies on the FoLiA document having either a metadata attribute
 *direction* set to ``rtl``, or a properly set *language* field in the
 metadata with a iso-639-1 or iso-639-3 language code of a known right-to-left
 language.
+
+
+--------------------------
+Converters
+--------------------------
+
+Being a tool centered around the FoLiA format, FLAT requires uploaded
+documentes to be in the FoLiA format. However, it also provides a framework for
+plugging in your own converters to automatically convert from another format to
+FoLiA XML upon upload.
+
+These converters are configured in ``settings.py`` as follows:
+
+.. code:: python
+
+    'converters': [ 
+        { 'id': 'parseme_tsv',  #a unique identifier for internal use
+          'module': 'tsv2folia.tsv2folia', #the python module where the converter is implemented
+          'function': 'flat_convert', #the python function (in the above module) that implements the conversion hook
+          'name': "PARSEME TSV", #a human readable named, to appear in the input format drop down list
+          'parameter_help': 'Set <em>"rtl": true</em> for right-to left languages', #human readable help for parameters
+          'parameter_default': '"rtl": false', #default parameter, JSON syntax without the envelopping {}
+          'inputextensions': ['tsv'], #input extensions that must be adhered to, and will be stripped for determining the output filename
+        }
+    ],
+
+Each configured converted is a Python dictionary with pre-defined keys that
+must be defined. Writing the actual converter is a more advanced topic that
+requires Python knowledge. Based on the above configuration, FLAT imports the
+converter as follows:
+
+.. code:: python
+
+    from tsv2folia.tsv2folia import flat_convert
+
+The function ``flat_convert``, or however you name it, is required to have
+the following signature:
+
+.. code:: python
+
+    def flat_convert(filename, targetfilename, *args, **kwargs):
+        ...
+        if success:
+            return True
+        else:
+            return False, "Some error message"
+
+Parameters (see converter configuration option ``parameter_default``) are
+passed as keyword arguments. FLAT's entire configuration (i.e. all the options
+from ``settings.py`` explained in the first section) is passed as a
+dictionary in keyword argument ``flatconfiguration``, allowing your converter to be aware of the
+context in which it is run. The positional arguments (``args``) are not used at
+this time. Your converter function should a boolean to indicate success or in
+case of failure it can return a 2-tuple containing ``False``, and an error message string.
+
+
+
+
+
