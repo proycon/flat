@@ -280,7 +280,7 @@ def index(request, namespace=""):
                 except Exception as e:
                     return fatalerror(request,e)
 
-        if request.user.has_perm('groupwrite') and (request.user.has_perm('allowcopy') or request.user.has_perm('allowmove')):
+        if request.user.has_perm('groupwrite') and (request.user.has_perm('allowcopy') or request.user.has_perm('allowdelete')):
             #create namespaces for all the users in our groups, since we may want to copy there
             for group in request.user.groups.all():
                 for user in django.contrib.auth.models.User.objects.filter(groups__name=group.name):
@@ -294,7 +294,7 @@ def index(request, namespace=""):
     recursivedirs =  []
     subdirs =[]
     for ns in sorted(namespaces['namespaces']):
-        if readpermission or flat.users.models.hasreadpermission(request.user.username, os.path.join(namespace, ns), request):
+        if flat.users.models.hasreadpermission(request.user.username, ns, request):
             recursivedirs.append(ns)
             if '/' not in ns:
                 dirs.append(ns)
@@ -410,10 +410,10 @@ def upload(request):
                 if not converter:
                     return fatalerror(request, "Converter not found or specified",404)
 
-                #try:
-                parameters = converter.parse_parameters(request, 'parameters')
-                #except:
-                #return fatalerror(request, "Invalid syntax for conversion parameters",403)
+                try:
+                    parameters = converter.parse_parameters(request, 'parameters')
+                except:
+                    return fatalerror(request, "Invalid syntax for conversion parameters",403)
 
                 if 'TMPDIR' in os.environ:
                     tmpdir = os.environ['TMPDIR']
