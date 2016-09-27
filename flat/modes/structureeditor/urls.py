@@ -11,7 +11,7 @@ import flat.modes.structureeditor.views
 
 urlpatterns = [
     # Examples:
-    url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/?$', flat.modes.structureeditor.views.view, name='view'),
+    url(r'^(?P<namespace>[\w\-_\.@]+)/(?P<docid>[\w\-\.]+)/?$', flat.modes.structureeditor.views.view, name='view'),
     #url(r'^(?P<namespace>[\w\-\.]+)/(?P<docid>[\w\-\.]+)/annotate/?$', 'flat.modes.structureeditor.views.annotate', name='annotate'),
 ]
 

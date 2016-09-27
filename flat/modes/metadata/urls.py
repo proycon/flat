@@ -10,7 +10,7 @@ else:
 import flat.modes.metadata.views
 
 urlpatterns = [
-    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.modes.metadata.views.view, name='view'),
+    url(r'^(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.modes.metadata.views.view, name='view'),
 ]
 
 if VERSION[0] == 1 and VERSION[1] < 8: #Django <1.8

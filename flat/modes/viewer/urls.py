@@ -11,8 +11,8 @@ import flat.modes.viewer.views
 
 urlpatterns = [
     # Examples:
-    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/poll/?$', flat.modes.viewer.views.poll, name='poll'),
-    url(r'^(?P<namespace>[\w\d\-_\./]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.modes.viewer.views.view, name='view'),
+    url(r'^(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/poll/?$', flat.modes.viewer.views.poll, name='poll'),
+    url(r'^(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.modes.viewer.views.view, name='view'),
 ]
 
 if VERSION[0] == 1 and VERSION[1] < 8: #Django <1.8
