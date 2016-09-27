@@ -34,6 +34,8 @@ class WritePermissions(models.Model):
 def hasreadpermission(username, namespace, request):
     if username == namespace or namespace == "testflat":
         return True
+    elif request.user.is_superuser:
+        return True
     else:
         #new group-based system
         try:
@@ -73,6 +75,8 @@ def hasreadpermission(username, namespace, request):
 
 def haswritepermission(username, namespace, request):
     if username == namespace or namespace == "testflat":
+        return True
+    elif request.user.is_superuser:
         return True
     else:
         #new group-based system
