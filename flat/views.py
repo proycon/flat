@@ -335,9 +335,6 @@ def index(request, namespace=""):
     else:
         parentdir = ""
 
-    print("allowcopy:", request.user.has_perm('auth.allowcopy'),file=sys.stderr)
-    print("allowdelete:", request.user.has_perm('auth.allowdelete'),file=sys.stderr)
-
     return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'recursivedirs': recursivedirs, 'subdirs': subdirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'allowcopy': request.user.has_perm('auth.allowcopy'), 'allowdelete': request.user.has_perm('auth.allowdelete'),'version': settings.VERSION})
 
 @login_required
