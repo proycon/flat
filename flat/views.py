@@ -114,6 +114,21 @@ def initdoc(request, namespace, docid, mode, template, context=None):
         context.update(getcontext(request,namespace,docid, doc, mode))
     except Exception as e:
         context.update(docserveerror(e))
+    dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']
+    if dorequiredeclaration:
+        declarations = json.loads(context['declarations'])
+        for requiredeclaration in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
+            if '/' in requiredeclaration:
+                annotationtype, annotationset = requiredeclaration.split('/',1)
+            else:
+                annotationtype = requiredeclaration
+                annotationset = ""
+            if annotationtype not in declarations or (annotationset and annotationset not in declarations[annotationtype]):
+                if annotationset:
+                    return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype + "/" + annotationset)
+                else:
+                    return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype)
+
     dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
     if dometadataindex:
         metadata = json.loads(context['metadata'])
