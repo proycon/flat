@@ -278,7 +278,10 @@ CONFIGURATIONS = {
     'alloweditformnew': True, #boolean
     'allowupload': True, #boolean
     'allowconfidence': True,
-    'autodeclare': [
+    #'autodeclare': [
+    #    ('entity', 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml')
+    #],
+    'requiredeclaration': [
         ('entity', 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml')
     ],
     'modes': [ ('editor','Annotation Editor')],

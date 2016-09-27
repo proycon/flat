@@ -117,12 +117,7 @@ def initdoc(request, namespace, docid, mode, template, context=None):
     dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']
     if dorequiredeclaration:
         declarations = json.loads(context['declarations'])
-        for requiredeclaration in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
-            if '/' in requiredeclaration:
-                annotationtype, annotationset = requiredeclaration.split('/',1)
-            else:
-                annotationtype = requiredeclaration
-                annotationset = ""
+        for annotationtype, annotationset in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
             if annotationtype not in declarations or (annotationset and annotationset not in declarations[annotationtype]):
                 if annotationset:
                     return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype + "/" + annotationset)
