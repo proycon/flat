@@ -111,6 +111,7 @@ We will discuss the individual configuration options here:
 * ``allowconfidence`` -- Boolean, allow confidence values to be set/added?
 * ``initialcorrectionset`` - String to the set definition used for corrections.
 * ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone) 
+* ``requiredeclaration`` -- Require that documents already have the specified declarations, and if not, refuse to load them. This is a more or less the oppossite of ``autodeclare`` and is also a list of 2-tuples ``(tag,set)``.
 * ``creategroupnamespaces`` -- Boolean, automatically create namespace directories for all groups the user belong to (upon login). The directory name corresponds to the group name.
 
 
@@ -126,9 +127,10 @@ administrators, after login, it is accessible from the right-most menu
 
 The initial administrator should have been during installation, additional
 administrators can be added by ticking the **staff** or **superuser** boxes in
-the **Users** section. Users can be added manually by administrators or they may register
-themselves from the login screen. When a user logs in, a personal namespace
-directory will automatically be created.
+the **Users** section. Superusers may always read and write in all namespaces. Users
+can be added manually by administrators or they may register themselves from
+the login screen. When a user logs in, a personal namespace directory will
+automatically be created.
 
 Additionaly, you can create groups and assign users to groups. By default,
 users may read and write to the group namespaces they are a member of.
