@@ -45,7 +45,7 @@ def hasreadpermission(username, namespace, request):
             if request.user.groups.filter(name=groupnamespace.name).exists():
                 return True
         except ObjectDoesNotExist:
-            groupread = request.user.has_perm('groupread')
+            groupread = request.user.has_perm('auth.groupread')
             if groupread:
                 try:
                     #is the namespace a user namespace?
@@ -87,7 +87,7 @@ def haswritepermission(username, namespace, request):
             if request.user.groups.filter(name=groupnamespace.name).exists():
                 return True
         except ObjectDoesNotExist:
-            groupwrite = request.user.has_perm('groupwrite')
+            groupwrite = request.user.has_perm('auth.groupwrite')
             if groupwrite:
                 try:
                     #is the namespace a user namespace?
