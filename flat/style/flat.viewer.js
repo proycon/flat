@@ -726,8 +726,10 @@ function renderglobannotations(all) {
 
     if (globalannotations) {
         var containers = {};
+        var levelincontainer = {};
         Object.keys(annotations_base).forEach(function(target){
-            var targetabselection = null;
+            var targetabselection = null; //target annotation box
+
             if (paintedglobannotations[target]) {
                 targetabselection = $('#' + valid(target) + " span.ab");
                 targetabselection.css('display','none'); //we clear on this level 
@@ -749,98 +751,117 @@ function renderglobannotations(all) {
                                     s = "<span class=\""+annotation.type+"\">?</span>";
                                 }
                                 if (annotation.span) {
-                                        var extra = "";
-                                        var usecontext = true;
-                                        if (annotation.type == "dependency") {
-                                            //for dependencies we point from the dependents to the head.
-                
-                                            //grab the head
-                                            var headtext = "";
-                                            var partofhead = partofspanhead(annotation, target);
-                                            annotation.spanroles.forEach(function(spanroledata) {
-                                                if (spanroledata.type == "hd") {
-                                                    headtext = getspanroletext(spanroledata);
-                                                }
-                                            });
-                                            if (partofhead) { //if we're part of the head, we don't render this annotation here
-                                                usecontext = false;
-                                                s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
-                                            } else {
-                                                extra = "&Rightarrow;<span class=\"headtext\">" + headtext + "</span>";
+                                    //span annotation
+                                    var extra = "";
+                                    var usecontext = true;
+                                    if (annotation.type == "dependency") {
+                                        //for dependencies we point from the dependents to the head.
+            
+                                        //grab the head
+                                        var headtext = "";
+                                        var partofhead = partofspanhead(annotation, target);
+                                        annotation.spanroles.forEach(function(spanroledata) {
+                                            if (spanroledata.type == "hd") {
+                                                headtext = getspanroletext(spanroledata);
                                             }
-                                        }
-
-                                        if (usecontext) {
-                                            var previnspan = false;
-                                            var nextinspan = false;
-                                            //If the previous word is in the same
-                                            //span we do not repeat it explicitly
-                                            //but draw a line
-                                            var prevwordid = annotations[target].self.previousword;
-                                            if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
-                                                var prevannotation = annotations[prevwordid][annotationkey];
-                                                if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
-                                                    //previous word part of span already
-                                                    if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
-                                                        previnspan = true;
-                                                    }
-                                                }
-                                            }
-
-                                            //is the next word still part of the span?
-                                            var nextwordid = annotations[target].self.nextword;
-                                            if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
-                                                var nextannotation = annotations[nextwordid][annotationkey];
-                                                if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
-                                                    if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
-                                                        nextinspan = true;
-                                                    }
-                                                }
-                                            }
-
-                                            if ((previnspan) && (nextinspan)) {
-                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
-                                            } else if (nextinspan) {
-                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
-                                            } else if (previnspan) {
-                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
-                                            } else {
-                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
-                                            }
-                                        }
-
-
-                                        //this is a complex annotatation that
-                                        //may span multiple lines, build a
-                                        //container for it. All containers will
-                                        //have the same height so content can
-                                        //be aligned.
-                                        var scope = annotation.layerparent;
-                                        var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
-                                        if (!containers[containerkey]) {
-                                            containers[containerkey] = {};
-                                        }
-                                        var container = null;
-                                        if (containers[containerkey][target]) {
-                                            container = containers[containerkey][target];
+                                        });
+                                        if (partofhead) { //if we're part of the head, we don't render this annotation here
+                                            usecontext = false;
+                                            s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
                                         } else {
-                                            containers[containerkey][target] = [];
+                                            extra = "&Rightarrow;<span class=\"headtext\">" + headtext + "</span>";
                                         }
-                                        if (container === null) {
-                                            /* add a container first */
-                                            if (targetabselection === null) {
-                                                targetabselection = $('#' + valid(target) + " span.ab");
-                                                targetabselection.css('display','none');
-                                                paintedglobannotations[target] = true;
+                                    }
+
+                                    if (usecontext) {
+                                        var previnspan = false;
+                                        var nextinspan = false;
+                                        //If the previous word is in the same
+                                        //span we do not repeat it explicitly
+                                        //but draw a line
+                                        var prevwordid = annotations[target].self.previousword;
+                                        if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
+                                            var prevannotation = annotations[prevwordid][annotationkey];
+                                            if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                //previous word part of span already
+                                                if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
+                                                    previnspan = true;
+                                                }
                                             }
-                                            targetabselection.append("<span class=\"abc\">" + s + "</span>");
-                                            var abcs = $('#' + valid(target) + " span.ab span.abc");
-                                            container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
-                                        } else {
-                                            $(container).append(s);
                                         }
-                                        containers[containerkey][target].push(container);
+
+                                        //is the next word still part of the span?
+                                        var nextwordid = annotations[target].self.nextword;
+                                        if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
+                                            var nextannotation = annotations[nextwordid][annotationkey];
+                                            if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
+                                                    nextinspan = true;
+                                                }
+                                            }
+                                        }
+
+                                        if ((previnspan) && (nextinspan)) {
+                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
+                                        } else if (nextinspan) {
+                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
+                                        } else if (previnspan) {
+                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
+                                        } else {
+                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
+                                        }
+                                    }
+
+
+                                    //this is a complex annotatation that
+                                    //may span multiple lines, build a
+                                    //container for it. All containers will
+                                    //have the same height so content can
+                                    //be aligned.
+                                    var scope = annotation.layerparent;
+                                    var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
+                                    if (!containers[containerkey]) {
+                                        containers[containerkey] = {};
+                                    }
+                                    var container = null;
+                                    if (containers[containerkey][target]) {
+                                        container = containers[containerkey][target];
+                                    } else {
+                                        containers[containerkey][target] = [];
+                                    }
+                                    if (container === null) {
+                                        /* add a container first */
+                                        if (targetabselection === null) {
+                                            targetabselection = $('#' + valid(target) + " span.ab");
+                                            targetabselection.css('display','none');
+                                            paintedglobannotations[target] = true;
+                                        }
+                                        if (levelincontainer[containerkey]) {
+                                            for (var j = 0; j < levelincontainer[containerkey]; j++) {
+                                                s = "<span>&nbsp;</span>" + s;
+                                            }
+                                        } else {
+                                            levelincontainer[containerkey] = 0;
+                                        }
+                                        targetabselection.append("<span class=\"abc\">" + s + "</span>");
+                                        var abcs = $('#' + valid(target) + " span.ab span.abc");
+                                        container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
+                                    } else {
+                                        var containerdepth = 0;
+                                        $(container).find('span').each(function(){
+                                            containerdepth++;
+                                        });
+                                        if (levelincontainer[containerkey] !== undefined) {
+                                            for (var j = containerdepth; j < levelincontainer[containerkey]; j++) {
+                                                s= $(container).append("<span>&nbsp;</span>");
+                                            }
+                                        }
+                                        levelincontainer[containerkey] = containerdepth;
+                                        $(container).append(s);
+                                    }
+                                    containers[containerkey][target].push(container);
                                 } else {
+                                    //token annotation
                                     if (targetabselection === null) {
                                         targetabselection = $('#' + valid(target) + " span.ab");
                                         targetabselection.css('display','none'); 
