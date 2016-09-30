@@ -109,34 +109,38 @@ def initdoc(request, namespace, docid, mode, template, context=None):
         'customslicesize': 0, #disabled for initial probe
         'textclasses': True,
     }
+    error = False
     try:
         doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " PROBE", **flatargs) #retrieves only the meta information, not document content
         context.update(getcontext(request,namespace,docid, doc, mode))
     except Exception as e:
         context.update(docserveerror(e))
-    dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']
-    if dorequiredeclaration:
-        if not 'declarations' in doc:
-            return fatalerror(request, "Refusing to load document, missing expected declarations, none declared")
-        declarations = doc['declarations']
-        for annotationtype, annotationset in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
-            found = False
-            for d in declarations:
-                if annotationtype == d['annotationtype'] and (not annotationset or annotationset == d['set']):
-                    found = True
-                    break
-            if not found:
-                if annotationset:
-                    return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype + "/" + annotationset)
-                else:
-                    return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype)
+        error = True
 
-    dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
-    if dometadataindex:
-        metadata = json.loads(context['metadata'])
-        for metakey in settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']:
-            if metakey in metadata:
-                MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,value=metadata[metakey])
+    if not error:
+        dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']
+        if dorequiredeclaration:
+            if not 'declarations' in doc:
+                return fatalerror(request, "Refusing to load document, missing expected declarations, none declared")
+            declarations = doc['declarations']
+            for annotationtype, annotationset in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
+                found = False
+                for d in declarations:
+                    if annotationtype == d['annotationtype'] and (not annotationset or annotationset == d['set']):
+                        found = True
+                        break
+                if not found:
+                    if annotationset:
+                        return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype + "/" + annotationset)
+                    else:
+                        return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype)
+
+        dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
+        if dometadataindex:
+            metadata = json.loads(context['metadata'])
+            for metakey in settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']:
+                if metakey in metadata:
+                    MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,value=metadata[metakey])
     response = render(request, template, context)
     if 'fatalerror' in context:
         response.status_code = 500
