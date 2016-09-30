@@ -726,7 +726,7 @@ function renderglobannotations(all) {
 
     if (globalannotations) {
         var containers = {};
-        var levelincontainer = {};
+        var annotationsincontainer = {}; //ordered list of annotations in a container
         Object.keys(annotations_base).forEach(function(target){
             var targetabselection = null; //target annotation box
 
@@ -802,13 +802,13 @@ function renderglobannotations(all) {
                                         }
 
                                         if ((previnspan) && (nextinspan)) {
-                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
+                                            s = "<span class=\""+annotation.type+" SLOTCLASS\" style=\"text-align: center\">&horbar;</span>";
                                         } else if (nextinspan) {
-                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
+                                            s = "<span class=\""+annotation.type+" SLOTCLASS\">&lang;" + annotation.class + extra + "</span>";
                                         } else if (previnspan) {
-                                            s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
+                                            s = "<span class=\""+annotation.type+" SLOTCLASS\" style=\"text-align: right\">&horbar;&rang;</span>";
                                         } else {
-                                            s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
+                                            s = "<span class=\""+annotation.type+" SLOTCLASS\">&lang;" + annotation.class + extra + "&rang;</span>";
                                         }
                                     }
 
@@ -836,28 +836,51 @@ function renderglobannotations(all) {
                                             targetabselection.css('display','none');
                                             paintedglobannotations[target] = true;
                                         }
-                                        if (levelincontainer[containerkey]) {
-                                            for (var j = 0; j < levelincontainer[containerkey]; j++) {
-                                                s = "<span>&nbsp;</span>" + s;
-                                            }
+
+                                        var annotationslot = 0;
+                                        if (annotationsincontainer[containerkey] === undefined) {
+                                            annotationsincontainer[containerkey] = [annotation.id];
                                         } else {
-                                            levelincontainer[containerkey] = 0;
+                                            annotationslot = annotationsincontainer[containerkey].indexOf(annotation.id);
+                                            if (annotationslot == -1) {
+                                                //no slot available yet, reserve a new one
+                                                annotationslot = annotationsincontainer[containerkey].length;
+                                            }
+                                            //reserve slots for other annotations
+                                            var newslots = "";
+                                            for (var j = 0; j < annotationslot; j++) {
+                                                newslots += "<span class=\"slot" + j + "\">&nbsp;</span>";
+                                            }
+                                            s = newslots + s;
                                         }
+                                        s = s.replace(/SLOTCLASS/,"slot" + annotationslot);
+
                                         targetabselection.append("<span class=\"abc\">" + s + "</span>");
                                         var abcs = $('#' + valid(target) + " span.ab span.abc");
                                         container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
                                     } else {
-                                        var containerdepth = 0;
-                                        $(container).find('span').each(function(){
-                                            containerdepth++;
-                                        });
-                                        if (levelincontainer[containerkey] !== undefined) {
-                                            for (var j = containerdepth; j < levelincontainer[containerkey]; j++) {
-                                                s= $(container).append("<span>&nbsp;</span>");
-                                            }
+                                        var annotationslot = -1;
+                                        if (annotationsincontainer[containerkey] === undefined)  {
+                                            annotationsincontainer[containerkey] = [];
+                                        } else {
+                                            annotationslot = annotationsincontainer[containerkey].indexOf(annotation.id);
                                         }
-                                        levelincontainer[containerkey] = containerdepth;
-                                        $(container).append(s);
+                                        if (annotationslot != -1) { 
+                                            //found, we have a slot reserved already
+                                            s = s.replace(/SLOTCLASS/,"slot" + annotationslot);
+                                            $(container).find('span.slot' + annotationslot).outerHTML = s;
+                                        } else {
+                                            //create a new slot
+                                            annotationsincontainer[containerkey].push(annotation.id);
+                                            annotationslot = annotationsincontainer[containerkey].length;
+                                            var newslots = "";
+                                            for (var j = annotationsincontainer[containerkey].length; j < annotationslot; j++) {
+                                                newslots += "<span class=\"slot" + j + "\">&nbsp;</span>";
+                                            }
+                                            s = newslots + s;
+                                            s = s.replace(/SLOTCLASS/,"slot" + annotationslot);
+                                            $(container).append(s);
+                                        }
                                     }
                                     containers[containerkey][target].push(container);
                                 } else {
