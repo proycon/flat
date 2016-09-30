@@ -88,6 +88,8 @@ var initialdeclarationlist = [];
 var mouseX = 0;
 var mouseY = 0;
 
+var latestannotations = {}; //target -> annotationid -> true , holds only the latest updates
+
 function getannotationtypename(t) {
     //Get the human-readable label for an annotation type (corresponding to XML tag), if defined
     if (annotationtypenames[t]) {
@@ -191,16 +193,15 @@ function loadtext(annotationlist) {
 
 function loadannotations(annotationlist) {
     //load annotations from the annotation data response in memory, called by update()
-    var annotationexists = {};
-
+    
     annotationlist.forEach(function(annotation){
         annotation.targets.forEach(function(target){
             if (!(annotations[target])) annotations[target] = {};
-            if (!(annotationexists[target])) annotationexists[target] = {};
+            if (!(latestannotations[target])) latestannotations[target] = {};
             var annotationid = getannotationid(annotation);
             annotations[target][annotationid] = annotation;
             annotations[target][annotationid].annotationid = annotationid;
-            annotationexists[target][annotationid] = true;
+            latestannotations[target][annotationid] = true;
         });
         if ((annotation.type == "correction") && (annotation.id)) {
             corrections[annotation.id] = annotation;
@@ -224,10 +225,10 @@ function loadannotations(annotationlist) {
     });
 
     //find old annotations that are no longer in the response, delete them
-    Object.keys(annotationexists).forEach(function(target){
+    Object.keys(latestannotations).forEach(function(target){
         if (annotations[target]) {
             Object.keys(annotations[target]).forEach(function(annotationid){
-                if (!annotationexists[target][annotationid]) delete annotations[target][annotationid];
+                if (!latestannotations[target][annotationid]) delete annotations[target][annotationid];
             });
         }
     });
@@ -325,6 +326,8 @@ function shorten(s) {
 
 function update(data) {
     //Process data response from the server, does a partial update, called through loadcontent() on initialisation
+    //
+    latestannotations = {}; //reset latest annotations cache (target -> annotationid -> true map), will be populated again by loadannotations()
     if (data.error) {
         alert(data.error);
     }

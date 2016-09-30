@@ -542,7 +542,7 @@ function toggleglobannotationview(annotationtype, set) {
     }
     $('span.ab').css('display','none'); 
     $('span.ab').html("");
-    renderglobannotations(annotations);
+    renderglobannotations(true);
 }
 
 function resetglobannotationview() {
@@ -550,7 +550,7 @@ function resetglobannotationview() {
     viewglobannotations = {};
     $('span.ab').css('display','none'); 
     $('span.ab').html("");
-    renderglobannotations(annotations);
+    renderglobannotations(true);
 }
 
 
@@ -712,9 +712,13 @@ function partofspanhead(annotation, target) {
 }
 
 
-function renderglobannotations(annotations) {
-    //annotations are passed so we can work either locally or globally
-    //
+function renderglobannotations(all) {
+    if ((all !== undefined) && (all)) {
+        annotations_base = annotations;
+    } else {
+        annotations_base = latestannotations;
+    }
+
     var globalannotations = 0;
     Object.keys(viewglobannotations).forEach(function(annotationtypeset){
       if (viewglobannotations[annotationtypeset]) globalannotations += 1;
@@ -722,7 +726,7 @@ function renderglobannotations(annotations) {
 
     if (globalannotations) {
         var containers = {};
-        Object.keys(annotations).forEach(function(target){
+        Object.keys(annotations_base).forEach(function(target){
             var targetabselection = null;
             if (paintedglobannotations[target]) {
                 targetabselection = $('#' + valid(target) + " span.ab");
@@ -733,7 +737,7 @@ function renderglobannotations(annotations) {
             //var changed = false;
             $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
                 annotationtype = globannotationsorder[annotationtype];
-                Object.keys(annotations[target]).forEach(function(annotationkey){
+                Object.keys(annotations_base[target]).forEach(function(annotationkey){
                     if (annotationkey != "self") {
                         var annotation = annotations[target][annotationkey];
                         if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
@@ -897,6 +901,7 @@ function viewer_onupdate() {
     if (annotationfocus) {
         setclasscolors();
     }
+    renderglobannotations();
     //$('li#views_deepest').addClass('on');
     /*
     } else if (v == 'w') {
@@ -979,7 +984,6 @@ function viewer_contentloaded(data) {
     if (annotationfocus) {
         setannotationfocus(annotationfocus.type, annotationfocus.set);
     }
-    renderglobannotations(annotations);
 }
 
 
@@ -1078,7 +1082,6 @@ function viewer_oninit() {
                         if (annotationfocus) {
                             setannotationfocus(annotationfocus.type, annotationfocus.set);
                         }
-                        renderglobannotations(annotations);
                     } else {
                         highlight(data);
                     }
