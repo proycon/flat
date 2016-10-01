@@ -831,11 +831,18 @@ function renderglobannotations(all) {
                                             slot = 0;
                                             while (slot < 100) {
                                                 var found = false;
-                                                for (var j = 0; j < containers[containerkey].length; j++) {
-                                                    if (containers[containerkey][j].slot === slot) {
-                                                        found = true;
+                                                containers[containerkey].forEach(function(container){
+                                                    if (container.slot === slot) {
+                                                        //slot exists already
+                                                        //but does the span of this annotation overlap with the one currently under consideration?
+                                                        annotation.targets.forEach(function(spanmember){
+                                                            if (annotations[container.target][container.annotation.id].targets.indexOf(spanmember) != -1) {
+                                                                found = true;
+                                                                return;
+                                                            }
+                                                        });
                                                     }
-                                                }
+                                                });
                                                 if (!found) {
                                                     break;
                                                 } else {
