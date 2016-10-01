@@ -830,7 +830,7 @@ function renderglobannotations(all) {
                                             //find the first free slot
                                             slot = 0;
                                             while (slot < 100) {
-                                                var found;
+                                                var found = false;
                                                 for (var j = 0; j < containers[containerkey].length; j++) {
                                                     if (containers[containerkey][j].slot === slot) {
                                                         found = true;
@@ -904,7 +904,7 @@ function renderglobannotations(all) {
                     });
                     if (!found) {
                         //free slot
-                        displaycontainer_html = "<span>&nbsp;</span>";
+                        displaycontainer_html = "<span>&nbsp;</span>" + displaycontainer_html;
                     }
                 }
                 $(displaycontainer).html(displaycontainer_html);
