@@ -52,7 +52,10 @@ Features
 * Supports FoLiA Set Definitions to display label sets. Sets are not predefined
   in FoLiA and anybody can create their own.
 * Supports Token Annotation and Span Annotation
-* Simple metadata editor for editing/adding arbitrary metadata to a document
+* Simple metadata editor for editing/adding arbitrary metadata to a document.
+  Selected metadata fields can be shown in the document index as well.
+* User permission model featururing groups, group namespaces, and assignable permissions
+* File/document management functions (copying, moving, deleting)
 * Allows converter extensions to convert from other formats to FoLiA on upload
 
 ============================================
