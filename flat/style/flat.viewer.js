@@ -845,7 +845,7 @@ function renderglobannotations(all) {
 
                                         }
 
-                                        containers[containerkey].push_back({
+                                        containers[containerkey].push({
                                             'html': s, 
                                             'annotation': annotation,
                                             'target': target,
@@ -875,18 +875,17 @@ function renderglobannotations(all) {
             //find maximum slot and gather targets
             var maxslot = 0;
             var targets = [];
-            for (var i = 0; i < containers[containerkey.length]; i++) {
-                if (containers[i].slot > maxslot) {
-                    maxslot = containers[i].slot;
+            containers[containerkey].forEach(function(container){
+                if (container.slot > maxslot) {
+                    maxslot = container.slot;
                 }
-                if (targets.indexOf(containers[i].target) == -1) {
-                    targets.push(containers[i].target);
+                if (targets.indexOf(container.target) === -1) {
+                    targets.push(container.target);
                 }
-            }
+            });
 
             //iterate over targets
-            for (var i = 0; i < targets.length; i++) {
-                var target = targets[i];
+            targets.forEach(function(target){
                 targetabselection = $('#' + valid(target) + " span.ab");
                 targetabselection.append("<span class=\"abc\"></span>");
                 var abcs = $('#' + valid(target) + " span.ab span.abc");
@@ -894,15 +893,15 @@ function renderglobannotations(all) {
 
                 //fill the slots in order 
                 var displaycontainer_html = "";
-                for (var slot = 0; slot <= maxslot; slot++) {
+                var slot;
+                for (slot = 0; slot <= maxslot; slot++) {
                     var found = false;
-                    for (var j = 0; j < containers[containerkey.length]; j++) {
-                        if ((containers[j].target === target) && (containers[j].slot === slot)) {
-                            displaycontainer_html = containers[j].html + displaycontainer_html;
+                    containers[containerkey].forEach(function(container){
+                        if ((container.target === target) && (container.slot === slot)) {
+                            displaycontainer_html = container.html + displaycontainer_html;
                             found = true;
-                            break;
                         }
-                    }
+                    });
                     if (!found) {
                         //free slot
                         displaycontainer_html = "<span>&nbsp;</span>";
@@ -914,11 +913,14 @@ function renderglobannotations(all) {
                 if (displaycontainers[containerkey] === undefined) {
                     displaycontainers[containerkey] = {};
                 }
-                displaycontainers[containerkey][target] = displaycontainer;
+                if (displaycontainers[containerkey][target] === undefined) {
+                    displaycontainers[containerkey][target]= [];
+                }
+                displaycontainers[containerkey][target].push(displaycontainer);
 
                 //show the annotation box
                 targetabselection.css('display','block');
-            }
+            });
         });
 
 
