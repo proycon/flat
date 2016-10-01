@@ -566,7 +566,7 @@ function showeditor(element) {
                 //the annotation focus has not been found, so no field appears, add one automatically:
                 for (i = 0; i < editoraddablefields.length; i++) {
                     if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
-                        addeditorfield(i);
+                        annotationfocusfound = addeditorfield(i);
                         break;
                     }
                 }
@@ -603,6 +603,7 @@ function showeditor(element) {
             }
 
             //configure interface actions and events for edit fields
+            var spanselectorclicked = false;
             for (i = 0; i < editfields;i++){
                 //propagate editform to interface, for each field
                 seteditform(i, editdata[i].editform);
@@ -613,8 +614,9 @@ function showeditor(element) {
                 //Enable the span selector button
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(spanselector_click);
-                if ((annotationfocusfound == i) && (configuration.autoselectspan)) {
+                if ((annotationfocusfound == i) && (configuration.autoselectspan) && (!spanselectorclicked)) {
                     $('#spanselector' + i).click();
+                    spanselectorclicked = true;
                 }
 
                 //sort correctionclass
@@ -768,6 +770,7 @@ function addeditorfield(index) {
     editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'higherorder': ho_result.items };
     editdata.push(editdataitem);
     setaddablefields();
+    return editfields - 1;
 }
 
 function showhistory() {

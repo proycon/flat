@@ -251,7 +251,7 @@ CONFIGURATIONS = {
     'annotationfocusset': 'https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',
 
     # Automatically enable the select span button for the annotation focus when opening the editor dialog
-    'autoselectspan': False,
+    'autoselectspan': True,
 
     #list of FoLiA annotation types (xml tags) that allowed as annotation focus, set to True to allow all
     'allowedannotationfocus': ('entity/https://github.com/proycon/parseme-support/raw/master/parseme-mwe.foliaset.xml',),
