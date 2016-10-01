@@ -132,6 +132,10 @@ CONFIGURATIONS = {
     #'annotationfocusset': 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml',
 
 
+    # Automatically enable the select span button for the annotation focus when opening the editor dialog
+    'autoselectspan': False,
+
+
     # List of FoLiA annotation types (xml tags) that are allowed as annotation focus, set to True to enable all.
     # Users may switch annotation focus through the menu
     # Here and everywhere else, the annotation type equals the FoLiA XML tag

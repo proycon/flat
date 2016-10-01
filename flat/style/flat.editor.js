@@ -357,7 +357,7 @@ function showeditor(element) {
             $(element).addClass('selected');
             //select(element);
 
-            var annotationfocusfound = false;
+            var annotationfocusfound = -1;
             var editformcount = 0;
 
             //Iterate over all annotations for the selected target element
@@ -368,7 +368,7 @@ function showeditor(element) {
                     if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         //this annotation is corresponds to the annotation focus
                         isannotationfocus = true; //set per-item
-                        annotationfocusfound = true; //set only once for all
+                        annotationfocusfound = editfields; //set only once for all
                     }
                 }
 
@@ -562,7 +562,7 @@ function showeditor(element) {
 
 
 
-            if ((annotationfocus) && (!annotationfocusfound)) {
+            if ((annotationfocus) && (annotationfocusfound == -1)) {
                 //the annotation focus has not been found, so no field appears, add one automatically:
                 for (i = 0; i < editoraddablefields.length; i++) {
                     if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
@@ -613,6 +613,9 @@ function showeditor(element) {
                 //Enable the span selector button
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(spanselector_click);
+                if ((annotationfocusfound == i) && (configuration.autoselectspan)) {
+                    $('#spanselector' + i).click();
+                }
 
                 //sort correctionclass
                 if ($('select#editform' + i + 'correctionclass')) {
