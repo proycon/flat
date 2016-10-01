@@ -815,32 +815,45 @@ function renderglobannotations(all) {
                                         //container for it. All containers will
                                         //have the same height so content can
                                         //be aligned.
-                                        var scope = annotation.layerparent;
                                         var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
                                         if (!containers[containerkey]) {
-                                            containers[containerkey] = {};
+                                            containers[containerkey] = [];
                                         }
-                                        var container = null;
-                                        if (containers[containerkey][target]) {
-                                            container = containers[containerkey][target];
-                                        } else {
-                                            containers[containerkey][target] = [];
-                                        }
-                                        if (container === null) {
-                                            /* add a container first */
-                                            if (targetabselection === null) {
-                                                targetabselection = $('#' + valid(target) + " span.ab");
-                                                targetabselection.css('display','none');
-                                                paintedglobannotations[target] = true;
+                                        var slot = -1;
+                                        //find the slot used before
+                                        for (var j = 0; j < containers[containerkey].length; j++) {
+                                            if (containers[containerkey][j].annotation.id === annotation.id) {
+                                                slot = containers[containerkey][j].slot;
                                             }
-                                            targetabselection.append("<span class=\"abc\">" + s + "</span>");
-                                            var abcs = $('#' + valid(target) + " span.ab span.abc");
-                                            container = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
-                                        } else {
-                                            $(container).append(s);
                                         }
-                                        containers[containerkey][target].push(container);
+                                        if (slot == -1) {
+                                            //find the first free slot
+                                            slot = 0;
+                                            while (slot < 100) {
+                                                var found;
+                                                for (var j = 0; j < containers[containerkey].length; j++) {
+                                                    if (containers[containerkey][j].slot === slot) {
+                                                        found = true;
+                                                    }
+                                                }
+                                                if (!found) {
+                                                    break;
+                                                } else {
+                                                    slot++;
+                                                }
+                                            }
+
+                                        }
+
+                                        containers[containerkey].push_back({
+                                            'html': s, 
+                                            'annotation': annotation,
+                                            'target': target,
+                                            'slot': slot,
+                                        }); 
+                                        paintedglobannotations[target] = true;
                                 } else {
+                                    //no span, no need for intermediate container structure, directly add
                                     if (targetabselection === null) {
                                         targetabselection = $('#' + valid(target) + " span.ab");
                                         targetabselection.css('display','none'); 
@@ -852,22 +865,75 @@ function renderglobannotations(all) {
                     }
                 }); ///
             });
+
             //if (changed) targetabselection.css('display','block'); 
             if (targetabselection !== null) targetabselection.css('display','block'); 
         });
+        
+        var displaycontainers = {}; //will hold the actual containers for display
+        Object.keys(containers).forEach(function(containerkey){
+            //find maximum slot and gather targets
+            var maxslot = 0;
+            var targets = [];
+            for (var i = 0; i < containers[containerkey.length]; i++) {
+                if (containers[i].slot > maxslot) {
+                    maxslot = containers[i].slot;
+                }
+                if (targets.indexOf(containers[i].target) == -1) {
+                    targets.push(containers[i].target);
+                }
+            }
+
+            //iterate over targets
+            for (var i = 0; i < targets.length; i++) {
+                var target = targets[i];
+                targetabselection = $('#' + valid(target) + " span.ab");
+                targetabselection.append("<span class=\"abc\"></span>");
+                var abcs = $('#' + valid(target) + " span.ab span.abc");
+                var displaycontainer = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
+
+                //fill the slots in order 
+                var displaycontainer_html = "";
+                for (var slot = 0; slot <= maxslot; slot++) {
+                    var found = false;
+                    for (var j = 0; j < containers[containerkey.length]; j++) {
+                        if ((containers[j].target === target) && (containers[j].slot === slot)) {
+                            displaycontainer_html = containers[j].html + displaycontainer_html;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        //free slot
+                        displaycontainer_html = "<span>&nbsp;</span>";
+                    }
+                }
+                $(displaycontainer).html(displaycontainer_html);
+                
+                //add to structure so we can compute height later on
+                if (displaycontainers[containerkey] === undefined) {
+                    displaycontainers[containerkey] = {};
+                }
+                displaycontainers[containerkey][target] = displaycontainer;
+
+                //show the annotation box
+                targetabselection.css('display','block');
+            }
+        });
+
 
         //process containers, all containers for the same span layer must all have the same height (will be set to the height of the largest)
-        Object.keys(containers).forEach(function(containerkey){
+        Object.keys(displaycontainers).forEach(function(containerkey){
             var height = 0;
-            Object.keys(containers[containerkey]).forEach(function(target){
-                containers[containerkey][target].forEach(function(container){
+            Object.keys(displaycontainers[containerkey]).forEach(function(target){
+                displaycontainers[containerkey][target].forEach(function(container){
                     c_height =  $(container).height();
                     if (c_height > height) height = c_height;
                 });
             });
             if (height > 0) {
-                Object.keys(containers[containerkey]).forEach(function(target){
-                    containers[containerkey][target].forEach(function(container){
+                Object.keys(displaycontainers[containerkey]).forEach(function(target){
+                    displaycontainers[containerkey][target].forEach(function(container){
                         $(container).css('height',height);
                     });
                 });
