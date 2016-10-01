@@ -92,6 +92,7 @@ We will discuss the individual configuration options here:
 * ``allowupload`` - Boolean value indicating whether users may upload their own FoLiA documents or not
 * ``annotationfocustype`` - Sets the annotation type for the default annotation focus, effectively highlighting annotations of this type immediately upon opening the document. The type needs to be a valid FoLiA tag name (see the FoLiA documentation at https://proycon.github.io/folia), such as ``'pos'``, ``'lemma'``, ``'entity'``, etc...  If you set this, also set the next option.
 * ``annotationfocusset`` - Sets the set for the default annotation focus. The set is a URL pointing to a FoLiA Set Definition file. Set to ``None`` if not used, use with the above otherwise.
+* ``autoselectspan`` - Boolean, automatically click the select span button for the annotation focus when opening the editor dialog. Defaults to ``False``.
 * ``allowannotationfocus`` - List of FoLiA annotation types (corresponding to the xml tags) that are allowed as annotation focus, i.e. that can be selected by the user through the menu. Set to ``True`` to enable all. 
 * ``initialviewannotation`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the local annotation viewer, i.e. the pop-up when the user hovers over elements. Set to ``True`` to enable all.
 * ``initialglobviewannotations`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the global annotation viewers (the annotation boxes above the words).
