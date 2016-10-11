@@ -11,6 +11,8 @@ var sentdata = []; //list of the last submitted edits (js objects, pre-fql)
 
 
 function notice(msg) {
+    /* Small pop-up notice message are shown on the right side of the screen,
+       chiefly after submission or queueing of an annotations */
     $('#notice').html(msg);
     $('#notice').show();
     $('#notice').delay(3000).hide(300);
@@ -18,6 +20,7 @@ function notice(msg) {
 
 
 function toggleeditform(editform) {
+    /* Called by clicking edit form toggle buttons: determines which edit forms are selectable in the edit dialog */
     if (editforms[editform]) {
         editforms[editform] = false;
         $('#editform' + editform).removeClass('on');
@@ -34,6 +37,7 @@ function toggleeditform(editform) {
 
 
 function toggleannotationedit(annotationtype, set) {
+    /* called by clicking the toggle buttons in the "Editor Annotations" menu, determines which annotation types show up and are editable in the editor  */
     editannotations[annotationtype+"/"+set] = !editannotations[annotationtype+"/"+set];
     if (editannotations[annotationtype+"/" + set]) {
         $('#annotationtypeedit_' + annotationtype + "_" + hash(set)).addClass('on');
@@ -43,6 +47,7 @@ function toggleannotationedit(annotationtype, set) {
 }
 
 function toggleeditconfidence() {
+    /* called by clicking the menu toggle button to enable/disable confidence editing */
     editconfidence = !editconfidence;
     if (editconfidence) {
         $('#toggleeditconfidence').addClass("on");
@@ -52,7 +57,7 @@ function toggleeditconfidence() {
 }
 
 function select(element) {
-    //toggles selection of an element (coselector)
+    /* toggles selection of an element (coselector) */
     var found = false;
     var index = 0;
     for (var i = 0; i < editdata[coselector].targets.length; i++) {
@@ -72,8 +77,8 @@ function select(element) {
 }
 
 function setaddablefields() {
-    //Adds a selector in the editor for adding extra annotation types to an element (must be previously declared, $('#newdeclarationsubmit').click())
-    //To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID
+    /* Adds a selector in the editor for adding extra annotation types to an element (must be previously declared, $('#newdeclarationsubmit').click())
+       To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID  */
     //
     editoraddablefields_options = "";
     editoraddablefields = [];
@@ -115,6 +120,7 @@ function setaddablefields() {
 }
 
 function seteditform(index, value) {
+    /* Called when the user selects an edit form for a particular annotation, colours the toggle buttons accordingly */
     editdata[index].editform = value;
     if ($('#editform' + index + 'direct')) {
         if (value == 'direct') {
@@ -153,6 +159,9 @@ function seteditform(index, value) {
 }
 
 function addeditforms(preselectcorrectionclass) {
+    /* Add edit form buttons (direct edit (D), correction (C), new (N), alternative (A)) */
+
+    //preselectcorrectionclass - (str)  used to preset a correction class in the correction edit form
 
 
     //do we have a single selection?
@@ -217,6 +226,8 @@ function addeditforms(preselectcorrectionclass) {
 }
 
 function renderhigherorderfields(index, annotation) {
+    /* Render higher order edit fields, as well as the menu to add fields for the specified annotation */
+
     var s = "";
     var items = [];
     if (annotation.type != 't' && annotation.type != 'ph') {
@@ -232,6 +243,7 @@ function renderhigherorderfields(index, annotation) {
         s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
         var ho_index = 0;
         if (annotation.children) {
+            //Render existing higher order annotation fields for editing
             for (i = 0; i < annotation.children.length; i++) {
                 if (annotation.children[i].type) {
                     var ho = "";
@@ -259,6 +271,8 @@ function renderhigherorderfields(index, annotation) {
 }
 
 function addhigherorderfield(index, type) {
+    /* Add a new higher order annotation field (called when the user selects a field to add from the higher-order menu) */
+
     var s = "<tr class=\"higherorderrow\">" ;
     var ho_index = editdata[index].higherorder.length;
     if (type == "comment") {
@@ -273,8 +287,7 @@ function addhigherorderfield(index, type) {
 }
 
 function getclassesasoptions(c, selected) {
-    //get classes pertaining to a set, from a set definition, as option elements (used in select)
-    //supports recursive classes
+    /* get classes pertaining to a set, from a set definition, as option elements (used in select) supports recursive classes */
     var s;
     if (c.id == selected) {
         s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
@@ -289,6 +302,8 @@ function getclassesasoptions(c, selected) {
 }
 
 function spanselector_click(){
+    /* Called when the span select button (a toggle) is clicked: sets up or stops span selection */
+
     var i = parseInt(this.id.substr(12));  //get index ID (we can't reuse i from the larger scope here!!)
     //toggle coselector (select multiple), takes care of
     //switching off any other coselector
@@ -318,6 +333,7 @@ function spanselector_click(){
 }
 
 function applysuggestion(e,i) {
+    /* Apply a suggestion for correction, pre-fills the necessary edit fields with the suggestions, called by selecting a suggestion from the pull-down list */
     if ($(e).val()) {
         fields = $(e).val().split("|");
         var val = fields[0];
@@ -699,7 +715,7 @@ function closeeditor() {
 
 
 function addeditorfield(index) {
-    //add a new field to the editor, populated by setaddablefields()
+    /* add a new field to the editor, populated by setaddablefields() */
     if ((setdefinitions) && (setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].label)) {
         label = setdefinitions[editoraddablefields[index].set].label;
     } else if (annotationtypenames[editoraddablefields[index].type]) {
@@ -829,6 +845,7 @@ function revert(commithash) {
 }
 
 function setconfidenceslider(index, value) {
+    /* Set the confidence slider to a particular confidence value */
     value = typeof value !== 'undefined' ? value : 50; //default value
     var checked = $('#confidencecheck' + index).is(':checked');
     if (checked) {
@@ -909,6 +926,7 @@ function declare() {
 }
 
 function editor_loadmenus() {
+    /* Populate the editor menus */
     s = "";
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
@@ -1432,6 +1450,7 @@ function editor_submit(addtoqueue) {
 }
 
 function console_submit(savefunction) {
+    /* Submit the queries in the query console (i.e. the queue) */
     var queries = $('#queryinput').val().split("\n");
     if ((queries.length === 1) && (queries[0] === "")) {
         notice("No changes");
@@ -1481,6 +1500,7 @@ function console_submit(savefunction) {
 
 
 function saveversion() {
+    /* Trigger a version save, propagates to the git backend */
     $('#wait span.msg').val("Saving version");
     $('#wait').show();
     $.ajax({
