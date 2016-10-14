@@ -140,7 +140,7 @@ def initdoc(request, namespace, docid, mode, template, context=None):
             metadata = json.loads(context['metadata'])
             for metakey in settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']:
                 if metakey in metadata:
-                    MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,value=metadata[metakey])
+                    MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,defaults={'value':metadata[metakey]})
     response = render(request, template, context)
     if 'fatalerror' in context:
         response.status_code = 500
