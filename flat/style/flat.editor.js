@@ -294,10 +294,12 @@ function getclassesasoptions(c, selected) {
     } else {
         s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
     }
-    Object.keys(c.subclasses).forEach(function(cid){
-        csub = c.subclasses[cid];
-        s = s + getclassesasoptions(csub, selected);
-    });
+    if (c.subclasses) {
+        Object.keys(c.subclasses).forEach(function(cid){
+            csub = c.subclasses[cid];
+            s = s + getclassesasoptions(csub, selected);
+        });
+    }
     return s;
 }
 
@@ -757,10 +759,12 @@ function addeditorfield(index) {
             s = s + "<option value=\"\"></option>";
             selected_option = repeatreference.class;
         }
-        setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
-            c = setdefinitions[editoraddablefields[index].set].classes[cid];
-            s = s + getclassesasoptions(c, selected_option); // will add to s
-        });
+        if (setdefinitions[editoraddablefields[index].set].classorder) {
+            setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
+                c = setdefinitions[editoraddablefields[index].set].classes[cid];
+                s = s + getclassesasoptions(c, selected_option); // will add to s
+            });
+        }
         s = s + "</select>";
     } else {
         //text-field
