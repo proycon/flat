@@ -600,10 +600,14 @@ function loadselectormenu() {
         s += "<option value=\"\">Automatic (deepest)</option>";
     }
     annotationtypestructure.forEach(function(structuretype){
+        var label = structuretype;
+        if (annotationtypenames[structuretype]) {
+            label = annotationtypenames[structuretype];
+        }
         if (selector == structuretype) { 
-            s += "<option value=\"" + structuretype + "\" selected=\"selected\">"  + annotationtypenames[structuretype] + "</option>";
+            s += "<option value=\"" + structuretype + "\" selected=\"selected\">"  + label + "</option>";
         } else {
-            s += "<option value=\"" + structuretype + "\">"  + annotationtypenames[structuretype] + "</option>";
+            s += "<option value=\"" + structuretype + "\">"  + label + "</option>";
         }
     });
     s += "</select>";
