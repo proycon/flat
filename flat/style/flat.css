@@ -295,7 +295,7 @@ div#leftpane {
     top: 50px;
     font-size: 9px;
 }
-div#perspective {
+div#perspective, div#selector {
     width: 160px;
 }
 div#textclassselector {
@@ -309,7 +309,7 @@ div#leftpane .title {
     color: black;
     text-align: left;
 }
-#perspectivemenu {
+#perspectivemenu, #selectormenu {
     max-width: 160px;
 }
 #convparameterhelp, #convparameters {

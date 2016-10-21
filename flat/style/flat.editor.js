@@ -361,7 +361,7 @@ function showeditor(element) {
     editsuggestinsertion = null;
 
     var i;
-    if ((element) && ($(element).hasClass(view)) && (element.id)) {  //sanity check: is there an element selected?
+    if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
         if (annotations[element.id]) { //are there annotations for this element?
             var s = "";
             editoropen = true;

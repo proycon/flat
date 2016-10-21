@@ -13,7 +13,7 @@ var NROFCLASSES = 7; //number of coloured classes
 
 
 function sethover(element) {
-    if ((element) && ($(element).hasClass(view))) {
+    if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
         if (hover) $(".hover").removeClass("hover");
         $(element).addClass("hover");
         hover = element;
@@ -468,7 +468,7 @@ function renderannotation(annotation, norecurse) {
 }
 
 function showinfo(element) {
-    if ((element) && ($(element).hasClass(view))) {
+    if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
         if (element.id)  {
             var s = "";
             if (annotations[element.id]) {            
@@ -955,7 +955,6 @@ function renderglobannotations(all) {
 
 
 function viewer_onupdate() {
-    view = 'deepest';
     $('div.F span.lbl').hide();
     if (perspective != "s") {
         $('div.s').css('display', 'inline');
@@ -966,8 +965,6 @@ function viewer_onupdate() {
     if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
         $('div.' + perspective).addClass('persp');
     }
-    //$('ul#viewsmenu li').removeClass('on');
-    //view=deepest
     $('div.deepest>span.lbl').show();
 
     $('div.deepest span.str').mouseenter(function(){
@@ -977,20 +974,6 @@ function viewer_onupdate() {
         setclasscolors();
     }
     renderglobannotations();
-    //$('li#views_deepest').addClass('on');
-    /*
-    } else if (v == 'w') {
-        $('div.w>span.lbl').show();
-        $('li#views_w').addClass('on');
-    } else if (v == 's') {
-        $('div.s').css('display', 'block');
-        $('div.s>span.lbl').show();
-        $('li#views_s').addClass('on');
-    } else if (v == 'p') {
-        $('div.p>span.lbl').show();
-        $('li#views_p').addClass('on');
-    }
-    */
 }
 
 function viewer_ontimer() {
@@ -1099,6 +1082,7 @@ function viewer_oninit() {
     }
     viewer_loadmenus();
     loadperspectivemenu();
+    loadselectormenu();
 
 
     //if (viewannotations['t']) toggleannotationview('t');

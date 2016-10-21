@@ -79,6 +79,8 @@ var perspective_ids = null;
 var perspective_start = null;
 var perspective_end = null;
 
+var selector = ""; //structural element to select when clicking/hovering: empty selector selects deepest element (default)
+
 var annotations = {}; //annotations per structure item
 var declarations = {};
 var corrections = {};
@@ -144,34 +146,44 @@ function getannotationid(annotation) {
 function onfoliaclick() {
     //Called when an element (often a word) is clicked, delegates to *_onclick methods of the enabled mode
     if (function_exists(mode + '_onclick')) {
-        var f = eval(mode + '_onclick');
-        f(this);
+        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+            var f = eval(mode + '_onclick');
+            f(this);
+            return false;
+        }
     }
     return false;
 }
 function onfoliadblclick() {
     //Called when an element (often a word) is double clicked, delegates to *_ondblclick methods of the enabled mode
     if (function_exists(mode + '_ondblclick')) {
-        var f = eval(mode + '_ondblclick');
-        f(this);
+        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+            var f = eval(mode + '_ondblclick');
+            f(this);
+            return false;
+        }
     }
     return false;
 }
 function onfoliamouseenter() {
     //Called when an element (often a word) is entered with the cursor, delegates to *_mouseenter methods of the enabled mode
     if (function_exists(mode + '_onmouseenter')) {
-        var f = eval(mode + '_onmouseenter');
-        f(this);
+        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+            var f = eval(mode + '_onmouseenter');
+            f(this);
+            return false;
+        }
     }
-    return false;
 }
 function onfoliamouseleave() {
     //Called when an element (often a word) is exited with the cursor, delegates to *_mouseleave methods of the enabled mode
     if (function_exists(mode + '_onmouseleave')) {
-        var f = eval(mode + '_onmouseleave');
-        f(this);
+        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+            var f = eval(mode + '_onmouseleave');
+            f(this);
+            return false;
+        }
     }
-    return false;
 }
 
 function loadtext(annotationlist) {
@@ -573,6 +585,31 @@ function loadperspectivemenu() {
         }
         loadcontent(perspective, perspective_ids,null, perspective_end);
     });
+}
+
+function selectorchange(){
+    selector = $('#selectormenu').val(); 
+}
+
+function loadselectormenu() {
+    var s = "<span class=\"title\">Selector</span>";
+    s += "<select id=\"selectormenu\">";
+    if (selector === "") { 
+        s += "<option value=\"\" selected=\"selected\">Automatic (deepest)</option>";
+    } else {
+        s += "<option value=\"\">Automatic (deepest)</option>";
+    }
+    annotationtypestructure.forEach(function(structuretype){
+        if (selector == structuretype) { 
+            s += "<option value=\"" + structuretype + "\" selected=\"selected\">"  + annotationtypenames[structuretype] + "</option>";
+        } else {
+            s += "<option value=\"" + structuretype + "\">"  + annotationtypenames[structuretype] + "</option>";
+        }
+    });
+    s += "</select>";
+    $('#selector').html(s);
+    $('#selectormenu').off();
+    $('#selectormenu').change(selectorchange);
 }
 
 function loadpager() {
