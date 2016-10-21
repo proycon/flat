@@ -152,7 +152,6 @@ function onfoliaclick() {
             return false;
         }
     }
-    return false;
 }
 function onfoliadblclick() {
     //Called when an element (often a word) is double clicked, delegates to *_ondblclick methods of the enabled mode
@@ -163,7 +162,6 @@ function onfoliadblclick() {
             return false;
         }
     }
-    return false;
 }
 function onfoliamouseenter() {
     //Called when an element (often a word) is entered with the cursor, delegates to *_mouseenter methods of the enabled mode
