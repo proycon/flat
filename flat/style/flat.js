@@ -598,6 +598,11 @@ function loadpager() {
             end = slices[perspective][page];
         }
         loadcontent(perspective, null, start, end);
+        if (function_exists(mode + '_onpagechange')) {
+            f = eval(mode + '_onpagechange');
+            f();
+        }
+
     });
 }
 

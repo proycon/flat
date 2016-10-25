@@ -10,6 +10,7 @@ var globannotationsorder = ['entity','semrole','coreferencechain','su','dependen
 var hoverstr = null; //ID of string element we're currently hovering over
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 var NROFCLASSES = 7; //number of coloured classes
+var searchsubmitted = false;
 
 
 function sethover(element) {
@@ -1069,6 +1070,13 @@ function viewer_onrendertextclass() {
     });
 }
 
+function viewer_onpagechange() {
+    //resubmit any searches if there is a search and highlight mode is selected
+    if ((searchsubmitted) && ($('#searchqueryinput').val() !== "") && ($('#searchhighlight').is(':checked'))) {
+        $('#searchsubmit').click();
+    }
+}
+
 function opensearch() {
     $('#search').show();
     $('#search').draggable();
@@ -1108,10 +1116,19 @@ function viewer_oninit() {
         $('#search').hide();
     });
 
+    $('#searchclear').click(function(){
+        //clear search results
+        $('#searchqueryinput').val(''); 
+        $(".highlighted").removeClass("highlighted");
+        searchsubmitted = false;
+    });
+
     $('#searchsubmit').click(function(){ 
+        //execute the search
 
         var queries = $('#searchqueryinput').val().split("\n"); 
         var changeperspective = $('#searchperspective').is(':checked');
+        var searchsubmitted = true;
 
         var format = "flat";
         if (!changeperspective) {

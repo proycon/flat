@@ -919,6 +919,10 @@ function editor_onrendertextclass() {
     viewer_onrendertextclass(); //relay to viewer mode
 }
 
+function editor_onpagechange() {
+    viewer_onpagechange(); //relay to viewer mode
+}
+
 function declare() {
     /* Presents the dialog window to declare a new annotation type */
     $('#newdeclaration').show();
