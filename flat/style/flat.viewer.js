@@ -1137,17 +1137,19 @@ function viewer_oninit() {
 
 
         for (i = 0; i < queries.length; i++) {
-            var cql = false;
-            if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
-                cql = true;
-                queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
-            } else if (queries[i].trim().substr(0,3) == "USE") {
-                queries[i] = queries[i].trim();
-            } else {
-                queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
-            }  
-            if (queries[i].indexOf('FORMAT') == -1) {
-                queries[i] += " FORMAT flat"; 
+            if (queries[i].trim() !== "") {
+                var cql = false;
+                if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
+                    cql = true;
+                    queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
+                } else if (queries[i].trim().substr(0,3) == "USE") {
+                    queries[i] = queries[i].trim();
+                } else {
+                    queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
+                }  
+                if (queries[i].indexOf('FORMAT') == -1) {
+                    queries[i] += " FORMAT flat"; 
+                }
             }
         }
 
