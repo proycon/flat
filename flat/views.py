@@ -269,6 +269,9 @@ def index(request, namespace=""):
     except Exception as e:
         return fatalerror(request,e)
 
+    if not 'configuration' in request.session:
+        return logout(request)
+
     if not namespace:
         #check if user namespace is preset, if not, make it
         if not request.user.username in namespaces['namespaces']:
@@ -329,8 +332,6 @@ def index(request, namespace=""):
                 metaitems = []
             docs.append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M"), metaitems ) )
 
-    if not 'configuration' in request.session:
-        return logout(request)
 
     docs.sort()
 
