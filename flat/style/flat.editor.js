@@ -1324,7 +1324,8 @@ function editor_submit(addtoqueue) {
             queries.push(query);
 
         }
-        if (editdata[i].higherorderchanged) {
+        //Process higher order annotations (if main action isn't a deletion)
+        if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
             for (var j = 0; j < editdata[i].higherorder.length; j++) {
                 if (editdata[i].higherorder[j].changed) {
                     if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
