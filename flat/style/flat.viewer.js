@@ -1128,7 +1128,7 @@ function viewer_oninit() {
 
         var queries = $('#searchqueryinput').val().split("\n"); 
         var changeperspective = $('#searchperspective').is(':checked');
-        var searchsubmitted = true;
+        searchsubmitted = true;
 
         var format = "flat";
         if (!changeperspective) {
