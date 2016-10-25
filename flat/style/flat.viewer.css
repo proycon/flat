@@ -83,8 +83,8 @@ div.undofocustype span.lbl {
     background: transparent;
 }
 div.highlighted span.lbl {
-    background: yellow;
-    border: purple 1px dashed;
+    border: red 2px solid !important;
+    font-weight: bold;
 }
 
 div.class1 span.lbl, div#class1legend {
