@@ -24,6 +24,8 @@ else:
     from urllib.error import URLError, HTTPError
 
 def getcontext(request,namespace,docid, doc, mode):
+    if 'configuration' not in request.session:
+        raise Exception("Session has been logged out")
     return {
             'configuration': settings.CONFIGURATIONS[request.session['configuration']],
             'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
@@ -269,6 +271,9 @@ def index(request, namespace=""):
     except Exception as e:
         return fatalerror(request,e)
 
+    if not 'configuration' in request.session:
+        return logout(request)
+
     if not namespace:
         #check if user namespace is preset, if not, make it
         if not request.user.username in namespaces['namespaces']:
@@ -329,8 +334,6 @@ def index(request, namespace=""):
                 metaitems = []
             docs.append( (docid, round(r['filesize'][d] / 1024 / 1024,2) , datetime.datetime.fromtimestamp(r['timestamp'][d]).strftime("%Y-%m-%d %H:%M"), metaitems ) )
 
-    if not 'configuration' in request.session:
-        return logout(request)
 
     docs.sort()
 

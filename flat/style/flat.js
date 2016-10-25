@@ -334,7 +334,7 @@ function shorten(s) {
     return s;
 }
 
-function update(data) {
+function update(data, extracallback) {
     //Process data response from the server, does a partial update, called through loadcontent() on initialisation
     //
     latestannotations = {}; //reset latest annotations cache (target -> annotationid -> true map), will be populated again by loadannotations()
@@ -379,6 +379,9 @@ function update(data) {
             f = eval(mode + '_onupdate');
             f();
         }
+        if (extracallback) {
+            extracallback();
+        }
     }
     if (data.aborted) {
         //If not all data could be loaded, show a note to that effect
@@ -387,7 +390,7 @@ function update(data) {
 }
 
 
-function loadcontent(perspective, ids, start, end) {
+function loadcontent(perspective, ids, start, end, extracallback) {
     //Formulates and submits an FQL query to the backend to retrieve the
     //content, depending on the perspective
     //  Triggered on first page load and on change of perspective/page
@@ -435,7 +438,7 @@ function loadcontent(perspective, ids, start, end) {
                 alert("Received error from document server: " + data.error);
             } else {
                 settextclassselector(data);
-                update(data); //main function to  update all elements according to the data response
+                update(data, extracallback); //main function to  update all elements according to the data response
 
                 //Delegate to mode-specific callbacks
                 if (function_exists(mode + '_contentloaded')) {
@@ -614,6 +617,14 @@ function loadselectormenu() {
     $('#selectormenu').change(selectorchange);
 }
 
+function onpagechange(){
+    //callback function called after on page change has been complete
+    if (function_exists(mode + '_onpagechange')) {
+        f = eval(mode + '_onpagechange');
+        f();
+    }
+}
+
 function loadpager() {
     //Create and populate the pager, to page through multiple pages of the
     //document (called by loadperspectivemenu())
@@ -636,9 +647,11 @@ function loadpager() {
         if (slices[perspective].length > page) {
             end = slices[perspective][page];
         }
-        loadcontent(perspective, null, start, end);
+        loadcontent(perspective, null, start, end, onpagechange);
     });
 }
+
+
 
 $(document).ajaxSend(function(event, xhr, settings) {
     //Generic AJAX send function, with

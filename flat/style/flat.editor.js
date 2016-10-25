@@ -923,6 +923,10 @@ function editor_onrendertextclass() {
     viewer_onrendertextclass(); //relay to viewer mode
 }
 
+function editor_onpagechange() {
+    viewer_onpagechange(); //relay to viewer mode
+}
+
 function declare() {
     /* Presents the dialog window to declare a new annotation type */
     $('#newdeclaration').show();
@@ -1328,7 +1332,8 @@ function editor_submit(addtoqueue) {
             queries.push(query);
 
         }
-        if (editdata[i].higherorderchanged) {
+        //Process higher order annotations (if main action isn't a deletion)
+        if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
             for (var j = 0; j < editdata[i].higherorder.length; j++) {
                 if (editdata[i].higherorder[j].changed) {
                     if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
@@ -1341,7 +1346,7 @@ function editor_submit(addtoqueue) {
                                 //delete 
                                 queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
                             }
-                        } else {
+                        } else if (editdata[i].higherorder[j].value !== "") {
                             //add 
                             if (editdata[i].id !== undefined) {
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");

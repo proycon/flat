@@ -10,6 +10,7 @@ var globannotationsorder = ['entity','semrole','coreferencechain','su','dependen
 var hoverstr = null; //ID of string element we're currently hovering over
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 var NROFCLASSES = 7; //number of coloured classes
+var searchsubmitted = false;
 
 
 function sethover(element) {
@@ -1052,6 +1053,13 @@ function viewer_onrendertextclass() {
     });
 }
 
+function viewer_onpagechange() {
+    //resubmit any searches if there is a search and highlight mode is selected
+    if ((searchsubmitted) && ($('#searchqueryinput').val() !== "") && ($('#searchhighlight').is(':checked'))) {
+        $('#searchsubmit').click();
+    }
+}
+
 function opensearch() {
     $('#search').show();
     $('#search').draggable();
@@ -1092,29 +1100,40 @@ function viewer_oninit() {
         $('#search').hide();
     });
 
+    $('#searchclear').click(function(){
+        //clear search results
+        $('#searchqueryinput').val(''); 
+        $(".highlighted").removeClass("highlighted");
+        searchsubmitted = false;
+    });
+
     $('#searchsubmit').click(function(){ 
+        //execute the search
 
         var queries = $('#searchqueryinput').val().split("\n"); 
         var changeperspective = $('#searchperspective').is(':checked');
+        searchsubmitted = true;
 
-        var format = "flat";
-        if (!changeperspective) {
-            format = "json";
+        if (changeperspective) {
+            $('#document').html('');
+            havecontent = false;
         }
 
 
         for (i = 0; i < queries.length; i++) {
-            var cql = false;
-            if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
-                cql = true;
-                queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
-            } else if (queries[i].trim().substr(0,3) == "USE") {
-                queries[i] = queries[i].trim();
-            } else {
-                queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
-            }  
-            if (queries[i].indexOf('FORMAT') == -1) {
-                queries[i] += " FORMAT flat"; 
+            if (queries[i].trim() !== "") {
+                var cql = false;
+                if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
+                    cql = true;
+                    queries[i] = "USE " + namespace + "/" + docid + " CQL " + queries[i].trim();
+                } else if (queries[i].trim().substr(0,3) == "USE") {
+                    queries[i] = queries[i].trim();
+                } else {
+                    queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
+                }  
+                if (queries[i].indexOf('FORMAT') == -1) {
+                    queries[i] += " FORMAT flat"; 
+                }
             }
         }
 
