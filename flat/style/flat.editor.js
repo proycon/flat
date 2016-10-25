@@ -1337,7 +1337,7 @@ function editor_submit(addtoqueue) {
                                 //delete 
                                 queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
                             }
-                        } else {
+                        } else if (editdata[i].higherorder[j].value !== "") {
                             //add 
                             if (editdata[i].id !== undefined) {
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
