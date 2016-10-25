@@ -74,7 +74,7 @@ function renderdeletions() { //and suggested insertions
                             if (textblob) textblob += " ";
                             textblob += original.text;
                         }
-                        if ((!originaltype) && (isstructure(original.type))) {
+                        if ((!originaltype) && (folia_isstructure(original.type))) {
                             originaltype = original.type;
                             originalid = original.id;
                         }
@@ -93,7 +93,7 @@ function renderdeletions() { //and suggested insertions
                     }                                
                     annotation.suggestions.forEach(function(suggestion){
                         suggestion.children.forEach(function(e){
-                            if ((!suggestiontype) && (isstructure(e.type))) {
+                            if ((!suggestiontype) && (folia_isstructure(e.type))) {
                                 suggestiontype = e.type;
                                 suggestionid = e.id;
                                 e.children.forEach(function(e2){
@@ -261,7 +261,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     if (viewannotations[e.type+"/"+e.set]) {
                         s = s + "<tr><th>New";
                         if (addlabels) {
-                            s = s + " " + getannotationtypename(e.type);
+                            s = s + " " + folia_label(e.type);
                         }
                         s = s + ":</th><td> ";
                         s = s +  "<div class=\"correctionchild\">";
@@ -275,7 +275,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     if (viewannotations[e.type+"/"+e.set]) {
                         s = s + "<tr><th>Current";
                         if (addlabels) {
-                            s = s + " " + getannotationtypename(e.type);
+                            s = s + " " + folia_label(e.type);
                         }
                         s = s + ":</th><td> ";
                         s = s +  "<div class=\"correctionchild\">";
@@ -290,7 +290,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 if (viewannotations[original.type+"/"+original.set]) {
                     s = s + "<tr><th>Original";
                     if (addlabels) {
-                        s = s + " " + getannotationtypename(original.type);
+                        s = s + " " + folia_label(original.type);
                     }
                     s = s + ":</th><td> ";
                     s = s +  "<div class=\"correctionchild\">";
@@ -309,13 +309,13 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 s = s +  "<div class=\"correctionchild\">";
                 suggestion.children.forEach(function(child){
                     s  = s + "<table>";
-                    label = getannotationtypename(child.type);
+                    label = folia_label(child.type);
                     s = s + "<tr><th>" + label + "</th><td>";
                     s = s +  renderannotation(child,true);
                     s = s + "</td></tr>";
-                    if ((isstructure(child.type)) && (child.children)) {
+                    if ((folia_isstructure(child.type)) && (child.children)) {
                         child.children.forEach(function(subchild){
-                            s = s + "<tr><th>" + getannotationtypename(subchild.type) + "</th><td>";
+                            s = s + "<tr><th>" + folia_label(subchild.type) + "</th><td>";
                             s = s + renderannotation(subchild,true);
                             s = s + "</td></tr>";
                         });
@@ -411,7 +411,7 @@ function renderannotation(annotation, norecurse) {
             if (subannotation.type) { //filter out invalid elements
             if (subannotation.type != "correction") {
                 s  = s + "<table>";
-                label = getannotationtypename(subannotation.type);
+                label = folia_label(subannotation.type);
                 if (subannotation.set) {
                     setname = subannotation.set;
                 } else {
@@ -473,7 +473,7 @@ function showinfo(element) {
         if (element.id)  {
             var s = "";
             if (annotations[element.id]) {            
-                s = "<div id=\"id\">" + getannotationtypename(annotations[element.id].self.type) + " &bull; " + element.id + " &bull; " + annotations[element.id].self.class + "</div><table>";
+                s = "<div id=\"id\">" + folia_label(annotations[element.id].self.type) + " &bull; " + element.id + " &bull; " + annotations[element.id].self.class + "</div><table>";
                 Object.keys(annotations[element.id]).forEach(function(annotationid){
                     annotation = annotations[element.id][annotationid];
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
@@ -481,7 +481,7 @@ function showinfo(element) {
                                 if ((setdefinitions) && (setdefinitions[annotation.set]) && (setdefinitions[annotation.set].label)) {
                                     label = setdefinitions[annotation.set].label;
                                 } else {
-                                    label = getannotationtypename(annotation.type);
+                                    label = folia_label(annotation.type);
                                 }
                                 if (annotation.set) {
                                     setname = annotation.set;
@@ -636,8 +636,8 @@ function setclasscolors() {
     var legendtitle;
     if ((setdefinitions[legendset]) && (setdefinitions[legendset].label)) {
         legendtitle = setdefinitions[legendset].label;
-    } else if (annotationtypenames[legendtype]) {
-        legendtitle = annotationtypenames[legendtype];
+    } else if (folia_label(legendtype)) {
+        legendtitle = folia_label(legendtype);
     } else {
         legendtitle = annotationfocus.type;
     }
@@ -1010,7 +1010,7 @@ function viewer_loadmenus() {
             if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
                 label = setdefinitions[set].label;
             } else {
-                label = getannotationtypename(annotationtype);
+                label = folia_label(annotationtype);
             }
             s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
             if (globannotationsorder.indexOf(annotationtype) != -1) {

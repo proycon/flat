@@ -1,66 +1,93 @@
 // jshint evil:true
 
-//Defines the human-readable labels for annotation types
-var annotationtypenames = {
-    'pos': 'Part-of-Speech',
-    'lemma': 'Lemma',
-    't': 'Text',
-    'ph': 'Phonetic Content',
-    'w': 'Word/Token',
-    's': 'Sentence',
-    'p': 'Paragraph',
-    'div': 'Division',
-    'entity': 'Entity',
-    'su': 'Syntax',
-    'chunk': 'Chunk',
-    'sense': 'Semantic Sense',
-    'semrole': 'Semantic Role',
-    'correction': 'Correction',
-    'errordetection': 'Error detection',
-    'dependency': 'Dependency',
-    'coreferencechain': 'Coreference',
-    'note': 'Note',
-    'entry': 'Entry',
-    'def': 'Definition',
-    'term': 'Term',
-    'gap': 'Gap',
-    'event': 'Event',
-    'alignment': 'Alignments',
-    'morpheme': 'Morpheme',
-    'phoneme': 'Phoneme',
-    'lang': 'Language',
-    'ex': 'Example',
-    'part': 'Part',
-    'timesegment': 'Time Segment',
-    'cell': 'Table cell',
-    'row': 'Table row',
-    'metric': 'Metric',
-    'str': 'String'
-};
-//
-//Defines whether elements are span elements or not
-var annotationtypespan = {
-    'pos': false,
-    'lemma': false,
-    't': false,
-    'ph': false,
-    'w': false,
-    's': false,
-    'p': false,
-    'div': false,
-    'entity': true,
-    'su': true,
-    'chunk': true,
-    'sense': true,
-    'semrole': true,
-    'correction': true,
-    'errordetection': false,
-    'dependency': true,
-    'coreferencechain': true,
-};
-//Defines elements that are structural elements
-var annotationtypestructure = ['p','w','s','div','event','utt'];
-//Defines span role elements for span annotation elementes
+//Map from folia classes to elements (not nested unlike foliaspec)
+var foliaelements = {};
+
+//Maps FoLiA XML tag to classes, FLAT works tag-based
+var foliatag2class = {};
+
+function folia_parse(element, ancestors) {
+   if (element.class) {
+    if ((element.properties) && (element.properties.xmltag)) {
+        foliaelements[element.class] = element;
+        foliatag2class[element.properties.xmltag] = element.class;
+    }
+    if (ancestors) {
+        element.ancestors = ancestors; //ancestors are class based, not tag based
+    } else {
+        element.ancestors = [];
+    }
+   }
+   if (element.elements) {
+      var nextancestors;
+      if (ancestors) {
+          nextancestors = ancestors.slice(); //copy
+      } else {
+          nextancestors = [];
+      } 
+      if (element.class) {
+          nextancestors.push(element.class);
+      }
+      for (var i = 0; i < element.elements.length; i++) {
+          folia_parse(element.elements[i],nextancestors);
+      }
+   } 
+}
+
+function folia_label(tag) {
+    //Get the human-readable label for an annotation type (corresponding to a FoLiA XML tag), if defined
+    var foliaclass = foliatag2class[tag];
+    if (foliaelements[foliaclass].properties.label) {
+        return foliaelements[foliaclass].properties.label;
+    } else {
+        return tag; //fallback
+    }
+}
+
+function folia_isspan(tag) {
+    //Is the element a first order span element?
+    var foliaclass = foliatag2class[tag];
+    var found = false;
+    for (var i = 0; i < foliaelements[foliaclass].ancestors.length; i++) {
+        if (foliaelements[foliaclass].ancestors[i] == "AbstractSpanAnnotation") {
+            found = true;
+        }
+        if (foliaelements[foliaclass].ancestors[i] == "AbstractSpanRole") {
+            found = false; //not first-order
+        }
+    }
+    return found;
+ }
+
+function folia_isstructure(tag) {
+    //Is the element a first order span element?
+    var foliaclass = foliatag2class[tag];
+    for (var i = 0; i < foliaelements[foliaclass].ancestors.length; i++) {
+        if (foliaelements[foliaclass].ancestors[i] == "AbstractStructureAnnotation") {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function folia_annotationlist() {
+    return Object.keys(foliatag2class);
+}
+
+function folia_structurelist() {
+    var structurelist = [];
+    for (var tag in foliatag2class) {
+        if ((foliatag2class.hasOwnProperty(tag)) && (folia_isstructure(tag))) {
+            structurelist.push(tag);
+        }
+    }
+    return structurelist;
+}
+
+//************************************************************************************************************************************************************************
+
+//Defines span role elements for span annotation elements, TODO: replace with foliaspec
 var spanroles = {
     'coreferencechain': ['coreferencelink'],
     'dependency': ['hd','dep'],
@@ -92,13 +119,7 @@ var mouseY = 0;
 
 var latestannotations = {}; //target -> annotationid -> true , holds only the latest updates
 
-function getannotationtypename(t) {
-    //Get the human-readable label for an annotation type (corresponding to XML tag), if defined
-    if (annotationtypenames[t]) {
-        return annotationtypenames[t];
-    }
-    return t;
-}
+//************************************************************************************************************************************************************************
 
 function function_exists(functionName) {
     //Test if a function exists
@@ -108,10 +129,6 @@ function function_exists(functionName) {
 }
 
 
-function isstructure(annotationtype) {
-    //Is the given element a structural element?
-    return (annotationtypestructure.indexOf(annotationtype) !== -1);
-}
 
 function hash(s){
   //Generic hash function
@@ -546,7 +563,7 @@ function loadperspectivemenu() {
             } else {
                 opts += ">";
             }
-            opts += annotationtypenames[perspectives[i]] + "</option>";
+            opts += folia_label(perspectives[i]) + "</option>";
         }
     }
     if (perspectives.indexOf('toc') != -1) {
@@ -600,10 +617,10 @@ function loadselectormenu() {
     } else {
         s += "<option value=\"\">Automatic (deepest)</option>";
     }
-    annotationtypestructure.forEach(function(structuretype){
+    folia_structurelist().forEach(function(structuretype){
         var label = structuretype;
-        if (annotationtypenames[structuretype]) {
-            label = annotationtypenames[structuretype];
+        if (folia_label(structuretype)) {
+            label = folia_label(structuretype);
         }
         if (selector == structuretype) { 
             s += "<option value=\"" + structuretype + "\" selected=\"selected\">"  + label + "</option>";
@@ -750,9 +767,11 @@ function escape_fql_value(v) {
 }
 
 $(function() {
-    //on document load
+    //on page load
     //
     if (typeof(mode) != "undefined") {
+        folia_parse(foliaspec, []);
+
         $('nav>ul>li').mouseenter(function(){
             $('>ul',this).css('left', mouseX-30);
         });
