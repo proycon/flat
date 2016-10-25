@@ -24,6 +24,8 @@ else:
     from urllib.error import URLError, HTTPError
 
 def getcontext(request,namespace,docid, doc, mode):
+    if 'configuration' not in request.session:
+        raise Exception("Session has been logged out")
     return {
             'configuration': settings.CONFIGURATIONS[request.session['configuration']],
             'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
