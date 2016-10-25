@@ -1130,9 +1130,9 @@ function viewer_oninit() {
         var changeperspective = $('#searchperspective').is(':checked');
         searchsubmitted = true;
 
-        var format = "flat";
-        if (!changeperspective) {
-            format = "json";
+        if (changeperspective) {
+            $('#document').html('');
+            havecontent = false;
         }
 
 
