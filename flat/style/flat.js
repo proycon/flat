@@ -86,14 +86,14 @@ function folia_structurelist() {
 }
 
 function folia_accepts_class(parentclass, childclass) {
-    if (foliaelements[parentclass].properties.accepted_data.indexOf(childclass) != -1) {
+    if ((foliaelements[parentclass]) && (foliaelements[parentclass].properties) && (foliaelements[parentclass].properties.accepted_data) && (foliaelements[parentclass].properties.accepted_data.indexOf(childclass) != -1)) {
         return true;
     } else if (foliaspec.defaultproperties.accepted_data.indexOf(childclass) != -1) {
         return true;
-    } else {
+    } else if (foliaelements[parentclass]) {
         //check ancestor (will recurse by itself)
-        if (parentclass.ancestors.length > 0) {
-            return folia_accepts_class(foliaelements[parentclass.ancestors[0]], childclass);
+        if ((foliaelements[parentclass].ancestors) && (foliaelements[parentclass].ancestors.length > 0)) {
+            return folia_accepts_class(foliaelements[parentclass].ancestors[0], childclass);
         }
     }
     return false;
