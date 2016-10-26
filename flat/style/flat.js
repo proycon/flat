@@ -8,8 +8,8 @@ var foliatag2class = {};
 
 function folia_parse(element, ancestors) {
    if (element.class) {
+    foliaelements[element.class] = element;
     if ((element.properties) && (element.properties.xmltag)) {
-        foliaelements[element.class] = element;
         foliatag2class[element.properties.xmltag] = element.class;
     }
     if (ancestors) {
