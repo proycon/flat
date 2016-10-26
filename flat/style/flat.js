@@ -85,6 +85,27 @@ function folia_structurelist() {
     return structurelist;
 }
 
+function folia_accepts_class(parentclass, childclass) {
+    if (foliaelements[parentclass].properties.accepted_data.indexOf(childclass) != -1) {
+        return true;
+    } else if (foliaspec.default_properties.indexOf(childclass) != -1) {
+        return true;
+    } else {
+        //check ancestor (will recurse by itself)
+        if (parentclass.ancestors.length > 0) {
+            return folia_accepts_class(foliaelements[parentclass.ancestors[0]], childclass);
+        }
+    }
+    return false;
+}
+
+function folia_accepts(parenttag, childtag) {
+    var parentclass = foliatag2class[parenttag];
+    var childclass = foliatag2class[childtag];
+    return folia_accepts_class(parentclass, childclass);
+}
+
+
 //************************************************************************************************************************************************************************
 
 //Defines span role elements for span annotation elements, TODO: replace with foliaspec
