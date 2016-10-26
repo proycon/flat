@@ -478,7 +478,9 @@ function showeditor(element) {
                         }
                     }
                     if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-                    s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                    if (folia_isspan(annotation.type)) { //are we manipulating a span annotation element?
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                    }
                     var preselectcorrectionclass = "";
                     if (annotation.hassuggestions) {
                         //The annotation has suggestions (for correction)
@@ -637,7 +639,7 @@ function showeditor(element) {
                 //Enable the span selector button
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(spanselector_click);
-                if ((annotationfocusfound == i) && (configuration.autoselectspan) && (!spanselectorclicked)) {
+                if ((annotationfocusfound == i) && (configuration.autoselectspan) && (!spanselectorclicked) && (folia_isspan(editdata[i].type))) {
                     $('#spanselector' + i).click();
                     spanselectorclicked = true;
                 }
@@ -770,7 +772,9 @@ function addeditorfield(index) {
         s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"\"/>";
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-    s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+    if (folia_isspan(editoraddablefields[index].type)) { //are we manipulating a span annotation element?
+        s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+    }
 
     if (editconfidence &&  editoraddablefields[index].type != 't') {
         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
