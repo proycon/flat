@@ -73,9 +73,11 @@ div#editor .buttoncontainer span {
 div#editor input.textedit, div#editor select.textedit, div#editor .text {
     color: #333;
     font-style: italic;
+    max-width: 280px;
 }
 div#editor input.classedit, div#editor select.classedit, div#editor .class {
     color: #3323cd;
+    max-width: 280px;
 }
 input.changed {
     color: #660000;
