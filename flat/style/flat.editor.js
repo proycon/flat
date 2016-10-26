@@ -230,14 +230,15 @@ function renderhigherorderfields(index, annotation) {
     //Add menu for adding higher-order annotation
     s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
     s += "<ul>";
+    //TODO: automatically infer possible higher order annotations
     if (folia_accepts(annotation.type, 'comment')) {
-        s += "<li id=\"editoraddhigherorder" + index + "_comment\" onclick=\"addhigherorderfield(" + index + ",'comment')\">Add Comment</li>";
+        s += "<li id=\"editoraddhigherorder" + index + "_comment\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'comment')\">Add Comment</li>";
     }
     if (folia_accepts(annotation.type, 'desc')) {
-        s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
+        s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'desc')\">Add Description</li>";
     }
     if (folia_accepts(annotation.type, 'feat')) {
-        s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield(" + index + ",'feat')\">Add Feature</li>";
+        s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
     s += "</ul>";
     s += "</div>";
@@ -256,9 +257,7 @@ function renderhigherorderfields(index, annotation) {
                     ho += "</textarea></td>";
                 } else if (annotation.children[i].type == 'feat') {
                     ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td>";
-                    //TODO: add support for drop-down selection boxes from set definition
-                    ho += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +annotation.children[i].subset + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
-                    ho += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +annotation.children[i].class + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+                    ho += renderfeaturefields(annotation.set, annotation.children[i].subset, annotation.children[i].class, index, ho_index);
                     ho += "</td>";
                 }
                 if (ho) {
@@ -274,7 +273,51 @@ function renderhigherorderfields(index, annotation) {
     return {'output':s,'items': items};
 }
 
-function addhigherorderfield(index, type) {
+
+function renderfeaturefields(set, subset, cls, index, ho_index) {
+    /* Renders two fields to edit a specific feature: a subset field and a class field, called by renderhigherorderfields() and addhigherorderfield() */
+    var s = "";
+
+    //subset field
+    if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets)) {
+        //subsets are defined in set definition; present drop-down selection box
+        s += "<select class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">"; 
+        Object.keys(setdefinitions[set].subsets).forEach(function(subsetid){
+            var label = subsetid;
+            if (setdefinitions[set].subsets[subsetid].label) {
+                label = setdefinitions[set].subsets[subsetid].label;
+            }
+            if (subsetid == subset) {
+                s += "<option value=\"" + subsetid + "\" selected=\"selected\">" + label + "</option>";
+            } else {
+                s += "<option value=\"" + subsetid + "\">" + label + "</option>";
+            }
+        });
+        s += "</select>";
+    } else {
+        //subsets are open; present a free field
+        s += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
+    }
+
+    //class field
+    if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])) {
+        //classes for the subset are defined in set definition; present drop-down selection box
+        s += "<select class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">"; 
+        setdefinitions[set].subsets[subset].classorder.forEach(function(cid){
+            c = setdefinitions[set].subsets[subset].classes[cid];
+            s = s + getclassesasoptions(c, cls); 
+        });
+        s += "</select>";
+    } else {
+        //subsets are open; present a free field
+        s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +cls + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+    }
+
+    return s;
+
+}
+
+function addhigherorderfield(set, index, type) {
     /* Add a new higher order annotation field (called when the user selects a field to add from the higher-order menu) */
 
     var s = "<tr class=\"higherorderrow\">" ;
@@ -284,9 +327,7 @@ function addhigherorderfield(index, type) {
         editdata[index].higherorder.push({'type':type, 'value':""});
     } else if (type == "feat") {
          s = s +  "<td>" + folia_label(type) + ":</td><td>";
-         //TODO: add support for drop-down selection boxes from set definition
-         s += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
-         s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+         s = s + renderfeaturefields(set, "","", index, ho_index);
          s = s +  "</td>";
         editdata[index].higherorder.push({'type':type, 'subset': "", 'class':""});
     }
@@ -310,7 +351,6 @@ function getclassesasoptions(c, selected) {
     }
     return s;
 }
-
 
 function spanselector_click(){
     /* Called when the span select button (a toggle) is clicked: sets up or stops span selection */
