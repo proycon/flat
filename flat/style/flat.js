@@ -34,13 +34,27 @@ function folia_parse(element, ancestors) {
    } 
 }
 
-function folia_label(tag) {
+function folia_label(tag, set) {
     //Get the human-readable label for an annotation type (corresponding to a FoLiA XML tag), if defined
     var foliaclass = foliatag2class[tag];
+
+    if ((set) && (setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
+        //Grab the label from the set definition
+        return setdefinitions[set].label;
+    }
+
     if ((foliaelements[foliaclass]) && (foliaelements[foliaclass].properties.label)) {
         return foliaelements[foliaclass].properties.label;
     } else {
         return tag; //fallback
+    }
+}
+
+function folia_subset_label(set, subset) {
+    if ((set) && (setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])  && (setdefinitions[set].subsets[subset].label)) {
+        return setdefinitions[set].subsets[subset].label;
+    } else {
+        return subset;
     }
 }
 
