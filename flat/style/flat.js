@@ -100,9 +100,13 @@ function folia_accepts_class(parentclass, childclass) {
 }
 
 function folia_accepts(parenttag, childtag) {
-    var parentclass = foliatag2class[parenttag];
-    var childclass = foliatag2class[childtag];
-    return folia_accepts_class(parentclass, childclass);
+    if ((parenttag == 'w') && (folia_isspan(childtag))) {
+        return true;
+    } else {
+        var parentclass = foliatag2class[parenttag];
+        var childclass = foliatag2class[childtag];
+        return folia_accepts_class(parentclass, childclass);
+    }
 }
 
 
