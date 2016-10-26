@@ -583,7 +583,7 @@ function showeditor(element) {
             if ((annotationfocus) && (annotationfocusfound == -1)) {
                 //the annotation focus has not been found, so no field appears, add one automatically:
                 for (i = 0; i < editoraddablefields.length; i++) {
-                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
+                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set) && (folia_accepts(annotations[editedelementid].self.type,annotationfocus.type)) ) {
                         annotationfocusfound = addeditorfield(i);
                         break;
                     }
@@ -594,7 +594,7 @@ function showeditor(element) {
                 for (i = 0; i < sentdata.length; i++) {
                     if (!sentdata[i].used) {
                         for (var j = 0; j < editoraddablefields.length; j++) {
-                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set)) {
+                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set) && (folia_accepts(annotations[editedelementid].self.type,sentdata[i].type))) {
                                 addeditorfield(j);
                                 break;
                             }
