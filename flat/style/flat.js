@@ -37,7 +37,7 @@ function folia_parse(element, ancestors) {
 function folia_label(tag) {
     //Get the human-readable label for an annotation type (corresponding to a FoLiA XML tag), if defined
     var foliaclass = foliatag2class[tag];
-    if (foliaelements[foliaclass].properties.label) {
+    if ((foliaelements[foliaclass]) && (foliaelements[foliaclass].properties.label)) {
         return foliaelements[foliaclass].properties.label;
     } else {
         return tag; //fallback
@@ -63,7 +63,7 @@ function folia_isstructure(tag) {
     //Is the element a first order span element?
     var foliaclass = foliatag2class[tag];
     for (var i = 0; i < foliaelements[foliaclass].ancestors.length; i++) {
-        if (foliaelements[foliaclass].ancestors[i] == "AbstractStructureAnnotation") {
+        if (foliaelements[foliaclass].ancestors[i] == "AbstractStructureElement") {
             return true;
         }
     }
@@ -78,7 +78,7 @@ function folia_annotationlist() {
 function folia_structurelist() {
     var structurelist = [];
     for (var tag in foliatag2class) {
-        if ((foliatag2class.hasOwnProperty(tag)) && (folia_isstructure(tag))) {
+        if (folia_isstructure(tag)) {
             structurelist.push(tag);
         }
     }
