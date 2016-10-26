@@ -79,6 +79,10 @@ div#editor input.classedit, div#editor select.classedit, div#editor .class {
     color: #3323cd;
     max-width: 280px;
 }
+div#editor input.subsetedit, div#editor select.subsetedit, div#editor .subset {
+    color: #6d0000;
+    max-width: 280px;
+}
 input.changed {
     color: #660000;
 }

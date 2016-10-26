@@ -236,6 +236,9 @@ function renderhigherorderfields(index, annotation) {
     if (folia_accepts(annotation.type, 'desc')) {
         s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
     }
+    if (folia_accepts(annotation.type, 'feat')) {
+        s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield(" + index + ",'feat')\">Add Feature</li>";
+    }
     s += "</ul>";
     s += "</div>";
 
@@ -247,14 +250,16 @@ function renderhigherorderfields(index, annotation) {
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 var ho = "";
-                if (annotation.children[i].type == 'comment') {
-                    ho = "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+                if ((annotation.children[i].type == 'comment') || (annotation.children[i].type == 'desc')) {
+                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
                     if (annotation.children[i].value) ho += annotation.children[i].value;
                     ho += "</textarea></td>";
-                } else if (annotation.children[i].type == 'desc') {
-                    ho = "<td>Description:</td><td> <textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
-                    if (annotation.children[i].value) ho += annotation.children[i].value;
-                    ho += "</textarea></td>";
+                } else if (annotation.children[i].type == 'feat') {
+                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td>";
+                    //TODO: add support for drop-down selection boxes from set definition
+                    ho += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +annotation.children[i].subset + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
+                    ho += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +annotation.children[i].class + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+                    ho += "</td>";
                 }
                 if (ho) {
                     s += "<tr class=\"higherorderrow\">" + ho + "</tr>";
@@ -274,12 +279,16 @@ function addhigherorderfield(index, type) {
 
     var s = "<tr class=\"higherorderrow\">" ;
     var ho_index = editdata[index].higherorder.length;
-    if (type == "comment") {
-         s = s +  "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
+    if ((type == "comment") || (type == "desc")) {
+         s = s +  "<td>" + folia_label(type) + ":</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
         editdata[index].higherorder.push({'type':type, 'value':""});
-    } else if (type == "desc") {
-         s = s +  "<td>Description:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
-        editdata[index].higherorder.push({'type':type, 'value':""});
+    } else if (type == "feat") {
+         s = s +  "<td>" + folia_label(type) + ":</td><td>";
+         //TODO: add support for drop-down selection boxes from set definition
+         s += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
+         s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+         s = s +  "</td>";
+        editdata[index].higherorder.push({'type':type, 'subset': "", 'class':""});
     }
     s += "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
     $('#higherorderfields' + index +  "placeholder")[0].outerHTML = s;
@@ -1051,6 +1060,8 @@ function editor_submit(addtoqueue) {
                         editdata[i].higherorder[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
+                } else if (editdata[i].higherorder[j].type == 'feat') {
+                    //TODO: implement
                 }
             }
 
