@@ -231,43 +231,45 @@ function renderhigherorderfields(index, annotation) {
 
     var s = "";
     var items = [];
-    if (annotation.type != 't' && annotation.type != 'ph') {
-        //Add menu for adding higher-order annotation
-        s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
-        s += "<ul>";
+    //Add menu for adding higher-order annotation
+    s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
+    s += "<ul>";
+    if (folia_accepts(annotation.type, 'comment')) {
         s += "<li id=\"editoraddhigherorder" + index + "_comment\" onclick=\"addhigherorderfield(" + index + ",'comment')\">Add Comment</li>";
+    }
+    if (folia_accepts(annotation.type, 'desc')) {
         s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
-        s += "</ul>";
-        s += "</div>";
+    }
+    s += "</ul>";
+    s += "</div>";
 
-        //placeholder for higher order fields
-        s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
-        var ho_index = 0;
-        if (annotation.children) {
-            //Render existing higher order annotation fields for editing
-            for (i = 0; i < annotation.children.length; i++) {
-                if (annotation.children[i].type) {
-                    var ho = "";
-                    if (annotation.children[i].type == 'comment') {
-                        ho = "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
-                        if (annotation.children[i].value) ho += annotation.children[i].value;
-                        ho += "</textarea></td>";
-                    } else if (annotation.children[i].type == 'desc') {
-                        ho = "<td>Description:</td><td> <textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
-                        if (annotation.children[i].value) ho += annotation.children[i].value;
-                        ho += "</textarea></td>";
-                    }
-                    if (ho) {
-                        s += "<tr class=\"higherorderrow\">" + ho + "</tr>";
-                        ho_index++;
-                        items.push(annotation.children[i]);
-                    }
+    //placeholder for higher order fields
+    s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
+    var ho_index = 0;
+    if (annotation.children) {
+        //Render existing higher order annotation fields for editing
+        for (i = 0; i < annotation.children.length; i++) {
+            if (annotation.children[i].type) {
+                var ho = "";
+                if (annotation.children[i].type == 'comment') {
+                    ho = "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+                    if (annotation.children[i].value) ho += annotation.children[i].value;
+                    ho += "</textarea></td>";
+                } else if (annotation.children[i].type == 'desc') {
+                    ho = "<td>Description:</td><td> <textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+                    if (annotation.children[i].value) ho += annotation.children[i].value;
+                    ho += "</textarea></td>";
+                }
+                if (ho) {
+                    s += "<tr class=\"higherorderrow\">" + ho + "</tr>";
+                    ho_index++;
+                    items.push(annotation.children[i]);
                 }
             }
         }
-        s += "<tr id=\"higherorderfields" + index + "placeholder\"></tr>";
-        s += "</table></div>";
     }
+    s += "<tr id=\"higherorderfields" + index + "placeholder\"></tr>";
+    s += "</table></div>";
     return {'output':s,'items': items};
 }
 
