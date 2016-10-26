@@ -311,6 +311,7 @@ function getclassesasoptions(c, selected) {
     return s;
 }
 
+
 function spanselector_click(){
     /* Called when the span select button (a toggle) is clicked: sets up or stops span selection */
 
