@@ -437,7 +437,7 @@ function renderannotation(annotation, norecurse) {
                 if ((annotation.children[i].type == "comment") || (annotation.children[i].type == "desc")) {
                     s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": " + annotation.children[i].value + "</span>";
                 } else if (annotation.children[i].type == "feat") {
-                    s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + " " + annotation.children[i].subset + ": <span class=\"class\">" + annotation.children[i].class + "</span></span>";
+                    s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + " " + folia_subset_label(annotation.set, annotation.children[i].subset) + ": <span class=\"class\">" + folia_feature_label(annotation.set, annotation.children[i].subset, annotation.children[i].class) + "</span></span>";
                 }
             }
         }

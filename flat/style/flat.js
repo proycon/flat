@@ -58,6 +58,14 @@ function folia_subset_label(set, subset) {
     }
 }
 
+function folia_feature_label(set, subset, cls) {
+    if ((set) && (setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])  && (setdefinitions[set].subsets[subset].classes[cls]) && (setdefinitions[set].subsets[subset].classes[cls].label)) {
+        return setdefinitions[set].subsets[subset].classes[cls].label;
+    } else {
+        return subset;
+    }
+}
+
 function folia_isspan(tag) {
     //Is the element a first order span element?
     var foliaclass = foliatag2class[tag];
