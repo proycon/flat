@@ -1108,7 +1108,32 @@ function editor_submit(addtoqueue) {
                         editdata[i].higherorderchanged = true;
                     }
                 } else if (editdata[i].higherorder[j].type == 'feat') {
-                    //TODO: implement
+                    var subset = $('#higherorderfield_subset_' + i +'_' + j).val();
+                    var cls = $('#higherorderfield_' + i +'_' + j).val();
+
+
+                    //has the subset been changed OR has the class been changed?
+                    if ((((editdata[i].higherorder[j].subset) && (editdata[i].higherorder[j].subset != subset)) || (!editdata[i].higherorder[j].subset)) 
+                       ||  (((editdata[i].higherorder[j].class) && (editdata[i].higherorder[j].class != cls)) || (!editdata[i].higherorder[j].class))) {
+
+                        //remember old values (null if new)
+                        if (editdata[i].higherorder[j].subset) { 
+                            editdata[i].higherorder[j].oldsubset =  editdata[i].higherorder[j].subset;
+                        } else {
+                            editdata[i].higherorder[j].oldsubset = null;
+                        }
+                        if (editdata[i].higherorder[j].class) { 
+                            editdata[i].higherorder[j].oldclass =  editdata[i].higherorder[j].class;
+                        } else {
+                            editdata[i].higherorder[j].oldclass = null;
+                        }
+
+                        editdata[i].higherorder[j].subset = subset;
+                        editdata[i].higherorder[j].class = cls;
+                        editdata[i].higherorder[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    }
+
                 }
             }
 
@@ -1381,7 +1406,7 @@ function editor_submit(addtoqueue) {
             for (var j = 0; j < editdata[i].higherorder.length; j++) {
                 if (editdata[i].higherorder[j].changed) {
                     if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
-                        //comments and descriptions
+                        //formulate query for comments and descriptions
                         if (editdata[i].higherorder[j].oldvalue) {
                             if (editdata[i].higherorder[j].value) {
                                 //edit
@@ -1396,30 +1421,12 @@ function editor_submit(addtoqueue) {
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //undefined ID, means parent annotation is new as well, select it by value:
-                                parentselector = editdata[i].type;
-                                if ((editdata[i].id) && ( editdata[i].editform != "new")) {
-                                    parentselector += " ID " + editdata[i].id;
-                                } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                                    parentselector += " OF " + editdata[i].set;
-                                }
-                                if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                                    parentselector += " WHERE text = \"" + escape_fql_value(editdata[i].text) + "\"";
-                                } else if (editdata[i].class !== "") {
-                                    //no deletion
-                                    parentselector += " WHERE class = \"" + escape_fql_value(editdata[i].class) + "\"";
-                                }
-                                if (sortededittargets.length > 0) {
-                                    parentselector += " FOR";
-                                    var forids = ""; //jshint ignore:line
-                                    sortededittargets.forEach(function(t){
-                                        forids += " ID " + t;
-                                        return; //only one should be enough
-                                    });
-                                    parentselector += forids;
-                                }
+                                parentselector = build_parentselector_query(editdata[i], sortededittargets);
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
                             }
                         }
+                    } else if ((editdata[i].higherorder[j].type == 'feat')) {
+                        //TODO: formulate query for features
                     }
                 }
             }
@@ -1500,6 +1507,38 @@ function editor_submit(addtoqueue) {
     } else {
         testbackend(docid, username, sid, queries);
     }
+}
+
+function build_parentselector_query(edititem, sortededittargets) {
+    //formulate a parentselector query (a partial query actually for an FQL FOR
+    //statement) that selects the annotation that is to
+    //become the parent of the higher order annotation
+    //This is used when the parent annotation can not be selected by ID,
+    //because it is newly added (i.e. the query has been formulated but not actually added yet)
+    //called from editor_submit()
+    //
+    var parentselector = edititem.type;
+    if ((edititem.id) && ( edititem.editform != "new")) {
+        parentselector += " ID " + edititem.id;
+    } else if ((edititem.set)  && (edititem.set != "undefined")) {
+        parentselector += " OF " + edititem.set;
+    }
+    if ((edititem.type == "t") && (edititem.text !== "")) {
+        parentselector += " WHERE text = \"" + escape_fql_value(edititem.text) + "\"";
+    } else if (edititem.class !== "") {
+        //no deletion
+        parentselector += " WHERE class = \"" + escape_fql_value(edititem.class) + "\"";
+    }
+    if (sortededittargets.length > 0) {
+        parentselector += " FOR";
+        var forids = ""; //jshint ignore:line
+        sortededittargets.forEach(function(t){
+            forids += " ID " + t;
+            return; //only one should be enough
+        });
+        parentselector += forids;
+    }
+    return parentselector;
 }
 
 function console_submit(savefunction) {
