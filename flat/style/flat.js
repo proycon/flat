@@ -88,7 +88,7 @@ function folia_structurelist() {
 function folia_accepts_class(parentclass, childclass) {
     if (foliaelements[parentclass].properties.accepted_data.indexOf(childclass) != -1) {
         return true;
-    } else if (foliaspec.default_properties.indexOf(childclass) != -1) {
+    } else if (foliaspec.defaultproperties.indexOf(childclass) != -1) {
         return true;
     } else {
         //check ancestor (will recurse by itself)
