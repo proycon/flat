@@ -93,7 +93,18 @@ function folia_accepts_class(parentclass, childclass) {
     } else if (foliaelements[parentclass]) {
         //check ancestor (will recurse by itself)
         if ((foliaelements[parentclass].ancestors) && (foliaelements[parentclass].ancestors.length > 0)) {
-            return folia_accepts_class(foliaelements[parentclass].ancestors[0], childclass);
+            if (folia_accepts_class(foliaelements[parentclass].ancestors[0], childclass)) {
+                return true;
+            }
+        }
+        
+        //check if the parent element accepts an abstract class that is an ancestor of the child
+        if ( (foliaelements[childclass].ancestors) && (foliaelements[parentclass].properties) && (foliaelements[parentclass].properties.accepted_data)) {
+            for (var i = 0; i < foliaelements[childclass].ancestors.length; i++) {
+                if (foliaelements[parentclass].properties.accepted_data.indexOf(foliaelements[childclass].ancestors[i]) != -1) {
+                    return true;
+                }
+            }
         }
     }
     return false;
