@@ -664,10 +664,20 @@ function setclasscolors() {
             annotation = annotations[target][annotationkey];
             if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
                 if (classrank[annotation.class]) {
-                    if ($('#' + valid(target)).hasClass('w')) {
-                        $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
+                    var w = $('#' + valid(target));
+                    var i;
+                    if (w.hasClass('w')) {
+                        var removeclasses;
+                        if (classrank[annotation.class] != 'other') removeclasses = 'classother';
+                        for (i = 1; i <=7; i++) {
+                          if (i != classrank[annotation.class]) {
+                             if (removeclasses !== "") removeclasses += " ";
+                             removeclasses += 'class' + i;
+                          }
+                        }
+                        w.removeClass(removeclasses).addClass('class' + classrank[annotation.class]);
                     }
-                    if (($('#' + valid(target)).hasClass('s')) && (annotation.type == 'correction')) {
+                    if ((w.hasClass('s')) && (annotation.type == 'correction')) {
                         if (annotation.new.length === 0) {
                             //a deletion occurred
                         } else {
