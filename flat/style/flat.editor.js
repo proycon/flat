@@ -85,7 +85,7 @@ function setaddablefields() {
     editoraddablefields = [];
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
-            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set]) && (folia_accepts(editedelementtype,annotationtype))) {
+            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set]) && (!folia_isstructure(annotationtype)) && (folia_accepts(editedelementtype,annotationtype))) {
                 label = folia_label(annotationtype, set);
                 setname = shorten(set);
                 //check if it already exists
