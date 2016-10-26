@@ -3,6 +3,7 @@ var editoropen = false;
 var coselector = -1; //disabled
 var editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 var editedelementid = null;
+var editedelementtype = null;
 var editfields = 0;
 var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
 var editconfidence = true; //allow setting/editing confidence, will be overwritten to configuration value on init
@@ -84,7 +85,7 @@ function setaddablefields() {
     editoraddablefields = [];
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
-            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
+            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set]) && (folia_accepts(editedelementtype,annotationtype))) {
                 if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
                     label = setdefinitions[set].label;
                 } else {
@@ -367,6 +368,7 @@ function showeditor(element) {
             editoropen = true;
             sethover(element);
             editedelementid = element.id;
+            editedelementtype = annotations[element.id].self.type;
             editfields = 0;
             editdata = [];
 
@@ -583,7 +585,7 @@ function showeditor(element) {
             if ((annotationfocus) && (annotationfocusfound == -1)) {
                 //the annotation focus has not been found, so no field appears, add one automatically:
                 for (i = 0; i < editoraddablefields.length; i++) {
-                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set) && (folia_accepts(annotations[editedelementid].self.type,annotationfocus.type)) ) {
+                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set) && (folia_accepts(editedelementtype,annotationfocus.type)) ) {
                         annotationfocusfound = addeditorfield(i);
                         break;
                     }
@@ -594,7 +596,7 @@ function showeditor(element) {
                 for (i = 0; i < sentdata.length; i++) {
                     if (!sentdata[i].used) {
                         for (var j = 0; j < editoraddablefields.length; j++) {
-                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set) && (folia_accepts(annotations[editedelementid].self.type,sentdata[i].type))) {
+                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set) && (folia_accepts(editedelementtype,sentdata[i].type))) {
                                 addeditorfield(j);
                                 break;
                             }
