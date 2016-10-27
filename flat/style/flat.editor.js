@@ -287,15 +287,15 @@ function renderhigherorderfields(index, annotation) {
             if (annotation.children[i].type) {
                 var ho = "";
                 if ((annotation.children[i].type == 'comment') || (annotation.children[i].type == 'desc')) {
-                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+                    ho = "<th>" + folia_label(annotation.children[i].type) + ":</th><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
                     if (annotation.children[i].value) ho += annotation.children[i].value;
                     ho += "</textarea></td>";
                 } else if (annotation.children[i].type == 'feat') {
-                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td>";
+                    ho = "<th>" + folia_label(annotation.children[i].type) + ":</th><td>";
                     ho += renderfeaturefields(annotation.set, annotation.children[i].subset, annotation.children[i].class, index, ho_index);
                     ho += "</td>";
                 } else if (folia_isspanrole(annotation.children[i].type)) {
-                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td><span id=\"spantext" + index + "_" + i+ "\" class=\"text\">" + getspantext(annotation.children[i]) + "</span>";
+                    ho = "<th>" + folia_label(annotation.children[i].type) + ":</th><td><span id=\"spantext" + index + "_" + i+ "\" class=\"text\">" + getspantext(annotation.children[i]) + "</span>";
                     ho += "<button id=\"spanselector" + index + "_" + i + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
                     ho += "</td>";
                 }
