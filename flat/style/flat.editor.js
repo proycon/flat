@@ -1,6 +1,7 @@
 var editannotations = {};
 var editoropen = false;
-var coselector = -1; //disabled
+var coselector = -1; //disabled, otherwise the index of the field to which the coselector is currently bound
+var coselector_sub = -1; //disabled, otherwise index of the higher order field (i.e. a span role) to which the coselector is currently bound
 var editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 var editedelementid = null;
 var editedelementtype = null;
@@ -540,8 +541,8 @@ function showeditor(element) {
                         }
                     }
                     if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-                    if (folia_isspan(annotation.type)) { //are we manipulating a span annotation element?
-                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                    if (folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button><br />";
                     }
                     var preselectcorrectionclass = "";
                     if (annotation.hassuggestions) {
