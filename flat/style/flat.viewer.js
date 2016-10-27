@@ -349,17 +349,9 @@ function checkparentincorrection(annotation, correctionid) {
     return parentincorrection;
 }
 
-function getspanroletext(spanroledata) {
-    var roletext = "";
-    spanroledata.words.forEach(function(wordid){
-        if (roletext) roletext += " ";
-        roletext += annotations[wordid]['t/undefined:' + textclass].text;
-    });
-    return roletext;
-}
 
 function renderspanrole(spanroledata) {
-    return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspanroletext(spanroledata) + "</span>";
+    return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspantext(spanroledata) + "</span>";
 }
 
 function renderannotation(annotation, norecurse) {
@@ -373,9 +365,11 @@ function renderannotation(annotation, norecurse) {
         }
     }
     if (annotation.span) {
-        if ((annotation.spanroles) && (annotation.spanroles.length > 0)) {
-            annotation.spanroles.forEach(function(spanroledata){
-                s = s + renderspanrole(spanroledata);
+        if ((annotation.children) && (annotation.children.length > 0)) {
+            annotation.children.forEach(function(child){
+                if (child.isspanrole) {
+                    s = s + renderspanrole(child);
+                }
             });
         }
     }
@@ -680,13 +674,15 @@ function showdeletions() {
 
 function partofspanhead(annotation, target) {
     var partofhead = false;
-    annotation.spanroles.forEach(function(spanroledata) {
-        if (spanroledata.type == "hd") {
-            if (spanroledata.words.indexOf(target) != -1) {
-                partofhead = true;
+    if (annnotation.children) {
+        annotation.children.forEach(function(child) {
+            if (child.type == "hd") {
+                if (child.words.indexOf(target) != -1) {
+                    partofhead = true;
+                }
             }
-        }
-    });
+        });
+    }
     return partofhead;
 }
 
@@ -736,11 +732,13 @@ function renderglobannotations(all) {
                                             //grab the head
                                             var headtext = "";
                                             var partofhead = partofspanhead(annotation, target);
-                                            annotation.spanroles.forEach(function(spanroledata) {
-                                                if (spanroledata.type == "hd") {
-                                                    headtext = getspanroletext(spanroledata);
-                                                }
-                                            });
+                                            if (annotation.children) {
+                                                annotation.children.forEach(function(child) {
+                                                    if (child.type == "hd") {
+                                                        headtext = getspantext(child);
+                                                    }
+                                                });
+                                            }
                                             if (partofhead) { //if we're part of the head, we don't render this annotation here
                                                 usecontext = false;
                                                 s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
