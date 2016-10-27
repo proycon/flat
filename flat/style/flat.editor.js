@@ -271,8 +271,8 @@ function renderhigherorderfields(index, annotation) {
     }
     if (folia_isspan(annotation.type)) {
         var spanroles = folia_spanroles(annotation.type);
-        for (var i in spanroles) {
-            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanroles[i] + "')\">Add " + folia_label(spanroles[i]) + "</li>";
+        for (var j in spanroles) {
+            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanroles[j] + "')\">Add " + folia_label(spanroles[j]) + "</li>";
         }
     }
     s += "</ul>";
@@ -283,24 +283,11 @@ function renderhigherorderfields(index, annotation) {
     var ho_index = 0;
     if (annotation.children) {
         //Render existing higher order annotation fields for editing
-        for (i = 0; i < annotation.children.length; i++) {
+        for (var i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
-                var ho = "";
-                if ((annotation.children[i].type == 'comment') || (annotation.children[i].type == 'desc')) {
-                    ho = "<th>" + folia_label(annotation.children[i].type) + ":</th><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
-                    if (annotation.children[i].value) ho += annotation.children[i].value;
-                    ho += "</textarea></td>";
-                } else if (annotation.children[i].type == 'feat') {
-                    ho = "<th>" + folia_label(annotation.children[i].type) + ":</th><td>";
-                    ho += renderfeaturefields(annotation.set, annotation.children[i].subset, annotation.children[i].class, index, ho_index);
-                    ho += "</td>";
-                } else if (folia_isspanrole(annotation.children[i].type)) {
-                    ho = "<th>" + folia_label(annotation.children[i].type) + ":</th><td><span id=\"spantext" + index + "_" + i+ "\" class=\"text\">" + getspantext(annotation.children[i]) + "</span>";
-                    ho += "<button id=\"spanselector" + index + "_" + i + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
-                    ho += "</td>";
-                }
-                if (ho) {
-                    s += "<tr class=\"higherorderrow\">" + ho + "</tr>";
+                var s_item = renderhigherorderfield(index,ho_index, annotation.children[i], annotation.set);
+                if (s_item) {
+                    s += s_item;
                     ho_index++;
                     items.push(annotation.children[i]);
                 }
@@ -312,6 +299,27 @@ function renderhigherorderfields(index, annotation) {
     return {'output':s,'items': items};
 }
 
+function renderhigherorderfield(index, ho_index, childannotation, set) {
+    //render a single higher order field
+    var s = "";
+    if ((childannotation.type == 'comment') || (childannotation.type == 'desc')) {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+        if (childannotation.value) s += childannotation.value;
+        s += "</textarea></td>";
+    } else if (childannotation.type == 'feat') {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td>";
+        s += renderfeaturefields(set, childannotation.subset, childannotation.class, index, ho_index);
+        s += "</td>";
+    } else if (folia_isspanrole(childannotation.type)) {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + i+ "\" class=\"text\">" + getspantext(childannotation) + "</span>";
+        s += "<button id=\"spanselector" + index + "_" + i + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
+        s += "</td>";
+    }
+    if (s) {
+        s = "<tr class=\"higherorderrow\">" + s + "</tr>";
+    }
+    return s;
+}
 
 function renderfeaturefields(set, subset, cls, index, ho_index) {
     /* Renders two fields to edit a specific feature: a subset field and a class field, called by renderhigherorderfields() and addhigherorderfield() */
@@ -367,19 +375,22 @@ function renderfeatureclassfield(set, subset, cls, index, ho_index) {
 function addhigherorderfield(set, index, type) {
     /* Add a new higher order annotation field (called when the user selects a field to add from the higher-order menu) */
 
-    var s = "<tr class=\"higherorderrow\">" ;
     var ho_index = editdata[index].children.length;
+    var newchildannotation = null;
     if ((type == "comment") || (type == "desc")) {
-         s = s +  "<td>" + folia_label(type) + ":</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
-        editdata[index].children.push({'type':type, 'value':""});
+        newchildannotation = {'type':type, 'value':""};
     } else if (type == "feat") {
-         s = s +  "<td>" + folia_label(type) + ":</td><td>";
-         s = s + renderfeaturefields(set, "","", index, ho_index);
-         s = s +  "</td>";
-        editdata[index].children.push({'type':type, 'subset': "", 'class':""});
+        newchildannotation = {'type':type, 'subset': "", 'class':""};
+    } else if (folia_isspanrole(type)) {
+        newchildannotation = {'type':type,'targets': []};
     }
-    s += "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
-    $('#higherorderfields' + index +  "placeholder")[0].outerHTML = s;
+    if (newchildannotation !== null) {
+        $('#higherorderfields' + index +  "placeholder")[0].outerHTML =
+            "<tr class=\"higherorderrow\">" +
+            renderhigherorderfield(index, ho_index, newchildannotation, set) + 
+            "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
+        editdata[index].children.push(newchildannotation);
+    }
 }
 
 function getclassesasoptions(c, selected) {
