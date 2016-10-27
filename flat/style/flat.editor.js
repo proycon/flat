@@ -270,8 +270,8 @@ function renderhigherorderfields(index, annotation) {
                     ho += renderfeaturefields(annotation.set, annotation.children[i].subset, annotation.children[i].class, index, ho_index);
                     ho += "</td>";
                 } else if (folia_isspanrole(annotation.children[i].type)) {
-                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td>";
-                    //TODO: render span role selection? 
+                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td><span id=\"spantext" + index + "_" + i+ "\" class=\"text\">" + getspantext(annotation.children[i]) + "</span>";
+                    ho += "<button id=\"spanselector" + index + "_" + i + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
                     ho += "</td>";
                 }
                 if (ho) {
@@ -377,7 +377,19 @@ function getclassesasoptions(c, selected) {
 function spanselector_click(){
     /* Called when the span select button (a toggle) is clicked: sets up or stops span selection */
 
-    var i = parseInt(this.id.substr(12));  //get index ID (we can't reuse i from the larger scope here!!)
+
+    var i;
+    var sub;
+    underscore = this.id.indexOf('_'); //underscore is used for span selectors on higher order annotation elements (i.e. span roles)
+    //get index ID (we can't reuse i from the larger scope here!!)
+    if (underscore == -1) {
+        i = parseInt(this.id.substr(12));  
+        sub = -1;
+    } else {
+        i = parseInt(this.id.substr(12, underscore-12));  
+        sub = parseInt(this.id.substr(underscore+1));
+    }
+
     //toggle coselector (select multiple), takes care of
     //switching off any other coselector
     var toggleon = true;
@@ -385,22 +397,43 @@ function spanselector_click(){
     if (coselector > -1) {
         if (coselector == i) toggleon = false; //this is a toggle off action only
 
-        $('#spanselector' + i).removeClass("selectoron");
+        //de-highlight the button itself
+        if (coselector_sub == -1) {
+            $('#spanselector' + coselector).removeClass("selectoron");
+        } else {
+            $('#spanselector' + coselector + '_' + coselector_sub).removeClass("selectoron");
+        }
         //
         //de-highlight all coselected elements
-        for (j = 0; j < editdata[coselector].targets.length; j++) {
-            $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
+        if (coselector_sub == -1) {
+            for (j = 0; j < editdata[coselector].targets.length; j++) {
+                $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
+            }
+        } else {
+            for (j = 0; j < editdata[coselector].children[coselector_sub].targets.length; j++) {
+                $('#' + valid(editdata[coselector].children[coselector_sub].targets[j])).removeClass('selected');
+            }
         }
+
         coselector = -1;
+        coselector_sub = -1;
     }
     if (toggleon) {
         coselector = i;
+        coselector_sub = sub;
 
         //highlight all coselected elements
-        for (j = 0; j < editdata[coselector].targets.length; j++) {
-            $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
+        if (coselector_sub == -1) {
+            for (j = 0; j < editdata[coselector].targets.length; j++) {
+                $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
+            }
+        } else {
+            for (j = 0; j < editdata[coselector].children[coselector_sub].targets.length; j++) {
+                $('#' + valid(editdata[coselector].children[coselector_sub].targets[j])).addClass('selected');
+            }
         }
 
+        //highlight the button itself
         $(this).addClass("selectoron");
     }
 }
@@ -510,8 +543,9 @@ function showeditor(element) {
                         s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
                     } else {
                         //Annotation concerns a class
-                        if (annotation.targets.length > 1) {
-                            //Annotation spans multiple elements, gather the text of the entire span for presentation:
+                        if ((annotation.targets.length > 1) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))) {
+                            //Annotation is a span annotation, gather the text of the entire span for presentation:
+                            //omit span annotations that only have span roles
                             spantext = getspantext(annotation);
                             s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
                             s  = s + "<br/>";
@@ -599,7 +633,7 @@ function showeditor(element) {
 
                     //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
                     editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
-                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'higherorder': ho_result.items };
+                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'children': ho_result.items };
                     if (annotation.type == 't') editdataitem.text = annotation.text;
                     if (annotation.id) editdataitem.id = annotation.id;
                     if (annotation.hasOwnProperty('confidence')) {
@@ -705,6 +739,13 @@ function showeditor(element) {
                 if ((annotationfocusfound == i) && (configuration.autoselectspan) && (!spanselectorclicked) && (folia_isspan(editdata[i].type))) {
                     $('#spanselector' + i).click();
                     spanselectorclicked = true;
+                }
+                if (editdata[i].children) {
+                    //Enable span selector buttons for span roles
+                    for (j = 0; j < editdata[i].children.length; j++) {
+                        $('#spanselector' + i + '_' + j).off(); //prevent duplicates
+                        $('#spanselector' + i + '_' + j).click(spanselector_click);
+                    }
                 }
 
                 //sort correctionclass
@@ -1112,45 +1153,45 @@ function editor_submit(addtoqueue) {
         }
 
         editdata[i].higherorderchanged = false;
-        if (editdata[i].higherorder.length > 0) {
-            for (var j = 0; j < editdata[i].higherorder.length; j++) {
-                editdata[i].higherorder[j].changed = false;
-                if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
+        if (editdata[i].children.length > 0) {
+            for (var j = 0; j < editdata[i].children.length; j++) {
+                editdata[i].children[j].changed = false;
+                if ((editdata[i].children[j].type == 'comment') ||(editdata[i].children[j].type == 'desc')) {
                     var value = $('#higherorderfield' + i +'_' + j).val();
-                    if (((editdata[i].higherorder[j].value) && (editdata[i].higherorder[j].value != value)) || (!editdata[i].higherorder[j].value)) {
-                        if (editdata[i].higherorder[j].value) { 
-                            editdata[i].higherorder[j].oldvalue =  editdata[i].higherorder[j].value;
+                    if (((editdata[i].children[j].value) && (editdata[i].children[j].value != value)) || (!editdata[i].children[j].value)) {
+                        if (editdata[i].children[j].value) { 
+                            editdata[i].children[j].oldvalue =  editdata[i].children[j].value;
                         } else {
-                            editdata[i].higherorder[j].oldvalue = null;
+                            editdata[i].children[j].oldvalue = null;
                         }
-                        editdata[i].higherorder[j].value = value;
-                        editdata[i].higherorder[j].changed = true;
+                        editdata[i].children[j].value = value;
+                        editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
-                } else if (editdata[i].higherorder[j].type == 'feat') {
+                } else if (editdata[i].children[j].type == 'feat') {
                     var subset = $('#higherorderfield_subset_' + i +'_' + j).val();
                     var cls = $('#higherorderfield_' + i +'_' + j).val();
 
 
                     //has the subset been changed OR has the class been changed?
-                    if ((((editdata[i].higherorder[j].subset) && (editdata[i].higherorder[j].subset != subset)) || (!editdata[i].higherorder[j].subset)) 
-                       ||  (((editdata[i].higherorder[j].class) && (editdata[i].higherorder[j].class != cls)) || (!editdata[i].higherorder[j].class))) {
+                    if ((((editdata[i].children[j].subset) && (editdata[i].children[j].subset != subset)) || (!editdata[i].children[j].subset)) 
+                       ||  (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
 
                         //remember old values (null if new)
-                        if (editdata[i].higherorder[j].subset) { 
-                            editdata[i].higherorder[j].oldsubset =  editdata[i].higherorder[j].subset;
+                        if (editdata[i].children[j].subset) { 
+                            editdata[i].children[j].oldsubset =  editdata[i].children[j].subset;
                         } else {
-                            editdata[i].higherorder[j].oldsubset = null;
+                            editdata[i].children[j].oldsubset = null;
                         }
-                        if (editdata[i].higherorder[j].class) { 
-                            editdata[i].higherorder[j].oldclass =  editdata[i].higherorder[j].class;
+                        if (editdata[i].children[j].class) { 
+                            editdata[i].children[j].oldclass =  editdata[i].children[j].class;
                         } else {
-                            editdata[i].higherorder[j].oldclass = null;
+                            editdata[i].children[j].oldclass = null;
                         }
 
-                        editdata[i].higherorder[j].subset = subset;
-                        editdata[i].higherorder[j].class = cls;
-                        editdata[i].higherorder[j].changed = true;
+                        editdata[i].children[j].subset = subset;
+                        editdata[i].children[j].class = cls;
+                        editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
 
@@ -1423,8 +1464,8 @@ function editor_submit(addtoqueue) {
         }
         //Process higher order annotations (if main action isn't a deletion)
         if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
-            for (var j = 0; j < editdata[i].higherorder.length; j++) {
-                if (editdata[i].higherorder[j].changed) {
+            for (var j = 0; j < editdata[i].children.length; j++) {
+                if (editdata[i].children[j].changed) {
                     var targetselector;
                     if (editdata[i].id === undefined) {
                         //undefined ID, means parent annotation is new as well, select it by value:
@@ -1432,42 +1473,42 @@ function editor_submit(addtoqueue) {
                     } else {
                         targetselector = " ID \"" + editdata[i].id + "\"";
                     }
-                    if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
+                    if ((editdata[i].children[j].type == 'comment') ||(editdata[i].children[j].type == 'desc')) {
                         //formulate query for comments and descriptions
-                        if (editdata[i].higherorder[j].oldvalue) {
-                            if (editdata[i].higherorder[j].value) {
+                        if (editdata[i].children[j].oldvalue) {
+                            if (editdata[i].children[j].value) {
                                 //edit
-                                queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " EDIT " + editdata[i].children[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
-                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                                queries.push(useclause + " DELETE " + editdata[i].children[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].children[j].oldvalue) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
                             }
-                        } else if (editdata[i].higherorder[j].value !== "") {
+                        } else if (editdata[i].children[j].value !== "") {
                             //add 
-                            queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " ADD " + editdata[i].children[j].type + " WITH text \"" + escape_fql_value(editdata[i].children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         }
-                    } else if ((editdata[i].higherorder[j].type == 'feat')) {
+                    } else if ((editdata[i].children[j].type == 'feat')) {
                         //formulate query for features
-                        if ((editdata[i].higherorder[j].oldclass)  && (editdata[i].higherorder[j].oldsubset) && ( (!editdata[i].higherorder[j].class) || (!editdata[i].higherorder[j].subset))) {
+                        if ((editdata[i].children[j].oldclass)  && (editdata[i].children[j].oldsubset) && ( (!editdata[i].children[j].class) || (!editdata[i].children[j].subset))) {
                             //deletion
-                            queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].oldclass) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
-                        } else if ((!editdata[i].higherorder[j].oldclass) && (!editdata[i].higherorder[j].oldsubset)) {
+                            queries.push(useclause + " DELETE " + editdata[i].children[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(editdata[i].children[j].oldclass) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                        } else if ((!editdata[i].children[j].oldclass) && (!editdata[i].children[j].oldsubset)) {
                             //add
                             if (editdata[i].id !== undefined) {
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " ADD " + editdata[i].children[j].type + " WITH subset \"" + escape_fql_value(editdata[i].children[j].subset) + "\" class \"" + escape_fql_value(editdata[i].children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //undefined ID, means parent annotation is new as well, select it by value:
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " ADD " + editdata[i].children[j].type + " WITH subset \"" + escape_fql_value(editdata[i].children[j].subset) + "\" class \"" + escape_fql_value(editdata[i].children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             }
-                        } else if ((editdata[i].higherorder[j].oldclass) && (editdata[i].highorder[j].oldclass != higherorder[j].class) && (editdata[i].higherorder[j].oldsubset == editdata[i].higherorder[j].subset)) {
+                        } else if ((editdata[i].children[j].oldclass) && (editdata[i].highorder[j].oldclass != higherorder[j].class) && (editdata[i].children[j].oldsubset == editdata[i].children[j].subset)) {
                             //edit of class
-                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
-                        } else if ((editdata[i].higherorder[j].oldsubset) && (editdata[i].highorder[j].oldsubset != higherorder[j].subset) && (editdata[i].higherorder[j].oldclass == editdata[i].higherorder[j].class)) {
+                            queries.push(useclause + " EDIT " + editdata[i].children[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].children[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].children[j].class) + "\"  WITH class \"" + escape_fql_value(editdata[i].children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                        } else if ((editdata[i].children[j].oldsubset) && (editdata[i].highorder[j].oldsubset != higherorder[j].subset) && (editdata[i].children[j].oldclass == editdata[i].children[j].class)) {
                             //edit of subset
-                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " EDIT " + editdata[i].children[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].children[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].children[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].children[j].subset) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         } else {
                             //edit of class and subset
-                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " EDIT " + editdata[i].children[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].children[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].children[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].children[j].subset) + "\" class \"" + escape_fql_value(editdata[i].children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         }
                     }
                 }
