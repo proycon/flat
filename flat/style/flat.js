@@ -1,12 +1,5 @@
 // jshint evil:true
 
-//Defines span role elements for span annotation elements, TODO: replace with foliaspec
-var spanroles = {
-    'coreferencechain': ['coreferencelink'],
-    'dependency': ['hd','dep'],
-};
-
-
 //A random session ID
 var sid = ((Math.random() * 1e9) | 0); 
 

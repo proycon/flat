@@ -373,22 +373,10 @@ function renderannotation(annotation, norecurse) {
         }
     }
     if (annotation.span) {
-        if (spanroles[annotation.type]) {
-            spanroles[annotation.type].forEach(function(spanrole){
-                annotation.spanroles.forEach(function(spanroledata){
-                    if (spanroledata.type == spanrole) {
-                        s = s + renderspanrole(spanroledata);
-                    }
-                });
-            });
-        } else if (annotation.spanroles.length > 0) {
+        if ((annotation.spanroles) && (annotation.spanroles.length > 0)) {
             annotation.spanroles.forEach(function(spanroledata){
                 s = s + renderspanrole(spanroledata);
             });
-        }
-        if (!spanroles[annotation.type]) {
-            spantext = getspantext(annotation);
-            s = s + "<br/><span class=\"text\">" + spantext + "</span>";
         }
     }
     if (annotation.type == "t") {
