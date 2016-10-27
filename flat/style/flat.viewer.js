@@ -359,7 +359,7 @@ function getspanroletext(spanroledata) {
 }
 
 function renderspanrole(spanroledata) {
-    return "<br/><label class=\"spanrole\">" + spanroledata.type + ":</label> <span class=\"text\">" + getspanroletext(spanroledata) + "</span>";
+    return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspanroletext(spanroledata) + "</span>";
 }
 
 function renderannotation(annotation, norecurse) {
