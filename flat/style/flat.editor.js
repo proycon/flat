@@ -281,7 +281,7 @@ function renderfeaturefields(set, subset, cls, index, ho_index) {
     //subset field
     if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets)) {
         //subsets are defined in set definition; present drop-down selection box
-        s += "<select class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">"; 
+        s += "<select class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\" onchange=\"$('#higherorderfield_" + index + "_" + ho_index + "')[0].outerHTML = renderfeatureclassfield('" + set + "',$(this).val(),''," + index + "," + ho_index + ");\">"; 
         s += "<option value=\"\"></option>";
         Object.keys(setdefinitions[set].subsets).forEach(function(subsetid){
             var label = subsetid;
@@ -301,6 +301,14 @@ function renderfeaturefields(set, subset, cls, index, ho_index) {
     }
 
     //class field
+    s += renderfeatureclassfield(set,subset,cls,index,ho_index);
+    return s;
+
+}
+
+
+function renderfeatureclassfield(set, subset, cls, index, ho_index) {
+    var s = "";
     if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])) {
         //classes for the subset are defined in set definition; present drop-down selection box
         s += "<select class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">"; 
@@ -314,9 +322,7 @@ function renderfeaturefields(set, subset, cls, index, ho_index) {
         //subsets are open; present a free field
         s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +cls + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
     }
-
     return s;
-
 }
 
 function addhigherorderfield(set, index, type) {
