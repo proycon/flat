@@ -366,7 +366,7 @@ function renderannotation(annotation, norecurse) {
     }
     if (annotation.span) {
         if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
-            s = s + ": <span class=\"text\">" + getspantext(annotation) + "</span>";
+            s = s + "<br /><span class=\"text\">" + getspantext(annotation) + "</span>";
         }
         if ((annotation.children) && (annotation.children.length > 0)) {
             annotation.children.forEach(function(child){
