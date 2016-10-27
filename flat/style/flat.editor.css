@@ -103,6 +103,7 @@ div#editor .addhigherordermenu {
     color: #30677c;
     padding: 1px;
     clear: both;
+    cursor: pointer;
 }
 .addhigherordermenu ul {
     display: none;
@@ -125,10 +126,11 @@ div#editor .addhigherordermenu {
     padding-right: 5px;
     color: white;
     font-weight: bold;
-    display: pointer;
+    cursor: pointer;
 }
 .addhigherordermenu li:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 .higherorderrow {
     vertical-align: top;
