@@ -1411,49 +1411,49 @@ function editor_submit(addtoqueue) {
         if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
             for (var j = 0; j < editdata[i].higherorder.length; j++) {
                 if (editdata[i].higherorder[j].changed) {
+                    var targetselector;
+                    if (editdata[i].id === undefined) {
+                        //undefined ID, means parent annotation is new as well, select it by value:
+                        targetselector = build_parentselector_query(editdata[i]);
+                    } else {
+                        targetselector = " ID \"" + editdata[i].id + "\"";
+                    }
                     if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
                         //formulate query for comments and descriptions
                         if (editdata[i].higherorder[j].oldvalue) {
                             if (editdata[i].higherorder[j].value) {
                                 //edit
-                                queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
-                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FOR " + targetselector + " FORMAT flat RETURN target");
                             }
                         } else if (editdata[i].higherorder[j].value !== "") {
                             //add 
-                            if (editdata[i].id !== undefined) {
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
-                            } else {
-                                //undefined ID, means parent annotation is new as well, select it by value:
-                                parentselector = build_parentselector_query(editdata[i]);
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
-                            }
+                            queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         }
                     } else if ((editdata[i].higherorder[j].type == 'feat')) {
                         //formulate query for features
                         if ((editdata[i].higherorder[j].oldclass)  && (editdata[i].higherorder[j].oldsubset) && ( (!editdata[i].higherorder[j].class) || (!editdata[i].higherorder[j].subset))) {
                             //deletion
-                            queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + " AND \" class = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + "\" FOR " + targetselector + " FORMAT flat RETURN target");
                         } else if ((!editdata[i].higherorder[j].oldclass) && (!editdata[i].higherorder[j].oldsubset)) {
                             //add
                             if (editdata[i].id !== undefined) {
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //undefined ID, means parent annotation is new as well, select it by value:
-                                parentselector = build_parentselector_query(editdata[i]);
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
+                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             }
                         } else if ((editdata[i].higherorder[j].oldclass) && (editdata[i].highorder[j].oldclass != higherorder[j].class) && (editdata[i].higherorder[j].oldsubset == editdata[i].higherorder[j].subset)) {
                             //edit of class
-                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         } else if ((editdata[i].higherorder[j].oldsubset) && (editdata[i].highorder[j].oldsubset != higherorder[j].subset) && (editdata[i].higherorder[j].oldclass == editdata[i].higherorder[j].class)) {
                             //edit of subset
-                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         } else {
                             //edit of class and subset
-                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
+                            queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\"  WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                         }
                     }
                 }
