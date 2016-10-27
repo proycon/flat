@@ -69,12 +69,15 @@ function select(element) {
         }
     }
     if (found) {
+        //deselect a word
         editdata[coselector].targets.splice(index, 1);
         $(element).removeClass("selected");
     } else {
+        //select a word
         editdata[coselector].targets.push( element.id);
         $(element).addClass("selected");
     }
+    $('#spantext' + coselector).html(getspantext(editdata[coselector]));
 }
 
 function setaddablefields() {
