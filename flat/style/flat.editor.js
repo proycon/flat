@@ -245,7 +245,7 @@ function renderhigherorderfields(index, annotation) {
         s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
     if (folia_isspan(annotation.type)) {
-        var i = folia_spanroles(annotation.type);
+        var spanroles = folia_spanroles(annotation.type);
         for (var i in spanroles) {
             s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanrole[i] + "')\">Add " + folia_label(spanrole[i]) + "</li>";
         }
