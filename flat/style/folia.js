@@ -84,6 +84,17 @@ function folia_isspan(tag) {
     return found;
  }
 
+function folia_isspanrole(tag) {
+    //Is the element a span role?
+    var foliaclass = foliatag2class[tag];
+    for (var i = 0; i < foliaelements[foliaclass].ancestors.length; i++) {
+        if (foliaelements[foliaclass].ancestors[i] == "AbstractSpanRole") {
+            return true;
+        }
+    }
+    return false;
+ }
+
 function folia_isstructure(tag) {
     //Is the element a first order span element?
     var foliaclass = foliatag2class[tag];
@@ -149,9 +160,11 @@ function folia_accepts(parenttag, childtag) {
     }
 }
 
+
+
 function folia_spanroles(tag) {
     /* Collect all span annotation roles (tags) for the given span annotation element */
-    var parentclass = foliatag2class[tag];
+    var foliaclass = foliatag2class[tag];
     var spanroles = [];
     if ((foliaelements[foliaclass]) && (foliaelements[foliaclass].properties) && (foliaelements[foliaclass].properties.accepted_data)) {
         for (var i = 0; i < foliaelements[foliaclass].properties.accepted_data.length; i++) { //doesn't consider accepted_data inheritance but i don't think we use that in this case
@@ -166,7 +179,7 @@ function folia_spanroles(tag) {
 
 function folia_required_spanroles(tag) {
     /* Collect all mandatory span annotation roles (tags) for the given span annotation element */
-    var parentclass = foliatag2class[tag];
+    var foliaclass = foliatag2class[tag];
     var spanroles = [];
     if ((foliaelements[foliaclass]) && (foliaelements[foliaclass].properties) && (foliaelements[foliaclass].properties.required_data)) {
         for (var i = 0; i < foliaelements[foliaclass].properties.required_data.length; i++) { //doesn't consider accepted_data inheritance but i don't think we use that in this case

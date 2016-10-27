@@ -240,6 +240,12 @@ function renderhigherorderfields(index, annotation) {
     if (folia_accepts(annotation.type, 'feat')) {
         s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
+    if (folia_isspan(annotation.type)) {
+        var spanroles = folia_spanroles(annotation.type);
+        for (var spanrole in spanroles) {
+            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanrole + "')\">Add " + folia_label(spanrole) + "</li>";
+        }
+    }
     s += "</ul>";
     s += "</div>";
 
@@ -258,6 +264,10 @@ function renderhigherorderfields(index, annotation) {
                 } else if (annotation.children[i].type == 'feat') {
                     ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td>";
                     ho += renderfeaturefields(annotation.set, annotation.children[i].subset, annotation.children[i].class, index, ho_index);
+                    ho += "</td>";
+                } else if (folia_isspanrole(annotation.children[i].type)) {
+                    ho = "<td>" + folia_label(annotation.children[i].type) + ":</td><td>";
+                    //TODO: render span role selection? 
                     ho += "</td>";
                 }
                 if (ho) {
