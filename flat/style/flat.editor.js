@@ -343,15 +343,15 @@ function addhigherorderfield(set, index, type) {
     /* Add a new higher order annotation field (called when the user selects a field to add from the higher-order menu) */
 
     var s = "<tr class=\"higherorderrow\">" ;
-    var ho_index = editdata[index].higherorder.length;
+    var ho_index = editdata[index].children.length;
     if ((type == "comment") || (type == "desc")) {
          s = s +  "<td>" + folia_label(type) + ":</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
-        editdata[index].higherorder.push({'type':type, 'value':""});
+        editdata[index].children.push({'type':type, 'value':""});
     } else if (type == "feat") {
          s = s +  "<td>" + folia_label(type) + ":</td><td>";
          s = s + renderfeaturefields(set, "","", index, ho_index);
          s = s +  "</td>";
-        editdata[index].higherorder.push({'type':type, 'subset': "", 'class':""});
+        editdata[index].children.push({'type':type, 'subset': "", 'class':""});
     }
     s += "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
     $('#higherorderfields' + index +  "placeholder")[0].outerHTML = s;
