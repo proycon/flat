@@ -62,23 +62,48 @@ function select(element) {
     /* toggles selection of an element (coselector) */
     var found = false;
     var index = 0;
-    for (var i = 0; i < editdata[coselector].targets.length; i++) {
-        if (editdata[coselector].targets[i] == element.id) {
-            index = i;
-            found = true;
-            break;
+    var i;
+
+    if (coselector_sub == -1) {
+        //no sub-coselector
+        for (i = 0; i < editdata[coselector].targets.length; i++) {
+            if (editdata[coselector].targets[i] == element.id) {
+                index = i;
+                found = true;
+                break;
+            }
         }
-    }
-    if (found) {
-        //deselect a word
-        editdata[coselector].targets.splice(index, 1);
-        $(element).removeClass("selected");
+        if (found) {
+            //deselect a word
+            editdata[coselector].targets.splice(index, 1);
+            $(element).removeClass("selected");
+        } else {
+            //select a word
+            editdata[coselector].targets.push( element.id);
+            $(element).addClass("selected");
+        }
+        $('#spantext' + coselector).html(getspantext(editdata[coselector]));
     } else {
-        //select a word
-        editdata[coselector].targets.push( element.id);
-        $(element).addClass("selected");
+        //we have a sub-coselector, meaning we are co-selecting for span roles
+        for (i = 0; i < editdata[coselector].children[coselector_sub].targets.length; i++) {
+            if (editdata[coselector].children[coselector_sub].targets[i] == element.id) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            //deselect a word
+            editdata[coselector].children[coselector_sub].targets.splice(index, 1);
+            $(element).removeClass("selected");
+        } else {
+            //select a word
+            editdata[coselector].children[coselector_sub].targets.push( element.id);
+            $(element).addClass("selected");
+        }
+        $('#spantext' + coselector + '_' + coselector_sub).html(getspantext(editdata[coselector].children[coselector_sub]));
     }
-    $('#spantext' + coselector).html(getspantext(editdata[coselector]));
+
 }
 
 function setaddablefields() {
@@ -394,6 +419,10 @@ function spanselector_click(){
     //switching off any other coselector
     var toggleon = true;
     var j;
+
+    //de-highlight all coselected elements
+    $('.F .selected').removeClass('selected');
+
     if (coselector > -1) {
         if (coselector == i) toggleon = false; //this is a toggle off action only
 
@@ -402,17 +431,6 @@ function spanselector_click(){
             $('#spanselector' + coselector).removeClass("selectoron");
         } else {
             $('#spanselector' + coselector + '_' + coselector_sub).removeClass("selectoron");
-        }
-        //
-        //de-highlight all coselected elements
-        if (coselector_sub == -1) {
-            for (j = 0; j < editdata[coselector].targets.length; j++) {
-                $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
-            }
-        } else {
-            for (j = 0; j < editdata[coselector].children[coselector_sub].targets.length; j++) {
-                $('#' + valid(editdata[coselector].children[coselector_sub].targets[j])).removeClass('selected');
-            }
         }
 
         coselector = -1;
