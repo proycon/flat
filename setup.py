@@ -18,7 +18,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 if sys.version >= '3':
-    extradeps = ['foliadocserve >= 0.4.1']
+    extradeps = ['foliadocserve >= 0.5']
 else:
     extradeps = []
 
