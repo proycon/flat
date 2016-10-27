@@ -1426,7 +1426,7 @@ function editor_submit(addtoqueue) {
                                 queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //delete 
-                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FOR " + targetselector + " FORMAT flat RETURN target");
+                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
                             }
                         } else if (editdata[i].higherorder[j].value !== "") {
                             //add 
@@ -1436,7 +1436,7 @@ function editor_submit(addtoqueue) {
                         //formulate query for features
                         if ((editdata[i].higherorder[j].oldclass)  && (editdata[i].higherorder[j].oldsubset) && ( (!editdata[i].higherorder[j].class) || (!editdata[i].higherorder[j].subset))) {
                             //deletion
-                            queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].oldclass) + "\" FOR " + targetselector + " FORMAT flat RETURN target");
+                            queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE subset = \"" + escape_fql_value(editdata[i].higherorder[j].oldsubset) + "\" AND class = \"" + escape_fql_value(editdata[i].higherorder[j].oldclass) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
                         } else if ((!editdata[i].higherorder[j].oldclass) && (!editdata[i].higherorder[j].oldsubset)) {
                             //add
                             if (editdata[i].id !== undefined) {
