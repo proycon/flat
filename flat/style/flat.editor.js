@@ -1427,7 +1427,7 @@ function editor_submit(addtoqueue) {
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //undefined ID, means parent annotation is new as well, select it by value:
-                                parentselector = build_parentselector_query(editdata[i], sortededittargets);
+                                parentselector = build_parentselector_query(editdata[i]);
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
                             }
                         }
@@ -1442,7 +1442,7 @@ function editor_submit(addtoqueue) {
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
                             } else {
                                 //undefined ID, means parent annotation is new as well, select it by value:
-                                parentselector = build_parentselector_query(editdata[i], sortededittargets);
+                                parentselector = build_parentselector_query(editdata[i]);
                                 queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH subset \"" + escape_fql_value(editdata[i].higherorder[j].subset) + "\" class \"" + escape_fql_value(editdata[i].higherorder[j].class) + "\" FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
                             }
                         } else if ((editdata[i].higherorder[j].oldclass) && (editdata[i].highorder[j].oldclass != higherorder[j].class) && (editdata[i].higherorder[j].oldsubset == editdata[i].higherorder[j].subset)) {
@@ -1537,7 +1537,7 @@ function editor_submit(addtoqueue) {
     }
 }
 
-function build_parentselector_query(edititem, sortededittargets) {
+function build_parentselector_query(edititem) {
     //formulate a parentselector query (a partial query actually for an FQL FOR
     //statement) that selects the annotation that is to
     //become the parent of the higher order annotation
@@ -1557,10 +1557,10 @@ function build_parentselector_query(edititem, sortededittargets) {
         //no deletion
         parentselector += " WHERE class = \"" + escape_fql_value(edititem.class) + "\"";
     }
-    if (sortededittargets.length > 0) {
+    if (edititem.targets.length > 0) {
         parentselector += " FOR";
         var forids = ""; //jshint ignore:line
-        sortededittargets.forEach(function(t){
+        edititem.targets.forEach(function(t){
             forids += " ID " + t;
             return; //only one should be enough
         });
