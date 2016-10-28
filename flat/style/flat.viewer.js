@@ -177,7 +177,7 @@ function viewer_onmouseenter(element) {
 
 function getspantext(annotation) {
     spantext= "";
-    annotation.targets.forEach(function(target){
+    sort_targets(annotation.targets).forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationid2){
             if (annotationid2 != "self") {
                 annotation2 = annotations[target][annotationid2];

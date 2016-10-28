@@ -667,6 +667,41 @@ function auto_grow(element) {
     element.style.height = (element.scrollHeight)+"px";
 }
 
+
+function sort_targets(targets) {
+    //Sort a list of target IDs (words only) so that they are in proper order of appearance
+    var sameparent = false;
+    if ((targets.length > 0) && (annotations[targets[0]]) && (annotations[targets[0]].self.parent) && (annotations[annotations[targets[0]].self.parent].self.wordorder)) {
+        sameparent = annotations[targets[0]].self.parent;
+        for (var i = 1; i < target.length; i++) {
+            if (annotations[targets[0]].self.parent != sameparent) {
+                sameparent = false;
+                break;
+            }
+        }
+    }
+    var sortedtargets = [];
+    if (sameparent) {
+        //sort targets by looking at the word order for the parent element
+        for (var j = 0; j < annotations[sameparent].self.wordorder.length; j++) {
+            if (targets.indexOf(annotations[sameparent].self.wordorder[j]) > -1) {
+                sortedtargets.push(annotations[sameparent].self.wordorder[j]);
+            }
+        }
+    } else { 
+        //fallback: sort targets by simply looking at the order they are rendered in  the interface
+        $('.w').each(function(){
+            if (targets.indexOf(this.id) > -1) {
+                sortedtargets.push(this.id);
+            }
+        });
+    }
+    if (sortedtargets.length != targets.length) {
+        throw "Error, unable to sort targets, expected " + targets.length + ", got " + sortedtargets.length;
+    }
+    return sortedtargets;
+}
+
 function escape_fql_value(v) {
     //Escape values in FQL
     return v.replace(/"/g,'\\"').replace(/\n/g,"\\n");

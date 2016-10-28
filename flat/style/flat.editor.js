@@ -1222,7 +1222,7 @@ function gather_changes() {
                     }
                 } else if (folia_isspanrole(editdata[i].children[j].type)) {
                     //Span roles: detect changes in span, and set the changed flag
-                    if ( (!editdata[i].targets_begin) || (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin) )) {
+                    if ( (!editdata[i].children[j].targets_begin) || (JSON.stringify(editdata[i].children[j].targets) != JSON.stringify(editdata[i].children[j].targets_begin) )) {
                         editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
@@ -1295,25 +1295,11 @@ function build_queries(addtoqueue) {
         if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
             if (editdata[i].new) editdata[i].editform = "new";
             //sort targets in proper order
-            var sortededittargets = [];
             if (editdata[i].targets.length > 1) {
-                $('.' + view).each(function(){
-                    if (editdata[i].targets.indexOf(this.id) > -1) {
-                        sortededittargets.push(this.id);
-                    }
-                });
+                editdata[i].targets = sort_targets(editdata[i].targets);
             } else {
-                sortededittargets = editdata[i].targets;
+                throw "Error, no targets for action";
             }
-            if (sortededittargets.length != editdata[i].targets.length) {
-                editor_error("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
-                return;
-            }
-            if (sortededittargets.length === 0) {
-                editor_error("Error, no targets for action");
-                return;
-            }
-            editdata[i].targets = sortededittargets;
             sentdata.push(editdata[i]);
 
             //compose query
@@ -1561,15 +1547,14 @@ function build_higherorder_queries(edititem, useclause) {
             } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
                 //foliadocserve adds IDs to all span roles
-                if ((edititem.children[j].targets_begin.length > 0) && (edititem.children[j].targets.length === 0)) {
+                if ((edititem.children[j].targets_begin) && (edititem.children[j].targets_begin.length > 0) && (edititem.children[j].targets.length === 0)) {
                     //deletion
                     queries.push(useclause + " DELETE " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
                 } else {
                     //add or edit
                     var forids = "";
                     if (edititem.children[j].targets.length > 0) {
-                        //TODO: sort targets
-                        edititem.children[j].targets.forEach(function(t){
+                        sort_targets(edititem.children[j].targets).forEach(function(t){
                             if (forids) {
                                     forids += " &";
                             }
@@ -1578,10 +1563,10 @@ function build_higherorder_queries(edititem, useclause) {
                     } 
                     if ((edititem.children[j].targets_begin.length === 0) && (edititem.children[j].targets.length > 0)) {
                         //new
-                        queries.push(useclause + " ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                        queries.push(useclause + " ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                     } else {
                         //edit (span change)
-                        queries.push(useclause + " EDIT " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" RESPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                        queries.push(useclause + " EDIT " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                     }
                 }
             }
@@ -1599,19 +1584,20 @@ function editor_submit(addtoqueue) {
         addtoqueue = false;
     }
 
-    //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
     var changes;
+    var queries;
     try {
+        //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
         changes = gather_changes(); 
+
+        //Build all the queries based on the gathered changes (in editdata)
+        queries = build_queries(addtoqueue); 
     } catch (errormsg) {
         editor_error(errormsg);
         return false;
     }
 
-    //Build all the queries based on the gathered changes (in editdata), the
     //queries are to be sent to the backend
-    var queries = build_queries(addtoqueue); 
-
     if ((addtoqueue) || ($('#openinconsole').prop('checked'))) {
         //Add-to-queue or delegate-to-console is selected (same thing, different route)
         var queuedqueries = $('#queryinput').val();
