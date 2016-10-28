@@ -1556,7 +1556,29 @@ function build_higherorder_queries(edititem, useclause) {
                 }
             } else if ((folia_isspanrole(edititem.children[j].type)) {
                 //formulate query for span roles
-                //TODO
+                //foliadocserve adds IDs to all span roles
+                if ((edititem.children[j].targets_begin.length > 0) && (edititem.children[j].targets.length === 0)) {
+                    //deletion
+                    queries.push(useclause + " DELETE " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                } else {
+                    //add or edit
+                    if (edititem.children[j].targets.length > 0) {
+                        var forids = "";
+                        edititem.children[j].targets.forEach(function(t){
+                            if (forids) {
+                                    forids += " &";
+                            }
+                            forids += " ID " + t;
+                        });
+                    } 
+                    if ((edititem.children[j].targets_begin.length === 0) && (edititem.children[j].targets.length > 0)) {
+                        //new
+                        queries.push(useclause + " ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                    } else {
+                        //edit (span change)
+                        queries.push(useclause + " EDIT " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" RESPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                    }
+                }
             }
         }
     }
