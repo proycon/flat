@@ -1181,6 +1181,7 @@ function gather_changes() {
             for (var j = 0; j < editdata[i].children.length; j++) {
                 editdata[i].children[j].changed = false;
                 if ((editdata[i].children[j].type == 'comment') ||(editdata[i].children[j].type == 'desc')) {
+                    //Comments and descriptions
                     var value = $('#higherorderfield' + i +'_' + j).val();
                     if (((editdata[i].children[j].value) && (editdata[i].children[j].value != value)) || (!editdata[i].children[j].value)) {
                         if (editdata[i].children[j].value) { 
@@ -1193,6 +1194,7 @@ function gather_changes() {
                         editdata[i].higherorderchanged = true;
                     }
                 } else if (editdata[i].children[j].type == 'feat') {
+                    //Features
                     var subset = $('#higherorderfield_subset_' + i +'_' + j).val();
                     var cls = $('#higherorderfield_' + i +'_' + j).val();
 
@@ -1218,7 +1220,12 @@ function gather_changes() {
                         editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
-
+                } else if (folia_isspanrole(editdata[i].children[j].type)) {
+                    //Span roles: detect changes in span, and set the changed flag
+                    if ( (!editdata[i].targets_begin) || (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin) )) {
+                        editdata[i].children[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    }
                 }
             }
 
