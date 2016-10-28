@@ -41,7 +41,7 @@ function testinit(name, assert) {
     globalassert = assert;
     havecontent = false;
     $('#document').html("");
-    annotations = {} //reset, will be newly populated
+    annotations = {};//reset, will be newly populated
     perspective = 'full';
     editfields = 0;
     closeeditor();
@@ -82,17 +82,17 @@ function testtext(elementselector, reference, message) {
 function ui_get(selectexpression) {
     var selector = $(valid(selectexpression));
     globalassert.equal(selector.length, 1 , "[UI] Get  " + selectexpression);
-    return selector
+    return selector;
 }
 
 function ui_edit(selectexpression, value) {
-    var e = ui_get(selectexpression)
+    var e = ui_get(selectexpression);
     e.val(value);
     globalassert.equal( e.val() , value, "[UI] Change text of  " + selectexpression + " to \"" + value + "\"");
 }
 
 function ui_choose(selectexpression, value) {
-    var e = ui_get(selectexpression)
+    var e = ui_get(selectexpression);
     e.prop('selectedIndex',value);
     globalassert.equal( e.prop('selectedIndex') , value, "[UI] Choosing " + selectexpression + " , selecting option \"" + value + "\"");
     e.trigger('change');
@@ -368,12 +368,12 @@ QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
     havecontent = false;
     $('#document').html("(All tests completed!)");
-    annotations = {} //reset, will be newly populated
+    annotations = {};//reset, will be newly populated
 });
 
 function findcorrectionbytext(text) {
     for (var key in annotations) {
-        if ((annotations[key]["t/undefined:current"]) && (annotations[key]["t/undefined:current"].incorrection) && (annotations[key]["t/undefined:current"].incorrection.length == 1)  && (annotations[key]["t/undefined:current"].text == text)) return annotations[key]['self'].id;
+        if ((annotations[key]["t/undefined:current"]) && (annotations[key]["t/undefined:current"].incorrection) && (annotations[key]["t/undefined:current"].incorrection.length == 1)  && (annotations[key]["t/undefined:current"].text == text)) return annotations[key].self.id;
     }
     return null;
 }
@@ -382,7 +382,7 @@ function findcorrectionbytext(text) {
 
 function testeval(data) {
     console.log("(testeval) evaluating test result");
-    if (data.testmessage == "") data.testmessage = "ok";
+    if (data.testmessage === "") data.testmessage = "ok";
 
     if (data.queries) {
         globalassert.ok(data.testresult, "Backend Queries: " + data.queries.join(" -- ") );
@@ -400,8 +400,8 @@ function testeval(data) {
     } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
     } else if ((testname == "correction_textmerge")) {
-        id = findcorrectionbytext("wegreden")
-        globalassert.notEqual(id,null,"Testing whether correction found (by text)")
+        id = findcorrectionbytext("wegreden");
+        globalassert.notEqual(id,null,"Testing whether correction found (by text)");
         testtext('#' + id, "wegreden");
     } else if ((testname == "multiannotchange") ) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
@@ -425,24 +425,24 @@ function testeval(data) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.18')).length, 1, "Checking presence of new words (1/2)");
     } else if ((testname == "correction_wordsplit")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
-        id = findcorrectionbytext("4")
+        id = findcorrectionbytext("4");
         globalassert.equal($(valid('#' + id )).length, 1, "Checking presence of new words (1/2)");
-        id = findcorrectionbytext("uur")
+        id = findcorrectionbytext("uur");
         globalassert.equal($(valid('#'+ id )).length, 1, "Checking presence of new words (1/2)");
     } else if ((testname == "wordinsertionright"))  {
-        testtext('#untitleddoc.p.3.s.12.w.1',"en")
-        testtext('#untitleddoc.p.3.s.12.w.17',"we")
+        testtext('#untitleddoc.p.3.s.12.w.1',"en");
+        testtext('#untitleddoc.p.3.s.12.w.17',"we");
     } else if ((testname == "wordinsertionleft")) {
-        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
-        testtext('#untitleddoc.p.3.s.13.w.16',"we")
+        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden");
+        testtext('#untitleddoc.p.3.s.13.w.16',"we");
     } else if ((testname == "correction_wordinsertionright"))  {
-        id = findcorrectionbytext("we")
-        testtext('#untitleddoc.p.3.s.12.w.1',"en")
-        testtext('#' + id,"we")
+        id = findcorrectionbytext("we");
+        testtext('#untitleddoc.p.3.s.12.w.1',"en");
+        testtext('#' + id,"we");
     } else if ((testname == "correction_wordinsertionleft"))  {
-        id = findcorrectionbytext("we")
-        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
-        testtext('#' + id,"we")
+        id = findcorrectionbytext("we");
+        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden");
+        testtext('#' + id,"we");
     } else if ((testname == "spanchange") ) {
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
         globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
@@ -451,7 +451,7 @@ function testeval(data) {
         var e2 = null;
         for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
             if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
-                if (e != null) {
+                if (e !== null) {
                     e2 = annotations['untitleddoc.p.3.s.9.w.9'][key];
                     break;
                 } else {
@@ -469,7 +469,7 @@ function testeval(data) {
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["t/undefined:current"]['incorrection'][0], "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if (testname == "correction_textmerge") {
-        id = findcorrectionbytext("wegreden")
+        id = findcorrectionbytext("wegreden");
         globalassert.equal(annotations[id]["t/undefined:current"]['incorrection'].length,1, "Checking if annotation is in correction");
         corr_id = annotations[id]["t/undefined:current"]['incorrection'][0];
         globalassert.equal(annotations['untitleddoc.p.3.s.1'][corr_id].class, "uncertain", "Checking correction and its class");
