@@ -289,7 +289,7 @@ function renderhigherorderfields(index, annotation) {
                 if (s_item) {
                     s += s_item;
                     ho_index++;
-                    child = JSON.parse(JSON.stringify(annotation.children[i]); //deep copy, hence the json/parse stringify
+                    var child = JSON.parse(JSON.stringify(annotation.children[i]); //deep copy, hence the json/parse stringify
                     child.targets_begin = JSON.parse(JSON.stringify(child.targets)); //there are two versions so we can compare if there was a change in span (deep copy again)
                     items.push(child);
                 }
