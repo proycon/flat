@@ -1563,6 +1563,7 @@ function build_higherorder_queries(edititem, useclause) {
                 } else {
                     //add or edit
                     if (edititem.children[j].targets.length > 0) {
+                        //TODO: sort targets
                         var forids = "";
                         edititem.children[j].targets.forEach(function(t){
                             if (forids) {
