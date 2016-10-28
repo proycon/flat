@@ -280,17 +280,17 @@ function renderhigherorderfields(index, annotation) {
 
     //placeholder for higher order fields
     s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
-    var ho_index = 0;
     if (annotation.children) {
         //Render existing higher order annotation fields for editing
         for (var i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
-                var s_item = renderhigherorderfield(index,ho_index, annotation.children[i], annotation.set);
+                var s_item = renderhigherorderfield(index,items.length, annotation.children[i], annotation.set);
                 if (s_item) {
                     s += s_item;
-                    ho_index++;
                     var child = JSON.parse(JSON.stringify(annotation.children[i])); //deep copy, hence the json/parse stringify
-                    child.targets_begin = JSON.parse(JSON.stringify(child.targets)); //there are two versions so we can compare if there was a change in span (deep copy again)
+                    if (child.targets) {
+                        child.targets_begin = JSON.parse(JSON.stringify(child.targets)); //there are two versions so we can compare if there was a change in span (deep copy again)
+                    }
                     items.push(child);
                 }
             }
@@ -313,8 +313,8 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
         s += renderfeaturefields(set, childannotation.subset, childannotation.class, index, ho_index);
         s += "</td>";
     } else if (folia_isspanrole(childannotation.type)) {
-        s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + i+ "\" class=\"text\">" + getspantext(childannotation) + "</span>";
-        s += "<button id=\"spanselector" + index + "_" + i + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + ho_index+ "\" class=\"text\">" + getspantext(childannotation) + "</span>";
+        s += "<button id=\"spanselector" + index + "_" + ho_index + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
         s += "</td>";
     }
     if (s) {
