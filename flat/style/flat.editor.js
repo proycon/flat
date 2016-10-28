@@ -553,9 +553,10 @@ function showeditor(element) {
                     }
                     s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                     var repeat_preset = false; //is this annotation preset because of repeatmode?
+                    var class_value;
                     if (annotation.type == 't') {
                         //Annotation concerns text content
-                        var class_value = annotation.class;
+                        class_value = annotation.class;
                         if (repeatmode) {
                             class_value = repeatreference.class;
                             if (class_value != annotation.class) { repeat_preset = true; }
@@ -597,7 +598,7 @@ function showeditor(element) {
                             s = s + "</select>";
                         } else {
                             //Annotation type uses a free-fill value, present a textbox:
-                            var class_value = annotation.class;
+                            class_value = annotation.class;
                             if (repeatmode) {
                                 class_value = repeatreference.class;
                                 if (annotation.class != class_value) { repeat_preset = true; }
@@ -1132,7 +1133,6 @@ function gather_changes() {
             editdata[i].oldclass = editdata[i].class;
             editdata[i].class = $('#editfield' + i).val().trim();
             editdata[i].changed = true;
-            changes = true;
         }
         if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
             //Text content was changed
@@ -1140,7 +1140,6 @@ function gather_changes() {
             editdata[i].oldtext = editdata[i].text;
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
             editdata[i].changed = true;
-            changes = true;
         }
         if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim())) {
             //edit of correction class only, affects existing correction
@@ -1148,8 +1147,7 @@ function gather_changes() {
             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
             editdata[i].correctionset = $('#editformcorrectionset').val().trim();
             if (!editdata[i].correctionclass) {
-                editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                return false;
+                throw "Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered";
             }
             if ($('#editfield' + i) && ($('#editfield' + i).val() == editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
                 editdata[i].oldclass = editdata[i].class; //will remain equal
@@ -1163,13 +1161,11 @@ function gather_changes() {
         if ($('#confidencecheck' + i).is(':checked')) {
             var confidence = $('#confidenceslider' + i).slider('value') / 100;
             if ((confidence != editdata[i].confidence) && ((editdata[i].confidence == "NONE") || (Math.abs(editdata[i].confidence - confidence) >= 0.01)))  { //compensate for lack of slider precision: very small changes do not count
-                changes = true;
                 editdata[i].changed = true;
             }
             editdata[i].confidence = confidence;
         } else if (editdata[i].confidence != "NONE") {
             editdata[i].confidence = "NONE";
-            changes = true;
             editdata[i].changed = true;
         }
 
@@ -1180,7 +1176,7 @@ function gather_changes() {
             editdata[i].respan = true;
         }
 
-        editdata[i].higherorderchanged = false;
+        editdata[i].higherorderchanged = false; //independent of editdata[i].changed
         if (editdata[i].children.length > 0) {
             for (var j = 0; j < editdata[i].children.length; j++) {
                 editdata[i].children[j].changed = false;
@@ -1202,8 +1198,8 @@ function gather_changes() {
 
 
                     //has the subset been changed OR has the class been changed?
-                    if ((((editdata[i].children[j].subset) && (editdata[i].children[j].subset != subset)) || (!editdata[i].children[j].subset)) 
-                       ||  (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
+                    if ((((editdata[i].children[j].subset) && (editdata[i].children[j].subset != subset)) || (!editdata[i].children[j].subset)) ||
+                       (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
 
                         //remember old values (null if new)
                         if (editdata[i].children[j].subset) { 
@@ -1227,6 +1223,7 @@ function gather_changes() {
             }
 
         }
+        if (editdata[i].higherorderchanged) changes = true;
 
         if (editdata[i].changed) {
             if (editdata[i].editform == 'correction') {
@@ -1234,8 +1231,7 @@ function gather_changes() {
                 editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
                 editdata[i].correctionset = $('#editformcorrectionset').val().trim();
                 if (!editdata[i].correctionclass) {
-                    editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                    return false;
+                    throw "Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered";
                 }
             }
             if (editdata[i].type == 't') {
@@ -1270,6 +1266,7 @@ function gather_changes() {
             }
         }
 
+        if (editdata[i].changed) changes = true;
     }
     return changes;
 } 
@@ -1498,7 +1495,7 @@ function build_queries(addtoqueue) {
 
         //Process higher order annotations (if main action isn't a deletion)
         if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
-            queries += build_higherorder_queries(editdata[i], useclause);
+            queries = queries.concat(build_higherorder_queries(editdata[i], useclause));
         }
     }
     return queries;
@@ -1507,7 +1504,7 @@ function build_queries(addtoqueue) {
 function build_higherorder_queries(edititem, useclause) {
     /* Builds FQL queries for higher order annotations (including span roles),
      * called by build_queries() per item */
-    var queries = []
+    var queries = [];
     for (var j = 0; j < edititem.children.length; j++) {
         if (edititem.children[j].changed) {
             var targetselector;
@@ -1554,7 +1551,7 @@ function build_higherorder_queries(edititem, useclause) {
                     //edit of class and subset
                     queries.push(useclause + " EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                 }
-            } else if ((folia_isspanrole(edititem.children[j].type)) {
+            } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
                 //foliadocserve adds IDs to all span roles
                 if ((edititem.children[j].targets_begin.length > 0) && (edititem.children[j].targets.length === 0)) {
@@ -1562,9 +1559,9 @@ function build_higherorder_queries(edititem, useclause) {
                     queries.push(useclause + " DELETE " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
                 } else {
                     //add or edit
+                    var forids = "";
                     if (edititem.children[j].targets.length > 0) {
                         //TODO: sort targets
-                        var forids = "";
                         edititem.children[j].targets.forEach(function(t){
                             if (forids) {
                                     forids += " &";
@@ -1596,7 +1593,13 @@ function editor_submit(addtoqueue) {
     }
 
     //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
-    var changes = gather_changes(); 
+    var changes;
+    try {
+        changes = gather_changes(); 
+    } catch (errormsg) {
+        editor_error(errormsg);
+        return false;
+    }
 
     //Build all the queries based on the gathered changes (in editdata), the
     //queries are to be sent to the backend
