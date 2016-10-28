@@ -289,7 +289,9 @@ function renderhigherorderfields(index, annotation) {
                 if (s_item) {
                     s += s_item;
                     ho_index++;
-                    items.push(annotation.children[i]);
+                    child = JSON.parse(JSON.stringify(annotation.children[i]); //deep copy, hence the json/parse stringify
+                    child.targets_begin = JSON.parse(JSON.stringify(child.targets)); //there are two versions so we can compare if there was a change in span (deep copy again)
+                    items.push(child);
                 }
             }
         }
@@ -1552,6 +1554,9 @@ function build_higherorder_queries(edititem, useclause) {
                     //edit of class and subset
                     queries.push(useclause + " EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
                 }
+            } else if ((folia_isspanrole(edititem.children[j].type)) {
+                //formulate query for span roles
+                //TODO
             }
         }
     }
