@@ -174,7 +174,7 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
-    ui_choose('#editfield2',5); //corresponds to person as long as the set definition doesn't change
+    ui_choose('#editfield2',2); //corresponds to person as long as the set definition doesn't change
 
     //select span
     ui_click('#spanselector2'); 
