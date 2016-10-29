@@ -713,6 +713,8 @@ function escape_fql_value(v) {
 $(function() {
     //on document load
     //
+    //clear any wait screens (needed when user pressed back in browser)
+    $('#wait').hide();
     if (typeof(mode) != "undefined") {
         $('nav>ul>li').mouseenter(function(){
             $('>ul',this).css('left', mouseX-30);
