@@ -294,10 +294,11 @@ function getclassesasoptions(c, selected) {
     } else {
         s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
     }
-    Object.keys(c.subclasses).forEach(function(cid){
-        csub = c.subclasses[cid];
-        s = s + getclassesasoptions(csub, selected);
-    });
+    if (c.subclasses) {
+        Object.keys(c.subclasses).forEach(function(cid){
+            s = s + getclassesasoptions(c.subclasses[cid], selected);
+        });
+    }
     return s;
 }
 
