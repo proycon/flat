@@ -357,6 +357,7 @@ foliaspec = {
                             "class": "DependencyDependent",
                             "properties": {
                                 "label": "Dependent",
+                                "occurrences": 1,
                                 "xmltag": "dep"
                             }
                         },
@@ -364,6 +365,7 @@ foliaspec = {
                             "class": "Headspan",
                             "properties": {
                                 "label": "Head",
+                                "occurrences": 1,
                                 "xmltag": "hd"
                             }
                         },
@@ -371,6 +373,7 @@ foliaspec = {
                             "class": "Relation",
                             "properties": {
                                 "label": "Relation",
+                                "occurrences": 1,
                                 "xmltag": "relation"
                             }
                         },
@@ -378,6 +381,7 @@ foliaspec = {
                             "class": "Source",
                             "properties": {
                                 "label": "Source",
+                                "occurrences": 1,
                                 "xmltag": "source"
                             }
                         },
@@ -385,6 +389,7 @@ foliaspec = {
                             "class": "Target",
                             "properties": {
                                 "label": "Target",
+                                "occurrences": 1,
                                 "xmltag": "target"
                             }
                         }
@@ -681,6 +686,7 @@ foliaspec = {
                             "Whitespace"
                         ],
                         "annotationtype": "DIVISION",
+                        "label": "Division",
                         "textdelimiter": "\n\n\n",
                         "xmltag": "div"
                     }
