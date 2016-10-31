@@ -392,6 +392,7 @@ function addhigherorderfield(set, index, type) {
             renderhigherorderfield(index, ho_index, newchildannotation, set) + 
             "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
         editdata[index].children.push(newchildannotation);
+        $('#spanselector' + index + '_' + (editdata[index].children.length-1) ).off().click(spanselector_click);
     }
 }
 
@@ -908,7 +909,7 @@ function addeditorfield(index) {
         s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"\"/>";
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-    if (folia_isspan(editoraddablefields[index].type)) { //are we manipulating a span annotation element?
+    if ((folia_isspan(editoraddablefields[index].type)) && (folia_accepts_class(foliatag2class[editoraddablefields[index].type],'WordReference'))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)
         s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
     }
 
@@ -916,7 +917,7 @@ function addeditorfield(index) {
         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
     }
 
-    ho_result = renderhigherorderfields(editfields, editoraddablefields[index]);
+    ho_result = renderhigherorderfields(editfields, editoraddablefields[index]); //will always be empty but sets a proper placeholder we can use
     s  = s + ho_result.output;
 
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
@@ -926,8 +927,11 @@ function addeditorfield(index) {
     $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'higherorder': ho_result.items };
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
     editdata.push(editdataitem);
+
+    //TODO: add required higher-order fields
+
     setaddablefields();
     return editfields - 1;
 }
