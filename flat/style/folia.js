@@ -194,11 +194,10 @@ function folia_required_spanroles(tag) {
     return spanroles;
 }
 
-}
 
 function folia_occurrences_class(elementclass) {
     /* Get the maximum amount of occurrences for this element class (0=unlimited) */
-    if ((foliaelements[elementclass]) && (foliaelements[elementclass].properties) && (foliaelements[elementclass].properties.occurrences)) {
+    if ((foliaelements[elementclass]) && (foliaelements[elementclass].properties) && (foliaelements[elementclass].properties.occurrences !== undefined)) {
         return foliaelements[elementclass].properties.occurrences;
     } else if (foliaelements[elementclass].ancestors.length >= 1) {
         return folia_occurrences_class(foliaelements[elementclass].ancestors[0]);

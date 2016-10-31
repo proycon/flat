@@ -386,6 +386,16 @@ function addhigherorderfield(set, index, type) {
     } else if (folia_isspanrole(type)) {
         newchildannotation = {'type':type,'targets': []};
     }
+    if (folia_occurrences(type) == 1) {
+        //ensure we don't add a duplicate
+        var exists = false;
+        for (var i = 0; i < editdata[index].children.length; i++) {
+            if (editdata[index].children[i].type == type) {
+                alert("An annotation of this type already exists, there can be only one");
+                return false;
+            }
+        }
+    }
     if (newchildannotation !== null) {
         $('#higherorderfields' + index +  "placeholder")[0].outerHTML =
             "<tr class=\"higherorderrow\">" +
