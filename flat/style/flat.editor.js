@@ -940,7 +940,14 @@ function addeditorfield(index) {
     editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
     editdata.push(editdataitem);
 
-    //TODO: add required higher-order fields
+    //automatically add required higher-order fields
+    var foliaelement = foliaelements[foliatag2class[editoraddablefields[index].type]];
+    if ((foliaelement.properties) && (foliaelement.properties.required_data)) {
+        for (var j = 0; j < foliaelement.properties.required_data.length; j++) {
+            var subtag = foliaelements[foliaelement.properties.required_data[j]].properties.xmltag;
+            addhigherorderfield(editoraddablefields[index].set, editdata.length - 1 ,subtag);
+        }
+    }
 
     setaddablefields();
     return editfields - 1;
