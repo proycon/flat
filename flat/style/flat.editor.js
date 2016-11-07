@@ -919,7 +919,10 @@ function addeditorfield(index) {
         s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"\"/>";
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-    if ((folia_isspan(editoraddablefields[index].type)) && (folia_accepts_class(foliatag2class[editoraddablefields[index].type],'WordReference'))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)
+
+    var isspan = folia_isspan(editoraddablefields[index].type);
+    var accepts_wrefs = folia_accepts_class(foliatag2class[editoraddablefields[index].type],'WordReference');
+    if (isspan && accepts_wrefs) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)
         s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
     }
 
@@ -937,7 +940,12 @@ function addeditorfield(index) {
     $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
+    var targets = [];
+    //add the selected element to the targets except if we are adding a span annotation that takes no direct wrefs (i.e. only its span roles take children)
+    if ((!isspan) || (accepts_wrefs)) {
+        targets = [editelementid];
+    }
+    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': targets, 'targets_begin': targets,'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
     editdata.push(editdataitem);
 
     //automatically add required higher-order fields
