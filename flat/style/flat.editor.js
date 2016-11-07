@@ -82,7 +82,7 @@ function select(element) {
             editdata[coselector].targets.push( element.id);
             $(element).addClass("selected");
         }
-        $('#spantext' + coselector).html(getspantext(editdata[coselector]));
+        $('#spantext' + coselector).html(getspantext(editdata[coselector], true));
     } else {
         //we have a sub-coselector, meaning we are co-selecting for span roles
         for (i = 0; i < editdata[coselector].children[coselector_sub].targets.length; i++) {
@@ -101,7 +101,7 @@ function select(element) {
             editdata[coselector].children[coselector_sub].targets.push( element.id);
             $(element).addClass("selected");
         }
-        $('#spantext' + coselector + '_' + coselector_sub).html(getspantext(editdata[coselector].children[coselector_sub]));
+        $('#spantext' + coselector + '_' + coselector_sub).html(getspantext(editdata[coselector].children[coselector_sub], true));
     }
 
 }
@@ -313,7 +313,7 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
         s += renderfeaturefields(set, childannotation.subset, childannotation.class, index, ho_index);
         s += "</td>";
     } else if (folia_isspanrole(childannotation.type)) {
-        s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + ho_index+ "\" class=\"text\">" + getspantext(childannotation) + "</span>";
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + ho_index+ "\" class=\"text\">" + getspantext(childannotation, true) + "</span>";
         s += "<button id=\"spanselector" + index + "_" + ho_index + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
         s += "</td>";
     }
@@ -384,7 +384,7 @@ function addhigherorderfield(set, index, type) {
     } else if (type == "feat") {
         newchildannotation = {'type':type, 'subset': "", 'class':""};
     } else if (folia_isspanrole(type)) {
-        newchildannotation = {'type':type,'targets': []};
+        newchildannotation = {'type':type,'targets': [], 'targets_begin': []};
     }
     if (folia_occurrences(type) == 1) {
         //ensure we don't add a duplicate
@@ -589,7 +589,7 @@ function showeditor(element) {
                         if ((annotation.targets.length > 1) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))) {
                             //Annotation is a span annotation, gather the text of the entire span for presentation:
                             //omit span annotations that only have span roles
-                            spantext = getspantext(annotation);
+                            spantext = getspantext(annotation, true);
                             s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
                             s  = s + "<br/>";
                         }
@@ -1294,7 +1294,37 @@ function gather_changes() {
             }
         }
 
-        if (editdata[i].changed) changes = true;
+        if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
+
+            changes = true;
+
+            if (editdata[i].new) editdata[i].editform = "new";
+
+            editdata[i].isspan = folia_isspan(editdata[i].type); //are we manipulating a span annotation element?
+    
+            //sort targets in proper order
+            if (editdata[i].targets.length > 1) {
+                editdata[i].targets = sort_targets(editdata[i].targets);
+            } else {
+                //annotation has no targets, this may be a span annotation that
+                //relies purely on span roles, find the implicit targets (i.e.
+                //the scope)
+                if ((editdata[i].isspan) && (editdata[i].children.length > 0)) {
+                    editdata[i].scope = [];
+                    for (var j = 0; j < editdata[i].children.length; j++) {
+                        if (editdata[i].children[j].targets) {
+                            for (var k = 0; k < editdata[i].children[j].targets.length; k++) {
+                                editdata[i].scope.push(editdata[i].children[j].targets[k]);
+                            }
+                        }
+                    }
+                    editdata[i].scope = sort_targets(editdata[i].scope);
+                } else {
+                    throw "Error, no targets for action";
+                }
+            }
+        }
+
     }
     return changes;
 } 
@@ -1314,21 +1344,14 @@ function build_queries(addtoqueue) {
     sentdata = []; //will be used in repeatmode
     for (var i = 0; i < editfields;i++) {  //jshint ignore:line
         if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
-            if (editdata[i].new) editdata[i].editform = "new";
-            //sort targets in proper order
-            if (editdata[i].targets.length > 1) {
-                editdata[i].targets = sort_targets(editdata[i].targets);
-            } else {
-                throw "Error, no targets for action";
-            }
+
             sentdata.push(editdata[i]);
 
             //compose query
             var action = "";
             var returntype = "target";
             var query = useclause + " ";
-            var isspan = folia_isspan(editdata[i].type); //are we manipulating a span annotation element?
-            if (isspan) {
+            if (editdata[i].isspan) {
                 if (editdata[i].id) {
                     returntype = "ancestor-focus";
                 } else {
@@ -1474,15 +1497,15 @@ function build_queries(addtoqueue) {
 
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
-                } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
+                } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
                     //set target expression
                     if (editdata[i].targets.length > 0) {
                         query += " FOR";
-                        if ((action == "SUBSTITUTE") || (isspan)) query += " SPAN";
+                        if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
                         var forids = ""; //jshint ignore:line
                         editdata[i].targets.forEach(function(t){
                             if (forids) {
-                                if ((action == "SUBSTITUTE") || (isspan)) {
+                                if ((action == "SUBSTITUTE") || (editdata[i].isspan)) {
                                     forids += " &";
                                 } else {
                                     forids += " ,";

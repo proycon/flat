@@ -128,11 +128,11 @@ function loadannotations(annotationlist) {
     //load annotations from the annotation data response in memory, called by update()
     
     annotationlist.forEach(function(annotation){
-        annotation.targets.forEach(function(target){
+        annotation.scope.forEach(function(target){ //using scope (deep/recursive) instead of targets (shallow/explicit) as we want to process nested span annotations as well
             if (!(annotations[target])) annotations[target] = {};
             if (!(latestannotations[target])) latestannotations[target] = {};
             var annotationid = getannotationid(annotation);
-            annotations[target][annotationid] = annotation;
+            annotations[target][annotationid] = annotation; //TODO: creates too many copies in case of span annotation (issue #41)
             annotations[target][annotationid].annotationid = annotationid;
             latestannotations[target][annotationid] = true;
         });

@@ -21,8 +21,8 @@ function sethover(element) {
         if ($(element).hasClass('focustype')) {
             //colour related elements
             Object.keys(annotations[element.id]).forEach(function(annotationid){
-                if ((annotationid != "self") && (annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].targets.length > 1)) {
-                    annotations[element.id][annotationid].targets.forEach(function(target){
+                if ((annotationid != "self") && (annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].scope.length > 1)) {
+                    annotations[element.id][annotationid].scope.forEach(function(target){
                         $('#' + valid(target)).addClass("hover");
                     });
                 }
@@ -175,9 +175,15 @@ function viewer_onmouseenter(element) {
 }
 
 
-function getspantext(annotation) {
+function getspantext(annotation, explicit) {
     spantext= "";
-    sort_targets(annotation.targets).forEach(function(target){
+    var targets;
+    if (explicit) {
+        targets = annotation.targets;
+    } else {
+        targets = annotation.scope;
+    }
+    sort_targets(targets).forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationid2){
             if (annotationid2 != "self") {
                 annotation2 = annotations[target][annotationid2];
@@ -335,7 +341,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
 
 function checkparentincorrection(annotation, correctionid) {
     var parentincorrection = false;
-    annotation.targets.forEach(function(t){
+    annotation.scope.forEach(function(t){
         Object.keys(annotations[t]).forEach(function(aid) {
             var a = annotations[t][aid];
             if (aid == 'self') {
@@ -815,8 +821,8 @@ function renderglobannotations(all) {
                                                     if (container.slot === slot) {
                                                         //slot exists already
                                                         //but does the span of this annotation overlap with the one currently under consideration?
-                                                        annotation.targets.forEach(function(spanmember){
-                                                            if (annotations[container.target][container.annotation.id].targets.indexOf(spanmember) != -1) {
+                                                        annotation.scope.forEach(function(spanmember){
+                                                            if (annotations[container.target][container.annotation.id].scope.indexOf(spanmember) != -1) {
                                                                 found = true;
                                                                 return;
                                                             }
