@@ -1359,6 +1359,7 @@ function build_queries(addtoqueue) {
             var action = "";
             var returntype = "target";
             var query = useclause + " ";
+            var higherorder_subqueries_done = false;
             if (editdata[i].isspan) {
                 if (editdata[i].id) {
                     returntype = "ancestor-focus";
@@ -1445,7 +1446,7 @@ function build_queries(addtoqueue) {
                         }
                     } else { //normal behaviour
                         query += " " +editdata[i].type;
-                        if ((editdata[i].id) && ( editdata[i].editform != "new")) {
+                        if ((editdata[i].id) && ( editdata[i].editform != "new") && (editdata[i].id != "undefined")) {
                             query += " ID " + editdata[i].id;
                         } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
                             query += " OF " + editdata[i].set;
@@ -1502,6 +1503,20 @@ function build_queries(addtoqueue) {
                     query += " (AS ALTERNATIVE)";
                 }
 
+                if ((editdata[i].isspan) && (action == "ADD") && (editdata[i].targets.length == 0)) {
+                    //we are adding a span annotation without targets, we
+                    //use a special trick to get it right by formulating
+                    //an FQL query like: ADD .... RESPAN NONE FOR SPAN ID ..
+                    //This ensures the span is added at the proper level in
+                    //the FoLiA tree, but immediately respans it to be empty
+                    query += " RESPAN NONE ";
+                }
+
+                if ((action == "ADD") && (editdata[i].higherorderchanged)) {
+                    //process higher order queries as subqueries
+                    query += build_higherorder_queries(editdata[i], useclause, true);
+                    higherorder_subqueries_done = true;
+                }
 
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
@@ -1526,6 +1541,23 @@ function build_queries(addtoqueue) {
                             }
                         });
                         query += forids;
+                    } else if ((editdata[i].isspan) && (action == "ADD")) {
+                        //we are adding a span annotation without targets, use
+                        //scope instead (using ADD.. RESPAN NONE FOR SPAN ID ..
+                        //trick)
+                        var forids = ""; //jshint ignore:line
+                        editdata[i].scope.forEach(function(t){
+                            if (forids) {
+                                forids += " &";
+                            }
+                            forids += " ID " + t;
+                            if (addtoqueue) {
+                                //elements are queued for later submission, highlight them
+                                $('#' + valid(t)).addClass('queued');
+                            }
+                        });
+                        //process higher order queries as subqueries
+                        query += " FOR SPAN " + forids;
                     }
                 }
 
@@ -1538,70 +1570,78 @@ function build_queries(addtoqueue) {
 
         }
 
-        //Process higher order annotations (if main action isn't a deletion)
-        if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
+        //Process higher order annotations (if main action isn't a deletion and
+        //if we didn't already process them as subqueries)
+        if ((editdata[i].higherorderchanged) && (!higherorder_subqueries_done) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
             queries = queries.concat(build_higherorder_queries(editdata[i], useclause));
         }
     }
     return queries;
 }
 
-function build_higherorder_queries(edititem, useclause) {
+function build_higherorder_queries(edititem, useclause, build_subqueries) {
     /* Builds FQL queries for higher order annotations (including span roles),
      * called by build_queries() per item */
     var queries = [];
     for (var j = 0; j < edititem.children.length; j++) {
         if (edititem.children[j].changed) {
             var targetselector;
-            if (edititem.id === undefined) {
+            var query;
+            var returntype = "ancestor-focus";
+            if (build_subqueries) {
+                targetselector = "";
+            } else if ((edititem.id === undefined) || (edititem.id == "undefined")) {
                 //undefined ID, means parent annotation is new as well, select it by value:
-                targetselector = build_parentselector_query(edititem);
+                targetselector = " FOR " + build_parentselector_query(edititem);
             } else {
-                targetselector = " ID \"" + edititem.id + "\"";
+                targetselector = " FOR ID \"" + edititem.id + "\"";
             }
             if ((edititem.children[j].type == 'comment') ||(edititem.children[j].type == 'desc')) {
                 //formulate query for comments and descriptions
                 if (edititem.children[j].oldvalue) {
                     if (edititem.children[j].value) {
                         //edit
-                        queries.push(useclause + " EDIT " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                        query = "EDIT " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
                     } else {
                         //delete 
-                        queries.push(useclause + " DELETE " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                        returntype = "ancestor-target";
+                        query = "DELETE " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" " + targetselector;
                     }
                 } else if (edititem.children[j].value !== "") {
                     //add 
-                    queries.push(useclause + " ADD " + edititem.children[j].type + " WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                    query = "ADD " + edititem.children[j].type + " WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
                 }
             } else if ((edititem.children[j].type == 'feat')) {
                 //formulate query for features
                 if ((edititem.children[j].oldclass)  && (edititem.children[j].oldsubset) && ( (!edititem.children[j].class) || (!edititem.children[j].subset))) {
                     //deletion
-                    queries.push(useclause + " DELETE " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                    returntype = "ancestor-target";
+                    query = "DELETE " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" " + targetselector;
                 } else if ((!edititem.children[j].oldclass) && (!edititem.children[j].oldsubset)) {
                     //add
                     if (edititem.id !== undefined) {
-                        queries.push(useclause + " ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                        query = "ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                     } else {
                         //undefined ID, means parent annotation is new as well, select it by value:
-                        queries.push(useclause + " ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                        query = "ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                     }
                 } else if ((edititem.children[j].oldclass) && (edititem.highorder[j].oldclass != higherorder[j].class) && (edititem.children[j].oldsubset == edititem.children[j].subset)) {
                     //edit of class
-                    queries.push(useclause + " EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH class \"" + escape_fql_value(edititem.children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                 } else if ((edititem.children[j].oldsubset) && (edititem.highorder[j].oldsubset != higherorder[j].subset) && (edititem.children[j].oldclass == edititem.children[j].class)) {
                     //edit of subset
-                    queries.push(useclause + " EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" " + targetselector;
                 } else {
                     //edit of class and subset
-                    queries.push(useclause + " EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                 }
             } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
                 //foliadocserve adds IDs to all span roles
                 if ((edititem.children[j].targets_begin) && (edititem.children[j].targets_begin.length > 0) && (edititem.children[j].targets.length === 0)) {
                     //deletion
-                    queries.push(useclause + " DELETE " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" FOR " + targetselector + " FORMAT flat RETURN ancestor-target");
+                    returntype = "ancestor-target";
+                    query = "DELETE " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" " + targetselector;
                 } else {
                     //add or edit
                     var forids = "";
@@ -1615,16 +1655,27 @@ function build_higherorder_queries(edititem, useclause) {
                     } 
                     if ((edititem.children[j].targets_begin.length === 0) && (edititem.children[j].targets.length > 0)) {
                         //new
-                        queries.push(useclause + " ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                        query = "ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " " + targetselector;
                     } else {
                         //edit (span change)
-                        queries.push(useclause + " EDIT " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " FOR " + targetselector + " FORMAT flat RETURN ancestor-focus");
+                        query = "EDIT " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " " + targetselector;
                     }
                 }
             }
+            if (build_subqueries) {
+                queries.push("(" + query.trim() + ")");
+            } else {
+                queries.push(useclause + " " + query + " FORM flat RETURN " + returntype);
+            }
+
         }
     }
-    return queries;
+
+    if (build_subqueries) {
+        return queries.join(" ");
+    } else {
+        return queries;
+    }
 }
 
 
