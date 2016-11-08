@@ -88,13 +88,6 @@ div#editor input.subsetedit, div#editor select.subsetedit, div#editor .subset {
 input.changed {
     color: #660000;
 }
-div#editor span#editoraddfields button {
-    border-radius: 0;
-    background: transparent;
-    border: 1px solid #30677c;
-    color: #30677c;
-    padding: 1px;
-}
 div#editor .addhigherordermenu {
     float: right;
     border-radius: 0;
