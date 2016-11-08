@@ -943,7 +943,7 @@ function addeditorfield(index) {
     var targets = [];
     //add the selected element to the targets except if we are adding a span annotation that takes no direct wrefs (i.e. only its span roles take children)
     if ((!isspan) || (accepts_wrefs)) {
-        targets = [editelementid];
+        targets = [editedelementid];
     }
     editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': targets, 'targets_begin': targets,'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
     editdata.push(editdataitem);
