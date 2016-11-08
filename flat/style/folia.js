@@ -41,7 +41,7 @@ function folia_parse(element, ancestors) {
 
 function folia_label(tag, set) {
     //Get the human-readable label for an annotation type (corresponding to a FoLiA XML tag), if defined
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
 
     if ((set) && (setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
         //Grab the label from the set definition
@@ -71,9 +71,22 @@ function folia_feature_label(set, subset, cls) {
     }
 }
 
+function folia_elementclass(tag) {
+    if (foliatag2class[tag] === undefined) {
+        throw "FoLiA Tag " + tag + " is not defined!";
+    }
+    var elementclass = foliatag2class[tag];
+    if (foliaelements[elementclass] === undefined) {
+        throw "FoLiA Elementclass  " + elementclass + " is not defined!";
+    }
+    return elementclass;
+
+}
+
+
 function folia_isspan(tag) {
     //Is the element a first order span element?
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
     var found = false;
     for (var i = 0; i < foliaelements[elementclass].ancestors.length; i++) {
         if (foliaelements[elementclass].ancestors[i] == "AbstractSpanAnnotation") {
@@ -88,18 +101,19 @@ function folia_isspan(tag) {
 
 function folia_isspanrole(tag) {
     //Is the element a span role?
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
     for (var i = 0; i < foliaelements[elementclass].ancestors.length; i++) {
         if (foliaelements[elementclass].ancestors[i] == "AbstractSpanRole") {
             return true;
         }
     }
     return false;
- }
+}
+
 
 function folia_isstructure(tag) {
     //Is the element a first order span element?
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
     for (var i = 0; i < foliaelements[elementclass].ancestors.length; i++) {
         if (foliaelements[elementclass].ancestors[i] == "AbstractStructureElement") {
             return true;
@@ -166,7 +180,7 @@ function folia_accepts(parenttag, childtag) {
 
 function folia_spanroles(tag) {
     /* Collect all span annotation roles (tags) for the given span annotation element */
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
     var spanroles = [];
     if ((foliaelements[elementclass]) && (foliaelements[elementclass].properties) && (foliaelements[elementclass].properties.accepted_data)) {
         for (var i = 0; i < foliaelements[elementclass].properties.accepted_data.length; i++) { //doesn't consider accepted_data inheritance but i don't think we use that in this case
@@ -181,7 +195,7 @@ function folia_spanroles(tag) {
 
 function folia_required_spanroles(tag) {
     /* Collect all mandatory span annotation roles (tags) for the given span annotation element */
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
     var spanroles = [];
     if ((foliaelements[elementclass]) && (foliaelements[elementclass].properties) && (foliaelements[elementclass].properties.required_data)) {
         for (var i = 0; i < foliaelements[elementclass].properties.required_data.length; i++) { //doesn't consider accepted_data inheritance but i don't think we use that in this case
@@ -208,6 +222,6 @@ function folia_occurrences_class(elementclass) {
 
 function folia_occurrences(tag) {
     /* Get the maximum amount of occurrences for this tag (0=unlimited) */
-    var elementclass = foliatag2class[tag];
+    var elementclass = folia_elementclass(tag);
     return folia_occurrences_class(elementclass);
 }
