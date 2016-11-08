@@ -1652,10 +1652,10 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                         //undefined ID, means parent annotation is new as well, select it by value:
                         query = "ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                     }
-                } else if ((edititem.children[j].oldclass) && (edititem.children[j].oldclass != higherorder[j].class) && (edititem.children[j].oldsubset == edititem.children[j].subset)) {
+                } else if ((edititem.children[j].oldclass) && (edititem.children[j].oldclass != edititem.children[j].class) && (edititem.children[j].oldsubset == edititem.children[j].subset)) {
                     //edit of class
                     query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
-                } else if ((edititem.children[j].oldsubset) && (edititem.children[j].oldsubset != higherorder[j].subset) && (edititem.children[j].oldclass == edititem.children[j].class)) {
+                } else if ((edititem.children[j].oldsubset) && (edititem.children[j].oldsubset != edititem.children[j].subset) && (edititem.children[j].oldclass == edititem.children[j].class)) {
                     //edit of subset
                     query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" " + targetselector;
                 } else {
