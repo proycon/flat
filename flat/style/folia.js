@@ -71,7 +71,7 @@ function folia_feature_label(set, subset, cls) {
     if ((set) && (setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])  && (setdefinitions[set].subsets[subset].classes[cls]) && (setdefinitions[set].subsets[subset].classes[cls].label)) {
         return setdefinitions[set].subsets[subset].classes[cls].label;
     } else {
-        return subset;
+        return cls;
     }
 }
 
