@@ -179,8 +179,10 @@ function getspantext(annotation, explicit) {
     spantext= "";
     var targets;
     if (explicit) {
+        if (!annotation.targets) { return ""; }
         targets = annotation.targets;
     } else {
+        if (!annotation.scope) { return ""; }
         targets = annotation.scope;
     }
     sort_targets(targets).forEach(function(target){

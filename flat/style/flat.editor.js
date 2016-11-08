@@ -1665,7 +1665,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
             if (build_subqueries) {
                 queries.push("(" + query.trim() + ")");
             } else {
-                queries.push(useclause + " " + query + " FROM flat RETURN " + returntype);
+                queries.push(useclause + " " + query + " FORMAT flat RETURN " + returntype);
             }
 
         }
