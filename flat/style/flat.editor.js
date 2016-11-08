@@ -1318,17 +1318,25 @@ function gather_changes() {
                 //relies purely on span roles, find the implicit targets (i.e.
                 //the scope)
                 if ((editdata[i].isspan) && (editdata[i].children.length > 0)) {
+                    var match = {}; //will hold spanrole_type => bool 
                     editdata[i].scope = [];
                     for (var j = 0; j < editdata[i].children.length; j++) {
                         if (editdata[i].children[j].targets) {
                             for (var k = 0; k < editdata[i].children[j].targets.length; k++) {
                                 editdata[i].scope.push(editdata[i].children[j].targets[k]);
+                                match[editdata[i].children[j].type] = true;
                             }
+                        }
+                    }
+                    var required_spanroles = folia_required_spanroles(editdata[i].type);
+                    for (var j = 0; j < required_spanroles.length; j++) {
+                        if (!match[required_spanroles[j]]) {
+                            throw "Error (" + i + "): Annotation of " + editdata[i].type + " incomplete, span role " + required_spanroles[j] + " has no targets defined";
                         }
                     }
                     editdata[i].scope = sort_targets(editdata[i].scope);
                 } else {
-                    throw "Error, no targets for action";
+                    throw "Error (" + i + "), no targets for action";
                 }
             }
         }
