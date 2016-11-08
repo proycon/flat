@@ -8,6 +8,10 @@ var foliaelements = {};
 //Maps FoLiA XML tag to element classes, FLAT works tag-based
 var foliatag2class = {};
 
+//Maps span elements (tags) to parent span elements in which they can be
+//nested, hard coded for now.. TODO: derive from spec
+var folianestablespan = {'su': ['su'], 'semrole': ['predicate'] };
+
 //element classes are internal class names for the FoLiA elements and not to be confused with FoLiA's notion of a class.
 
 function folia_parse(element, ancestors) {
@@ -111,6 +115,15 @@ function folia_isspanrole(tag) {
     return false;
 }
 
+function folia_nestablespan(tag) {
+    //Is this span element nestable in another span element?
+    //Returns a list of possible parents
+    if (folianestablespan[tag] !== undefined) {
+        return folianestablespan[tag];
+    } else {
+        return [];
+    }
+}
 
 function folia_isstructure(tag) {
     //Is the element a first order span element?

@@ -501,6 +501,18 @@ function applysuggestion(e,i) {
     }
 }
 
+function renderparentspanfield(index, annotation, nestableparents) {
+    //This is a nestable span element
+    var s = "<div class=\"spanparenteditor\">Parent span: " + 
+            "<select name=\"spanparent" + index + "\">" + 
+            "<option value=\"\">(none/root)</option>";
+    for (var i = 0; i < nestableparents; i++) {
+        //TODO: collect possibilities
+    }
+    s = s + "</div>";
+    return s;
+}
+
 
 function showeditor(element) {
     /* show and populate the editor for a particular element */
@@ -671,6 +683,13 @@ function showeditor(element) {
 
                     ho_result = renderhigherorderfields(editfields, annotation);
                     s  = s + ho_result.output;
+
+                    
+                    var nestablespan = folia_nestablespan(annotation.type);
+                    if (nestablespan.length > 0) {
+                        s = s + renderparentspanfield(editfields, annotation, nestablespan);
+
+                    }
 
                     s = s + "</td></tr>";
 
