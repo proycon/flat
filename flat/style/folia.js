@@ -73,6 +73,7 @@ function folia_feature_label(set, subset, cls) {
 
 function folia_elementclass(tag) {
     if (foliatag2class[tag] === undefined) {
+        console.log(tag);
         throw "FoLiA Tag " + tag + " is not defined!";
     }
     var elementclass = foliatag2class[tag];

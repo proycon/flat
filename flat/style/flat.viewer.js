@@ -176,16 +176,22 @@ function viewer_onmouseenter(element) {
 
 
 function getspantext(annotation, explicit) {
-    spantext= "";
+    if (annotation === undefined) {
+        throw "Undefined annotation passed";
+    }
+    var spantext= "";
     var targets;
     if (explicit) {
-        if (!annotation.targets) { return ""; }
         targets = annotation.targets;
     } else {
-        if (!annotation.scope) { return ""; }
         targets = annotation.scope;
     }
-    sort_targets(targets).forEach(function(target){
+    if (targets === undefined) {
+        console.debug(annotation);
+        throw "Invalid annotation; defines no targets/scope! ";
+    } 
+    targets = sort_targets(targets);
+    targets.forEach(function(target){
         Object.keys(annotations[target]).forEach(function(annotationid2){
             if (annotationid2 != "self") {
                 annotation2 = annotations[target][annotationid2];
@@ -377,11 +383,11 @@ function renderannotation(annotation, norecurse) {
             s = s + "<br /><span class=\"text\">" + getspantext(annotation) + "</span>";
         }
         if ((annotation.children) && (annotation.children.length > 0)) {
-            annotation.children.forEach(function(child){
-                if (child.isspanrole) {
-                    s = s + renderspanrole(child);
+            for (var i = 0; i < annotation.children.length; i++) {
+                if ((annotation.children[i].type) && (folia_isspanrole(annotation.children[i].type))) {
+                    s = s + renderspanrole(annotation.children[i]);
                 }
-            });
+            }
         }
     }
     if (annotation.type == "t") {
@@ -425,7 +431,7 @@ function renderannotation(annotation, norecurse) {
     }
     if (annotation.children) {
         //Render higher order annotation
-        for (i = 0; i < annotation.children.length; i++) {
+        for (var i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 if ((annotation.children[i].type == "comment") || (annotation.children[i].type == "desc")) {
                     s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": " + annotation.children[i].value + "</span>";
@@ -469,16 +475,15 @@ function showinfo(element) {
             if (annotations[element.id]) {            
                 s = "<div id=\"id\">" + folia_label(annotations[element.id].self.type, annotations[element.id].self.set) + " &bull; " + element.id + " &bull; " + annotations[element.id].self.class + "</div><table>";
                 Object.keys(annotations[element.id]).forEach(function(annotationid){
-                    annotation = annotations[element.id][annotationid];
+                    var annotation = annotations[element.id][annotationid];
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                                label = folia_label(annotation.type, annotation.set);
+                                var label = folia_label(annotation.type, annotation.set);
+                                var setname = "";
                                 if (annotation.set) {
                                     setname = annotation.set;
-                                } else {
-                                    setname = "";
                                 }
-                                if (setname == "undefined") setname = "";
+                                if (setname === "undefined") setname = "";
                                 s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                                 s = s + renderannotation(annotation);
                                 s = s + "</td></tr>";
@@ -1103,7 +1108,7 @@ function viewer_oninit() {
         }
 
 
-        for (i = 0; i < queries.length; i++) {
+        for (var i = 0; i < queries.length; i++) {
             if (queries[i].trim() !== "") {
                 var cql = false;
                 if ((queries[i].trim()[0] == '"') || (queries[i].trim()[0] == '[')) {
