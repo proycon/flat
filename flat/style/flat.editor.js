@@ -1654,10 +1654,10 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     }
                 } else if ((edititem.children[j].oldclass) && (edititem.children[j].oldclass != edititem.children[j].class) && (edititem.children[j].oldsubset == edititem.children[j].subset)) {
                     //edit of class
-                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\"  WITH class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                 } else if ((edititem.children[j].oldsubset) && (edititem.children[j].oldsubset != edititem.children[j].subset) && (edititem.children[j].oldclass == edititem.children[j].class)) {
                     //edit of subset
-                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" " + targetselector;
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" " + targetselector;
                 } else {
                     //edit of class and subset
                     query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
