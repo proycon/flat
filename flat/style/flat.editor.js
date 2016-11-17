@@ -1660,7 +1660,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" " + targetselector;
                 } else {
                     //edit of class and subset
-                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                 }
             } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
