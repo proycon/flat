@@ -501,13 +501,29 @@ function applysuggestion(e,i) {
     }
 }
 
+
+function find_in_same_structure(contexttype, targettype) {
+    var currentid = editedelementid
+    while (annotations[currentid].self.type != contexttype) {
+        if (annotations[currentid].self.parent === undefined) {
+            //parent not found
+            return [];
+        }
+        currentid = annotations[currentid].self.parent;
+    }
+
+
+    
+}
+
+
 function renderparentspanfield(index, annotation, nestableparents) {
     //This is a nestable span element
     var s = "<div class=\"spanparenteditor\">Parent span: " + 
             "<select name=\"spanparent" + index + "\">" + 
             "<option value=\"\">(none/root)</option>";
     for (var i = 0; i < nestableparents; i++) {
-        //TODO: collect possibilities
+        //TODO: collect possibilities, use annotation.layerparent 
     }
     s = s + "</div>";
     return s;
