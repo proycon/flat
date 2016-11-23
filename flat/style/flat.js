@@ -17,7 +17,6 @@ var selector = ""; //structural element to select when clicking/hovering: empty 
 var struction = {}; //structural items
 var annotations = {}; //annotations per structure item
 var declarations = {};
-var corrections = {};
 var docid = null;
 var initialannotationlist = [];
 var initialdeclarationlist = [];
@@ -141,57 +140,6 @@ function loadannotations(annotationresponse) {
     });
     //old (deleted) annotations may linger in memory but are no longer
     //referenced by structure or other updated annotations
-}
-
-
-function loadannotations(annotationlist) {
-    //load annotations from the annotation data response in memory, called by update()
-    
-    annotationlist.forEach(function(annotation){
-        annotation.scope.forEach(function(target){ //using scope (deep/recursive) instead of targets (shallow/explicit) as we want to process nested span annotations as well
-            if (!(annotations[target])) annotations[target] = {};
-            if (!(latestannotations[target])) latestannotations[target] = {};
-            var annotationid = getannotationid(annotation);
-            annotations[target][annotationid] = annotation; //TODO: creates too many copies in case of span annotation (issue #41)
-            annotations[target][annotationid].annotationid = annotationid;
-            latestannotations[target][annotationid] = true;
-        });
-        if ((annotation.type == "correction") && (annotation.id)) {
-            corrections[annotation.id] = annotation;
-            if ((annotation.suggestions.length > 0) && (annotation.new.length === 0)) {
-                //find the annotation the suggestions apply to and act as if
-                //that is part of the correction
-                target = annotation.targets[0];
-                Object.keys(annotations[target]).forEach(function(annotationid){
-                    if (annotationid != "self") {
-                        if ((annotations[target][annotationid].type == annotation.suggestions[0].type) && (annotations[target][annotationid].set == annotation.suggestions[0].set)) {
-                            if (!annotations[target][annotationid].incorrection) {
-                                annotations[target][annotationid].incorrection = [annotation.id];
-                            } else {
-                                annotations[target][annotationid].incorrection.push(annotation.id);
-                            }
-                        }
-                    }
-                });
-            }
-        }
-    });
-
-    //find old annotations that are no longer in the response, delete them
-    Object.keys(latestannotations).forEach(function(target){
-        if (annotations[target]) {
-            Object.keys(annotations[target]).forEach(function(annotationid){
-                if (!latestannotations[target][annotationid]) delete annotations[target][annotationid];
-            });
-        }
-    });
-
-    /*
-    if (function_exists(mode + '_onloadannotations')) {
-        f = eval(mode + '_onloadannotations');
-        f(annotationlist);
-    }
-    */
 }
 
 
