@@ -14,6 +14,7 @@ var perspective_end = null;
 
 var selector = ""; //structural element to select when clicking/hovering: empty selector selects deepest element (default)
 
+var struction = {}; //structural items
 var annotations = {}; //annotations per structure item
 var declarations = {};
 var corrections = {};
@@ -107,6 +108,16 @@ function onfoliamouseleave() {
     }
 }
 
+
+function loadstructure(structureresponse) {
+    //update structure data
+    Object.keys(structureresponse).forEach(function(structureid){
+        structure[structureid] = structureresponse[structureid];
+    });
+    //old (deleted) structure may linger in memory but is no longer
+    //referenced by other structure or other updated annotations
+}
+
 function loadtext(annotationlist) {
     //reload text from the annotation data response back into the DOM structure, called by update()
     annotationlist.forEach(function(annotation){
@@ -123,6 +134,15 @@ function loadtext(annotationlist) {
         f(annotationlist);
     }*/
 }
+
+function loadannotations(annotationresponse) {
+    Object.keys(annotationresponse).forEach(function(annotationid){
+        annotations[annotationid] = annotationresponse[annotationid];
+    });
+    //old (deleted) annotations may linger in memory but are no longer
+    //referenced by structure or other updated annotations
+}
+
 
 function loadannotations(annotationlist) {
     //load annotations from the annotation data response in memory, called by update()
@@ -285,6 +305,9 @@ function update(data, extracallback) {
                 //$('#replacing').html("...");
                 //$('#replacing').after(data.html);
                 //$('#replacing').remove();
+            }
+            if (returnitem.structure) {
+                loadstructure(returnitem.structure);
             }
             if (returnitem.annotations) {
                 loadtext(returnitem.annotations);
