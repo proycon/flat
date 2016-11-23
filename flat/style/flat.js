@@ -16,14 +16,13 @@ var selector = ""; //structural element to select when clicking/hovering: empty 
 
 var struction = {}; //structural items
 var annotations = {}; //annotations per structure item
+var latestannotations = {}; //latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
 var declarations = {};
 var docid = null;
 var initialannotationlist = [];
 var initialdeclarationlist = [];
 var mouseX = 0;
 var mouseY = 0;
-
-var latestannotations = {}; //target -> annotationid -> true , holds only the latest updates
 
 //************************************************************************************************************************************************************************
 
@@ -137,6 +136,7 @@ function loadtext(annotationlist) {
 function loadannotations(annotationresponse) {
     Object.keys(annotationresponse).forEach(function(annotationid){
         annotations[annotationid] = annotationresponse[annotationid];
+        latestannotations[annotationid] = true;
     });
     //old (deleted) annotations may linger in memory but are no longer
     //referenced by structure or other updated annotations
@@ -151,22 +151,46 @@ function loaddeclarations(declarationlist) {
     });
 }
 
-function rendertextclass() {
-    //Renders the right text label based on the text class (currenet by default)
-    Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationid){
-            var annotation = annotations[target][annotationid];
-            if ((annotation.type == "t") && (annotation.class == textclass)) {
-                lbl = $('#' + valid(target) + " span.lbl");
-                if ((lbl.length == 1) && ($('#'  + valid(target)).hasClass('deepest'))) {
-                    if (annotation.htmltext) {
-                        lbl.html(annotation.htmltext);
-                    } else {
-                        lbl.html(annotation.text);
-                    }
-                }
+function forstructure(callback) {
+    Object.keys(structure).forEach(function(structure_id){
+        callback(structure[structure_id]);
+    });
+}
+
+function forannotations(structure_id, callback) {
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].annotations.forEach(function(annotation_id){
+            if (annotations[annotation_id]) {
+                callback(annotations[annotation_id]);
             }
         });
+    }
+}
+
+function forallannotations(callback) {
+    Object.keys(structure).forEach(function(structure_id){
+        if (structure[structure_id].annotations) {
+            structure[structure_id].annotations.forEach(function(annotation_id){
+                callback(structure[structure_id],annotations[annotation_id]);
+            });
+        }
+    });
+
+}
+
+function rendertextclass() {
+    //Renders the right text label based on the text class (currenet by default)
+    forallannotations(function(structureelement, annotation){
+        if ((annotation.type == "t") && (annotation.class == textclass)) {
+            lbl = $('#' + valid(structurelement.id) + " span.lbl");
+            if ((lbl.length == 1) && ($('#'  + valid(structurelement.id)).hasClass('deepest'))) {
+                if (annotation.htmltext) {
+                    lbl.html(annotation.htmltext);
+                } else {
+                    lbl.html(annotation.text);
+                }
+            }
+        }
     });
     $('div.deepest>span.lbl').show();
     //Delegate to mode's callback function
@@ -228,7 +252,8 @@ function shorten(s) {
 function update(data, extracallback) {
     //Process data response from the server, does a partial update, called through loadcontent() on initialisation
     //
-    latestannotations = {}; //reset latest annotations cache (target -> annotationid -> true map), will be populated again by loadannotations()
+    latestannotations = {}; //reset latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
+
     if (data.error) {
         alert(data.error);
     }
