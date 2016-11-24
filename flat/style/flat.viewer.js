@@ -259,13 +259,9 @@ function getclasslabel(set, key) {
 
 function rendercorrection(correctionid, addlabels, explicitnew) {
     //pass either an ID or an annotation element
+    //TODO: refactor!!!
     var s = "";
-    var correction;
-    if ((typeof correctionid == 'string' || correctionid instanceof String)) {
-        correction = corrections[correctionid];
-    } else {
-        correction = correctionid; 
-    }
+    var correction = annotations[correctionid];
     if ((viewannotations[correction.type+"/"+correction.set])) {
         s = s + "<div class=\"correction\"><span class=\"title\">Correction: ";
         if (correction.class) s = s + "<em>" + correction.class + "</em>";
@@ -293,7 +289,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
         }
         if (explicitnew) {
             if ((correction.new) && (correction.new.length > 0)) {
-                correction.new.forEach(function(e){
+                correction.new.forEach(function(new_id){
                     if (viewannotations[e.type+"/"+e.set]) {
                         s = s + "<tr><th>New";
                         if (addlabels) {
@@ -370,6 +366,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
 }
 
 function checkparentincorrection(annotation, correctionid) {
+    //TODO: refactor!!
     var parentincorrection = false;
     annotation.scope.forEach(function(t){
         Object.keys(annotations[t]).forEach(function(aid) {
@@ -491,14 +488,15 @@ function renderannotation(annotation, norecurse) {
 }
 
 function showinfo(element) {
+    /* Populate and show the pop-up info box with annotations for the element under consideration */
     if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
         if (element.id)  {
             var s = "";
-            if (annotations[element.id]) {            
-                s = "<div id=\"id\">" + folia_label(annotations[element.id].self.type, annotations[element.id].self.set) + " &bull; " + element.id + " &bull; " + annotations[element.id].self.class + "</div><table>";
-                Object.keys(annotations[element.id]).forEach(function(annotationid){
-                    var annotation = annotations[element.id][annotationid];
-                    if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotationid == hoverstr))) { //strings too
+            var structureelement = structure[element.id];
+            if (structureelement) {            
+                s = "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id + " &bull; " + structureelement.class + "</div><table>";
+                forannotations(element.id,function(annotation){
+                    if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
                                 var label = folia_label(annotation.type, annotation.set);
                                 var setname = "";
@@ -513,10 +511,8 @@ function showinfo(element) {
                     }
                 });
                 s = s + "</table>";
-                if (annotations[element.id].self.incorrection) {
-                    annotations[element.id].self.incorrection.forEach(function(correctionid){
-                        s = s + rendercorrection( correctionid, true);
-                    });
+                if (structureelement.incorrection) {
+                    s = s + rendercorrection( structureelement.incorrection, true);
                 }
             } else if ($(element).hasClass('deleted')) {
                 s = "<div id=\"id\"> " + element.id + "</div>";
