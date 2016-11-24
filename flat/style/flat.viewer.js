@@ -133,47 +133,60 @@ function renderdeletions() { //and suggested insertions
     }
 }
 
-
 function toggleoriginal() {
     showoriginal = !showoriginal;
     if (showoriginal) {
         $('#toggleoriginal').addClass("on");
-        Object.keys(annotations).forEach(function(target){
-            Object.keys(annotations[target]).forEach(function(annotationkey){
-                annotation = annotations[target][annotationkey];
-                if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original)) {
-                    textblob = "";
-                    originalid = "";
-                    annotation.original.forEach(function(original){
-                        if (original.text) {
-                            if ($('#' + valid(target)).hasClass('w')) {
-                                $('#' + valid(target) + ' span.lbl').html(original.text);
+        forallannotations(function(structureelement, annotation){
+                if ((annotation.type == 'correction') && (annotation.original)) {
+                    var textblob = "";
+                    var originalid = "";
+                    //find original text
+                    annotation.original.forEach(function(original_id){
+                        //is the correction structural?
+                        if (annotation.structural) {
+                            var original = structure[original_id];
+                            //find text belonging to original structural element
+                            forannotations(original_id,function(annotation2){
+                                if (annotation2.type == "t") {
+                                    if (textblob) textblob += " ";
+                                    textblob += annotation2.text;
+                                }
+                            });
+                            if ((original.type == 'w') && (originalid === "")) originalid = original.id;
+                        } else {
+                            //non-structural correction
+                            var original = annotations[original_id];
+                            if (original.text) {
+                                if (textblob) textblob += " ";
+                                textblob += original.text;
                             }
-                            if (textblob) textblob += " ";
-                            textblob += original.text;
                         }
-                        if ((original.type == 'w') && (originalid === "")) originalid = original.id;
                     });                        
-                    if (annotations[target].self.type == 's') {
-                        if (annotation.new.length > 0) {
-                            if ($('#' + valid(annotation.new[0].id)).hasClass('w')) {
-                                $('#' + valid(annotation.new[0].id) + ' span.lbl').html(textblob);
+
+                    if (structureelement.type == 'w') {
+                        $('#' + valid(structureelement.id) + ' span.lbl').html(textblob);
+                    } else if (structureelement.type == 's') {
+                        if (annotation.new.length > 0)  {
+                            if ((structural) && ($('#' + valid(annotation.new[0])).hasClass('w'))) {
+                                $('#' + valid(annotation.new[0]) + ' span.lbl').html(textblob);
+                            } else {
+                                //MAYBE TODO: no solution for non-structural text corrections on higher-levels?
                             }
                         } else {
                             //must be a deletion, show
-                            if (annotations[target].self.previousword) {
+                            if (structureelement.previousword) {
                                 //check if the deletion has a colored class
                                 var c = '';
                                 if (classrank[annotation.class]) {
                                     c = ' class' + classrank[annotation.class];
                                 }                                
-                                $('#' + valid(annotations[target].self.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
+                                $('#' + valid(structureelement.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
                             }
                         }
                     }
 
                 }
-            });
         });
     } else {
         $('#toggleoriginal').removeClass("on");
