@@ -43,28 +43,6 @@ function hash(s){
   return 0;
 }
 
-function getannotationid(annotation) {
-    //Gets the ID for the annotation. It will be used by FLAT internally in
-    //many places. This may be a FoLiA ID but if there is no FoLiA ID it
-    //corresponds to other constructs like type/set
-    if (annotation.self) {
-        return "self";
-    }
-    if (annotation.id)  {
-        return annotation.id;
-    }
-    if (annotation.type === 't') {
-        return annotation.type + '/' + annotation.set + ':' + annotation.class;
-    }
-    if (annotation.set) {
-        return annotation.type + '/' + annotation.set;
-    }
-    if (annotation.type) {
-        return annotation.type;
-    }
-    alert("Unable to get ID for " + annotation);
-}
-
 function onfoliaclick() {
     //Called when an element (often a word) is clicked, delegates to *_onclick methods of the enabled mode
     if (function_exists(mode + '_onclick')) {
