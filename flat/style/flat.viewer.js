@@ -577,15 +577,12 @@ function setannotationfocus(t,set) {
     if (t && set) {
         annotationfocus = { 'type': t, 'set': set };
         $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
-        Object.keys(annotations).forEach(function(target){
-            Object.keys(annotations[target]).forEach(function(annotationkey){
-                annotation = annotations[target][annotationkey];
-                if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
-                    if ($('#' + valid(target)).hasClass('w')) {
-                        $('#' + valid(target)).addClass("focustype");
-                    }
+        forallannotations(function(structureelement, annotation){
+            if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
+                if ($('#' + valid(target)).hasClass('w')) {
+                    $('#' + valid(target)).addClass("focustype");
                 }
-            });
+            }
         });
         if (annotationfocus.type != 't') {
             setclasscolors();
