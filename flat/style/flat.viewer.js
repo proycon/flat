@@ -657,29 +657,23 @@ function setclasscolors() {
     });
 
 
-    Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationkey){
-            annotation = annotations[target][annotationkey];
+    forallannotations(function(structureelement, annotation){
             if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
                 if (classrank[annotation.class]) {
-                    if ($('#' + valid(target)).hasClass('w')) {
-                        $('#' + valid(target)).addClass('class' + classrank[annotation.class]);
+                    if ($('#' + valid(structureelement.id)).hasClass('w')) {
+                        $('#' + valid(structureelement.id)).addClass('class' + classrank[annotation.class]);
                     }
-                    if (($('#' + valid(target)).hasClass('s')) && (annotation.type == 'correction')) {
+                    if (($('#' + valid(structureelement.id)).hasClass('s')) && (annotation.type == 'correction')) {
                         if (annotation.new.length === 0) {
                             //a deletion occurred
                         } else {
                             annotation.new.forEach(function(newtarget) {
-                                if (newtarget.type == 'w') {
-                                    $('#' + valid(newtarget.id)).addClass('class' + classrank[annotation.class]);
-                                }
+                                $('#' + valid(newtarget)).addClass('class' + classrank[annotation.class]);
                             });
                         }
                         if (annotation.current.length > 0) {
                             annotation.current.forEach(function(newtarget) {
-                                if (newtarget.type == 'w') {
-                                    $('#' + valid(newtarget.id)).addClass('class' + classrank[annotation.class]);
-                                }
+                                $('#' + valid(newtarget)).addClass('class' + classrank[annotation.class]);
                             });
                         }
                     }
@@ -715,9 +709,11 @@ function partofspanhead(annotation, target) {
 
 function renderglobannotations(all) {
     if ((all !== undefined) && (all)) {
-        annotations_base = annotations;
+        forstructure_custom = forstructure;
+        forannotations_custom = forannotations;
     } else {
-        annotations_base = latestannotations;
+        forstructure_custom = forlateststructure;
+        forannotations_custom = forlatestannotations;
     }
 
     var globalannotations = 0;
@@ -727,20 +723,19 @@ function renderglobannotations(all) {
 
     if (globalannotations) {
         var containers = {};
-        Object.keys(annotations_base).forEach(function(target){
+        forstructure_custom(function(structureelement){
             var targetabselection = null;
-            if (paintedglobannotations[target]) {
-                targetabselection = $('#' + valid(target) + " span.ab");
+            if (paintedglobannotations[structureelement.id]) {
+                targetabselection = $('#' + valid(structureelement.id) + " span.ab");
                 targetabselection.css('display','none'); //we clear on this level 
                 targetabselection.html("");
-                paintedglobannotations[target] = false;
+                paintedglobannotations[structureelement.id] = false;
             }
             //var changed = false;
             $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
                 annotationtype = globannotationsorder[annotationtype];
-                Object.keys(annotations_base[target]).forEach(function(annotationkey){
+                forannotations_custom(function(annotation){
                     if (annotationkey != "self") {
-                        var annotation = annotations[target][annotationkey];
                         if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
                                 //changed = true;
                                 var s = "";
@@ -757,7 +752,7 @@ function renderglobannotations(all) {
                 
                                             //grab the head
                                             var headtext = "";
-                                            var partofhead = partofspanhead(annotation, target);
+                                            var partofhead = partofspanhead(annotation, structureelement.id);
                                             if (annotation.children) {
                                                 annotation.children.forEach(function(child) {
                                                     if (child.type == "hd") {
@@ -779,26 +774,28 @@ function renderglobannotations(all) {
                                             //If the previous word is in the same
                                             //span we do not repeat it explicitly
                                             //but draw a line
-                                            var prevwordid = annotations[target].self.previousword;
-                                            if ((annotations[prevwordid]) && (annotations[prevwordid][annotationkey])) {
-                                                var prevannotation = annotations[prevwordid][annotationkey];
-                                                if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
-                                                    //previous word part of span already
-                                                    if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
-                                                        previnspan = true;
+                                            var prevwordid = structureelement.previousword;
+                                            if (structure[prevwordid]) {
+                                                forannotations(prevword_id, function(prevannotation){
+                                                    if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                        //previous word part of span already
+                                                        if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
+                                                            previnspan = true;
+                                                        }
                                                     }
-                                                }
+                                                });
                                             }
 
                                             //is the next word still part of the span?
-                                            var nextwordid = annotations[target].self.nextword;
-                                            if ((annotations[nextwordid]) && (annotations[nextwordid][annotationkey])) {
-                                                var nextannotation = annotations[nextwordid][annotationkey];
-                                                if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
-                                                    if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
-                                                        nextinspan = true;
+                                            var nextwordid = structureelement.nextword;
+                                            if (annotations[nextwordid]) {
+                                                forannotations(prevword_id, function(nextannotation){
+                                                    if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                        if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
+                                                            nextinspan = true;
+                                                        }
                                                     }
-                                                }
+                                                });
                                             }
 
                                             if ((previnspan) && (nextinspan)) {
@@ -839,7 +836,7 @@ function renderglobannotations(all) {
                                                         //slot exists already
                                                         //but does the span of this annotation overlap with the one currently under consideration?
                                                         annotation.scope.forEach(function(spanmember){
-                                                            if (annotations[container.target][container.annotation.id].scope.indexOf(spanmember) != -1) {
+                                                            if (annotations[container.annotation.id].scope.indexOf(spanmember) != -1) {
                                                                 found = true;
                                                                 return;
                                                             }
@@ -858,16 +855,16 @@ function renderglobannotations(all) {
                                         containers[containerkey].push({
                                             'html': s, 
                                             'annotation': annotation,
-                                            'target': target,
+                                            'target': structureelement.id,
                                             'slot': slot,
                                         }); 
-                                        paintedglobannotations[target] = true;
+                                        paintedglobannotations[structureelement.id] = true;
                                 } else {
                                     //no span, no need for intermediate container structure, directly add
                                     if (targetabselection === null) {
-                                        targetabselection = $('#' + valid(target) + " span.ab");
+                                        targetabselection = $('#' + valid(structureelement.id) + " span.ab");
                                         targetabselection.css('display','none'); 
-                                        paintedglobannotations[target] = true;
+                                        paintedglobannotations[structureelement.id] = true;
                                     }
                                     targetabselection.append(s);
                                 }
