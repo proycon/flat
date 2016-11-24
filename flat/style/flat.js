@@ -17,6 +17,7 @@ var selector = ""; //structural element to select when clicking/hovering: empty 
 var struction = {}; //structural items
 var annotations = {}; //annotations per structure item
 var latestannotations = {}; //latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
+var lateststructure = {}; //latest structure cache (structureid -> true map), will be populated again by loadstructure()
 var declarations = {};
 var docid = null;
 var initialannotationlist = [];
@@ -89,6 +90,7 @@ function loadstructure(structureresponse) {
     //update structure data
     Object.keys(structureresponse).forEach(function(structureid){
         structure[structureid] = structureresponse[structureid];
+        lateststructure[structureid] = true;
     });
     //old (deleted) structure may linger in memory but is no longer
     //referenced by other structure or other updated annotations
@@ -135,10 +137,26 @@ function forstructure(callback) {
     });
 }
 
+function forlateststructure(callback) {
+    Object.keys(lateststructure).forEach(function(structure_id){
+        callback(structure[structure_id]);
+    });
+}
+
 function forannotations(structure_id, callback) {
     if ((structure[structure_id]) && (structure[structure_id].annotations)) {
         structure[structure_id].annotations.forEach(function(annotation_id){
             if (annotations[annotation_id]) {
+                callback(annotations[annotation_id]);
+            }
+        });
+    }
+}
+
+function forlatestannotations(structure_id, callback) {
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].annotations.forEach(function(annotation_id){
+            if (latestannotations[annotation_id]) {
                 callback(annotations[annotation_id]);
             }
         });
@@ -153,7 +171,18 @@ function forallannotations(callback) {
             });
         }
     });
+}
 
+function foralllatestannotations(callback) {
+    Object.keys(lateststructure).forEach(function(structure_id){
+        if (structure[structure_id].annotations) {
+            structure[structure_id].annotations.forEach(function(annotation_id){
+                if (latestannotations[annotation_id]) {
+                    callback(structure[structure_id],annotations[annotation_id]);
+                }
+            });
+        }
+    });
 }
 
 function rendertextclass() {
@@ -231,6 +260,8 @@ function shorten(s) {
 function update(data, extracallback) {
     //Process data response from the server, does a partial update, called through loadcontent() on initialisation
     //
+
+    latststructure = {}; //reset latest structure cache (structureid -> true map), will be populated again by loadstructure()
     latestannotations = {}; //reset latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
 
     if (data.error) {
