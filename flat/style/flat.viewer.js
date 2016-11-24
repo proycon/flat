@@ -619,21 +619,16 @@ function removeclasscolors(toggle) {
 }
 
 function computeclassfreq() {
-    //Compute class frequency for the annotationfocus 
+    /* Compute class frequency for the annotationfocus */
     var classfreq = {};
-    Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationkey){
-            annotation = annotations[target][annotationkey];
+    forallannotations(function(structureelement,annotation){
             if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
                 if (classfreq[annotation.class]) {
                     classfreq[annotation.class]--; //reverse for sorting later
                 } else {
                     classfreq[annotation.class] = -1; //reverse for sorting later
                 }
-
-
             }
-        });
     });
     return classfreq;
 }
