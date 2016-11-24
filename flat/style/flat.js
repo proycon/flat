@@ -46,7 +46,7 @@ function hash(s){
 function onfoliaclick() {
     //Called when an element (often a word) is clicked, delegates to *_onclick methods of the enabled mode
     if (function_exists(mode + '_onclick')) {
-        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+        if ((selector === "") || (selector == structure[this.id].type)) {
             var f = eval(mode + '_onclick');
             f(this);
             return false;
@@ -56,7 +56,7 @@ function onfoliaclick() {
 function onfoliadblclick() {
     //Called when an element (often a word) is double clicked, delegates to *_ondblclick methods of the enabled mode
     if (function_exists(mode + '_ondblclick')) {
-        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+        if ((selector === "") || (selector == structure[this.id].type)) {
             var f = eval(mode + '_ondblclick');
             f(this);
             return false;
@@ -66,7 +66,7 @@ function onfoliadblclick() {
 function onfoliamouseenter() {
     //Called when an element (often a word) is entered with the cursor, delegates to *_mouseenter methods of the enabled mode
     if (function_exists(mode + '_onmouseenter')) {
-        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+        if ((selector === "") || (selector == structure[this.id].type)) {
             var f = eval(mode + '_onmouseenter');
             f(this);
             return false;
@@ -76,7 +76,7 @@ function onfoliamouseenter() {
 function onfoliamouseleave() {
     //Called when an element (often a word) is exited with the cursor, delegates to *_mouseleave methods of the enabled mode
     if (function_exists(mode + '_onmouseleave')) {
-        if ((selector === "") || (selector == annotations[this.id].self.type)) {
+        if ((selector === "") || (selector == structure[this.id].type)) {
             var f = eval(mode + '_onmouseleave');
             f(this);
             return false;
