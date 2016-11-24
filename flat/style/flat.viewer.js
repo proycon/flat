@@ -217,14 +217,11 @@ function getspantext(annotation, explicit) {
     } 
     targets = sort_targets(targets);
     targets.forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationid2){
-            if (annotationid2 != "self") {
-                annotation2 = annotations[target][annotationid2];
+        forannotation(target,function(annotation2){
                 if ((annotation2.type == "t") && (annotation2.class == "current")) {
                     if (spantext) spantext += " ";
                     spantext += annotation2.text;
                 }
-            }
         });
     });
     return spantext;
