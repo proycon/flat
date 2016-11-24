@@ -20,9 +20,9 @@ function sethover(element) {
         hover = element;
         if ($(element).hasClass('focustype')) {
             //colour related elements
-            Object.keys(annotations[element.id]).forEach(function(annotationid){
-                if ((annotationid != "self") && (annotations[element.id][annotationid].type == annotationfocus.type) && (annotations[element.id][annotationid].set == annotationfocus.set) && (annotations[element.id][annotationid].scope.length > 1)) {
-                    annotations[element.id][annotationid].scope.forEach(function(target){
+            forannotations(element.id, function(annotation){
+                if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.scope.length > 1)) {
+                    annotation.scope.forEach(function(target){
                         $('#' + valid(target)).addClass("hover");
                     });
                 }
@@ -55,51 +55,64 @@ function renderdeletions() { //and suggested insertions
     $('.deleted').remove();
     $('.suggestinsertion').remove();
     if (showdeletions) {
-        Object.keys(annotations).forEach(function(target){
-            Object.keys(annotations[target]).forEach(function(annotationkey){
-                annotation = annotations[target][annotationkey];
+        forallannotations(function(structureelement, annotation){
                 var c;
                 var s;
                 var textblob = "";
                 var originalid = "";
                 var originaltype = "";
-                if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
+                if ((annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
                     //check if the deletion has a colored class
                     if ((classrank) && (classrank[annotation.class])) {
                         c = ' class' + classrank[annotation.class];
                     }                                
                     //find original text
-                    annotation.original.forEach(function(original){
-                        if (original.text) {
-                            if (textblob) textblob += " ";
-                            textblob += original.text;
-                        }
-                        if ((!originaltype) && (folia_isstructure(original.type))) {
-                            originaltype = original.type;
-                            originalid = original.id;
+                    annotation.original.forEach(function(original_id){
+                        //is the correction structural?
+                        if (annotation.structural) {
+                            var original = structure[original_id];
+                            //find text belonging to original structural element
+                            forannotations(original_id,function(annotation2){
+                                if (annotation2.type == "t") {
+                                    if (textblob) textblob += " ";
+                                    textblob += annotation2.text;
+                                }
+                            });
+                            if ((!originaltype) && (folia_isstructure(original.type))) {
+                                originaltype = original.type;
+                                originalid = original.id;
+                            }
+                        } else {
+                            //non-structural correction
+                            var original = annotations[original_id];
+                            if (original.text) {
+                                if (textblob) textblob += " ";
+                                textblob += original.text;
+                            }
                         }
                     });                        
                     s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
-                    if (annotation.previous) {
+                    if (annotation.previous) { //TODO: does this still work after refactor?
                         $('#' + valid(annotation.previous)).after(s);
                     } else if (annotation.next) {
                         $('#' + valid(annotation.next)).before(s);
                     }
                     $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
                 } 
-                if ((annotation.annotationid != 'self') && (annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
+                if ((annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
                     if ((classrank) && (classrank[annotation.class])) {
                         c = ' class' + classrank[annotation.class];
                     }                                
-                    annotation.suggestions.forEach(function(suggestion){
-                        suggestion.children.forEach(function(e){
-                            if ((!suggestiontype) && (folia_isstructure(e.type))) {
-                                suggestiontype = e.type;
-                                suggestionid = e.id;
-                                e.children.forEach(function(e2){
-                                    if (e2.text) {
+                    annotation.suggestions.forEach(function(suggestiontuple){
+                        suggestiontuple.forEach(function(suggestion_id){
+                            if ((annotation.structural) && (!suggestiontype)) {
+                                var suggestion = structure[suggestion_id];
+                                suggestiontype = suggestion.type;
+                                suggestionid = suggestion.id;
+                                forannotations(suggestion_id,function(annotation2){
+                                    if (annotation2.type == "t") {
                                         if (textblob) textblob += " ";
-                                        textblob += e2.text;
+                                        textblob += annotation2.text;
                                     }
                                 });
                             }
@@ -115,7 +128,6 @@ function renderdeletions() { //and suggested insertions
                     $('#' + valid(suggestionid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
                     suggestinsertion[suggestionid] = annotation;
                 }
-            });
         });
 
     }
