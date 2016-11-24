@@ -366,16 +366,11 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
 }
 
 function checkparentincorrection(annotation, correctionid) {
-    //TODO: refactor!!
     var parentincorrection = false;
-    annotation.scope.forEach(function(t){
-        Object.keys(annotations[t]).forEach(function(aid) {
-            var a = annotations[t][aid];
-            if (aid == 'self') {
-                //alert(t + ": '" + a.incorrection + "' vs '" + annotation.incorrection + "'");
-                if ((a.incorrection) && (a.incorrection[0] == annotation.incorrection[0]))  {
-                    parentincorrection = t;
-                }
+    annotation.scope.forEach(function(structure_id){
+        forannotations(structure_id,function(a){
+            if ((a.incorrection) && (a.incorrection[0] == annotation.incorrection[0]))  {
+                parentincorrection = structure_id;
             }
         });
     });
