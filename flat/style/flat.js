@@ -179,6 +179,7 @@ function rendertextclass() {
 }
 
 function setupcorrection(correction) {
+    //TODO: refactor
     if (!((correction.original) || (correction.new) || (correction.current) || (correction.suggestions))) {
         //process
         correction.children.forEach(function(correctionchild){
@@ -645,10 +646,10 @@ function auto_grow(element) {
 function sort_targets(targets) {
     //Sort a list of target IDs (words only) so that they are in proper order of appearance
     var sameparent = false;
-    if ((targets.length > 0) && (annotations[targets[0]]) && (annotations[targets[0]].self.parent) && (annotations[annotations[targets[0]].self.parent].self.wordorder)) {
-        sameparent = annotations[targets[0]].self.parent;
+    if ((targets.length > 0) && (structure[targets[0]]) && (structure[targets[0]].parent) && (structure[structure[targets[0]].parent].structure)) {
+        sameparent = structure[targets[0]].parent;
         for (var i = 1; i < target.length; i++) {
-            if (annotations[targets[0]].self.parent != sameparent) {
+            if (structure[targets[0]].parent != sameparent) {
                 sameparent = false;
                 break;
             }
@@ -657,9 +658,9 @@ function sort_targets(targets) {
     var sortedtargets = [];
     if (sameparent) {
         //sort targets by looking at the word order for the parent element
-        for (var j = 0; j < annotations[sameparent].self.wordorder.length; j++) {
-            if (targets.indexOf(annotations[sameparent].self.wordorder[j]) > -1) {
-                sortedtargets.push(annotations[sameparent].self.wordorder[j]);
+        for (var j = 0; j < structure[sameparent].structure.length; j++) {
+            if (targets.indexOf(structure[sameparent].structure[j]) > -1) {
+                sortedtargets.push(structure[sameparent].structure[j]);
             }
         }
     } else { 
