@@ -14,7 +14,7 @@ var perspective_end = null;
 
 var selector = ""; //structural element to select when clicking/hovering: empty selector selects deepest element (default)
 
-var struction = {}; //structural items
+var structure = {}; //structural items
 var annotations = {}; //annotations per structure item
 var latestannotations = {}; //latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
 var lateststructure = {}; //latest structure cache (structureid -> true map), will be populated again by loadstructure()
@@ -280,7 +280,7 @@ function update(data, extracallback) {
                     //update the existing elements
                     selector[0].outerHTML = returnitem.html;
                 } else if (!havecontent) {
-                    //structure does not exist yet and we we don't have content
+                    //structure does not exist yet and we don't have content
                     //yet, add to main document
                     $('#document').append(returnitem.html);
                 }
