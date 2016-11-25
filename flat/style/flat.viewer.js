@@ -220,11 +220,11 @@ function getspantext(annotation, explicit) {
     } 
     targets = sort_targets(targets);
     targets.forEach(function(target){
-        forannotation(target,function(annotation2){
-                if ((annotation2.type == "t") && (annotation2.class == "current")) {
-                    if (spantext) spantext += " ";
-                    spantext += annotation2.text;
-                }
+        forannotations(target,function(annotation2){
+            if ((annotation2.type == "t") && (annotation2.class == "current")) {
+                if (spantext) spantext += " ";
+                spantext += annotation2.text;
+            }
         });
     });
     return spantext;

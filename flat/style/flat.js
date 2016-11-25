@@ -679,7 +679,7 @@ function sort_targets(targets) {
     var sameparent = false;
     if ((targets.length > 0) && (structure[targets[0]]) && (structure[targets[0]].parent) && (structure[structure[targets[0]].parent].structure)) {
         sameparent = structure[targets[0]].parent;
-        for (var i = 1; i < target.length; i++) {
+        for (var i = 1; i < targets.length; i++) {
             if (structure[targets[0]].parent != sameparent) {
                 sameparent = false;
                 break;
