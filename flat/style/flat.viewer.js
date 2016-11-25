@@ -644,6 +644,7 @@ function setannotationfocus(t,set) {
             renderdeletions();
         }
     } else {
+        //this is a clearing action
         if ((annotationfocus) && (annotationfocus.type == 'correction')) {
             showdeletions = false;
             renderdeletions(); //will delete the ones shown
@@ -657,6 +658,7 @@ function removeclasscolors(toggle) {
     for (var i = 1; i <= NROFCLASSES; i++) {
         $('.class' + i).removeClass('class' + i);
     }
+    $('.classother').removeClass('classother');
     $('.focustype').removeClass('focustype');
     $('.undofocustype').removeClass('undofocustype');
     if (toggle) {
