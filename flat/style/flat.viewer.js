@@ -404,7 +404,7 @@ function checkparentincorrection(annotation, correctionid) {
     var parentincorrection = false;
     annotation.scope.forEach(function(structure_id){
         forannotations(structure_id,function(a){
-            if ((a.incorrection) && (a.incorrection[0] == annotation.incorrection[0]))  {
+            if ((a.incorrection) && (a.incorrection == annotation.incorrection))  {
                 parentincorrection = structure_id;
             }
         });
@@ -494,17 +494,16 @@ function renderannotation(annotation, norecurse) {
     var renderedcorrections = []; //buffer of corrections rendered, to prevent duplicates
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
-        annotation.incorrection.forEach(function(correctionid){
-            //is it really this item or is the entire parent part of the
-            //correction? in the latter case we don't want to display a correction
-            //here
-            if (!checkparentincorrection(annotation, correctionid)) {
-                renderedcorrections.push(correctionid);
-                if (annotations[correctionid]) {
-                    s = s + rendercorrection( correctionid, true);
-                }
+        //
+        //is it really this item or is the entire parent part of the
+        //correction? in the latter case we don't want to display a correction
+        //here
+        if (!checkparentincorrection(annotation, annotation.incorrection)) {
+            renderedcorrections.push(annotation.incorrection);
+            if (annotations[correctionid]) {
+                s = s + rendercorrection( annotation.incorrection, true);
             }
-        });
+        }
     }
     if (annotation.hassuggestions)  {
         annotation.hassuggestions.forEach(function(correctionid){
