@@ -96,10 +96,10 @@ function loadstructure(structureresponse) {
     //referenced by other structure or other updated annotations
 }
 
-function loadtext(annotationlist) {
+function loadtext(annotationresponse) {
     //reload text from the annotation data response back into the DOM structure, called by update()
-    annotationlist.forEach(function(annotation){
-        if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
+    forlatestannotations(function(annotation){
+        if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current") && (annotation.auth)) {
             if (annotation.targets) {
                 annotation.targets.forEach(function(target){
                     if (target) { $('#' + valid(target) + " span.lbl").html(annotation.text); }
@@ -293,8 +293,8 @@ function update(data, extracallback) {
                 loadstructure(returnitem.structure);
             }
             if (returnitem.annotations) {
-                loadtext(returnitem.annotations);
                 loadannotations(returnitem.annotations);
+                loadtext(returnitem.annotations);
             }
             if (returnitem.elementid) {
                 //reregister handlers
