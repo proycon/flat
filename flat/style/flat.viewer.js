@@ -299,7 +299,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     } else {
                         e = annotations[new_id];
                     }
-                    if (viewannotations[e.type+"/"+e.set]) {
+                    if ((correction.structural) || (viewannotations[e.type+"/"+e.set])) {
                         s = s + "<tr><th>New";
                         if (addlabels) {
                             s = s + " " + folia_label(e.type, e.set);
@@ -323,7 +323,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     } else {
                         e = annotations[current_id];
                     }
-                    if (viewannotations[e.type+"/"+e.set]) {
+                    if ((correction.structural) || (viewannotations[e.type+"/"+e.set])) {
                         s = s + "<tr><th>Current";
                         if (addlabels) {
                             s = s + " " + folia_label(e.type, e.set);
@@ -348,7 +348,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 } else {
                     original = annotations[original_id];
                 }
-                if (viewannotations[original.type+"/"+original.set]) {
+                if ((correction.structural) ||  (viewannotations[original.type+"/"+original.set])) {
                     s = s + "<tr><th>Original";
                     if (addlabels) {
                         s = s + " " + folia_label(original.type, original.set);
