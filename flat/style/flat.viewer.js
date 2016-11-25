@@ -103,20 +103,22 @@ function renderdeletions() { //and suggested insertions
                     if ((classrank) && (classrank[annotation.class])) {
                         c = ' class' + classrank[annotation.class];
                     }                                
-                    annotation.suggestions.forEach(function(suggestiontuple){
-                        suggestiontuple.forEach(function(suggestion_id){
-                            if ((annotation.structural) && (!suggestiontype)) {
-                                var suggestion = structure[suggestion_id];
-                                suggestiontype = suggestion.type;
-                                suggestionid = suggestion.id;
-                                forannotations(suggestion_id,function(annotation2){
-                                    if (annotation2.type == "t") {
-                                        if (textblob) textblob += " ";
-                                        textblob += annotation2.text;
-                                    }
-                                });
-                            }
-                        });                        
+                    annotation.suggestions.forEach(function(suggestion){
+                        if (suggestions.structure) {
+                            suggestion.structure.forEach(function(suggestedannotation_id){
+                                if (!suggestiontype) {
+                                    var suggestedannotation = structure[suggestedannotation_id];
+                                    suggestiontype = suggestedannotation.type;
+                                    suggestionid = suggestedannotation.id;
+                                    forannotations(suggestedannotation_id,function(annotation2){
+                                        if (annotation2.type == "t") {
+                                            if (textblob) textblob += " ";
+                                            textblob += annotation2.text;
+                                        }
+                                    });
+                                }
+                            });                        
+                        }
                         return; //first suggestion only
                     });                        
                     s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
@@ -259,7 +261,6 @@ function getclasslabel(set, key) {
 
 function rendercorrection(correctionid, addlabels, explicitnew) {
     //pass either an ID or an annotation element
-    //TODO: refactor!!!
     var s = "";
     var correction = annotations[correctionid];
     if ((viewannotations[correction.type+"/"+correction.set])) {
@@ -290,6 +291,12 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
         if (explicitnew) {
             if ((correction.new) && (correction.new.length > 0)) {
                 correction.new.forEach(function(new_id){
+                    var e;
+                    if (correction.structural) {
+                        e = structure[new_id];
+                    } else {
+                        e = annotations[new_id];
+                    }
                     if (viewannotations[e.type+"/"+e.set]) {
                         s = s + "<tr><th>New";
                         if (addlabels) {
@@ -297,13 +304,19 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         }
                         s = s + ":</th><td> ";
                         s = s +  "<div class=\"correctionchild\">";
-                        s = s + renderannotation(e,true);
+                        s = s + renderannotation(e,true); //TODO: refactor: does this work for structural items?
                         s = s + "</div></td></tr>";
                     }
                 });
             }
             if ((correction.current) && (correction.current.length > 0)) {
-                correction.current.forEach(function(e){
+                correction.current.forEach(function(current_id){
+                    var e;
+                    if (correction.structural) {
+                        e = structure[current_id];
+                    } else {
+                        e = annotations[current_id];
+                    }
                     if (viewannotations[e.type+"/"+e.set]) {
                         s = s + "<tr><th>Current";
                         if (addlabels) {
@@ -311,14 +324,20 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         }
                         s = s + ":</th><td> ";
                         s = s +  "<div class=\"correctionchild\">";
-                        s = s + renderannotation(e,true);
+                        s = s + renderannotation(e,true); //TODO: refactor: does this work for structural items?
                         s = s + "</div></td></tr>";
                     }
                 });
             }
         }
         if ((correction.original) && (correction.original.length > 0)) {
-            correction.original.forEach(function(original){
+            correction.original.forEach(function(original_id){
+                    var original;
+                    if (correction.structural) {
+                        original = structure[original_id];
+                    } else {
+                        original = annotations[original_id];
+                    }
                 if (viewannotations[original.type+"/"+original.set]) {
                     s = s + "<tr><th>Original";
                     if (addlabels) {
@@ -339,21 +358,36 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                 if (suggestion.confidence) s = s + "Confidence: " + suggestion.confidence;
                 if ((suggestion.n) || (suggestion.confidence)) s = s + "</span>";
                 s = s +  "<div class=\"correctionchild\">";
-                suggestion.children.forEach(function(child){
-                    s  = s + "<table>";
-                    label = folia_label(child.type, child.set);
-                    s = s + "<tr><th>" + label + "</th><td>";
-                    s = s +  renderannotation(child,true);
-                    s = s + "</td></tr>";
-                    if ((folia_isstructure(child.type)) && (child.children)) {
-                        child.children.forEach(function(subchild){
-                            s = s + "<tr><th>" + folia_label(subchild.type, subchild.set) + "</th><td>";
-                            s = s + renderannotation(subchild,true);
-                            s = s + "</td></tr>";
-                        });
-                    }
-                    s = s + "</table>";
-                });
+                if (suggestion.structure) {
+                    suggestion.structure.forEach(function(child_id){
+                        var child = structure[child_id];
+                        s  = s + "<table>";
+                        label = folia_label(child.type, child.set);
+                        s = s + "<tr><th>" + label + "</th><td>";
+                        s = s +  renderannotation(child,true); //TODO: refactor: not sure if this works for structural element now
+                        s = s + "</td></tr>";
+                        //Also render annotations pertaining to this structural suggestion
+                        if (child.annotations) {
+                            child.annotations.forEach(function(subchild_id){
+                                var subchild = annotations[subchild_id];
+                                s = s + "<tr><th>" + folia_label(subchild.type, subchild.set) + "</th><td>";
+                                s = s + renderannotation(subchild,true);
+                                s = s + "</td></tr>";
+                            });
+                        }
+                        s = s + "</table>";
+                    });
+                } else if (suggestion.annotations) {
+                    suggestion.annotations.forEach(function(child_id){
+                        var child = structure[child_id];
+                        s  = s + "<table>";
+                        label = folia_label(child.type, child.set);
+                        s = s + "<tr><th>" + label + "</th><td>";
+                        s = s +  renderannotation(child,true);
+                        s = s + "</td></tr>";
+                        s = s + "</table>";
+                    });
+                }
                 s = s + "</div></td></tr>";
             });
         }
@@ -455,7 +489,7 @@ function renderannotation(annotation, norecurse) {
             }
         }
     }
-    var renderedcorrections = [];
+    var renderedcorrections = []; //buffer of corrections rendered, to prevent duplicates
     if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
         annotation.incorrection.forEach(function(correctionid){
@@ -464,7 +498,7 @@ function renderannotation(annotation, norecurse) {
             //here
             if (!checkparentincorrection(annotation, correctionid)) {
                 renderedcorrections.push(correctionid);
-                if (corrections[correctionid]) {
+                if (annotations[correctionid]) {
                     s = s + rendercorrection( correctionid, true);
                 }
             }
@@ -472,8 +506,8 @@ function renderannotation(annotation, norecurse) {
     }
     if (annotation.hassuggestions)  {
         annotation.hassuggestions.forEach(function(correctionid){
-            if (renderedcorrections.indexOf(correctionid)==-1) {
-                if (corrections[correctionid]) {
+            if (renderedcorrections.indexOf(correctionid)==-1) { //only render correction if it wasn't already rendered by the previous step
+                if (annotations[correctionid]) {
                     s = s + rendercorrection( correctionid, true);
                 }
             }
