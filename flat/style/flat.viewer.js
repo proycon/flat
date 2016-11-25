@@ -306,7 +306,11 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         }
                         s = s + ":</th><td> ";
                         s = s +  "<div class=\"correctionchild\">";
-                        s = s + renderannotation(e,true); //TODO: refactor: does this work for structural items?
+                        if (correction.structural) {
+                            s = s + renderstructure(e,true);
+                        } else {
+                            s = s + renderannotation(e,true);
+                        }
                         s = s + "</div></td></tr>";
                     }
                 });
@@ -326,7 +330,11 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         }
                         s = s + ":</th><td> ";
                         s = s +  "<div class=\"correctionchild\">";
-                        s = s + renderannotation(e,true); //TODO: refactor: does this work for structural items?
+                        if (correction.structural) {
+                            s = s + renderstructure(e,true);
+                        } else {
+                            s = s + renderannotation(e,true);
+                        }
                         s = s + "</div></td></tr>";
                     }
                 });
@@ -334,12 +342,12 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
         }
         if ((correction.original) && (correction.original.length > 0)) {
             correction.original.forEach(function(original_id){
-                    var original;
-                    if (correction.structural) {
-                        original = structure[original_id];
-                    } else {
-                        original = annotations[original_id];
-                    }
+                var original;
+                if (correction.structural) {
+                    original = structure[original_id];
+                } else {
+                    original = annotations[original_id];
+                }
                 if (viewannotations[original.type+"/"+original.set]) {
                     s = s + "<tr><th>Original";
                     if (addlabels) {
@@ -347,7 +355,11 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                     }
                     s = s + ":</th><td> ";
                     s = s +  "<div class=\"correctionchild\">";
-                    s = s + renderannotation(original,true);
+                    if (correction.structural) {
+                        s = s + renderstructure(original,true);
+                    } else {
+                        s = s + renderannotation(original,true);
+                    }
                     s = s + "</div></td></tr>";
                 }
             });
@@ -366,7 +378,7 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         s  = s + "<table>";
                         label = folia_label(child.type, child.set);
                         s = s + "<tr><th>" + label + "</th><td>";
-                        s = s +  renderannotation(child,true); //TODO: refactor: not sure if this works for structural element now
+                        s = s + renderstructure(child,true);
                         s = s + "</td></tr>";
                         //Also render annotations pertaining to this structural suggestion
                         if (child.annotations) {
@@ -421,6 +433,39 @@ function checkparentincorrection(annotation, correctionid) {
 
 function renderspanrole(spanroledata) {
     return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspantext(spanroledata) + "</span>";
+}
+
+function renderstructure(structureelement, norecurse) {
+    /* renders a structure element in the details popup */
+    var s = "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id;
+    if (structureelement.class) {
+        s = s + " &bull; <span class=\"class\">" + structureelement.class + "</span>";
+    }
+    s = s + "</div><table>";
+    var renderedannotations = [];
+    forannotations(structureelement.id,function(annotation){
+        if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
+            if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction"  )) { //non-structural corrections are handled by renderannotation() itself, structural corrections are handled separately after this section
+                var label = folia_label(annotation.type, annotation.set);
+                var setname = "";
+                if (annotation.set) {
+                    setname = annotation.set;
+                }
+                if (setname === "undefined") setname = "";
+                var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                s = s + renderannotation(annotation);
+                s = s + "</td></tr>";
+                renderedannotations.push([annotation.type,s]);
+            }
+        }
+    });
+    renderedannotations.sort(sortdisplayorder);
+    renderedannotations.forEach(function(renderedannotation){s=s+renderedannotation[1];});
+    s = s + "</table>";
+    if ((structureelement.incorrection) && (!norecurse)) {
+        s = s + rendercorrection( structureelement.incorrection, true);
+    }
+    return s;
 }
 
 function renderannotation(annotation, norecurse) {
@@ -539,31 +584,8 @@ function showinfo(element) {
         if (element.id) {
             var s = "";
             var structureelement = structure[element.id];
-            if (structureelement) {            
-                s = "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id + " &bull; " + structureelement.class + "</div><table>";
-                var renderedannotations = [];
-                forannotations(element.id,function(annotation){
-                    if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
-                        if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction"  )) { //non-structural corrections are handled by renderannotation() itself, structural corrections are handled separately after this section
-                            var label = folia_label(annotation.type, annotation.set);
-                            var setname = "";
-                            if (annotation.set) {
-                                setname = annotation.set;
-                            }
-                            if (setname === "undefined") setname = "";
-                            var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                            s = s + renderannotation(annotation);
-                            s = s + "</td></tr>";
-                            renderedannotations.push([annotation.type,s]);
-                        }
-                    }
-                });
-                renderedannotations.sort(sortdisplayorder);
-                renderedannotations.forEach(function(renderedannotation){s=s+renderedannotation[1];});
-                s = s + "</table>";
-                if (structureelement.incorrection) {
-                    s = s + rendercorrection( structureelement.incorrection, true);
-                }
+            if ((structureelement) && (structureelement.auth)) {            
+                s = renderstructure(structureelement);
             } else if ($(element).hasClass('deleted')) {
                 s = "<div id=\"id\"> " + element.id + "</div>";
                 s += "<span class=\"specialdeleted\">Deleted structure</span>";
