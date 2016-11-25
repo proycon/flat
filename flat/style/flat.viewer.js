@@ -511,7 +511,7 @@ function renderannotation(annotation, norecurse) {
             }
         }
     }
-    if (annotation.hassuggestions)  {
+    if ((annotation.hassuggestions) &&(!norecurse))  {
         annotation.hassuggestions.forEach(function(correctionid){
             if (renderedcorrections.indexOf(correctionid)==-1) { //only render correction if it wasn't already rendered by the previous step
                 if (annotations[correctionid]) {
@@ -545,14 +545,13 @@ function showinfo(element) {
                 forannotations(element.id,function(annotation){
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction"  )) { //non-structural corrections are handled by renderannotation() itself, structural corrections are handled separately after this section
-                            var s = "";
                             var label = folia_label(annotation.type, annotation.set);
                             var setname = "";
                             if (annotation.set) {
                                 setname = annotation.set;
                             }
                             if (setname === "undefined") setname = "";
-                            s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                            var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                             s = s + renderannotation(annotation);
                             s = s + "</td></tr>";
                             renderedannotations.push([annotation.type,s]);
