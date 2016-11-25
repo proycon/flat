@@ -410,11 +410,10 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
 function checkparentincorrection(annotation, correctionid) {
     var parentincorrection = false;
     annotation.scope.forEach(function(structure_id){
-        forannotations(structure_id,function(a){
-            if ((a.incorrection) && (a.incorrection == annotation.incorrection))  {
-                parentincorrection = structure_id;
-            }
-        });
+        var structureelement = structure[structure_id];
+        if ((structureelement.incorrection) && (structureelement.incorrection == annotation.incorrection))  {
+            parentincorrection = structure_id;
+        }
     });
     return parentincorrection;
 }
@@ -499,7 +498,7 @@ function renderannotation(annotation, norecurse) {
         }
     }
     var renderedcorrections = []; //buffer of corrections rendered, to prevent duplicates
-    if ( (annotation.incorrection) && (annotation.incorrection.length > 0) && (!norecurse)) {
+    if ( (annotation.incorrection) && (!norecurse)) {
         //is this item part of a correction? if so, deal with it
         //
         //is it really this item or is the entire parent part of the
@@ -507,7 +506,7 @@ function renderannotation(annotation, norecurse) {
         //here
         if (!checkparentincorrection(annotation, annotation.incorrection)) {
             renderedcorrections.push(annotation.incorrection);
-            if (annotations[correctionid]) {
+            if (annotations[annotation.incorrection]) {
                 s = s + rendercorrection( annotation.incorrection, true);
             }
         }
@@ -545,7 +544,7 @@ function showinfo(element) {
                 var renderedannotations = [];
                 forannotations(element.id,function(annotation){
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
-                        if ((viewannotations[annotation.type+"/" + annotation.set]) ) {
+                        if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction"  )) { //non-structural corrections are handled by renderannotation() itself, structural corrections are handled separately after this section
                             var s = "";
                             var label = folia_label(annotation.type, annotation.set);
                             var setname = "";
@@ -553,15 +552,9 @@ function showinfo(element) {
                                 setname = annotation.set;
                             }
                             if (setname === "undefined") setname = "";
-                            if (annotation.type == "correction") {
-                                s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                                s = s + rendercorrection( annotation.id, true);
-                                s = s + "</td></tr>";
-                            } else {
-                                s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                                s = s + renderannotation(annotation);
-                                s = s + "</td></tr>";
-                            }
+                            s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                            s = s + renderannotation(annotation);
+                            s = s + "</td></tr>";
                             renderedannotations.push([annotation.type,s]);
                         }
                     }
