@@ -172,7 +172,7 @@ function toggleoriginal() {
                         $('#' + valid(structureelement.id) + ' span.lbl').html(textblob);
                     } else if (structureelement.type == 's') {
                         if (annotation.new.length > 0)  {
-                            if ((structural) && ($('#' + valid(annotation.new[0])).hasClass('w'))) {
+                            if ((annotation.structural) && ($('#' + valid(annotation.new[0])).hasClass('w'))) {
                                 $('#' + valid(annotation.new[0]) + ' span.lbl').html(textblob);
                             } else {
                                 //MAYBE TODO: no solution for non-structural text corrections on higher-levels?
