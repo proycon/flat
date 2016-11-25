@@ -141,56 +141,56 @@ function toggleoriginal() {
     if (showoriginal) {
         $('#toggleoriginal').addClass("on");
         forallannotations(function(structureelement, annotation){
-                if ((annotation.type == 'correction') && (annotation.original) && (annotation.original.length > 0)) {
-                    var textblob = "";
-                    var originalid = "";
-                    //find original text
-                    annotation.original.forEach(function(original_id){
-                        //is the correction structural?
-                        var original;
-                        if (annotation.structural) {
-                            original = structure[original_id];
-                            //find text belonging to original structural element
-                            forannotations(original_id,function(annotation2){
-                                if (annotation2.type == "t") {
-                                    if (textblob) textblob += " ";
-                                    textblob += annotation2.text;
-                                }
-                            });
-                            if ((original.type == 'w') && (originalid === "")) originalid = original.id;
-                        } else {
-                            //non-structural correction
-                            original = annotations[original_id];
-                            if (original.text) {
+            if ((annotation.type == 'correction') && (annotation.original) && (annotation.original.length > 0)) {
+                var textblob = "";
+                var originalid = "";
+                //find original text
+                annotation.original.forEach(function(original_id){
+                    //is the correction structural?
+                    var original;
+                    if (annotation.structural) {
+                        original = structure[original_id];
+                        //find text belonging to original structural element
+                        forannotations(original_id,function(annotation2){
+                            if (annotation2.type == "t") {
                                 if (textblob) textblob += " ";
-                                textblob += original.text;
+                                textblob += annotation2.text;
                             }
-                        }
-                    });                        
-
-                    if (structureelement.type == 'w') {
-                        $('#' + valid(structureelement.id) + ' span.lbl').html(textblob);
-                    } else if (structureelement.type == 's') {
-                        if (annotation.new.length > 0)  {
-                            if ((annotation.structural) && ($('#' + valid(annotation.new[0])).hasClass('w'))) {
-                                $('#' + valid(annotation.new[0]) + ' span.lbl').html(textblob);
-                            } else {
-                                //MAYBE TODO: no solution for non-structural text corrections on higher-levels?
-                            }
-                        } else {
-                            //must be a deletion, show
-                            if (structureelement.previousword) {
-                                //check if the deletion has a colored class
-                                var c = '';
-                                if (classrank[annotation.class]) {
-                                    c = ' class' + classrank[annotation.class];
-                                }                                
-                                $('#' + valid(structureelement.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
-                            }
+                        });
+                        if ((original.type == 'w') && (originalid === "")) originalid = original.id;
+                    } else {
+                        //non-structural correction
+                        original = annotations[original_id];
+                        if (original.text) {
+                            if (textblob) textblob += " ";
+                            textblob += original.text;
                         }
                     }
+                });                        
 
+                if (structureelement.type == 'w') {
+                    $('#' + valid(structureelement.id) + ' span.lbl').html(textblob);
+                } else if (structureelement.type == 's') {
+                    if (annotation.new.length > 0)  {
+                        if ((annotation.structural) && ($('#' + valid(annotation.new[0])).hasClass('w'))) {
+                            $('#' + valid(annotation.new[0]) + ' span.lbl').html(textblob);
+                        } else {
+                            //MAYBE TODO: no solution for non-structural text corrections on higher-levels?
+                        }
+                    } else {
+                        //must be a deletion, show
+                        if (structureelement.previousword) {
+                            //check if the deletion has a colored class
+                            var c = '';
+                            if (classrank[annotation.class]) {
+                                c = ' class' + classrank[annotation.class];
+                            }                                
+                            $('#' + valid(structureelement.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
+                        }
+                    }
                 }
+
+            }
         });
     } else {
         $('#toggleoriginal').removeClass("on");
