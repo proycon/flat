@@ -745,10 +745,10 @@ function showdeletions() {
 
 function partofspanhead(annotation, target) {
     var partofhead = false;
-    if (annnotation.children) {
+    if (annotation.children) {
         annotation.children.forEach(function(child) {
             if (child.type == "hd") {
-                if (child.words.indexOf(target) != -1) {
+                if (child.targets.indexOf(target) != -1) {
                     partofhead = true;
                 }
             }
@@ -785,140 +785,138 @@ function renderglobannotations(all) {
             //var changed = false;
             $(globannotationsorder).each(function(annotationtype){ //ensure we insert types in the desired order
                 annotationtype = globannotationsorder[annotationtype];
-                forannotations_custom(function(annotation){
-                    if (annotationkey != "self") {
-                        if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
-                                //changed = true;
-                                var s = "";
-                                if (annotation.class) {
-                                    s = "<span class=\""+annotation.type+"\">" + annotation.class + "</span>";
-                                } else {
-                                    s = "<span class=\""+annotation.type+"\">?</span>";
+                forannotations_custom(structureelement.id, function(annotation){
+                    if ((annotation.type == annotationtype) && (viewglobannotations[annotation.type + '/' + annotation.set])) {
+                        //changed = true;
+                        var s = "";
+                        if (annotation.class) {
+                            s = "<span class=\""+annotation.type+"\">" + annotation.class + "</span>";
+                        } else {
+                            s = "<span class=\""+annotation.type+"\">?</span>";
+                        }
+                        if (annotation.span) {
+                                var extra = "";
+                                var usecontext = true;
+                                if (annotation.type == "dependency") {
+                                    //for dependencies we point from the dependents to the head.
+        
+                                    //grab the head
+                                    var headtext = "";
+                                    var partofhead = partofspanhead(annotation, structureelement.id);
+                                    if (annotation.children) {
+                                        annotation.children.forEach(function(child) {
+                                            if (child.type == "hd") {
+                                                headtext = getspantext(child);
+                                            }
+                                        });
+                                    }
+                                    if (partofhead) { //if we're part of the head, we don't render this annotation here
+                                        usecontext = false;
+                                        s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
+                                    } else {
+                                        extra = "&Rightarrow;<span class=\"headtext\">" + headtext + "</span>";
+                                    }
                                 }
-                                if (annotation.span) {
-                                        var extra = "";
-                                        var usecontext = true;
-                                        if (annotation.type == "dependency") {
-                                            //for dependencies we point from the dependents to the head.
-                
-                                            //grab the head
-                                            var headtext = "";
-                                            var partofhead = partofspanhead(annotation, structureelement.id);
-                                            if (annotation.children) {
-                                                annotation.children.forEach(function(child) {
-                                                    if (child.type == "hd") {
-                                                        headtext = getspantext(child);
-                                                    }
-                                                });
-                                            }
-                                            if (partofhead) { //if we're part of the head, we don't render this annotation here
-                                                usecontext = false;
-                                                s = "<span class=\""+annotation.type+"\">HD&Leftarrow;" + annotation.class + "</span>";
-                                            } else {
-                                                extra = "&Rightarrow;<span class=\"headtext\">" + headtext + "</span>";
-                                            }
-                                        }
 
-                                        if (usecontext) {
-                                            var previnspan = false;
-                                            var nextinspan = false;
-                                            //If the previous word is in the same
-                                            //span we do not repeat it explicitly
-                                            //but draw a line
-                                            var prevwordid = structureelement.previousword;
-                                            if (structure[prevwordid]) {
-                                                forannotations(prevword_id, function(prevannotation){
-                                                    if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
-                                                        //previous word part of span already
-                                                        if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
-                                                            previnspan = true;
-                                                        }
-                                                    }
-                                                });
-                                            }
-
-                                            //is the next word still part of the span?
-                                            var nextwordid = structureelement.nextword;
-                                            if (annotations[nextwordid]) {
-                                                forannotations(prevword_id, function(nextannotation){
-                                                    if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
-                                                        if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
-                                                            nextinspan = true;
-                                                        }
-                                                    }
-                                                });
-                                            }
-
-                                            if ((previnspan) && (nextinspan)) {
-                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
-                                            } else if (nextinspan) {
-                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
-                                            } else if (previnspan) {
-                                                s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
-                                            } else {
-                                                s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
-                                            }
-                                        }
-
-
-                                        //this is a complex annotatation that
-                                        //may span multiple lines, build a
-                                        //container for it. All containers will
-                                        //have the same height so content can
-                                        //be aligned.
-                                        var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
-                                        if (!containers[containerkey]) {
-                                            containers[containerkey] = [];
-                                        }
-                                        var slot = -1;
-                                        //find the slot used before
-                                        for (var j = 0; j < containers[containerkey].length; j++) {
-                                            if (containers[containerkey][j].annotation.id === annotation.id) {
-                                                slot = containers[containerkey][j].slot;
-                                            }
-                                        }
-                                        if (slot == -1) {
-                                            //find the first free slot
-                                            slot = 0;
-                                            while (slot < 100) {
-                                                var found = false;
-                                                containers[containerkey].forEach(function(container){
-                                                    if (container.slot === slot) {
-                                                        //slot exists already
-                                                        //but does the span of this annotation overlap with the one currently under consideration?
-                                                        annotation.scope.forEach(function(spanmember){
-                                                            if (annotations[container.annotation.id].scope.indexOf(spanmember) != -1) {
-                                                                found = true;
-                                                                return;
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                                if (!found) {
-                                                    break;
-                                                } else {
-                                                    slot++;
+                                if (usecontext) {
+                                    var previnspan = false;
+                                    var nextinspan = false;
+                                    //If the previous word is in the same
+                                    //span we do not repeat it explicitly
+                                    //but draw a line
+                                    var prevwordid = structureelement.previousword;
+                                    if (structure[prevwordid]) {
+                                        forannotations(prevwordid, function(prevannotation){
+                                            if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                //previous word part of span already
+                                                if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
+                                                    previnspan = true;
                                                 }
                                             }
-
-                                        }
-
-                                        containers[containerkey].push({
-                                            'html': s, 
-                                            'annotation': annotation,
-                                            'target': structureelement.id,
-                                            'slot': slot,
-                                        }); 
-                                        paintedglobannotations[structureelement.id] = true;
-                                } else {
-                                    //no span, no need for intermediate container structure, directly add
-                                    if (targetabselection === null) {
-                                        targetabselection = $('#' + valid(structureelement.id) + " span.ab");
-                                        targetabselection.css('display','none'); 
-                                        paintedglobannotations[structureelement.id] = true;
+                                        });
                                     }
-                                    targetabselection.append(s);
+
+                                    //is the next word still part of the span?
+                                    var nextwordid = structureelement.nextword;
+                                    if (structure[nextwordid]) {
+                                        forannotations(nextwordid, function(nextannotation){
+                                            if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
+                                                    nextinspan = true;
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                    if ((previnspan) && (nextinspan)) {
+                                        s = "<span class=\""+annotation.type+"\" style=\"text-align: center\">&horbar;</span>";
+                                    } else if (nextinspan) {
+                                        s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "</span>";
+                                    } else if (previnspan) {
+                                        s = "<span class=\""+annotation.type+"\" style=\"text-align: right\">&horbar;&rang;</span>";
+                                    } else {
+                                        s = "<span class=\""+annotation.type+"\">&lang;" + annotation.class + extra + "&rang;</span>";
+                                    }
                                 }
+
+
+                                //this is a complex annotatation that
+                                //may span multiple lines, build a
+                                //container for it. All containers will
+                                //have the same height so content can
+                                //be aligned.
+                                var containerkey = annotation.type + "/" + annotation.set + "/" + annotation.layerparent;
+                                if (!containers[containerkey]) {
+                                    containers[containerkey] = [];
+                                }
+                                var slot = -1;
+                                //find the slot used before
+                                for (var j = 0; j < containers[containerkey].length; j++) {
+                                    if (containers[containerkey][j].annotation.id === annotation.id) {
+                                        slot = containers[containerkey][j].slot;
+                                    }
+                                }
+                                if (slot == -1) {
+                                    //find the first free slot
+                                    slot = 0;
+                                    while (slot < 100) {
+                                        var found = false;
+                                        containers[containerkey].forEach(function(container){
+                                            if (container.slot === slot) {
+                                                //slot exists already
+                                                //but does the span of this annotation overlap with the one currently under consideration?
+                                                annotation.scope.forEach(function(spanmember){
+                                                    if (annotations[container.annotation.id].scope.indexOf(spanmember) != -1) {
+                                                        found = true;
+                                                        return;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                        if (!found) {
+                                            break;
+                                        } else {
+                                            slot++;
+                                        }
+                                    }
+
+                                }
+
+                                containers[containerkey].push({
+                                    'html': s, 
+                                    'annotation': annotation,
+                                    'target': structureelement.id,
+                                    'slot': slot,
+                                }); 
+                                paintedglobannotations[structureelement.id] = true;
+                        } else {
+                            //no span, no need for intermediate container structure, directly add
+                            if (targetabselection === null) {
+                                targetabselection = $('#' + valid(structureelement.id) + " span.ab");
+                                targetabselection.css('display','none'); 
+                                paintedglobannotations[structureelement.id] = true;
+                            }
+                            targetabselection.append(s);
                         }
                     }
                 }); ///
