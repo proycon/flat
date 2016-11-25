@@ -520,12 +520,12 @@ function showeditor(element) {
 
     var i;
     if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
-        if (annotations[element.id]) { //are there annotations for this element?
+        if (structure[element.id]) { //are there annotations for this element?
             var s = "";
             editoropen = true;
             sethover(element);
             editedelementid = element.id;
-            editedelementtype = annotations[element.id].self.type;
+            editedelementtype = structure[element.id].type;
             editfields = 0;
             editdata = [];
 
@@ -538,9 +538,8 @@ function showeditor(element) {
             var editformcount = 0;
 
             //Iterate over all annotations for the selected target element
-            Object.keys(annotations[element.id]).forEach(function(annotationid){
+            forannotations(element.id,function(annotation){
                 var isannotationfocus = false;
-                annotation = annotations[element.id][annotationid];
                 if (annotationfocus) {
                     if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         //this annotation is corresponds to the annotation focus
@@ -549,7 +548,7 @@ function showeditor(element) {
                     }
                 }
 
-                //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus?
+                //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus? (corrections are never shown directly)
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
 
                     //Get the human-presentable label for the annotation type
@@ -650,20 +649,25 @@ function showeditor(element) {
                             if (corrections[correctionid]) {
                                 var correction = corrections[correctionid];
                                 correction.suggestions.forEach(function(suggestion){
-                                    suggestion.children.forEach(function(child){
-                                        if ((child.type == annotation.type) && (child.set == annotation.set)) {
-                                            var value;
-                                            if (child.type == "t") {
-                                                value = child.text;
-                                            } else{
-                                                value = child.cls;
+                                    if (suggestion.annotations) { //we're in an annotation context so won't have to worry about structural corrections here
+                                        suggestion.annotations.forEach(function(child_id){
+                                            var child = annotations[child_id];
+                                            if ((child.type == annotation.type) && (child.set == annotation.set)) {
+                                                var value;
+                                                if (child.type == "t") {
+                                                    value = child.text;
+                                                } else if (child.type == "ph") {
+                                                    value = child.phon;
+                                                } else{
+                                                    value = child.cls;
+                                                }
+                                                if (suggestions.indexOf(value) == -1) {
+                                                    suggestions.push(value);
+                                                    s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
+                                                }
                                             }
-                                            if (suggestions.indexOf(value) == -1) {
-                                                suggestions.push(value);
-                                                s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
-                                            }
-                                        }
-                                    });
+                                        });
+                                    }
                                 });
                             }
                         });
