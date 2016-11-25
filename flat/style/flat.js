@@ -191,8 +191,8 @@ function rendertextclass() {
     //Renders the right text label based on the text class (currenet by default)
     forallannotations(function(structureelement, annotation){
         if ((annotation.type == "t") && (annotation.class == textclass)) {
-            lbl = $('#' + valid(structurelement.id) + " span.lbl");
-            if ((lbl.length == 1) && ($('#'  + valid(structurelement.id)).hasClass('deepest'))) {
+            lbl = $('#' + valid(structureelement.id) + " span.lbl");
+            if ((lbl.length == 1) && ($('#'  + valid(structureelement.id)).hasClass('deepest'))) {
                 if (annotation.htmltext) {
                     lbl.html(annotation.htmltext);
                 } else {
