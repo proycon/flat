@@ -1122,7 +1122,7 @@ function declare() {
 
 function editor_loadmenus() {
     /* Populate the editor menus */
-    s = "";
+    var menu = [];
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
         if ((configuration.allowededitannotations === true) || (configuration.allowededitannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowededitannotations.indexOf(annotationtype) != -1)) {
@@ -1130,11 +1130,14 @@ function editor_loadmenus() {
                 editannotations[annotationtype + "/" + set] = true;
             }
             label = folia_label(annotationtype, set);
-            s = s +  "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            menu.push([annotationtype, "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
         }
       });
     });
-    $('#annotationseditviewmenu').html(s);
+    var s_menu = "";
+    menu.sort(sortdisplayorder);
+    menu.forEach(function(e){s_menu+=e[1];});
+    $('#annotationseditviewmenu').html(s_menu);
 }
 
 function openconsole() {
