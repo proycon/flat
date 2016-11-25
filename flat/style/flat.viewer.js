@@ -472,7 +472,7 @@ function renderannotation(annotation, norecurse) {
     //renders the annotation in the details popup
     var s = "";
     var i;
-    if (!((annotation.type == "t") && (annotation.class == "current"))) {
+    if (!(((annotation.type == "t") || (annotation.type == "ph")) && (annotation.class == "current"))) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
         } else if (annotation.class) {
@@ -494,6 +494,9 @@ function renderannotation(annotation, norecurse) {
     if (annotation.type == "t") {
         if (annotation.class != "current") s = s + "<br />";
         s = s + "<span class=\"text\">" + annotation.text + "</span>";
+    } else if (annotation.type == "ph") {
+        if (annotation.class != "current") s = s + "<br />";
+        s = s + "<span class=\"text\">" + annotation.phon + "</span>";
     }
     if (annotatordetails && annotation.annotator) {
         s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
