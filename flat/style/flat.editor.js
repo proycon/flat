@@ -646,8 +646,8 @@ function showeditor(element) {
                         s += "<option value=\"\"></option>";
                         var suggestions = [];
                         annotation.hassuggestions.forEach(function(correctionid){
-                            if (corrections[correctionid]) {
-                                var correction = corrections[correctionid];
+                            if (annotations[correctionid]) {
+                                var correction = annotations[correctionid];
                                 correction.suggestions.forEach(function(suggestion){
                                     if (suggestion.annotations) { //we're in an annotation context so won't have to worry about structural corrections here
                                         suggestion.annotations.forEach(function(child_id){
@@ -1297,7 +1297,7 @@ function gather_changes() {
                 }
             }
             if (editdata[i].type == 't') {
-                if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
+                if ((editdata[i].text.indexOf(' ') > 0) && (structure[editedelementid].type == 'w'))  {
                     //there is a space in a token! This can mean a number
                     //of things
 
