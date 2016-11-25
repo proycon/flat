@@ -141,7 +141,7 @@ function toggleoriginal() {
     if (showoriginal) {
         $('#toggleoriginal').addClass("on");
         forallannotations(function(structureelement, annotation){
-                if ((annotation.type == 'correction') && (annotation.original)) {
+                if ((annotation.type == 'correction') && (annotation.original) && (annotation.original.length > 0)) {
                     var textblob = "";
                     var originalid = "";
                     //find original text
