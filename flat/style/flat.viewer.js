@@ -1067,10 +1067,12 @@ function viewer_ontimer() {
 
 
 function viewer_loadmenus() {
-    s = "";
-    s2 = "<li><a href=\"javascript:setannotationfocus()\">Clear</li>";
-    sglob = "<li><a href=\"javascript:resetglobannotationview()\">Clear</li>";
+    /* Populates the very menus with toggles based on available annotation types */
+    var viewmenu = [];
+    var focusmenu = [];
+    var globmenu = [];
     Object.keys(declarations).forEach(function(annotationtype){
+     if (!folia_isstructure(annotationtype)) { 
       Object.keys(declarations[annotationtype]).forEach(function(set){
         if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
             var state = "";
@@ -1081,7 +1083,7 @@ function viewer_loadmenus() {
                 state = "";
             }
             label = folia_label(annotationtype, set);
-            s = s +  "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            viewmenu.push([annotationtype, "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
             if (globannotationsorder.indexOf(annotationtype) != -1) {
                 if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
                     viewglobannotations[annotationtype + "/" + set] = true;
@@ -1089,18 +1091,30 @@ function viewer_loadmenus() {
                 } else {
                     state = "";
                 }
-                sglob = sglob +  "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+                globmenu.push([annotationtype, "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
             }
         }
         if ((configuration.allowedannotationfocus === true) || (configuration.allowedannotationfocus.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedannotationfocus.indexOf(annotationtype) != -1)) {
-            s2 = s2 +  "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>";
+            focusmenu.push([annotationtype,"<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>"]);
         }
 
       });
+     }
     });
-    $('#annotationsviewmenu').html(s); //TODO: sort alphabetically
-    $('#globannotationsviewmenu').html(sglob);
-    $('#annotationsfocusmenu').html(s2);
+    //sort the various menus
+
+    var s_viewmenu = "";
+    viewmenu.sort(sortdisplayorder);
+    viewmenu.forEach(function(e){s_viewmenu+=e[1];});
+    $('#annotationsviewmenu').html(s_viewmenu); 
+    var s_globmenu = "";
+    globmenu.sort(sortdisplayorder);
+    globmenu.forEach(function(e){s_globmenu+=e[1];});
+    $('#globannotationsviewmenu').html("<li><a href=\"javascript:setannotationfocus()\">Clear</li>" + s_globmenu);
+    var s_focusmenu = "";
+    focusmenu.sort(sortdisplayorder);
+    focusmenu.forEach(function(e){s_focusmenu+=e[1];});
+    $('#annotationsfocusmenu').html("<li><a href=\"javascript:resetglobannotationview()\">Clear</li>" + s_focusmenu);
 }
 
 
