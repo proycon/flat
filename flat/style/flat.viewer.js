@@ -56,82 +56,82 @@ function renderdeletions() { //and suggested insertions
     $('.suggestinsertion').remove();
     if (showdeletions) {
         forallannotations(function(structureelement, annotation){
-                var c;
-                var s;
-                var textblob = "";
-                var originalid = "";
-                var originaltype = "";
-                if ((annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
-                    //check if the deletion has a colored class
-                    if ((classrank) && (classrank[annotation.class])) {
-                        c = ' class' + classrank[annotation.class];
-                    }                                
-                    //find original text
-                    annotation.original.forEach(function(original_id){
-                        //is the correction structural?
-                        if (annotation.structural) {
-                            var original = structure[original_id];
-                            //find text belonging to original structural element
-                            forannotations(original_id,function(annotation2){
-                                if (annotation2.type == "t") {
-                                    if (textblob) textblob += " ";
-                                    textblob += annotation2.text;
-                                }
-                            });
-                            if ((!originaltype) && (folia_isstructure(original.type))) {
-                                originaltype = original.type;
-                                originalid = original.id;
-                            }
-                        } else {
-                            //non-structural correction
-                            var original = annotations[original_id];
-                            if (original.text) {
+            var c;
+            var s;
+            var textblob = "";
+            var originalid = "";
+            var originaltype = "";
+            if ((annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
+                //check if the deletion has a colored class
+                if ((classrank) && (classrank[annotation.class])) {
+                    c = ' class' + classrank[annotation.class];
+                }                                
+                //find original text
+                annotation.original.forEach(function(original_id){
+                    //is the correction structural?
+                    var original;
+                    if (annotation.structural) {
+                        original = structure[original_id];
+                        //find text belonging to original structural element
+                        forannotations(original_id,function(annotation2){
+                            if (annotation2.type == "t") {
                                 if (textblob) textblob += " ";
-                                textblob += original.text;
+                                textblob += annotation2.text;
                             }
+                        });
+                        if ((!originaltype) && (folia_isstructure(original.type))) {
+                            originaltype = original.type;
+                            originalid = original.id;
                         }
-                    });                        
-                    s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
-                    if (annotation.previous) { //TODO: does this still work after refactor?
-                        $('#' + valid(annotation.previous)).after(s);
-                    } else if (annotation.next) {
-                        $('#' + valid(annotation.next)).before(s);
-                    }
-                    $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
-                } 
-                if ((annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
-                    if ((classrank) && (classrank[annotation.class])) {
-                        c = ' class' + classrank[annotation.class];
-                    }                                
-                    annotation.suggestions.forEach(function(suggestion){
-                        if (suggestions.structure) {
-                            suggestion.structure.forEach(function(suggestedannotation_id){
-                                if (!suggestiontype) {
-                                    var suggestedannotation = structure[suggestedannotation_id];
-                                    suggestiontype = suggestedannotation.type;
-                                    suggestionid = suggestedannotation.id;
-                                    forannotations(suggestedannotation_id,function(annotation2){
-                                        if (annotation2.type == "t") {
-                                            if (textblob) textblob += " ";
-                                            textblob += annotation2.text;
-                                        }
-                                    });
-                                }
-                            });                        
+                    } else {
+                        //non-structural correction
+                        original = annotations[original_id];
+                        if (original.text) {
+                            if (textblob) textblob += " ";
+                            textblob += original.text;
                         }
-                        return; //first suggestion only
-                    });                        
-                    s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
-                    if (annotation.previous) {
-                        $('#' + valid(annotation.previous)).after(s);
-                    } else if (annotation.next) {
-                        $('#' + valid(annotation.next)).before(s);
                     }
-                    $('#' + valid(suggestionid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
-                    suggestinsertion[suggestionid] = annotation;
+                });                        
+                s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                if (annotation.previous) { //TODO: does this still work after refactor?
+                    $('#' + valid(annotation.previous)).after(s);
+                } else if (annotation.next) {
+                    $('#' + valid(annotation.next)).before(s);
                 }
+                $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+            } 
+            if ((annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
+                if ((classrank) && (classrank[annotation.class])) {
+                    c = ' class' + classrank[annotation.class];
+                }                                
+                annotation.suggestions.forEach(function(suggestion){
+                    if (suggestions.structure) {
+                        suggestion.structure.forEach(function(suggestedannotation_id){
+                            if (!suggestiontype) {
+                                var suggestedannotation = structure[suggestedannotation_id];
+                                suggestiontype = suggestedannotation.type;
+                                suggestionid = suggestedannotation.id;
+                                forannotations(suggestedannotation_id,function(annotation2){
+                                    if (annotation2.type == "t") {
+                                        if (textblob) textblob += " ";
+                                        textblob += annotation2.text;
+                                    }
+                                });
+                            }
+                        });                        
+                    }
+                    return; //first suggestion only
+                });                        
+                s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                if (annotation.previous) {
+                    $('#' + valid(annotation.previous)).after(s);
+                } else if (annotation.next) {
+                    $('#' + valid(annotation.next)).before(s);
+                }
+                $('#' + valid(suggestionid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+                suggestinsertion[suggestionid] = annotation;
+            }
         });
-
     }
 }
 
@@ -146,8 +146,9 @@ function toggleoriginal() {
                     //find original text
                     annotation.original.forEach(function(original_id){
                         //is the correction structural?
+                        var original;
                         if (annotation.structural) {
-                            var original = structure[original_id];
+                            original = structure[original_id];
                             //find text belonging to original structural element
                             forannotations(original_id,function(annotation2){
                                 if (annotation2.type == "t") {
@@ -158,7 +159,7 @@ function toggleoriginal() {
                             if ((original.type == 'w') && (originalid === "")) originalid = original.id;
                         } else {
                             //non-structural correction
-                            var original = annotations[original_id];
+                            original = annotations[original_id];
                             if (original.text) {
                                 if (textblob) textblob += " ";
                                 textblob += original.text;
@@ -419,6 +420,7 @@ function renderspanrole(spanroledata) {
 function renderannotation(annotation, norecurse) {
     //renders the annotation in the details popup
     var s = "";
+    var i;
     if (!((annotation.type == "t") && (annotation.class == "current"))) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
@@ -431,7 +433,7 @@ function renderannotation(annotation, norecurse) {
             s = s + "<br /><span class=\"text\">" + getspantext(annotation) + "</span>";
         }
         if ((annotation.children) && (annotation.children.length > 0)) {
-            for (var i = 0; i < annotation.children.length; i++) {
+            for (i = 0; i < annotation.children.length; i++) {
                 if ((annotation.children[i].type) && (folia_isspanrole(annotation.children[i].type))) {
                     s = s + renderspanrole(annotation.children[i]);
                 }
@@ -479,7 +481,7 @@ function renderannotation(annotation, norecurse) {
     }
     if (annotation.children) {
         //Render higher order annotation
-        for (var i = 0; i < annotation.children.length; i++) {
+        for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 if ((annotation.children[i].type == "comment") || (annotation.children[i].type == "desc")) {
                     s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": " + annotation.children[i].value + "</span>";
@@ -687,28 +689,27 @@ function setclasscolors() {
 
 
     forallannotations(function(structureelement, annotation){
-            if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
-                if (classrank[annotation.class]) {
-                    if ($('#' + valid(structureelement.id)).hasClass('w')) {
-                        $('#' + valid(structureelement.id)).addClass('class' + classrank[annotation.class]);
+        if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
+            if (classrank[annotation.class]) {
+                if ($('#' + valid(structureelement.id)).hasClass('w')) {
+                    $('#' + valid(structureelement.id)).addClass('class' + classrank[annotation.class]);
+                }
+                if (($('#' + valid(structureelement.id)).hasClass('s')) && (annotation.type == 'correction')) {
+                    if (annotation.new.length === 0) {
+                        //a deletion occurred
+                    } else {
+                        annotation.new.forEach(function(newtarget) {
+                            $('#' + valid(newtarget)).addClass('class' + classrank[annotation.class]);
+                        });
                     }
-                    if (($('#' + valid(structureelement.id)).hasClass('s')) && (annotation.type == 'correction')) {
-                        if (annotation.new.length === 0) {
-                            //a deletion occurred
-                        } else {
-                            annotation.new.forEach(function(newtarget) {
-                                $('#' + valid(newtarget)).addClass('class' + classrank[annotation.class]);
-                            });
-                        }
-                        if (annotation.current.length > 0) {
-                            annotation.current.forEach(function(newtarget) {
-                                $('#' + valid(newtarget)).addClass('class' + classrank[annotation.class]);
-                            });
-                        }
+                    if (annotation.current.length > 0) {
+                        annotation.current.forEach(function(newtarget) {
+                            $('#' + valid(newtarget)).addClass('class' + classrank[annotation.class]);
+                        });
                     }
                 }
             }
-        });
+        }
     });
 
     $('#legend').html(s);
