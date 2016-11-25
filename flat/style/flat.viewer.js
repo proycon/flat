@@ -7,6 +7,7 @@ var showoriginal = false; //show originals instead of corrections
 var showdeletions = false; //show deletions
 var hover = null;
 var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from top to bottom
+var displayorder = ['t','ph','lemma','pos','sense','entity','sentiment','observation','statement','chunk','su','dependency','predicate','semrole'];
 var hoverstr = null; //ID of string element we're currently hovering over
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 var NROFCLASSES = 7; //number of coloured classes
@@ -517,6 +518,16 @@ function renderannotation(annotation, norecurse) {
     return s;
 }
 
+function sortdisplayorder(a,b) {
+    /* Compare function to be used by Array.sort(), expects items to be a
+     * list/tuple with first item the type  */
+    var a_index = displayorder.indexOf(a[0]);
+    var b_index = displayorder.indexOf(b[0]);
+    if (a_index === -1) { a_index = 999; }
+    if (b_index === -1) { b_index = 999; }
+    return a_index - b_index;
+}
+
 function showinfo(element) {
     /* Populate and show the pop-up info box with annotations for the element under consideration */
     if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
@@ -525,6 +536,7 @@ function showinfo(element) {
             var structureelement = structure[element.id];
             if (structureelement) {            
                 s = "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id + " &bull; " + structureelement.class + "</div><table>";
+                renderedannotations = [];
                 forannotations(element.id,function(annotation){
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
                         if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
@@ -534,12 +546,15 @@ function showinfo(element) {
                                     setname = annotation.set;
                                 }
                                 if (setname === "undefined") setname = "";
-                                s = s + "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                                var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                                 s = s + renderannotation(annotation);
                                 s = s + "</td></tr>";
+                                renderedannotations.push([annotation.type,s]);
                         }
                     }
                 });
+                renderedannotations.sort(sortdisplayorder);
+                renderedannotations.forEach(function(renderedannotation){s=s+renderedannotation[1];});
                 s = s + "</table>";
                 if (structureelement.incorrection) {
                     s = s + rendercorrection( structureelement.incorrection, true);
@@ -609,8 +624,8 @@ function setannotationfocus(t,set) {
         $('#annotationtypefocus_' + annotationfocus.type + "_" + hash(annotationfocus.set)).addClass('on');
         forallannotations(function(structureelement, annotation){
             if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set)) {
-                if ($('#' + valid(target)).hasClass('w')) {
-                    $('#' + valid(target)).addClass("focustype");
+                if ($('#' + valid(structureelement.id)).hasClass('w')) {
+                    $('#' + valid(structureelement.id)).addClass("focustype");
                 }
             }
         });
