@@ -370,18 +370,22 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         s = s + "</td></tr>";
                         //Also render annotations pertaining to this structural suggestion
                         if (child.annotations) {
+                            var renderedannotations = [];
                             child.annotations.forEach(function(subchild_id){
                                 var subchild = annotations[subchild_id];
-                                s = s + "<tr><th>" + folia_label(subchild.type, subchild.set) + "</th><td>";
+                                var s = "<tr><th>" + folia_label(subchild.type, subchild.set) + "</th><td>";
                                 s = s + renderannotation(subchild,true);
                                 s = s + "</td></tr>";
                             });
+                            renderedannotations.sort(sortdisplayorder);
+                            renderedannotations.forEach(function(renderedannotation){s=s+renderedannotation[1];});
                         }
                         s = s + "</table>";
                     });
                 } else if (suggestion.annotations) {
+                    var renderedannotations = [];
                     suggestion.annotations.forEach(function(child_id){
-                        var child = structure[child_id];
+                        var child = annotations[child_id];
                         s  = s + "<table>";
                         label = folia_label(child.type, child.set);
                         s = s + "<tr><th>" + label + "</th><td>";
@@ -389,6 +393,8 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
                         s = s + "</td></tr>";
                         s = s + "</table>";
                     });
+                    renderedannotations.sort(sortdisplayorder);
+                    renderedannotations.forEach(function(renderedannotation){s=s+renderedannotation[1];});
                 }
                 s = s + "</div></td></tr>";
             });
@@ -531,25 +537,32 @@ function sortdisplayorder(a,b) {
 function showinfo(element) {
     /* Populate and show the pop-up info box with annotations for the element under consideration */
     if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
-        if (element.id)  {
+        if (element.id) {
             var s = "";
             var structureelement = structure[element.id];
             if (structureelement) {            
                 s = "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id + " &bull; " + structureelement.class + "</div><table>";
-                renderedannotations = [];
+                var renderedannotations = [];
                 forannotations(element.id,function(annotation){
                     if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
-                        if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction")) { //corrections get special treatment
-                                var label = folia_label(annotation.type, annotation.set);
-                                var setname = "";
-                                if (annotation.set) {
-                                    setname = annotation.set;
-                                }
-                                if (setname === "undefined") setname = "";
-                                var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                        if ((viewannotations[annotation.type+"/" + annotation.set]) ) {
+                            var s = "";
+                            var label = folia_label(annotation.type, annotation.set);
+                            var setname = "";
+                            if (annotation.set) {
+                                setname = annotation.set;
+                            }
+                            if (setname === "undefined") setname = "";
+                            if (annotation.type == "correction") {
+                                s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                                s = s + rendercorrection( annotation.id, true);
+                                s = s + "</td></tr>";
+                            } else {
+                                s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                                 s = s + renderannotation(annotation);
                                 s = s + "</td></tr>";
-                                renderedannotations.push([annotation.type,s]);
+                            }
+                            renderedannotations.push([annotation.type,s]);
                         }
                     }
                 });
@@ -1021,7 +1034,7 @@ function viewer_onupdate() {
 }
 
 function viewer_ontimer() {
-    if (namespace != "testflat") { //no polling for tests 
+    if ((namespace != "testflat") && (poll)) { //no polling for tests 
        $.ajax({
             type: 'GET',
             headers: {'X-sessionid': sid },

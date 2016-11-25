@@ -25,6 +25,8 @@ var initialdeclarationlist = [];
 var mouseX = 0;
 var mouseY = 0;
 
+var poll = true;
+
 //************************************************************************************************************************************************************************
 
 function function_exists(functionName) {
