@@ -52,7 +52,8 @@ function toggledeletions() {
     renderdeletions();
 }
 
-function renderdeletions() { //and suggested insertions
+function renderdeletions() { 
+    /* Renders deletions and suggestions for insertion (both corrections) for structural elements */
     $('.deleted').remove();
     $('.suggestinsertion').remove();
     if (showdeletions) {
@@ -60,14 +61,14 @@ function renderdeletions() { //and suggested insertions
             var c;
             var s;
             var textblob = "";
-            var originalid = "";
-            var originaltype = "";
             if ((annotation.type == 'correction') && (annotation.original) && (annotation.specialtype=='deletion' )) {
                 //check if the deletion has a colored class
                 if ((classrank) && (classrank[annotation.class])) {
                     c = ' class' + classrank[annotation.class];
                 }                                
                 //find original text
+                var originalid = "";
+                var originaltype = "";
                 annotation.original.forEach(function(original_id){
                     //is the correction structural?
                     var original;
@@ -80,31 +81,27 @@ function renderdeletions() { //and suggested insertions
                                 textblob += annotation2.text;
                             }
                         });
-                        if ((!originaltype) && (folia_isstructure(original.type))) {
+                        if (!originaltype) {
                             originaltype = original.type;
                             originalid = original.id;
                         }
-                    } else {
-                        //non-structural correction
-                        original = annotations[original_id];
-                        if (original.text) {
-                            if (textblob) textblob += " ";
-                            textblob += original.text;
-                        }
                     }
                 });                        
-                s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
-                if (annotation.previous) { //TODO: does this still work after refactor?
-                    $('#' + valid(annotation.previous)).after(s);
-                } else if (annotation.next) {
-                    $('#' + valid(annotation.next)).before(s);
+                if ((originalid) && (originaltype)) {
+                    s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted ' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                    if (annotation.previous) { 
+                        $('#' + valid(annotation.previous)).after(s);
+                    } else if (annotation.next) {
+                        $('#' + valid(annotation.next)).before(s);
+                    }
+                    $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
                 }
-                $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
             } 
             if ((annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
                 if ((classrank) && (classrank[annotation.class])) {
                     c = ' class' + classrank[annotation.class];
                 }                                
+                var suggestionid = "";
                 var suggestiontype = "";
                 annotation.suggestions.forEach(function(suggestion){
                     if (suggestion.structure) {
@@ -124,14 +121,16 @@ function renderdeletions() { //and suggested insertions
                     }
                     return; //first suggestion only
                 });                        
-                s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
-                if (annotation.previous) {
-                    $('#' + valid(annotation.previous)).after(s);
-                } else if (annotation.next) {
-                    $('#' + valid(annotation.next)).before(s);
+                if ((suggestiontype !== "") && (suggestionid !== "")) {
+                    s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion ' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
+                    if (annotation.previous) {
+                        $('#' + valid(annotation.previous)).after(s);
+                    } else if (annotation.next) {
+                        $('#' + valid(annotation.next)).before(s);
+                    }
+                    $('#' + valid(suggestionid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
+                    suggestinsertion[suggestionid] = annotation;
                 }
-                $('#' + valid(suggestionid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
-                suggestinsertion[suggestionid] = annotation;
             }
         });
     }
