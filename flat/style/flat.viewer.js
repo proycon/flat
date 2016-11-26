@@ -266,9 +266,8 @@ function rendercorrection(correctionid, addlabels, explicitnew) {
     var s = "";
     var correction = annotations[correctionid];
     if ((viewannotations[correction.type+"/"+correction.set])) {
-        s = s + "<div class=\"correction\"><span class=\"title\">Correction: ";
-        if (correction.class) s = s + "<em>" + correction.class + "</em>";
-        s = s + "</span>";
+        s = s + "<div class=\"correction\"><span class=\"title\">Correction:</span> ";
+        if (correction.class) s = s + "<span class=\"class\">" + correction.class + "</span>";
         if (annotatordetails && correction.annotator) {
             s = s + "<br/><span class=\"annotator\">" + correction.annotator + " (" + correction.annotatortype + ")</span>";
             if (correction.datetime) {
