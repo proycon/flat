@@ -105,8 +105,9 @@ function renderdeletions() { //and suggested insertions
                 if ((classrank) && (classrank[annotation.class])) {
                     c = ' class' + classrank[annotation.class];
                 }                                
+                var suggestiontype = "";
                 annotation.suggestions.forEach(function(suggestion){
-                    if (suggestions.structure) {
+                    if (suggestion.structure) {
                         suggestion.structure.forEach(function(suggestedannotation_id){
                             if (!suggestiontype) {
                                 var suggestedannotation = structure[suggestedannotation_id];
