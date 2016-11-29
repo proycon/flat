@@ -577,19 +577,27 @@ function showeditor(element) {
                     s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
                     var repeat_preset = false; //is this annotation preset because of repeatmode?
                     var class_value;
-                    if (annotation.type == 't') {
+                    if ((annotation.type == 't') || (annotation.type == 'ph')) {
                         //Annotation concerns text content
                         class_value = annotation.class;
                         if (repeatmode) {
                             class_value = repeatreference.class;
                             if (class_value != annotation.class) { repeat_preset = true; }
                         }
-                        var text_value = annotation.text;
-                        if (repeatmode) {
-                            text_value = repeatreference.text;
-                            if (text_value != annotation.text) { repeat_preset = true; }
+                        var text_value;
+                        if (annotation.type == 't') {
+                            text_value = annotation.text;
+                            if (repeatmode) {
+                                text_value = repeatreference.text;
+                                if (text_value != annotation.text) { repeat_preset = true; }
+                            }
+                        } else if (annotation.type == 'ph') {
+                            text_value = annotation.phon;
+                            if (repeatmode) {
+                                text_value = repeatreference.phon;
+                                if (text_value != annotation.phon) { repeat_preset = true; }
+                            }
                         }
-                        if (repeatmode) text_value = repeatreference.text;
                         if (annotation.class != "current") {
                             s = s + "Class: <input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/><br/>Text:";
                         } else {
