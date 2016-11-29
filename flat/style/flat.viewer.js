@@ -507,6 +507,7 @@ function renderannotation(annotation, norecurse) {
         s = s + "<br/><span class=\"confidence\">Confidence " + (annotation.confidence * 100) +"%</span>";
     }
     if (annotation.type == "str") {
+        //TODO: refactor
         s = s + "<div class=\"strinfo\">";
         s = s + "<span class=\"id\">" + annotation.annotationid + "</span>";
         annotation.children.forEach(function(subannotation){

@@ -211,7 +211,7 @@ function foralllatestannotations(callback) {
 }
 
 function rendertextclass() {
-    //Renders the right text label based on the text class (currenet by default)
+    //Renders the right text label based on the text class (current by default)
     forallannotations(function(structureelement, annotation){
         if ((annotation.type == "t") && (annotation.class == textclass)) {
             lbl = $('#' + valid(structureelement.id) + " span.lbl");
