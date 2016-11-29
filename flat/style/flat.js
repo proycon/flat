@@ -155,6 +155,18 @@ function forannotations(structure_id, callback) {
     }
 }
 
+function forspanannotations(structure_id, callback) {
+    /* Returns span annotations layered in a structural element, NOT span
+     * annotation applying over a structural element! */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].spanannotations.forEach(function(annotation_id){
+            if (annotations[annotation_id]) {
+                callback(annotations[annotation_id]);
+            }
+        });
+    }
+}
+
 function forlatestannotations(structure_id, callback) {
     if ((structure[structure_id]) && (structure[structure_id].annotations)) {
         structure[structure_id].annotations.forEach(function(annotation_id){
