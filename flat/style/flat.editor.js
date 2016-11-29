@@ -521,7 +521,6 @@ function showeditor(element) {
     var i;
     if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
         if (structure[element.id]) { //are there annotations for this element?
-            var s = "";
             editoropen = true;
             sethover(element);
             editedelementid = element.id;
@@ -536,9 +535,11 @@ function showeditor(element) {
 
             var annotationfocusfound = -1;
             var editformcount = 0;
+            var renderedfields = [];
 
             //Iterate over all annotations for the selected target element
             forannotations(element.id,function(annotation){
+                var s = "";
                 var isannotationfocus = false;
                 if (annotationfocus) {
                     if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
@@ -724,6 +725,8 @@ function showeditor(element) {
                     editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy, hence the json parse/stringify)
                     editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend (deep copy, hence the json parse/stringify)
                     editdata.push(editdataitem); //add this item
+                    renderedfields.push([annotation.type,s]);
+
 
                     if (isannotationfocus) {
                         //highlight other targets if this annotation type is the annotation focus (just mimicks user click)
@@ -735,9 +738,13 @@ function showeditor(element) {
                 }
 
             });
+
+            //display rendered fields in proper order
+            var s = "";
+            renderedfields.sort(sortdisplayorder);
+            renderedfields.forEach(function(e){s=s+e[1];});
             s = s + "<tr id=\"editrowplaceholder\"></tr>";
             idheader = "<div id=\"id\">" + element.id + "</div>";
-
 
 
             //extra fields list, adds a selector in the editor for adding extra annotation types to an element (must be previously declared)
