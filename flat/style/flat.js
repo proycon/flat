@@ -146,6 +146,8 @@ function forlateststructure(callback) {
 }
 
 function forannotations(structure_id, callback) {
+    /*  Calls a function for all annotations pertaining to a specific
+     *  structural element, includes span annotations as well */
     if ((structure[structure_id]) && (structure[structure_id].annotations)) {
         structure[structure_id].annotations.forEach(function(annotation_id){
             if (annotations[annotation_id]) {
@@ -155,19 +157,11 @@ function forannotations(structure_id, callback) {
     }
 }
 
-function forspanannotations(structure_id, callback) {
-    /* Returns span annotations layered in a structural element, NOT span
-     * annotation applying over a structural element! */
-    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
-        structure[structure_id].spanannotations.forEach(function(annotation_id){
-            if (annotations[annotation_id]) {
-                callback(annotations[annotation_id]);
-            }
-        });
-    }
-}
 
 function forlatestannotations(structure_id, callback) {
+    /*  Calls a function for all annotations pertaining to a specific
+     *  structural element, includes span annotations as well. Only includes
+     *  annotations that were returned in the latest response from server */
     if ((structure[structure_id]) && (structure[structure_id].annotations)) {
         structure[structure_id].annotations.forEach(function(annotation_id){
             if (latestannotations[annotation_id]) {
@@ -178,6 +172,8 @@ function forlatestannotations(structure_id, callback) {
 }
 
 function forallannotations(callback) {
+    /*  Calls a function for all structure element and all annotations pertaining to the
+     *  structural element, includes span annotations as well. */
     Object.keys(structure).forEach(function(structure_id){
         if (structure[structure_id].annotations) {
             structure[structure_id].annotations.forEach(function(annotation_id){
@@ -187,7 +183,22 @@ function forallannotations(callback) {
     });
 }
 
+function forspanannotations(structure_id, callback) {
+    /* Calls a function for all span annotations layered in a structural element, NOT span
+     * annotation applying over a structural element! */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].spanannotations.forEach(function(annotation_id){
+            if (annotations[annotation_id]) {
+                callback(annotations[annotation_id]);
+            }
+        });
+    }
+}
+
 function foralllatestannotations(callback) {
+    /*  Calls a function for all structure element and all annotations pertaining to the
+     *  structural element, includes span annotations as well. Only includes
+     *  annotations that were returned in the latest response from server */
     Object.keys(lateststructure).forEach(function(structure_id){
         if (structure[structure_id].annotations) {
             structure[structure_id].annotations.forEach(function(annotation_id){
