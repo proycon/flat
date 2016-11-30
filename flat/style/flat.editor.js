@@ -110,8 +110,8 @@ function setaddablefields() {
     /* Adds a selector in the editor for adding extra annotation types to an element (must be previously declared, $('#newdeclarationsubmit').click())
        To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID  */
     //
-    editoraddablefields_options = "";
-    editoraddablefields = [];
+    var editoraddablefields_options = "";
+    var editoraddablefields = [];
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set]) && (!folia_isstructure(annotationtype)) && (folia_accepts(editedelementtype,annotationtype))) {
@@ -134,7 +134,7 @@ function setaddablefields() {
     });
     if (configuration.allowaddfields) {
         //only show if we're allowed to add fields manually
-        if ((editoraddablefields_options) && (!annotationfocus)) {
+        if (editoraddablefields_options) {
             $("#editoraddablefields").html(editoraddablefields_options);
             $("#editoraddfields").show();
         } else {
