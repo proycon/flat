@@ -1614,10 +1614,10 @@ function build_queries(addtoqueue) {
                                 $('#' + valid(t)).addClass('queued');
                             }
                         });
-                        if (edititem.parentspan) {
+                        if (editdata[i].parentspan) {
                             //span element is nested within another
                             query += " SPAN " + forids;
-                            query += " FOR ID " + edititem.parentspan;
+                            query += " FOR ID " + editdata[i].parentspan;
                         } else {
                             query += forids;
                         }
