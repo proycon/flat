@@ -1512,7 +1512,7 @@ function build_queries(addtoqueue) {
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
-                            query += " WITH value \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
                             //no deletion
                             query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
