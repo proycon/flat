@@ -278,7 +278,7 @@ div.confidenceeditor div {
     text-align: center;
 }
 
-.spanparenteditor select {
+.parentspaneditor select {
     max-width: 400px;
     overflow: crop;
 }

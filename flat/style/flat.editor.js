@@ -503,8 +503,8 @@ function applysuggestion(e,i) {
 
 function renderparentspanfield(index, annotation, nestableparents) {
     //This is a nestable span element
-    var s = "<div class=\"spanparenteditor\">Parent span: " + 
-            "<select name=\"spanparent" + index + "\">" + 
+    var s = "<div class=\"parentspaneditor\">Parent span: " + 
+            "<select name=\"parentspan" + index + "\">" + 
             "<option value=\"\">(none/root)</option>";
     forspanannotations(annotation.layerparent, function(spanannotation){
         for (var i = 0; i < nestableparents.length; i++) {
@@ -736,6 +736,11 @@ function showeditor(element) {
                     } else {
                         //default fallback
                         editdataitem.editform = 'direct';
+                    }
+                    if (annotation.parentspan) {
+                        editdataitem.parentspan = annotation.parentspan;
+                    } else if (nestablespan.length > 0) {
+                        editdataitem.parentspan = null;
                     }
 
                     //Set the target elements for this annotation (it may concern more than the selected element after all)
@@ -1233,10 +1238,15 @@ function gather_changes() {
                 editdata[i].class = $('#editfield' + i).val().trim();
             }
             if (((editdata[i].type == "t") || (editdata[i].type == "ph"))  && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
-                editdata[i].oldtext = editdata[i].text; //will remain requal
+                editdata[i].oldtext = editdata[i].text; //will remain equal
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
             }
         }
+        if ((editform[i].parentspan) && (editform[i].parentspan != $('#parentspan' + i).val())) {
+            editform[i].oldparentspan = editform[i].parentspan;
+            editdata[i].changed = true;
+        }
+
         if ($('#confidencecheck' + i).is(':checked')) {
             var confidence = $('#confidenceslider' + i).slider('value') / 100;
             if ((confidence != editdata[i].confidence) && ((editdata[i].confidence == "NONE") || (Math.abs(editdata[i].confidence - confidence) >= 0.01)))  { //compensate for lack of slider precision: very small changes do not count
