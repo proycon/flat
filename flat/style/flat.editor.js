@@ -118,14 +118,15 @@ function setaddablefields() {
                 label = folia_label(annotationtype, set);
                 setname = shorten(set);
                 //check if it already exists
-                found = false;
+                var occurrences = 0;
                 editdata.forEach(function(editdataitem){
                     if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
-                        found = true;
-                        return true;
+                        //already exists, but do we allow multiple of this type? consider it not found otherwise
+                        occurrences++;
                     }
                 });
-                if (!found) {
+                var maxoccurrences = folia_occurrencesperset(annotationtype);
+                if ((maxoccurrences === 0) || (occurrences < maxoccurrences)) {
                     editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
                     editoraddablefields.push({'type': annotationtype, 'set': set});
                 }

@@ -239,3 +239,20 @@ function folia_occurrences(tag) {
     var elementclass = folia_elementclass(tag);
     return folia_occurrences_class(elementclass);
 }
+
+function folia_occurrencesperset_class(elementclass) {
+    /* Get the maximum amount of occurrences for this element class (0=unlimited) */
+    if ((foliaelements[elementclass]) && (foliaelements[elementclass].properties) && (foliaelements[elementclass].properties.occurrences_per_set !== undefined)) {
+        return foliaelements[elementclass].properties.occurrences_per_set;
+    } else if (foliaelements[elementclass].ancestors.length >= 1) {
+        return folia_occurrencesperset_class(foliaelements[elementclass].ancestors[0]);
+    } else {
+        return 0;
+    }
+}
+
+function folia_occurrencesperset(tag) {
+    /* Get the maximum amount of occurrences for this tag (0=unlimited) */
+    var elementclass = folia_elementclass(tag);
+    return folia_occurrencesperset_class(elementclass);
+}
