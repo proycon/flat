@@ -111,7 +111,7 @@ function setaddablefields() {
        To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID  */
     //
     var editoraddablefields_options = "";
-    var editoraddablefields = [];
+    editoraddablefields = []; //this is deliberately global
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
             if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set]) && (!folia_isstructure(annotationtype)) && (folia_accepts(editedelementtype,annotationtype))) {
