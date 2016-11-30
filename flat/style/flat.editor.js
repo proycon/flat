@@ -714,7 +714,11 @@ function showeditor(element) {
                     //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
                     editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
                     editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'children': ho_result.items };
-                    if (annotation.type == 't') editdataitem.text = annotation.text;
+                    if (annotation.type == 't') {
+                        editdataitem.text = annotation.text;
+                    } else if (annotation.type == 'ph') {
+                        editdataitem.text = annotation.phon;
+                    }
                     if (annotation.id) editdataitem.id = annotation.id;
                     if (annotation.hasOwnProperty('confidence')) {
                         editdataitem.confidence = annotation.confidence;
@@ -796,7 +800,7 @@ function showeditor(element) {
             //render confidence sliders
             if (editconfidence) {
                 for (i = 0; i < editfields;i++){
-                    if (editdata[i].type != 't' && editdata[i].confidence !== "NONE") {
+                    if (editdata[i].type != 't' && editdata[i].type != "ph" && editdata[i].confidence !== "NONE") {
                         $('#confidencecheck' + i).attr('checked',true);
                         setconfidenceslider(i, Math.round(editdata[i].confidence * 100));
                     }
@@ -1209,7 +1213,7 @@ function gather_changes() {
             editdata[i].class = $('#editfield' + i).val().trim();
             editdata[i].changed = true;
         }
-        if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+        if (((editdata[i].type == "t") || (editdata[i].type == "ph")) && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
             //Text content was changed
             //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
             editdata[i].oldtext = editdata[i].text;
@@ -1228,7 +1232,7 @@ function gather_changes() {
                 editdata[i].oldclass = editdata[i].class; //will remain equal
                 editdata[i].class = $('#editfield' + i).val().trim();
             }
-            if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
+            if (((editdata[i].type == "t") || (editdata[i].type == "ph"))  && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
                 editdata[i].oldtext = editdata[i].text; //will remain requal
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
             }
@@ -1359,7 +1363,7 @@ function gather_changes() {
             //sort targets in proper order
             if (editdata[i].targets.length > 1) {
                 editdata[i].targets = sort_targets(editdata[i].targets);
-            } else {
+            } else if (editdata[i].targets.length === 0) {
                 //annotation has no targets, this may be a span annotation that
                 //relies purely on span roles, find the implicit targets (i.e.
                 //the scope)
@@ -1507,6 +1511,8 @@ function build_queries(addtoqueue) {
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                        } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
+                            query += " WITH value \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
                             //no deletion
                             query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
