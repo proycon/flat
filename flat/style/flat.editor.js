@@ -1592,7 +1592,7 @@ function build_queries(addtoqueue) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
                 } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
                     //set target expression
-                    } else if (editdata[i].targets.length > 0) {
+                    if (editdata[i].targets.length > 0) {
                         query += " FOR";
                         if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
                         var forids = ""; //jshint ignore:line
