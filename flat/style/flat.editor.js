@@ -508,7 +508,7 @@ function renderparentspanfield(index, annotation, nestableparents) {
             "<option value=\"\">(none/root)</option>";
     forspanannotations(annotation.layerparent, function(spanannotation){
         for (var i = 0; i < nestableparents.length; i++) {
-            if (spanannotation.type == nestableparents[i]) {
+            if ((spanannotation.type == nestableparents[i]) && (spanannotation.id != annotation.id)) {
                 var label = folia_label(spanannotation.type, spanannotation.set);
                 s += "<option value=\""+spanannotation.id+"\"";
                 if ((annotation.parentspan) && (annotation.parentspan === spanannotation.id)) {
