@@ -1246,8 +1246,8 @@ function gather_changes() {
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
             }
         }
-        if ((editform[i].parentspan) && (editform[i].parentspan != $('#parentspan' + i).val())) {
-            editform[i].oldparentspan = editform[i].parentspan;
+        if ((editdata[i].parentspan) && (editdata[i].parentspan != $('#parentspan' + i).val())) {
+            editdata[i].oldparentspan = editdata[i].parentspan;
             editdata[i].changed = true;
         }
 
