@@ -929,7 +929,8 @@ function closeeditor() {
 
 function addeditorfield(index) {
     /* add a new field to the editor, populated by setaddablefields() */
-    label = folia_label(editoraddablefields[index].type, editoraddablefields[index].set);
+    var label = folia_label(editoraddablefields[index].type, editoraddablefields[index].set);
+    var setname;
     if (editoraddablefields[index].set) {
         setname = editoraddablefields[index].set;
     } else {
@@ -946,7 +947,7 @@ function addeditorfield(index) {
         }
     }
 
-    s = "";
+    var s = "";
     if ((annotationfocus) && (annotationfocus.type == editoraddablefields[index].type) && (annotationfocus.set == editoraddablefields[index].set)) {
         s = s + "<tr class=\"focus\">";
     } else {
@@ -987,7 +988,7 @@ function addeditorfield(index) {
         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
     }
 
-    ho_result = renderhigherorderfields(editfields, editoraddablefields[index]); //will always be empty but sets a proper placeholder we can use
+    var ho_result = renderhigherorderfields(editfields, editoraddablefields[index]); //will always be empty but sets a proper placeholder we can use
     s  = s + ho_result.output;
 
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
@@ -1002,7 +1003,7 @@ function addeditorfield(index) {
     if ((!isspan) || (accepts_wrefs)) {
         targets = [editedelementid];
     }
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': targets, 'targets_begin': targets,'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
+    var editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': targets, 'targets_begin': targets,'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
     editdata.push(editdataitem);
 
     //automatically add required higher-order fields
