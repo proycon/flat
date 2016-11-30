@@ -1592,7 +1592,7 @@ function build_queries(addtoqueue) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
                 } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
                     //set target expression
-                    if (editdata[i].targets.length > 0) {
+                    } else if (editdata[i].targets.length > 0) {
                         query += " FOR";
                         if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
                         var forids = ""; //jshint ignore:line
@@ -1610,7 +1610,13 @@ function build_queries(addtoqueue) {
                                 $('#' + valid(t)).addClass('queued');
                             }
                         });
-                        query += forids;
+                        if (edititem.parentspan) {
+                            //span element is nested within another
+                            query += " SPAN " + forids;
+                            query += " FOR ID " + edititem.parentspan;
+                        } else {
+                            query += forids;
+                        }
                     } else if ((editdata[i].isspan) && (action == "ADD")) {
                         //we are adding a span annotation without targets, use
                         //scope instead (using ADD.. RESPAN NONE FOR SPAN ID ..
