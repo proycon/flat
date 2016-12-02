@@ -991,6 +991,15 @@ function addeditorfield(index) {
     var ho_result = renderhigherorderfields(editfields, editoraddablefields[index]); //will always be empty but sets a proper placeholder we can use
     s  = s + ho_result.output;
 
+    var nestablespan = folia_nestablespan(editoraddablefields[index].type);
+    if (nestablespan.length > 0) {
+        editoraddablefields[index].layerparent = structure[editedelementid].parent;
+        while ((structure[editoraddablefields[index].layerparent].type == 'correction') || (structure[editoraddablefields[index].layerparent].type == 'part'))  {
+            editoraddablefields[index].layerparent = structure[editoraddablefields[index].layerparent].parent;
+        }
+        s = s + renderparentspanfield(editfields, editoraddablefields[index], nestablespan);
+    }
+
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
 
