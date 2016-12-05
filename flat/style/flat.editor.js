@@ -505,7 +505,7 @@ function applysuggestion(e,i) {
 function renderparentspanfield(index, annotation, nestableparents) {
     //This is a nestable span element
     var s = "<div class=\"parentspaneditor\">Parent span: " + 
-            "<select name=\"parentspan" + index + "\">" + 
+            "<select id=\"parentspan" + index + "\">" + 
             "<option value=\"\">(none/root)</option>";
     forspanannotations(annotation.layerparent, function(spanannotation){
         for (var i = 0; i < nestableparents.length; i++) {
@@ -745,7 +745,7 @@ function showeditor(element) {
                     if (annotation.parentspan) {
                         editdataitem.parentspan = annotation.parentspan;
                     } else if (nestablespan.length > 0) {
-                        editdataitem.parentspan = null;
+                        editdataitem.parentspan = "";
                     }
 
                     //Set the target elements for this annotation (it may concern more than the selected element after all)
@@ -1013,7 +1013,11 @@ function addeditorfield(index) {
         targets = [editedelementid];
     }
     var editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': targets, 'targets_begin': targets,'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
+    if (nestablespan.length > 0) {
+        editdataitem.parentspan = "";
+    }
     editdata.push(editdataitem);
+
 
     //automatically add required higher-order fields
     var foliaelement = foliaelements[foliatag2class[editoraddablefields[index].type]];
@@ -1257,7 +1261,8 @@ function gather_changes() {
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
             }
         }
-        if ((editdata[i].parentspan) && (editdata[i].parentspan != $('#parentspan' + i).val())) {
+        if ((editdata[i].parentspan !== undefined) && (editdata[i].parentspan != $('#parentspan' + i).val())) {
+            editdata[i].parentspan = $('#parentspan' + i).val();
             editdata[i].oldparentspan = editdata[i].parentspan;
             editdata[i].changed = true;
         }
@@ -1608,8 +1613,6 @@ function build_queries(addtoqueue) {
                 } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
                     //set target expression
                     if (editdata[i].targets.length > 0) {
-                        query += " FOR";
-                        if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
                         var forids = ""; //jshint ignore:line
                         editdata[i].targets.forEach(function(t){
                             if (forids) {
@@ -1630,6 +1633,8 @@ function build_queries(addtoqueue) {
                             query += " SPAN " + forids;
                             query += " FOR ID " + editdata[i].parentspan;
                         } else {
+                            query += " FOR";
+                            if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
                             query += forids;
                         }
                     } else if ((editdata[i].isspan) && (action == "ADD")) {
