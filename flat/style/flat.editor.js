@@ -1433,7 +1433,7 @@ function gather_changes() {
                     //
                     var newtargets = [];
                     for (var k = 0; k < editdata[j].targets.length; k++) {
-                        if (editdata[i].targets.indexOf(editdata[j].targets[k]) != -1) { //not found in child, good
+                        if (editdata[i].targets.indexOf(editdata[j].targets[k]) == -1) { //not found in child, good
                             newtargets.push(editdata[j].targets[k]);
                         }
                     }
@@ -1442,6 +1442,7 @@ function gather_changes() {
                         editdata[j].changed = true;
                         editdata[j].respan = true;
                         editdata[j].editform = "direct";
+                        changes = true;
                     }
                     break;
                 }
