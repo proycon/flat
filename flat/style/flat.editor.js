@@ -1422,6 +1422,32 @@ function gather_changes() {
         }
 
     }
+
+    //second iteration, process parent spans:
+    //if a span annotation has targets x y z and its parentspan has targets u w v x y z, then remove x y z from the parentspan targets
+    for (var i = 0; i < editfields;i++) {
+        if (editdata[i].parentspan) {
+            for (var j = 0; j < editfields;j++) {
+                if (editdata[j].id == editdata[i].parentspan) {
+                    //i is the childspan, j is the parentspan:
+                    //
+                    var newtargets = [];
+                    for (var k = 0; k < editdata[j].targets.length; k++) {
+                        if (editdata[i].targets.indexOf(editdata[j].targets[k]) != -1) { //not found in child, good
+                            newtargets.push(editdata[j].targets[k]);
+                        }
+                    }
+                    if (newtargets.length !== editdata[j].targets.length) {
+                        editdata[j].targets = newtargets;
+                        editdata[j].changed = true;
+                        editdata[j].respan = true;
+                        editdata[j].editform = "direct";
+                    }
+                    break;
+                }
+            }
+        }
+    }
     return changes;
 } 
 
@@ -1628,14 +1654,20 @@ function build_queries(addtoqueue) {
                                 $('#' + valid(t)).addClass('queued');
                             }
                         });
-                        if (editdata[i].parentspan) {
-                            //span element is nested within another
-                            query += " SPAN " + forids;
-                            query += " FOR ID " + editdata[i].parentspan;
-                        } else {
+                        if (!editdata[i].parentspan) {
+                            //normal behaviour
                             query += " FOR";
                             if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
                             query += forids;
+                        } else if ((editdata[i].parentspan) && (action == "ADD")) {
+                            //span element is nested within another
+                            //
+                            query += " SPAN " + forids;
+                            query += " FOR ID " + editdata[i].parentspan;
+
+                            //wrefs from the parent span that are part of the child now have to be removed from the parent
+                            //this has been taken into account in gather_changes() already
+                            //the parentspan span has been adapted accordingly
                         }
                     } else if ((editdata[i].isspan) && (action == "ADD")) {
                         //we are adding a span annotation without targets, use
