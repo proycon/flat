@@ -162,7 +162,7 @@ div#info th {
 }
 div#info th span.setname {
     font-weight: normal;
-    text-size: 8pt;
+    font-size: 8pt;
     padding-left: 10px;
 }
 div#info td {
@@ -285,7 +285,7 @@ div#search button {
 .suggestiondetails {
     font-size: 75%;
     font-style: italic;
-    text-color: #bbb;
+    color: #bbb;
 }
 .strinfo {
     border: 2px dashed #1765b5;
