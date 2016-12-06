@@ -169,31 +169,28 @@ div#info td {
     width: 59%;
     font-style: italic;
 }
-div#info .class {
+.class {
     color: #3323cd;
 }
-div#info .text {
+#info .text, #viewer .text {
     font-style: italic;
     color: #333;
 }
-div#info .annotator {
+.annotator {
     font-style: italic;
     color: #2d7431;
 }
-div#info .datetime {
+.datetime {
     font-style: italic;
     color: #72742d;
 }
-div#info .confidence {
+.confidence {
     font-style: italic;
     color: #b363a7;
 }
-div#info .higherorder {
+.higherorder {
     font-style: italic;
     color: #6d0000;
-}
-div#infoheader {
-
 }
 nav li .setname {
     display: block;
@@ -201,25 +198,25 @@ nav li .setname {
     font-size: 8px;
     font-style: italic;
 }
-div#info div#id {
+div#id {
     width: 100%;
     text-align: center;
     font-size: 8px;
     font-style: italic;
     color: #666;
 }
-div#info .id {
+div#info .id, div#viewer .id {
     display: block;
     font-size: 8px;
     font-style: italic;
     color: #666;
 }
-div#info .setname {
+.setname {
     font-size: 8px;
     font-style: italic;
 }
 
-div#info div.correction {
+div.correction {
     width: 90%;
     background: #d4e2e3;
     border: 1px solid #fff;
@@ -227,11 +224,11 @@ div#info div.correction {
     margin-top:1px;
     margin-bottom:1px;
 }
-div#info div.correction span.title {
+div.correction span.title {
     color: #17afb5;
     font-weight: bold;
 }
-div#info div.correctionchild {
+div.correctionchild {
     padding-left: 10px;
 }
 
@@ -261,7 +258,7 @@ div#search{
     text-align: left;
     left: 30%;
 }
-div#searchheader {
+div#searchheader, div#viewerheader, div#treeviewheader {
     width:100%;
     background: #30677c;
     text-align: center;
@@ -313,7 +310,7 @@ div#search button {
     font-weight: bold;
     font-size: 110%;
 }
-div#treeview {
+div#treeview, div#viewer {
     position: absolute;
     display: none;
     padding: 10px;
@@ -324,17 +321,10 @@ div#treeview {
     min-height: 100px;
     text-align: left;
 }
-div#treeviewheader {
-    width:100%;
-    background: #30677c;
-    text-align: center;
-    font-weight: bold;
-    color: white;
-    border-radius: 5px;
-    margin-top: -3px;
-    cursor: move;
+div#viewer {
+    width: 540px;
 }
-div#treeviewheader button {
+div#treeviewheader button, div#viewerheader button {
     float: right;
     margin-top: -5px;
     background: #30677c;
@@ -342,4 +332,13 @@ div#treeviewheader button {
 }
 #tree {
     width: 100%;
+}
+div.opentreeview {
+    background: url(treeview.png);
+    background-size: 48px 34px;
+    width: 48px;
+    height: 34px;
+    min-width: 48px;
+    min-height: 34px;
+    cursor: pointer;
 }

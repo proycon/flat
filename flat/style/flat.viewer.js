@@ -205,15 +205,11 @@ function viewer_onmouseenter(element) {
 
 function viewer_onclick(element) {
 	//open the tree viewer on click if there are syntactic annotations
-    if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
-        if (structure[element.id]) { //are there annotations for this element?
-            forannotations(element.id,function(annotation){
-				if (annotation.type == "su") {
-					treeview(annotation.id, true);
-					return;
-				}
-			});
-		}
+	if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
+		showinfo(element, "#viewer div.body");
+		$('#viewer').show();
+		$('#viewer').draggable();
+		$('#viewer').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
 	}
 }
 
@@ -448,8 +444,10 @@ function renderspanrole(spanroledata) {
     return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspantext(spanroledata) + "</span>";
 }
 
-function renderstructure(structureelement, norecurse, noheader) {
-    /* renders a structure element in the details popup */
+function renderstructure(structureelement, norecurse, noheader, extended) {
+    /* renders a structure element in the details popup 
+		extended is true for the actionable viewer, false for the default popup
+	*/
     var s = "";
 	if (!noheader) {
 		s += "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id;
@@ -469,8 +467,12 @@ function renderstructure(structureelement, norecurse, noheader) {
                     setname = annotation.set;
                 }
                 if (setname === "undefined") setname = "";
-                var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-                s = s + renderannotation(annotation);
+                var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+				if ((annotation.type == "su") && (extended)) {
+					s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
+				}
+				s = s + "</th><td>";
+                s = s + renderannotation(annotation, false, extended);
                 s = s + "</td></tr>";
                 renderedannotations.push([annotation.type,s]);
             }
@@ -488,8 +490,8 @@ function renderstructure(structureelement, norecurse, noheader) {
 			}
 			if (setname === "undefined") setname = "";
 			s += "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
-			s += renderannotation(substructure); //renders class
-			s += renderstructure(substructure, false, true);
+			s += renderannotation(substructure, false, extended); //renders class
+			s += renderstructure(substructure, false, true, extended);
 			s = s + "</td></tr>";
 		}
 	});
@@ -501,7 +503,7 @@ function renderstructure(structureelement, norecurse, noheader) {
     return s;
 }
 
-function renderannotation(annotation, norecurse) {
+function renderannotation(annotation, norecurse, extended) {
     //renders the annotation in the details popup
     var s = "";
     var i;
@@ -615,14 +617,14 @@ function sortdisplayorder(a,b) {
     return a_index - b_index;
 }
 
-function showinfo(element) {
+function showinfo(element, extendedcontainer) {
     /* Populate and show the pop-up info box with annotations for the element under consideration */
     if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
         if (element.id) {
             var s = "";
             var structureelement = structure[element.id];
             if ((structureelement) && (structureelement.auth)) {            
-                s = renderstructure(structureelement);
+                s = renderstructure(structureelement,false, false, (extendedcontainer !== undefined));
             } else if ($(element).hasClass('deleted')) {
                 s = "<div id=\"id\"> " + element.id + "</div>";
                 s += "<span class=\"specialdeleted\">Deleted structure</span>";
@@ -633,13 +635,17 @@ function showinfo(element) {
                 s += "<table><tr><th>Text</th><td>" + $(element).find('.lbl').html() + "</td></tr></table>";
             }
             if (s) {
-                $('#info').html(s);
-                if (mouseX < $(window).width() / 2) {
-                    $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
-                } else {
-                    $('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX - $('#info').width() } );
-                }
-                $('#info').show();    
+				if (extendedcontainer === undefined) {
+					$('#info').html(s);
+					if (mouseX < $(window).width() / 2) {
+						$('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX} );
+					} else {
+						$('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX - $('#info').width() } );
+					}
+					$('#info').show();    
+				} else {
+					$(extendedcontainer).html(s);
+				}
             }
         }
     }
@@ -1257,6 +1263,9 @@ function viewer_oninit() {
     });
     $('#treeviewdiscard').click(function(){
         $('#treeview').hide();
+    });
+    $('#viewerheader').click(function(){
+        $('#viewer').hide();
     });
 
     $('#searchclear').click(function(){

@@ -284,12 +284,3 @@ div.confidenceeditor div {
     overflow: hidden;
 }
 
-div.opentreeview {
-    background: url(treeview.png);
-    background-size: 48px 34px;
-    width: 48px;
-    height: 34px;
-    min-width: 48px;
-    min-height: 34px;
-    cursor: pointer;
-}
