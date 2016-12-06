@@ -616,10 +616,14 @@ function showeditor(element) {
                         s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
                     } else {
                         //Annotation concerns a class
-                        if ((annotation.targets.length > 1) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))) {
+                        if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
                             //Annotation is a span annotation, gather the text of the entire span for presentation:
                             //omit span annotations that only have span roles
-                            spantext = getspantext(annotation, true);
+                            if (annotation.type == 'su') {
+                                spantext = getspantext(annotation, false);
+                            } else {
+                                spantext = getspantext(annotation, true);
+                            }
                             s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
                             s  = s + "<br/>";
                         }
