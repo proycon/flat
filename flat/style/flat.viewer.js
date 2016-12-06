@@ -1209,7 +1209,6 @@ function treeview(selected_id, ignoreselection) {
     }
     var treedata = treenode(root, !ignoreselection ? selected_id : "");
     treedata.extended = true;
-	console.debug(treedata);
     var tree = new TreeDrawer( document.getElementById('tree'), treedata);
     tree.draw();
 }
