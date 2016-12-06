@@ -157,6 +157,18 @@ function forannotations(structure_id, callback) {
     }
 }
 
+function forsubstructure(structure_id, callback) {
+    /*  Calls a function for all structural elements pertaining to a specific
+     *  structural element */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].structure.forEach(function(sub_id){
+            if (structure[sub_id]) {
+                callback(structure[sub_id]);
+            }
+        });
+    }
+}
+
 
 function forlatestannotations(structure_id, callback) {
     /*  Calls a function for all annotations pertaining to a specific
