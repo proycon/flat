@@ -156,7 +156,7 @@ div#info table {
     width: 100%;
 }
 div#info th {
-    width: 39%
+    width: 39%;
     font-weight: bold;
     vertical-align: top;
 }
@@ -166,7 +166,7 @@ div#info th span.setname {
     padding-left: 10px;
 }
 div#info td {
-    width: 59%
+    width: 59%;
     font-style: italic;
 }
 div#info .class {
@@ -285,7 +285,7 @@ div#search button {
 .suggestiondetails {
     font-size: 75%;
     font-style: italic;
-    font-color: #bbb;
+    text-color: #bbb;
 }
 .strinfo {
     border: 2px dashed #1765b5;

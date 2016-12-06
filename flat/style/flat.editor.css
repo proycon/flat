@@ -40,11 +40,11 @@ div#editor tr:hover th {
 }
 div#editor th span.setname {
     font-weight: normal;
-    text-size: 8pt;
+    font-size: 8pt;
     padding-left: 10px;
 }
 div#editor td {
-    width: 59%
+    width: 59%;
     font-style: italic;
     border-bottom: 1px #eee solid;
 }
@@ -280,5 +280,5 @@ div.confidenceeditor div {
 
 .parentspaneditor select {
     max-width: 400px;
-    overflow: crop;
+    overflow: hidden;
 }
