@@ -1160,12 +1160,16 @@ function highlight(data) {
 }
 
 
-function treenode(annotation) {
+function treenode(annotation, selected_id) {
     var node = {'label': annotation.class, children: [] };
+	if (annotation.id === selected_id) {
+		console.debug("setting class for this node");
+		node.class = "selected";
+	}
     if ((annotation.annotations) && (annotation.annotations.length > 0)) {
         for (var i = 0; i < annotation.annotations.length; i++) {
             if (annotations[annotation.annotations[i]].type == "su") {
-                node.children.push(treenode(annotations[annotation.annotations[i]]));
+                node.children.push(treenode(annotations[annotation.annotations[i]], selected_id));
             }
         }
     } else {
@@ -1189,7 +1193,7 @@ function treeview(selected_id) {
     while (root.parentspan) {
          root = annotations[root.parentspan];
     }
-    var treedata = treenode(root);
+    var treedata = treenode(root, selected_id);
     treedata.extended = true;
 	console.debug(treedata);
     var tree = new TreeDrawer( document.getElementById('tree'), treedata);

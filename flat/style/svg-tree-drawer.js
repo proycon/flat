@@ -337,6 +337,11 @@ function _drawNode(tree, isRefresh, parentElement, siblingPosition, treeNode, of
 		parentElement.appendChild(g);
 	}
 	var gClass = g.hasAttribute('class') ? g.getAttribute('class').replace(/\s*collapsed/) : '';
+    console.debug(treeNode);
+    if (treeNode.class) {
+        if (gClass !== "") gClass += " ";
+        gClass += treeNode.class;
+    }
 	g.setAttribute('class', treeNode.collapsed ? gClass + " collapsed" : gClass);
 	
 	//Get or create the branch which will connect this label with the parent label
@@ -722,6 +727,7 @@ var TN = T.Node = function(obj){
 	this.label = obj.label;
 	this.collapsed = !!obj.collapsed;
 	this.extended = !!obj.extended;
+    this.class = obj.class;
 	
 	if(obj.children && obj.children.length){
 		this.children = [];
@@ -734,6 +740,7 @@ TN.prototype.label = "";
 TN.prototype.collapsed = false;
 TN.prototype.extended = false;
 TN.prototype.children = [];
+TN.prototype.class = "";
 TN.prototype.maxOffsetTop = 0; //readonly
 TN.prototype.branchElement = null;
 TN.prototype.labelElement = null;

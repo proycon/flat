@@ -8,6 +8,10 @@ svg g.collapsed g text {
 	padding-left:0.5ex;
 	padding-right:0.5ex;
 }
+svg g.selected text.label {
+	fill: #b70404;
+	font-weight: bold;
+}
 svg line,
 svg polyline {
 	font-size:1em; /*height not honored here by WebKit*/
@@ -23,6 +27,14 @@ svg text.label {
 svg g.leaf text.label {
     fill: #000000;
 	font-style: italic;
+	font-weight: normal;
+}
+
+svg g.selected g.leaf text.label {
+    fill: #000000;
+	font-style: italic;
+	font-weight: normal;
+	text-decoration: underline;
 }
 
 .shortTree line,
