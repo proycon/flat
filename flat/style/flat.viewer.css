@@ -269,11 +269,13 @@ div#searchheader {
     color: white;
     border-radius: 5px;
     margin-top: -3px;
+    cursor: move;
 }
 div#search button {
     float: right;
     margin-top: -5px;
     background: #30677c;
+    cursor: pointer;
 }
 .optionlabel {
     font-size: 90%;
@@ -330,11 +332,13 @@ div#treeviewheader {
     color: white;
     border-radius: 5px;
     margin-top: -3px;
+    cursor: move;
 }
 div#treeviewheader button {
     float: right;
     margin-top: -5px;
     background: #30677c;
+    cursor: pointer;
 }
 #tree {
     width: 100%;

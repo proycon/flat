@@ -18,11 +18,13 @@ div#editorheader {
     color: white;
     border-radius: 5px;
     margin-top: -3px;
+    cursor: move;
 }
 div#editorheader button {
     float: right;
     margin-top: -5px;
     background: #30677c;
+    cursor: pointer;
 }
 div#editor table {
     width: 100%;
