@@ -1169,7 +1169,14 @@ function treenode(annotation) {
             }
         }
     } else {
-		node.children.push({'label':getspantext(annotation,false)}); //add leaf node with word text
+		var targets = sort_targets(annotation.scope);
+		targets.forEach(function(target){
+			forannotations(target,function(annotation2){
+				if ((annotation2.type == "t") && (annotation2.class == "current")) {
+					node.children.push({'label':annotation2.text}); //add leaf node with word text
+				}
+			});
+		});
     }
     return node;
 }
