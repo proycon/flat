@@ -448,13 +448,17 @@ function renderspanrole(spanroledata) {
     return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspantext(spanroledata) + "</span>";
 }
 
-function renderstructure(structureelement, norecurse) {
+function renderstructure(structureelement, norecurse, noheader) {
     /* renders a structure element in the details popup */
-    var s = "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id;
-    if (structureelement.class) {
-        s = s + " &bull; <span class=\"class\">" + structureelement.class + "</span>";
-    }
-    s = s + "</div><table>";
+    var s = "";
+	if (!noheader) {
+		s += "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id;
+		if (structureelement.class) {
+			s = s + " &bull; <span class=\"class\">" + structureelement.class + "</span>";
+		}
+		s = s + "</div>";
+	}
+	s += "<table>";
     var renderedannotations = [];
     forannotations(structureelement.id,function(annotation){
         if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
@@ -474,7 +478,23 @@ function renderstructure(structureelement, norecurse) {
     });
     renderedannotations.sort(sortdisplayorder);
     renderedannotations.forEach(function(renderedannotation){s=s+renderedannotation[1];});
+
+	forsubstructure(structureelement.id,function(substructure){
+		if ((substructure.type == "morpheme") ||(substructure.type == "phoneme")) {
+			var label = folia_label(substructure.type, substructure.set);
+			var setname = "";
+			if (substructure.set) {
+				setname = substructure.set;
+			}
+			if (setname === "undefined") setname = "";
+			s += "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+			s += renderannotation(substructure); //renders class
+			s += renderstructure(substructure, false, true);
+			s = s + "</td></tr>";
+		}
+	});
     s = s + "</table>";
+
     if ((structureelement.incorrection) && (!norecurse)) {
         s = s + rendercorrection( structureelement.incorrection, true);
     }
