@@ -584,7 +584,11 @@ function showeditor(element) {
                     } else {
                         s = s + "<tr>";
                     }
-                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+                    if (annotation.type == "su") {
+                        s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
+                    }
+                    s = s + "</th><td>";
                     var repeat_preset = false; //is this annotation preset because of repeatmode?
                     var class_value;
                     if ((annotation.type == 't') || (annotation.type == 'ph')) {

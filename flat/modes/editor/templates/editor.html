@@ -4,6 +4,8 @@
 <!-- dependencies -->
 <link rel="StyleSheet" href="/style/flat.viewer.css" type="text/css" />
 <script type="text/javascript" src="/style/flat.viewer.js"></script> 
+<link rel="stylesheet" href="/style/treeview.css" type="text/css" />
+<script type="text/javascript" src="/style/svg-tree-drawer.js"></script> 
 {% endblock %}
 
 {% block js %}
@@ -115,6 +117,7 @@ initialcorrectionset = '{{ initialcorrectionset }}';
     </div>
 </div>
 {% include "search.html" %}
+{% include "treeview.html" %}
 <div id="connectioninfo"></div>
 <div id="queueinfo">
     <button id="submitqueue" title="Submit all queued annotations">Submit queue</button>

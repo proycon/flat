@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="/style/treeview.css" type="text/css" />
+<script type="text/javascript" src="/style/svg-tree-drawer.js"></script> 
+{% endblock %}
 
 {% block menu %}
 {% include "viewermenu.html" %}
@@ -18,6 +22,7 @@
 </div>
 <div id="info"></div>
 {% include "search.html" %}
+{% include "treeview.html" %}
 <div id="connectioninfo"></div>
 {% endblock %}
 

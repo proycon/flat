@@ -1160,6 +1160,35 @@ function highlight(data) {
 }
 
 
+function treenode(annotation) {
+    var node = {'label': annotation.class, children: [] };
+    if ((annotation.annotations) && (annotation.annotations.length > 0)) {
+        for (var i = 0; i < annotation.annotations.length; i++) {
+            if (annotations[annotation.annotations[i]].type == "su") {
+                node.children.push(treenode(annotations[annotation.annotations[i]]));
+            }
+        }
+    } else {
+		node.children.push({'label':getspantext(annotation,false)}); //add leaf node with word text
+    }
+    return node;
+}
+
+function treeview(selected_id) {
+    //find the root
+    $('#treeview').show();
+    $('#treeview').draggable();
+    var root = annotations[selected_id];
+    while (root.parentspan) {
+         root = annotations[root.parentspan];
+    }
+    var treedata = treenode(root);
+    treedata.extended = true;
+	console.debug(treedata);
+    var tree = new TreeDrawer( document.getElementById('tree'), treedata);
+    tree.draw();
+}
+
 function viewer_oninit() {
     closewait = false; //to notify called we'll handle it ourselves 
 
@@ -1181,6 +1210,9 @@ function viewer_oninit() {
 
     $('#searchdiscard').click(function(){
         $('#search').hide();
+    });
+    $('#treeviewdiscard').click(function(){
+        $('#treeview').hide();
     });
 
     $('#searchclear').click(function(){
@@ -1257,3 +1289,4 @@ function viewer_oninit() {
         });
     });
 }
+

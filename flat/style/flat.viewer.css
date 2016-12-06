@@ -311,3 +311,31 @@ div#search button {
     font-weight: bold;
     font-size: 110%;
 }
+div#treeview {
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background: #cdcdcd; 
+    color: #333;
+    border: #30677c 1px solid;
+    border-radius: 15px;
+    min-height: 100px;
+    text-align: left;
+}
+div#treeviewheader {
+    width:100%;
+    background: #30677c;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    margin-top: -3px;
+}
+div#treeviewheader button {
+    float: right;
+    margin-top: -5px;
+    background: #30677c;
+}
+#tree {
+    width: 100%;
+}
