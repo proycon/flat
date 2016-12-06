@@ -28,7 +28,6 @@ div#editor table {
     width: 100%;
 }
 div#editor th {
-    width: 150px;
     font-weight: bold;
     overflow: hidden;
     max-width: 150px;
@@ -44,7 +43,7 @@ div#editor th span.setname {
     padding-left: 10px;
 }
 div#editor td {
-    width: 59%;
+    width: 70%;
     font-style: italic;
     border-bottom: 1px #eee solid;
 }
@@ -279,6 +278,6 @@ div.confidenceeditor div {
 }
 
 .parentspaneditor select {
-    max-width: 400px;
+    max-width: 320px;
     overflow: hidden;
 }
