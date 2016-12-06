@@ -1163,7 +1163,6 @@ function highlight(data) {
 function treenode(annotation, selected_id) {
     var node = {'label': annotation.class, children: [] };
 	if (annotation.id === selected_id) {
-		console.debug("setting class for this node");
 		node.class = "selected";
 	}
     if ((annotation.annotations) && (annotation.annotations.length > 0)) {

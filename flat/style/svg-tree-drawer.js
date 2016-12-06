@@ -337,7 +337,6 @@ function _drawNode(tree, isRefresh, parentElement, siblingPosition, treeNode, of
 		parentElement.appendChild(g);
 	}
 	var gClass = g.hasAttribute('class') ? g.getAttribute('class').replace(/\s*collapsed/) : '';
-    console.debug(treeNode);
     if (treeNode.class) {
         if (gClass !== "") gClass += " ";
         gClass += treeNode.class;
