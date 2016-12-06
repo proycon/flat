@@ -203,6 +203,20 @@ function viewer_onmouseenter(element) {
     showinfo(element);
 }
 
+function viewer_onclick(element) {
+	//open the tree viewer on click if there are syntactic annotations
+    if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
+        if (structure[element.id]) { //are there annotations for this element?
+            forannotations(element.id,function(annotation){
+				if (annotation.type == "su") {
+					treeview(annotation.id, true);
+					return;
+				}
+			});
+		}
+	}
+}
+
 
 function getspantext(annotation, explicit) {
     if (annotation === undefined) {
@@ -1184,15 +1198,16 @@ function treenode(annotation, selected_id) {
     return node;
 }
 
-function treeview(selected_id) {
+function treeview(selected_id, ignoreselection) {
     //find the root
     $('#treeview').show();
+	$('#treeview').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
     $('#treeview').draggable();
     var root = annotations[selected_id];
     while (root.parentspan) {
          root = annotations[root.parentspan];
     }
-    var treedata = treenode(root, selected_id);
+    var treedata = treenode(root, !ignoreselection ? selected_id : "");
     treedata.extended = true;
 	console.debug(treedata);
     var tree = new TreeDrawer( document.getElementById('tree'), treedata);
