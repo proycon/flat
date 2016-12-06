@@ -489,7 +489,11 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 				setname = substructure.set;
 			}
 			if (setname === "undefined") setname = "";
-			s += "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+			s += "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+            if (((substructure.type == "morpheme") || (substructure.type == "phoneme"))  && (extended)) {
+                s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview_structure('" + substructure.id + "')\"></div>";
+            }
+            s += "</th><td>";
 			s += renderannotation(substructure, false, extended); //renders class
 			s += renderstructure(substructure, false, true, extended);
 			s = s + "</td></tr>";
@@ -1234,6 +1238,46 @@ function treeview(selected_id, ignoreselection) {
          root = annotations[root.parentspan];
     }
     var treedata = treenode(root, !ignoreselection ? selected_id : "");
+    treedata.extended = true;
+    var tree = new TreeDrawer( document.getElementById('tree'), treedata);
+    tree.draw();
+}
+
+function treenode_structure(structureelement, type, selected_id) {
+    var node = {'label': structureelement.class, children: [] };
+	if (structureelement.id === selected_id) {
+		node.class = "selected";
+	}
+    if ((structureelement.structure) && (structureelement.structure.length > 0)) {
+        for (var i = 0; i < structureelement.structure.length; i++) {
+            if (structure[structureelement.structure[i]].type == type) {
+                node.children.push(treenode_structure(structure[structureelement.structure[i]], type, selected_id));
+            }
+        }
+    } else {
+        forannotations(structureelement.id,function(annotation){
+            if (type == "morpheme") {
+                if ((annotation.type == "t") && (annotation.class == "current")) {
+                    node.children.push({'label':annotation.text}); //add leaf node with morpheme text
+                }
+            } else if (type == "phoneme") {
+                if ((annotation.type == "ph") && (annotation.class == "current")) {
+                    node.children.push({'label':annotation.phon}); //add leaf node with phoneme text
+                }
+            }
+        });
+    }
+    return node;
+}
+
+function treeview_structure(selected_id, ignoreselection) {
+    //find the root
+    $('#treeview').show();
+	$('#treeview').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
+    $('#treeview').draggable();
+    var requestedstructure = structure[selected_id];
+    var parentstructure = structure[structure[selected_id].parentstructure];
+    var treedata = treenode_structure(parentstructure, requestedstructure.type, !ignoreselection ? selected_id : "");
     treedata.extended = true;
     var tree = new TreeDrawer( document.getElementById('tree'), treedata);
     tree.draw();
