@@ -160,6 +160,9 @@ div#info th {
     font-weight: bold;
     vertical-align: top;
 }
+div#viewer th {
+    vertical-align: top;
+}
 div#info th span.setname {
     font-weight: normal;
     font-size: 8pt;
