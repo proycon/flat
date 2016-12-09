@@ -378,6 +378,21 @@ function findcorrectionbytext(text) {
     return null;
 }
 
+function hasannotation(structure_id, annotation_id) {
+   return (structure[structure_id].indexOf(annotation_id) != -1);
+}
+
+function getannotations(structure_id, type) {
+    var l = [];
+    forannotations(structure_id, function(a){
+        if (a.type == type) {
+            l.push(a);
+            return;
+        }
+    });
+    return l;
+}
+
 // TESTS -- Second stage, the actual test evaluation
 
 function testeval(data) {
@@ -394,9 +409,9 @@ function testeval(data) {
     if ((testname == "textchange") || (testname == "correction_textchange")) {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
     } else if (testname == "classchange_token") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "mijn");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2/lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "mijn");
     } else if (testname == "classchange_span") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].class, "X");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].class, "X");
     } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
     } else if ((testname == "correction_textmerge")) {
@@ -405,18 +420,11 @@ function testeval(data) {
         testtext('#' + id, "wegreden");
     } else if ((testname == "multiannotchange") ) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
     } else if ((testname == "addentity") || (testname == "correction_addentity")) {
-        var e = null;
-        for (var key in annotations['untitleddoc.p.3.s.1.w.12']) {
-            if (annotations['untitleddoc.p.3.s.1.w.12'][key].type == "entity") {
-                e = annotations['untitleddoc.p.3.s.1.w.12'][key];
-                break;
-            }
-        }
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12'][e.id].class, "per", "Finding named entity on first word");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b'][e.id].class, "per", "Finding named entity on second word");
+        globalassert.equal(getannotations('untitleddoc.p.3.s.1.w.12','entity')[0].class, "per", "Finding named entity on first word");
+        globalassert.equal(getannotations('untitleddoc.p.3.s.1.w.12b','entity')[0].class, "per", "Finding named entity on second word");
     } else if ((testname == "worddelete") ||  (testname == "correction_worddelete")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.8.w.10')).length, 0, "Test if word is removed from interface");
     } else if ((testname == "wordsplit")) {
@@ -425,96 +433,60 @@ function testeval(data) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.18')).length, 1, "Checking presence of new words (1/2)");
     } else if ((testname == "correction_wordsplit")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.12.w.5')).length, 0, "Test if original word is removed from interface");
-        id = findcorrectionbytext("4")
+        id = findcorrectionbytext("4");
         globalassert.equal($(valid('#' + id )).length, 1, "Checking presence of new words (1/2)");
-        id = findcorrectionbytext("uur")
+        id = findcorrectionbytext("uur");
         globalassert.equal($(valid('#'+ id )).length, 1, "Checking presence of new words (1/2)");
     } else if ((testname == "wordinsertionright"))  {
-        testtext('#untitleddoc.p.3.s.12.w.1',"en")
-        testtext('#untitleddoc.p.3.s.12.w.17',"we")
+        testtext('#untitleddoc.p.3.s.12.w.1',"en");
+        testtext('#untitleddoc.p.3.s.12.w.17',"we");
     } else if ((testname == "wordinsertionleft")) {
-        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
-        testtext('#untitleddoc.p.3.s.13.w.16',"we")
+        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden");
+        testtext('#untitleddoc.p.3.s.13.w.16',"we");
     } else if ((testname == "correction_wordinsertionright"))  {
-        id = findcorrectionbytext("we")
-        testtext('#untitleddoc.p.3.s.12.w.1',"en")
-        testtext('#' + id,"we")
+        id = findcorrectionbytext("we");
+        testtext('#untitleddoc.p.3.s.12.w.1',"en");
+        testtext('#' + id,"we");
     } else if ((testname == "correction_wordinsertionleft"))  {
-        id = findcorrectionbytext("we")
-        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden")
-        testtext('#' + id,"we")
+        id = findcorrectionbytext("we");
+        testtext('#untitleddoc.p.3.s.13.w.12',"hoorden");
+        testtext('#' + id,"we");
     } else if ((testname == "spanchange") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
+        globalassert.equal(hasannotation('untitleddoc.p.3.s.9.w.9',"untitleddoc.p.3.s.9.entity.1"), true, "Finding named entity on original word");
+        globalassert.equal(hasannotation('untitleddoc.p.3.s.9.w.7',"untitleddoc.p.3.s.9.entity.1"), true, "Finding named entity on new word");
+        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7'].class, "loc", "Testing named entity class");
     } else if ((testname == "newoverlapspan") || (testname == "correction_newoverlapspan")) {
-        var e = null;
-        var e2 = null;
-        for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
-            if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
-                if (e != null) {
-                    e2 = annotations['untitleddoc.p.3.s.9.w.9'][key];
-                    break;
-                } else {
-                    e = annotations['untitleddoc.p.3.s.9.w.9'][key];
-                }
-            }
-        }
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9'][e.id].class, "loc", "Finding first entity");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9'][e2.id].class, "org", "Finding second entity");
+        globalassert.equal(getannotations( 'untitleddoc.p.3.s.9.w.9','entity')[0].class, "loc", "Finding first entity");
+        globalassert.equal(getannotations( 'untitleddoc.p.3.s.9.w.9','entity')[1].class, "org", "Finding second entity");
     } else if ((testname == "spandeletion")  || (testname == "correction_spandeletion")) {
     } else if ((testname == "tokenannotationdeletion")  ||(testname == "correction_tokenannotationdeletion")) {
     } 
 
     if (testname == "correction_textchange") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["t/undefined:current"]['incorrection'][0], "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2/t/undefined:current"].incorrection, "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if (testname == "correction_textmerge") {
-        id = findcorrectionbytext("wegreden")
-        globalassert.equal(annotations[id]["t/undefined:current"]['incorrection'].length,1, "Checking if annotation is in correction");
+        id = findcorrectionbytext("wegreden");
+        globalassert.equal(annotations[id + "/t/undefined:current"]['incorrection'].length,1, "Checking if annotation is in correction");
         corr_id = annotations[id]["t/undefined:current"]['incorrection'][0];
         globalassert.equal(annotations['untitleddoc.p.3.s.1'][corr_id].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_tokenannotationchange") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_spanchange") ) {
-        var e = null;
-        for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
-            if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
-                e = annotations['untitleddoc.p.3.s.9.w.9'][key];
-                break;
-            }
-        }
-        if (e) {
-            globalassert.ok("Finding named entity on original word");
-            globalassert.equal(e.class, "loc", "Checking class of named entity on original word");
-        } else {
-            globalassert.ok(false, "Finding named entity on original word");
-        }
-
-        var e = null;
-        for (var key in annotations['untitleddoc.p.3.s.9.w.7']) {
-            if (annotations['untitleddoc.p.3.s.9.w.7'][key].type == "entity") {
-                e = annotations['untitleddoc.p.3.s.9.w.7'][key];
-                break;
-            }
-        }
-        if (e) {
-            globalassert.ok("Finding named entity on new word");
-            globalassert.equal(e.class, "loc", "Checking class of named entity on new word");
-        } else {
-            globalassert.ok(false, "Finding named entity on new word");
-        }
+        globalassert.equal(getannotations('untitleddoc.p.3.s.9.w.9', 'entity')[0].class, "loc", "Finding named entity on original word and checking class");
+        globalassert.equal(getannotations('untitleddoc.p.3.s.9.w.7', 'entity')[0].class, "loc", "Finding named entity on new word and checking class");
     } else if ((testname == "comment_span") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children.length, 1);
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].type, "comment");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].value, "This is a comment");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].type, "comment");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].value, "This is a comment");
     } else if ((testname == "confidence_set") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].confidence, 0.88);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.3/lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].confidence, 0.88);
     } else if ((testname == "confidence_edit") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, 0.88);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, 0.88);
     } else if ((testname == "confidence_unset") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, undefined);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, undefined);
     }
     
     console.log("(testeval) (qunit.start)");
