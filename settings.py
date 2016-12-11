@@ -235,8 +235,9 @@ CONFIGURATIONS = {
     #'metadataindex': ['status','language','title'],
 
     #Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example:
-    #'metadataconstraints': {'language': ['fr','en','es'], 'status':['completed','inprogress']}
+    #'metadataconstraints': {'language': ['fr','en','es'], 'status':['completed','inprogress']},
 
+    #'searches': {'query': "SELECT entity WHERE annotatortype = "auto" FOR w RETURN target", 'label': "Highlight automatically annotated entities"}
 },
 }
 

@@ -1,4 +1,9 @@
     <li id="opensearch"><a href="javascript:opensearch()">Search</a></li>
+    {% if configuration.searches %}
+    {% for search in configuration.searches %}
+    <li id="opensearch"><a href="javascript:presetsearch({{forloop.counter0}})">{{search.label}}</a></li>
+    {% endfor %}
+    {% endif %}
     <li id="toggleannotatordetails"><a href="javascript:toggleannotatordetails()">Show annotator details</a></li>
     <li id="toggleoriginal"><a href="javascript:toggleoriginal()">Show text prior to correction</a></li>
     <li id="toggledeletions"><a href="javascript:toggledeletions()">Show deletions &amp; suggested insertions</a></li>
