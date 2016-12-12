@@ -41,7 +41,7 @@ function testinit(name, assert) {
     globalassert = assert;
     havecontent = false;
     $('#document').html("");
-    annotations = {} //reset, will be newly populated
+    annotations = {};//reset, will be newly populated
     perspective = 'full';
     editfields = 0;
     closeeditor();
@@ -82,17 +82,17 @@ function testtext(elementselector, reference, message) {
 function ui_get(selectexpression) {
     var selector = $(valid(selectexpression));
     globalassert.equal(selector.length, 1 , "[UI] Get  " + selectexpression);
-    return selector
+    return selector;
 }
 
 function ui_edit(selectexpression, value) {
-    var e = ui_get(selectexpression)
+    var e = ui_get(selectexpression);
     e.val(value);
     globalassert.equal( e.val() , value, "[UI] Change text of  " + selectexpression + " to \"" + value + "\"");
 }
 
 function ui_choose(selectexpression, value) {
-    var e = ui_get(selectexpression)
+    var e = ui_get(selectexpression);
     e.prop('selectedIndex',value);
     globalassert.equal( e.prop('selectedIndex') , value, "[UI] Choosing " + selectexpression + " , selecting option \"" + value + "\"");
     e.trigger('change');
@@ -174,7 +174,7 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
-    ui_choose('#editfield2',5); //corresponds to person as long as the set definition doesn't change
+    ui_choose('#editfield2',2); //corresponds to person as long as the set definition doesn't change
 
     //select span
     ui_click('#spanselector2'); 
@@ -368,12 +368,12 @@ QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
     havecontent = false;
     $('#document').html("(All tests completed!)");
-    annotations = {} //reset, will be newly populated
+    annotations = {};//reset, will be newly populated
 });
 
 function findcorrectionbytext(text) {
     for (var key in annotations) {
-        if ((annotations[key]["t/undefined:current"]) && (annotations[key]["t/undefined:current"].incorrection) && (annotations[key]["t/undefined:current"].incorrection.length == 1)  && (annotations[key]["t/undefined:current"].text == text)) return annotations[key]['self'].id;
+        if ((annotations[key]["t/undefined:current"]) && (annotations[key]["t/undefined:current"].incorrection) && (annotations[key]["t/undefined:current"].incorrection.length == 1)  && (annotations[key]["t/undefined:current"].text == text)) return annotations[key].self.id;
     }
     return null;
 }
@@ -397,7 +397,7 @@ function getannotations(structure_id, type) {
 
 function testeval(data) {
     console.log("(testeval) evaluating test result");
-    if (data.testmessage == "") data.testmessage = "ok";
+    if (data.testmessage === "") data.testmessage = "ok";
 
     if (data.queries) {
         globalassert.ok(data.testresult, "Backend Queries: " + data.queries.join(" -- ") );
@@ -415,8 +415,8 @@ function testeval(data) {
     } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
     } else if ((testname == "correction_textmerge")) {
-        id = findcorrectionbytext("wegreden")
-        globalassert.notEqual(id,null,"Testing whether correction found (by text)")
+        id = findcorrectionbytext("wegreden");
+        globalassert.notEqual(id,null,"Testing whether correction found (by text)");
         testtext('#' + id, "wegreden");
     } else if ((testname == "multiannotchange") ) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");

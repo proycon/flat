@@ -37,7 +37,6 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: Text Processing :: Linguistic",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
@@ -47,5 +46,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     package_data = {'flat':['templates/*.html','style/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'], 'flat.modes.metadata':['templates/*.html']  },
-    install_requires=['pynlpl >= 1.1.0','Django >= 1.8','requests'] + extradeps
+    install_requires=['pynlpl >= 1.1.1','Django >= 1.8','requests'] + extradeps
 )
