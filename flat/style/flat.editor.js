@@ -655,7 +655,7 @@ function showeditor(element) {
                         }
                     }
                     if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-                    if (folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)
+                    if ((annotation.type == "t") || ((folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)... also accept a span selector for text (needed for word merges/splits)
                         s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button><br />";
                     }
                     var preselectcorrectionclass = "";
