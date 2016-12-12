@@ -102,6 +102,15 @@ function ui_click(selectexpression) {
     ui_get(selectexpression).trigger('click');
 }
 
+function ui_find(annotationtype){
+    for (var i = 0; i < editfields; i++) {
+        if (editdata[i].type === annotationtype) {
+            return i;
+        }
+    }
+    throw "Annotation type " + annotationtype + " not found";
+}
+
 //we want tests in the order defined here
 //our tests are run sequentially
 QUnit.config.reorder = false;
@@ -124,43 +133,50 @@ FLATTEST_CORRECTIONCLASS_UNCERTAIN = 11;
 QUnit.asyncTest("Text Change", function(assert){
     testinit("textchange",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield2text',"mijn"); 
-    ui_click('#editform2direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"mijn"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Class change (token annotation)", function(assert){
     testinit("classchange_token",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield4',"mijn");  //lemma
-    ui_click('#editform4direct'); 
+    var idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,"mijn");  //lemma
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Class change (span annotation)", function(assert){
     testinit("classchange_span",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_choose('#editfield5',21); 
-    ui_click('#editform5direct'); 
+    var idx = ui_find('chunk');
+    ui_choose('#editfield' + idx,21); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Text Change (Merging multiple words)", function(assert){
     testinit("textmerge",assert);
     ui_click('#untitleddoc.p.3.s.1.w.5');
-    ui_click('#spanselector5');
+    var idx = ui_find('t');
+    ui_click('#spanselector' + idx);
     ui_click('#untitleddoc.p.3.s.1.w.4');
-    ui_click('#spanselector5');
-    ui_edit('#editfield5text',"wegreden"); 
-    ui_click('#editform5direct'); 
+    ui_click('#spanselector' + idx);
+    ui_edit('#editfield' + idx + 'text',"wegreden"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Changing Text and multiple token annotations at once", function(assert){
     testinit("multiannotchange",assert);
     ui_click('#untitleddoc.p.3.s.6.w.8');
-    ui_edit('#editfield1text',"het"); 
-    ui_click('#editform1direct'); 
-    ui_edit('#editfield2',"LID(onbep,stan,rest)");  //pos
-    ui_click('#editform2direct'); 
-    ui_edit('#editfield3',"het");  //lemma
-    ui_click('#editform3direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"het"); 
+    ui_click('#editform' + idx + 'direct'); 
+    idx = ui_find('pos');
+    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");  //pos
+    ui_click('#editform' + idx + 'direct'); 
+    idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,"het");  //lemma
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Adding a new span annotation, out of order selection", function(assert){
@@ -174,193 +190,216 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
-    ui_choose('#editfield2',2); //corresponds to person as long as the set definition doesn't change
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,2); //corresponds to person as long as the set definition doesn't change
 
     //select span
-    ui_click('#spanselector2'); 
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.1.w.12');
-    ui_click('#spanselector2'); 
+    ui_click('#spanselector' + idx); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Adding new overlapping span", function(assert){
     testinit("newoverlapspan",assert);
     ui_click('#untitleddoc.p.3.s.9.w.8');
-    ui_choose('#editfield6',4); //corresponds to organisation as long as the set definition doesn't change
-    ui_click('#spanselector6'); 
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,4); //corresponds to organisation as long as the set definition doesn't change
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
     //8 and 9 are already selected!
-    ui_click('#spanselector6'); 
-    ui_click('#editform6new'); 
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'new'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word deletion", function(assert){
     testinit("worddelete",assert);
     ui_click('#untitleddoc.p.3.s.8.w.10');
-    ui_edit('#editfield1text',""); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',""); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word split", function(assert){
     testinit("wordsplit",assert);
     ui_click('#untitleddoc.p.3.s.12.w.5');
-    ui_edit('#editfield1text',"4 uur"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"4 uur"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word insertion to the right", function(assert){
     testinit("wordinsertionright",assert);
     ui_click('#untitleddoc.p.3.s.12.w.1');
-    ui_edit('#editfield1text',"en we"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"en we"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word insertion to the left", function(assert){
     testinit("wordinsertionleft",assert);
     ui_click('#untitleddoc.p.3.s.13.w.12');
-    ui_edit('#editfield1text',"we hoorden"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"we hoorden"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Span change", function(assert){
     testinit("spanchange",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_click('#spanselector8'); 
+    var idx = ui_find('entity');
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
-    ui_click('#spanselector8'); 
-    ui_click('#editform8direct'); 
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Deletion of token annotation", function(assert){
     testinit("tokenannotationdeletion",assert);
     ui_click('#untitleddoc.p.3.s.8.w.4');
-    ui_edit('#editfield3',""); 
-    ui_click('#editform3direct'); 
+    var idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,""); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Span deletion", function(assert){
     testinit("spandeletion",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_choose('#editfield8',0); //corresponds to empty class, implies deletion
-    ui_click('#editform8direct'); 
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,0); //corresponds to empty class, implies deletion
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Setting confidence",function(assert){
     testinit("confidence_set",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_click('#confidencecheck3');
-    $('#confidenceslider3').slider('value',88);
-    ui_click('#editform3direct'); 
+    var idx = ui_find('lemma');
+    ui_click('#confidencecheck' + idx);
+    $('#confidenceslider' + idx).slider('value',88);
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Editing confidence",function(assert){
     testinit("confidence_edit",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    $('#confidenceslider4').slider('value',88);
-    ui_click('#editform4direct'); 
+    var idx = ui_find('lemma');
+    $('#confidenceslider' + idx).slider('value',88);
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Unsetting confidence",function(assert){
     testinit("confidence_unset",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_click('#confidencecheck4');
-    ui_click('#editform4direct'); 
+    var idx = ui_find('lemma');
+    ui_click('#confidencecheck' + idx);
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Text Change", function(assert){
     testinit("correction_textchange",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield1text',"mijn"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"mijn"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function(assert){
     testinit("correction_textmerge",assert);
     ui_click('#untitleddoc.p.3.s.1.w.5');
-    ui_click('#spanselector1');
+    var idx = ui_find('t');
+    ui_click('#spanselector' + idx);
     ui_click('#untitleddoc.p.3.s.1.w.4');
-    ui_click('#spanselector1');
-    ui_edit('#editfield1text',"wegreden"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_click('#spanselector' + idx);
+    ui_edit('#editfield' + idx + 'text',"wegreden"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
     testinit("correction_tokenannotationchange",assert);
     ui_click('#untitleddoc.p.3.s.6.w.8');
-    ui_edit('#editfield2',"LID(onbep,stan,rest)");  //pos
-    ui_click('#editform2correction'); 
-    ui_choose('#editform2correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('pos');
+    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word deletion", function(assert){
     testinit("correction_worddelete",assert);
     ui_click('#untitleddoc.p.3.s.8.w.10');
-    ui_edit('#editfield1text',""); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',""); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word split", function(assert){
     testinit("correction_wordsplit",assert);
     ui_click('#untitleddoc.p.3.s.12.w.5');
-    ui_edit('#editfield1text',"4 uur"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"4 uur"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx +'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     testinit("correction_wordinsertionright",assert);
     ui_click('#untitleddoc.p.3.s.12.w.1');
-    ui_edit('#editfield1text',"en we"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"en we"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     testinit("correction_wordinsertionleft",assert);
     ui_click('#untitleddoc.p.3.s.13.w.12');
-    ui_edit('#editfield1text',"we hoorden"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"we hoorden"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
     testinit("correction_tokenannotationdeletion",assert);
     ui_click('#untitleddoc.p.3.s.8.w.4');
-    ui_edit('#editfield3',""); 
-    ui_click('#editform3correction'); 
-    ui_choose('#editform3correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,""); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Span change", function(assert){
     testinit("correction_spanchange",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_click('#spanselector8'); 
+    var idx = ui_find('entity');
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
-    ui_click('#spanselector8'); 
-    ui_click('#editform8correction'); 
-    ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Span deletion", function(assert){
     testinit("correction_spandeletion",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_choose('#editfield8',0); //corresponds to empty class, implies deletion
-    ui_click('#editform8correction'); 
-    ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,0); //corresponds to empty class, implies deletion
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[Higher order] Adding a comment to a span annotation",function(assert){
     testinit("comment_span",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_click('#editform4direct'); 
-    ui_click('#editoraddhigherorder4_comment');
-    ui_edit('#higherorderfield4_0',"This is a comment"); 
+    var idx = ui_find('chunk');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#editoraddhigherorder' + idx + '_comment');
+    ui_edit('#higherorderfield' + idx + '_0',"This is a comment"); 
     ui_click('#editorsubmit'); 
 });
 
