@@ -1087,6 +1087,20 @@ function viewer_onpagechange() {
     }
 }
 
+
+function presetsearch(search_index) {
+    if (configuration.searches[search_index]) {
+        var search = configuration.searches[search_index];
+        if (search.changeperspective) {
+            $('#searchperspective').prop('checked',true);
+        } else {
+            $('#searchhighlight').prop('checked',true);
+        }
+        $('#searchqueryinput').val(search.query);
+        $('#searchsubmit').click();
+    }
+}
+
 function opensearch() {
     $('#search').show();
     $('#search').draggable();

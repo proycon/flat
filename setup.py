@@ -18,7 +18,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 if sys.version >= '3':
-    extradeps = ['foliadocserve >= 0.4.1']
+    extradeps = ['foliadocserve >= 0.4.1,<0.5']
 else:
     extradeps = []
 
@@ -46,5 +46,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     package_data = {'flat':['templates/*.html','style/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'], 'flat.modes.metadata':['templates/*.html']  },
-    install_requires=['pynlpl >= 1.0.7','Django >= 1.8','requests'] + extradeps
+    install_requires=['pynlpl >= 1.1.1','Django >= 1.8','requests'] + extradeps
 )
