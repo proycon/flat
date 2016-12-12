@@ -165,6 +165,7 @@ CONFIGURATIONS = {
     'allowupload': True, #boolean
     'allowconfidence': True,
     'modes': MODES,
+    'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities"}],
 },
 'valkuileval':{
     'name': "Valkuil Evaluation Project - Stage 1",
@@ -369,7 +370,7 @@ MANAGERS = ADMINS
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost','flat.science.ru.nl','applejack.science.ru.nl','spitfire','applejack']
+ALLOWED_HOSTS = ['localhost','flat.science.ru.nl','applejack.science.ru.nl','spitfire','applejack', '127.0.0.1']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
