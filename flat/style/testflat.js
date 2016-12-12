@@ -124,32 +124,32 @@ FLATTEST_CORRECTIONCLASS_UNCERTAIN = 11;
 QUnit.asyncTest("Text Change", function(assert){
     testinit("textchange",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield1text',"mijn"); 
-    ui_click('#editform1direct'); 
+    ui_edit('#editfield2text',"mijn"); 
+    ui_click('#editform2direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Class change (token annotation)", function(assert){
     testinit("classchange_token",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield3',"mijn");  //lemma
-    ui_click('#editform3direct'); 
+    ui_edit('#editfield4',"mijn");  //lemma
+    ui_click('#editform4direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Class change (span annotation)", function(assert){
     testinit("classchange_span",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_choose('#editfield4',21); 
-    ui_click('#editform4direct'); 
+    ui_choose('#editfield5',21); 
+    ui_click('#editform5direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Text Change (Merging multiple words)", function(assert){
     testinit("textmerge",assert);
     ui_click('#untitleddoc.p.3.s.1.w.5');
-    ui_click('#spanselector1');
+    ui_click('#spanselector5');
     ui_click('#untitleddoc.p.3.s.1.w.4');
-    ui_click('#spanselector1');
-    ui_edit('#editfield1text',"wegreden"); 
-    ui_click('#editform1direct'); 
+    ui_click('#spanselector5');
+    ui_edit('#editfield5text',"wegreden"); 
+    ui_click('#editform5direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Changing Text and multiple token annotations at once", function(assert){
