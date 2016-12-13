@@ -550,17 +550,27 @@ function testeval(data) {
     } 
 
     if (testname == "correction_textchange") {
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1/new/t/current"].incorrection, "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
+        if (globalassert.ok(annotations["untitleddoc.p.3.s.1.w.2.correction.1/new/t/current"], "Corrected annotation exists")) {
+            globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1/new/t/current"].incorrection, "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
+        }
+        if (globalassert.ok(annotations["untitleddoc.p.3.s.1.w.2.correction.1"], "Correction exists")) {
+            globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
+        }
     } else if (testname == "correction_textmerge") {
         var id = findcorrectionbytext("wegreden");
         if (id) {
-            //globalassert.equal(annotations[id + "/new/t/current"].incorrection, id,  "Checking if annotation is in correction");
-            globalassert.equal(annotations[id].class, "uncertain", "Checking correction and its class");
+            if (globalassert.ok(annotations[id + "/new/t/current"], "Corrected annotation exists")) {
+                globalassert.equal(annotations[id + "/new/t/current"].incorrection, id,  "Checking if annotation is in correction");
+            }
+            if (globalassert.ok(annotations[id], "Correction exists")) {
+                globalassert.equal(annotations[id].class, "uncertain", "Checking correction and its class");
+            }
         }
     } else if ((testname == "correction_tokenannotationchange") ) {
-        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
-        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].incorrection, "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
+        if (globalassert.ok(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"], "Corrected annotation exists")) {
+            globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
+            globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].incorrection, "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
+        }
         globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_spanchange") ) {
         globalassert.equal(getannotations('untitleddoc.p.3.s.9.w.9', 'entity')[0].class, "loc", "Finding named entity on original word and checking class");
