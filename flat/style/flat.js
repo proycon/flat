@@ -189,7 +189,11 @@ function forallannotations(callback) {
     Object.keys(structure).forEach(function(structure_id){
         if (structure[structure_id].annotations) {
             structure[structure_id].annotations.forEach(function(annotation_id){
-                callback(structure[structure_id],annotations[annotation_id]);
+                if (annotations[annotation_id]) {
+                    callback(structure[structure_id],annotations[annotation_id]);
+                } else {
+                    console.debug("Annotation " + annotation_id + " for structure " + structure_id + " is not defined");
+                }
             });
         }
     });
