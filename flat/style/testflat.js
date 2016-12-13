@@ -411,6 +411,16 @@ QUnit.asyncTest("[Higher order] Editing a feature",function(assert){
     ui_edit('#higherorderfield_' + idx + '_0',"ADJX");  //head feature
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("[Higher order] Adding a feature",function(assert){
+    testinit("feature_add",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#editoraddhigherorder' + idx + '_feat');
+    ui_edit('#higherorderfield_subset_' + idx + '_4',"testsubset");  //head feature
+    ui_edit('#higherorderfield_' + idx + '_4',"testvalue");  //head feature
+    ui_click('#editorsubmit'); 
+});
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
