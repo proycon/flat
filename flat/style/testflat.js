@@ -403,7 +403,7 @@ QUnit.asyncTest("[Higher order] Adding a comment to a span annotation",function(
     ui_edit('#higherorderfield' + idx + '_0',"This is a comment"); 
     ui_click('#editorsubmit'); 
 });
-QUnit.asyncTest("[Higher order] Editing a feature",function(assert){
+QUnit.asyncTest("[Higher order] Editing a feature (class)",function(assert){
     testinit("feature_edit",assert);
     ui_click('#untitleddoc.p.3.s.1.w.11');
     var idx = ui_find('pos');
@@ -411,7 +411,16 @@ QUnit.asyncTest("[Higher order] Editing a feature",function(assert){
     ui_edit('#higherorderfield_' + idx + '_0',"ADJX");  //head feature
     ui_click('#editorsubmit'); 
 });
-QUnit.asyncTest("[Higher order] Adding a feature",function(assert){
+QUnit.asyncTest("[Higher order] Editing a feature (subset and class)",function(assert){
+    testinit("feature_edit2",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_edit('#higherorderfield_subset_' + idx + '_0',"headX");  //head feature
+    ui_edit('#higherorderfield_' + idx + '_0',"ADJX");  //head feature
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("[Higher order] Adding a new feature",function(assert){
     testinit("feature_add",assert);
     ui_click('#untitleddoc.p.3.s.1.w.11');
     var idx = ui_find('pos');
@@ -419,6 +428,14 @@ QUnit.asyncTest("[Higher order] Adding a feature",function(assert){
     ui_click('#editoraddhigherorder' + idx + '_feat');
     ui_edit('#higherorderfield_subset_' + idx + '_4',"testsubset");  //head feature
     ui_edit('#higherorderfield_' + idx + '_4',"testvalue");  //head feature
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("[Higher order] Deleting a feature",function(assert){
+    testinit("feature_delete",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_edit('#higherorderfield_' + idx + '_0',"");  //head feature
     ui_click('#editorsubmit'); 
 });
 
