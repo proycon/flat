@@ -625,6 +625,20 @@ function testeval(data) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, 0.88);
     } else if ((testname == "confidence_unset") ) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, undefined);
+    } else if ((testname == "feature_edit") ) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 4);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].subset, "head");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].class, "ADJX");
+    } else if ((testname == "feature_edit2") ) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 4);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].subset, "headX");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].class, "ADJX");
+    } else if ((testname == "feature_add") ) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 5);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[4].subset, "testsubset");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[4].class, "testvalue");
+    } else if ((testname == "feature_delete")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 3);
     }
     
     console.log("(testeval) (qunit.start)");
