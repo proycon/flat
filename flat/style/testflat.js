@@ -523,7 +523,7 @@ function testeval(data) {
     } 
 
     if (testname == "correction_textchange") {
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2/t/current"].incorrection, "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1/new/t/current"].incorrection, "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
         globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if (testname == "correction_textmerge") {
         id = findcorrectionbytext("wegreden");
