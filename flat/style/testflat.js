@@ -435,7 +435,7 @@ function findcorrectionbytext(text) {
             }
         }
     });
-    return null;
+    return correction;
 }
 
 function hasannotation(structure_id, annotation_id) {
@@ -475,7 +475,7 @@ function testeval(data) {
     } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
     } else if ((testname == "correction_textmerge")) {
-        id = findcorrectionbytext("wegreden");
+        var id = findcorrectionbytext("wegreden");
         globalassert.notEqual(id,null,"Testing whether correction found (by text)");
         testtext('#' + id, "wegreden");
     } else if ((testname == "multiannotchange") ) {
