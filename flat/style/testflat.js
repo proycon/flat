@@ -403,6 +403,14 @@ QUnit.asyncTest("[Higher order] Adding a comment to a span annotation",function(
     ui_edit('#higherorderfield' + idx + '_0',"This is a comment"); 
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("[Higher order] Editing a feature",function(assert){
+    testinit("feature_edit",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_edit('#higherorderfield_' + idx + '_0',"ADJX");  //head feature
+    ui_click('#editorsubmit'); 
+});
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
