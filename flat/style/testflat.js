@@ -93,8 +93,9 @@ function ui_edit(selectexpression, value) {
 
 function ui_choose(selectexpression, value) {
     var e = ui_get(selectexpression);
-    e.prop('selectedIndex',value);
-    globalassert.equal( e.prop('selectedIndex') , value, "[UI] Choosing " + selectexpression + " , selecting option \"" + value + "\"");
+    e.val(value);
+    //e.prop('selectedIndex',value);
+    globalassert.equal( e.val() , value, "[UI] Choosing " + selectexpression + " , selecting option \"" + value + "\"");
     e.trigger('change');
 }
 
@@ -118,8 +119,8 @@ testname = ""; //global variable
 globalassert = null;
 
 //these will need to be adjusted when set definitions change
-FLATTEST_ADD_NER = 5; 
-FLATTEST_CORRECTIONCLASS_UNCERTAIN = 11;
+FLATTEST_ADD_NER = "4"; 
+FLATTEST_CORRECTIONCLASS_UNCERTAIN = "uncertain";
 
 // This is how we detect the failure and cancel the rest of the tests...
 /*QUnit.testDone(function(details) {
@@ -150,7 +151,7 @@ QUnit.asyncTest("Class change (span annotation)", function(assert){
     testinit("classchange_span",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
     var idx = ui_find('chunk');
-    ui_choose('#editfield' + idx,21); 
+    ui_choose('#editfield' + idx,'X'); 
     ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
@@ -191,7 +192,7 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
 
     //fill new field:
     var idx = ui_find('entity');
-    ui_choose('#editfield' + idx,2); //corresponds to person as long as the set definition doesn't change
+    ui_choose('#editfield' + idx,"per"); 
 
     //select span
     ui_click('#spanselector' + idx); 
@@ -203,7 +204,7 @@ QUnit.asyncTest("Adding new overlapping span", function(assert){
     testinit("newoverlapspan",assert);
     ui_click('#untitleddoc.p.3.s.9.w.8');
     var idx = ui_find('entity');
-    ui_choose('#editfield' + idx,4); //corresponds to organisation as long as the set definition doesn't change
+    ui_choose('#editfield' + idx,"org");
     ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
     //8 and 9 are already selected!
@@ -265,7 +266,7 @@ QUnit.asyncTest("Span deletion", function(assert){
     testinit("spandeletion",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
     var idx = ui_find('entity');
-    ui_choose('#editfield' + idx,0); //corresponds to empty class, implies deletion
+    ui_choose('#editfield' + idx,""); //corresponds to empty class, implies deletion
     ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
@@ -388,7 +389,7 @@ QUnit.asyncTest("[As correction] Span deletion", function(assert){
     testinit("correction_spandeletion",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
     var idx = ui_find('entity');
-    ui_choose('#editfield' + idx,0); //corresponds to empty class, implies deletion
+    ui_choose('#editfield' + idx,""); //corresponds to empty class, implies deletion
     ui_click('#editform' + idx + 'correction'); 
     ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
