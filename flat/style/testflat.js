@@ -119,7 +119,7 @@ testname = ""; //global variable
 globalassert = null;
 
 //these will need to be adjusted when set definitions change
-FLATTEST_ADD_NER = "4"; 
+FLATTEST_ADD_NER = "6"; 
 FLATTEST_CORRECTIONCLASS_UNCERTAIN = "uncertain";
 
 // This is how we detect the failure and cancel the rest of the tests...
@@ -191,7 +191,7 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
-    var idx = ui_find('entity');
+    var idx = editfields-1;
     ui_choose('#editfield' + idx,"per"); 
 
     //select span
