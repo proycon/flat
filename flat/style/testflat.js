@@ -412,10 +412,29 @@ QUnit.asyncTest("Tests completed", function(assert){
 });
 
 function findcorrectionbytext(text) {
-    //TODO: refactor
-    for (var key in annotations) {
-        if ((annotations[key]["t/current"]) && (annotations[key]["t/current"].incorrection) && (annotations[key]["t/current"].incorrection.length == 1)  && (annotations[key]["t/current"].text == text)) return annotations[key].self.id;
-    }
+    var correction = null;
+    forallannotations(function(annotation){
+        if (annotation.type == "correction") {
+            if (annotation.new) {
+                for (var i = 0; i < annotation.new.length; i++) {
+                    var aid = annotation.new[i];
+                    if ((annotations[aid].type == "t") && (annotations[aid].class == "current") && (annotations[aid].text === text)) {
+                        correction = annotation.id;
+                        return;
+                    }
+                }
+            }
+            if (annotation.current) {
+                for (var i = 0; i < annotation.current.length; i++) {
+                    var aid = annotation.current[i];
+                    if ((annotations[aid].type == "t") && (annotations[aid].class == "current") && (annotations[aid].text === text)) {
+                        correction = annotation.id;
+                        return;
+                    }
+                }
+            }
+        }
+    });
     return null;
 }
 
@@ -508,8 +527,8 @@ function testeval(data) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if (testname == "correction_textmerge") {
         id = findcorrectionbytext("wegreden");
-        globalassert.equal(annotations[id + "/t/current"]['incorrection'].length,1, "Checking if annotation is in correction");
-        corr_id = annotations[id]["t/current"]['incorrection'][0];
+        globalassert.equal(annotations[id + "/t/current"].incorrection, id,  "Checking if annotation is in correction");
+        corr_id = annotations[id]["t/current"].incorrection;
         globalassert.equal(annotations['untitleddoc.p.3.s.1'][corr_id].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_tokenannotationchange") ) {
         globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
