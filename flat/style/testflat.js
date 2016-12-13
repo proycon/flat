@@ -282,7 +282,7 @@ QUnit.asyncTest("Setting confidence",function(assert){
 QUnit.asyncTest("Editing confidence",function(assert){
     testinit("confidence_edit",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    var idx = ui_find('lemma');
+    var idx = ui_find('chunk');
     $('#confidenceslider' + idx).slider('value',88);
     ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
@@ -290,7 +290,7 @@ QUnit.asyncTest("Editing confidence",function(assert){
 QUnit.asyncTest("Unsetting confidence",function(assert){
     testinit("confidence_unset",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    var idx = ui_find('lemma');
+    var idx = ui_find('chunk');
     ui_click('#confidencecheck' + idx);
     ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
