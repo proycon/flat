@@ -4,6 +4,7 @@
     <li><a href="javascript:presetsearch({{forloop.counter0}})">{{search.label}}</a></li>
     {% endfor %}
     {% endif %}
+    <li><a href="/download/{{ namespace }}/{{ docid }}.folia.xml">View FoLiA XML source</a></li>
     <li id="toggleannotatordetails"><a href="javascript:toggleannotatordetails()">Show annotator details</a></li>
     <li id="toggleoriginal"><a href="javascript:toggleoriginal()">Show text prior to correction</a></li>
     <li id="toggledeletions"><a href="javascript:toggledeletions()">Show deletions &amp; suggested insertions</a></li>

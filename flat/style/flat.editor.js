@@ -1,8 +1,10 @@
 var editannotations = {};
 var editoropen = false;
-var coselector = -1; //disabled
+var coselector = -1; //disabled, otherwise the index of the field to which the coselector is currently bound
+var coselector_sub = -1; //disabled, otherwise index of the higher order field (i.e. a span role) to which the coselector is currently bound
 var editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 var editedelementid = null;
+var editedelementtype = null;
 var editfields = 0;
 var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
 var editconfidence = true; //allow setting/editing confidence, will be overwritten to configuration value on init
@@ -60,46 +62,71 @@ function select(element) {
     /* toggles selection of an element (coselector) */
     var found = false;
     var index = 0;
-    for (var i = 0; i < editdata[coselector].targets.length; i++) {
-        if (editdata[coselector].targets[i] == element.id) {
-            index = i;
-            found = true;
-            break;
+    var i;
+
+    if (coselector_sub == -1) {
+        //no sub-coselector
+        for (i = 0; i < editdata[coselector].targets.length; i++) {
+            if (editdata[coselector].targets[i] == element.id) {
+                index = i;
+                found = true;
+                break;
+            }
         }
-    }
-    if (found) {
-        editdata[coselector].targets.splice(index, 1);
-        $(element).removeClass("selected");
+        if (found) {
+            //deselect a word
+            editdata[coselector].targets.splice(index, 1);
+            $(element).removeClass("selected");
+        } else {
+            //select a word
+            editdata[coselector].targets.push( element.id);
+            $(element).addClass("selected");
+        }
+        $('#spantext' + coselector).html(getspantext(editdata[coselector], true));
     } else {
-        editdata[coselector].targets.push( element.id);
-        $(element).addClass("selected");
+        //we have a sub-coselector, meaning we are co-selecting for span roles
+        for (i = 0; i < editdata[coselector].children[coselector_sub].targets.length; i++) {
+            if (editdata[coselector].children[coselector_sub].targets[i] == element.id) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            //deselect a word
+            editdata[coselector].children[coselector_sub].targets.splice(index, 1);
+            $(element).removeClass("selected");
+        } else {
+            //select a word
+            editdata[coselector].children[coselector_sub].targets.push( element.id);
+            $(element).addClass("selected");
+        }
+        $('#spantext' + coselector + '_' + coselector_sub).html(getspantext(editdata[coselector].children[coselector_sub], true));
     }
+
 }
 
 function setaddablefields() {
     /* Adds a selector in the editor for adding extra annotation types to an element (must be previously declared, $('#newdeclarationsubmit').click())
        To actually add the field to the form, addeditorfield(i) is called, each addable field has a sequencenumber as ID  */
     //
-    editoraddablefields_options = "";
-    editoraddablefields = [];
+    var editoraddablefields_options = "";
+    editoraddablefields = []; //this is deliberately global
     Object.keys(declarations).forEach(function(annotationtype){
         Object.keys(declarations[annotationtype]).forEach(function(set){
-            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set])) {
-                if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
-                    label = setdefinitions[set].label;
-                } else {
-                    label = getannotationtypename(annotationtype);
-                }
+            if ((annotationtype != "correction") && (viewannotations[annotationtype + "/" + set]) && (!folia_isstructure(annotationtype)) && (folia_accepts(editedelementtype,annotationtype))) {
+                label = folia_label(annotationtype, set);
                 setname = shorten(set);
                 //check if it already exists
-                found = false;
+                var occurrences = 0;
                 editdata.forEach(function(editdataitem){
                     if ((editdataitem.type == annotationtype) && (editdataitem.set == set)) {
-                        found = true;
-                        return true;
+                        //already exists, but do we allow multiple of this type? consider it not found otherwise
+                        occurrences++;
                     }
                 });
-                if (!found) {
+                var maxoccurrences = folia_occurrencesperset(annotationtype);
+                if ((maxoccurrences === 0) || (occurrences < maxoccurrences)) {
                     editoraddablefields_options = editoraddablefields_options + "<option value=\"" + editoraddablefields.length + "\">" + label + " -- <span class=\"setname\">" + setname + "</span></option>";
                     editoraddablefields.push({'type': annotationtype, 'set': set});
                 }
@@ -108,7 +135,7 @@ function setaddablefields() {
     });
     if (configuration.allowaddfields) {
         //only show if we're allowed to add fields manually
-        if ((editoraddablefields_options) && (!annotationfocus)) {
+        if (editoraddablefields_options) {
             $("#editoraddablefields").html(editoraddablefields_options);
             $("#editoraddfields").show();
         } else {
@@ -230,60 +257,154 @@ function renderhigherorderfields(index, annotation) {
 
     var s = "";
     var items = [];
-    if (annotation.type != 't' && annotation.type != 'ph') {
-        //Add menu for adding higher-order annotation
-        s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
-        s += "<ul>";
-        s += "<li id=\"editoraddhigherorder" + index + "_comment\" onclick=\"addhigherorderfield(" + index + ",'comment')\">Add Comment</li>";
-        s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield(" + index + ",'desc')\">Add Description</li>";
-        s += "</ul>";
-        s += "</div>";
+    //Add menu for adding higher-order annotation
+    s += "<div id=\"editoraddhigherorder" + index + "\" class=\"addhigherordermenu\">+↓";
+    s += "<ul>";
+    //TODO: automatically infer possible higher order annotations
+    if (folia_accepts(annotation.type, 'comment')) {
+        s += "<li id=\"editoraddhigherorder" + index + "_comment\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'comment')\">Add Comment</li>";
+    }
+    if (folia_accepts(annotation.type, 'desc')) {
+        s += "<li id=\"editoraddhigherorder" + index + "_desc\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'desc')\">Add Description</li>";
+    }
+    if (folia_accepts(annotation.type, 'feat')) {
+        s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
+    }
+    if (folia_isspan(annotation.type)) {
+        var spanroles = folia_spanroles(annotation.type);
+        for (var j in spanroles) {
+            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanroles[j] + "')\">Add " + folia_label(spanroles[j]) + "</li>";
+        }
+    }
+    s += "</ul>";
+    s += "</div>";
 
-        //placeholder for higher order fields
-        s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
-        var ho_index = 0;
-        if (annotation.children) {
-            //Render existing higher order annotation fields for editing
-            for (i = 0; i < annotation.children.length; i++) {
-                if (annotation.children[i].type) {
-                    var ho = "";
-                    if (annotation.children[i].type == 'comment') {
-                        ho = "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
-                        if (annotation.children[i].value) ho += annotation.children[i].value;
-                        ho += "</textarea></td>";
-                    } else if (annotation.children[i].type == 'desc') {
-                        ho = "<td>Description:</td><td> <textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
-                        if (annotation.children[i].value) ho += annotation.children[i].value;
-                        ho += "</textarea></td>";
+    //placeholder for higher order fields
+    s += "<div id=\"higherorderfields" + index + "\" class=\"higherorderfields\"><table>";
+    if (annotation.children) {
+        //Render existing higher order annotation fields for editing
+        for (var i = 0; i < annotation.children.length; i++) {
+            if (annotation.children[i].type) {
+                var s_item = renderhigherorderfield(index,items.length, annotation.children[i], annotation.set);
+                if (s_item) {
+                    s += s_item;
+                    var child = JSON.parse(JSON.stringify(annotation.children[i])); //deep copy, hence the json/parse stringify
+                    if (child.targets) {
+                        child.targets_begin = JSON.parse(JSON.stringify(child.targets)); //there are two versions so we can compare if there was a change in span (deep copy again)
                     }
-                    if (ho) {
-                        s += "<tr class=\"higherorderrow\">" + ho + "</tr>";
-                        ho_index++;
-                        items.push(annotation.children[i]);
-                    }
+                    items.push(child);
                 }
             }
         }
-        s += "<tr id=\"higherorderfields" + index + "placeholder\"></tr>";
-        s += "</table></div>";
     }
+    s += "<tr id=\"higherorderfields" + index + "placeholder\"></tr>";
+    s += "</table></div>";
     return {'output':s,'items': items};
 }
 
-function addhigherorderfield(index, type) {
+function renderhigherorderfield(index, ho_index, childannotation, set) {
+    //render a single higher order field
+    var s = "";
+    if ((childannotation.type == 'comment') || (childannotation.type == 'desc')) {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\">";
+        if (childannotation.value) s += childannotation.value;
+        s += "</textarea></td>";
+    } else if (childannotation.type == 'feat') {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td>";
+        s += renderfeaturefields(set, childannotation.subset, childannotation.class, index, ho_index);
+        s += "</td>";
+    } else if (folia_isspanrole(childannotation.type)) {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + ho_index+ "\" class=\"text\">" + getspantext(childannotation, true) + "</span>";
+        s += "<button id=\"spanselector" + index + "_" + ho_index + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
+        s += "</td>";
+    }
+    if (s) {
+        s = "<tr class=\"higherorderrow\">" + s + "</tr>";
+    }
+    return s;
+}
+
+function renderfeaturefields(set, subset, cls, index, ho_index) {
+    /* Renders two fields to edit a specific feature: a subset field and a class field, called by renderhigherorderfields() and addhigherorderfield() */
+    var s = "";
+
+    //subset field
+    if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets)) {
+        //subsets are defined in set definition; present drop-down selection box
+        s += "<select class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\" onchange=\"$('#higherorderfield_" + index + "_" + ho_index + "')[0].outerHTML = renderfeatureclassfield('" + set + "',$(this).val(),''," + index + "," + ho_index + ");\">"; 
+        s += "<option value=\"\"></option>";
+        Object.keys(setdefinitions[set].subsets).forEach(function(subsetid){
+            var label = subsetid;
+            if (setdefinitions[set].subsets[subsetid].label) {
+                label = setdefinitions[set].subsets[subsetid].label;
+            }
+            if (subsetid == subset) {
+                s += "<option value=\"" + subsetid + "\" selected=\"selected\">" + label + "</option>";
+            } else {
+                s += "<option value=\"" + subsetid + "\">" + label + "</option>";
+            }
+        });
+        s += "</select>";
+    } else {
+        //subsets are open; present a free field
+        s += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
+    }
+
+    //class field
+    s += renderfeatureclassfield(set,subset,cls,index,ho_index);
+    return s;
+
+}
+
+
+function renderfeatureclassfield(set, subset, cls, index, ho_index) {
+    var s = "";
+    if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])) {
+        //classes for the subset are defined in set definition; present drop-down selection box
+        s += "<select class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">"; 
+        s += "<option value=\"\"></option>";
+        setdefinitions[set].subsets[subset].classorder.forEach(function(cid){
+            c = setdefinitions[set].subsets[subset].classes[cid];
+            s = s + getclassesasoptions(c, cls); 
+        });
+        s += "</select>";
+    } else {
+        //subsets are open; present a free field
+        s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +cls + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+    }
+    return s;
+}
+
+function addhigherorderfield(set, index, type) {
     /* Add a new higher order annotation field (called when the user selects a field to add from the higher-order menu) */
 
-    var s = "<tr class=\"higherorderrow\">" ;
-    var ho_index = editdata[index].higherorder.length;
-    if (type == "comment") {
-         s = s +  "<td>Comment:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
-        editdata[index].higherorder.push({'type':type, 'value':""});
-    } else if (type == "desc") {
-         s = s +  "<td>Description:</td><td><textarea id=\"higherorderfield" + index + "_" + ho_index + "\"  onkeyup=\"auto_grow(this)\"></textarea></td>";
-        editdata[index].higherorder.push({'type':type, 'value':""});
+    var ho_index = editdata[index].children.length;
+    var newchildannotation = null;
+    if ((type == "comment") || (type == "desc")) {
+        newchildannotation = {'type':type, 'value':""};
+    } else if (type == "feat") {
+        newchildannotation = {'type':type, 'subset': "", 'class':""};
+    } else if (folia_isspanrole(type)) {
+        newchildannotation = {'type':type,'targets': [], 'targets_begin': []};
     }
-    s += "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
-    $('#higherorderfields' + index +  "placeholder")[0].outerHTML = s;
+    if (folia_occurrences(type) == 1) {
+        //ensure we don't add a duplicate
+        var exists = false;
+        for (var i = 0; i < editdata[index].children.length; i++) {
+            if (editdata[index].children[i].type == type) {
+                alert("An annotation of this type already exists, there can be only one");
+                return false;
+            }
+        }
+    }
+    if (newchildannotation !== null) {
+        $('#higherorderfields' + index +  "placeholder")[0].outerHTML =
+            "<tr class=\"higherorderrow\">" +
+            renderhigherorderfield(index, ho_index, newchildannotation, set) + 
+            "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
+        editdata[index].children.push(newchildannotation);
+        $('#spanselector' + index + '_' + (editdata[index].children.length-1) ).off().click(spanselector_click);
+    }
 }
 
 function getclassesasoptions(c, selected) {
@@ -305,30 +426,56 @@ function getclassesasoptions(c, selected) {
 function spanselector_click(){
     /* Called when the span select button (a toggle) is clicked: sets up or stops span selection */
 
-    var i = parseInt(this.id.substr(12));  //get index ID (we can't reuse i from the larger scope here!!)
+
+    var i;
+    var sub;
+    underscore = this.id.indexOf('_'); //underscore is used for span selectors on higher order annotation elements (i.e. span roles)
+    //get index ID (we can't reuse i from the larger scope here!!)
+    if (underscore == -1) {
+        i = parseInt(this.id.substr(12));  
+        sub = -1;
+    } else {
+        i = parseInt(this.id.substr(12, underscore-12));  
+        sub = parseInt(this.id.substr(underscore+1));
+    }
+
     //toggle coselector (select multiple), takes care of
     //switching off any other coselector
     var toggleon = true;
     var j;
+
+    //de-highlight all coselected elements
+    $('.F .selected').removeClass('selected');
+
     if (coselector > -1) {
         if (coselector == i) toggleon = false; //this is a toggle off action only
 
-        $('#spanselector' + i).removeClass("selectoron");
-        //
-        //de-highlight all coselected elements
-        for (j = 0; j < editdata[coselector].targets.length; j++) {
-            $('#' + valid(editdata[coselector].targets[j])).removeClass('selected');
+        //de-highlight the button itself
+        if (coselector_sub == -1) {
+            $('#spanselector' + coselector).removeClass("selectoron");
+        } else {
+            $('#spanselector' + coselector + '_' + coselector_sub).removeClass("selectoron");
         }
+
         coselector = -1;
+        coselector_sub = -1;
     }
     if (toggleon) {
         coselector = i;
+        coselector_sub = sub;
 
         //highlight all coselected elements
-        for (j = 0; j < editdata[coselector].targets.length; j++) {
-            $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
+        if (coselector_sub == -1) {
+            for (j = 0; j < editdata[coselector].targets.length; j++) {
+                $('#' + valid(editdata[coselector].targets[j])).addClass('selected');
+            }
+        } else {
+            for (j = 0; j < editdata[coselector].children[coselector_sub].targets.length; j++) {
+                $('#' + valid(editdata[coselector].children[coselector_sub].targets[j])).addClass('selected');
+            }
         }
 
+        //highlight the button itself
         $(this).addClass("selectoron");
     }
 }
@@ -354,18 +501,39 @@ function applysuggestion(e,i) {
     }
 }
 
+function renderparentspanfield(index, annotation, nestableparents) {
+    //This is a nestable span element
+    var s = "<div class=\"parentspaneditor\">Parent span: " + 
+            "<select id=\"parentspan" + index + "\">" + 
+            "<option value=\"\">(none/root)</option>";
+    forspanannotations(annotation.layerparent, function(spanannotation){
+        for (var i = 0; i < nestableparents.length; i++) {
+            if ((spanannotation.type == nestableparents[i]) && (spanannotation.id != annotation.id)) {
+                var label = folia_label(spanannotation.type, spanannotation.set);
+                s += "<option value=\""+spanannotation.id+"\"";
+                if ((annotation.parentspan) && (annotation.parentspan === spanannotation.id)) {
+                    s += " selected=\"selected\"";
+                }
+                s += ">" + label + " " + spanannotation.class + ": " + getspantext(spanannotation)+  "</option>";
+            }
+        }
+    });
+    s = s + "</div>";
+    return s;
+}
+
 
 function showeditor(element) {
     /* show and populate the editor for a particular element */
     editsuggestinsertion = null;
 
     var i;
-    if ((element) && ($(element).hasClass(view)) && (element.id)) {  //sanity check: is there an element selected?
-        if (annotations[element.id]) { //are there annotations for this element?
-            var s = "";
+    if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
+        if (structure[element.id]) { //are there annotations for this element?
             editoropen = true;
             sethover(element);
             editedelementid = element.id;
+            editedelementtype = structure[element.id].type;
             editfields = 0;
             editdata = [];
 
@@ -376,11 +544,12 @@ function showeditor(element) {
 
             var annotationfocusfound = -1;
             var editformcount = 0;
+            var renderedfields = [];
 
             //Iterate over all annotations for the selected target element
-            Object.keys(annotations[element.id]).forEach(function(annotationid){
+            forannotations(element.id,function(annotation){
+                var s = "";
                 var isannotationfocus = false;
-                annotation = annotations[element.id][annotationid];
                 if (annotationfocus) {
                     if ((annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                         //this annotation is corresponds to the annotation focus
@@ -389,15 +558,11 @@ function showeditor(element) {
                     }
                 }
 
-                //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus?
+                //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus? (corrections are never shown directly)
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
 
                     //Get the human-presentable label for the annotation type
-                    if ((setdefinitions) && (setdefinitions[annotation.set]) && (setdefinitions[annotation.set].label)) {
-                        label = setdefinitions[annotation.set].label;
-                    } else {
-                        label = getannotationtypename(annotation.type);
-                    }
+                    label = folia_label(annotation.type, annotation.set);
 
                     if (annotation.set) {
                         setname = annotation.set;
@@ -418,21 +583,34 @@ function showeditor(element) {
                     } else {
                         s = s + "<tr>";
                     }
-                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+                    if (annotation.type == "su") {
+                        s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
+                    }
+                    s = s + "</th><td>";
                     var repeat_preset = false; //is this annotation preset because of repeatmode?
-                    if (annotation.type == 't') {
+                    var class_value;
+                    if ((annotation.type == 't') || (annotation.type == 'ph')) {
                         //Annotation concerns text content
-                        var class_value = annotation.class;
+                        class_value = annotation.class;
                         if (repeatmode) {
                             class_value = repeatreference.class;
                             if (class_value != annotation.class) { repeat_preset = true; }
                         }
-                        var text_value = annotation.text;
-                        if (repeatmode) {
-                            text_value = repeatreference.text;
-                            if (text_value != annotation.text) { repeat_preset = true; }
+                        var text_value;
+                        if (annotation.type == 't') {
+                            text_value = annotation.text;
+                            if (repeatmode) {
+                                text_value = repeatreference.text;
+                                if (text_value != annotation.text) { repeat_preset = true; }
+                            }
+                        } else if (annotation.type == 'ph') {
+                            text_value = annotation.phon;
+                            if (repeatmode) {
+                                text_value = repeatreference.phon;
+                                if (text_value != annotation.phon) { repeat_preset = true; }
+                            }
                         }
-                        if (repeatmode) text_value = repeatreference.text;
                         if (annotation.class != "current") {
                             s = s + "Class: <input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/><br/>Text:";
                         } else {
@@ -441,9 +619,14 @@ function showeditor(element) {
                         s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
                     } else {
                         //Annotation concerns a class
-                        if (annotation.targets.length > 1) {
-                            //Annotation spans multiple elements, gather the text of the entire span for presentation:
-                            spantext = getspantext(annotation);
+                        if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
+                            //Annotation is a span annotation, gather the text of the entire span for presentation:
+                            //omit span annotations that only have span roles
+                            if (annotation.type == 'su') {
+                                spantext = getspantext(annotation, false);
+                            } else {
+                                spantext = getspantext(annotation, true);
+                            }
                             s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
                             s  = s + "<br/>";
                         }
@@ -463,7 +646,7 @@ function showeditor(element) {
                             s = s + "</select>";
                         } else {
                             //Annotation type uses a free-fill value, present a textbox:
-                            var class_value = annotation.class;
+                            class_value = annotation.class;
                             if (repeatmode) {
                                 class_value = repeatreference.class;
                                 if (annotation.class != class_value) { repeat_preset = true; }
@@ -472,7 +655,9 @@ function showeditor(element) {
                         }
                     }
                     if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-                    s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+                    if ((annotation.type == "t") || ((folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)... also accept a span selector for text (needed for word merges/splits)
+                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button><br />";
+                    }
                     var preselectcorrectionclass = "";
                     if (annotation.hassuggestions) {
                         //The annotation has suggestions (for correction)
@@ -487,23 +672,28 @@ function showeditor(element) {
                         s += "<option value=\"\"></option>";
                         var suggestions = [];
                         annotation.hassuggestions.forEach(function(correctionid){
-                            if (corrections[correctionid]) {
-                                var correction = corrections[correctionid];
+                            if (annotations[correctionid]) {
+                                var correction = annotations[correctionid];
                                 correction.suggestions.forEach(function(suggestion){
-                                    suggestion.children.forEach(function(child){
-                                        if ((child.type == annotation.type) && (child.set == annotation.set)) {
-                                            var value;
-                                            if (child.type == "t") {
-                                                value = child.text;
-                                            } else{
-                                                value = child.cls;
+                                    if (suggestion.annotations) { //we're in an annotation context so won't have to worry about structural corrections here
+                                        suggestion.annotations.forEach(function(child_id){
+                                            var child = annotations[child_id];
+                                            if ((child.type == annotation.type) && (child.set == annotation.set)) {
+                                                var value;
+                                                if (child.type == "t") {
+                                                    value = child.text;
+                                                } else if (child.type == "ph") {
+                                                    value = child.phon;
+                                                } else{
+                                                    value = child.cls;
+                                                }
+                                                if (suggestions.indexOf(value) == -1) {
+                                                    suggestions.push(value);
+                                                    s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
+                                                }
                                             }
-                                            if (suggestions.indexOf(value) == -1) {
-                                                suggestions.push(value);
-                                                s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
-                                            }
-                                        }
-                                    });
+                                        });
+                                    }
                                 });
                             }
                         });
@@ -524,12 +714,23 @@ function showeditor(element) {
                     ho_result = renderhigherorderfields(editfields, annotation);
                     s  = s + ho_result.output;
 
+                    
+                    var nestablespan = folia_nestablespan(annotation.type);
+                    if (nestablespan.length > 0) {
+                        s = s + renderparentspanfield(editfields, annotation, nestablespan);
+
+                    }
+
                     s = s + "</td></tr>";
 
                     //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
                     editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
-                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'higherorder': ho_result.items };
-                    if (annotation.type == 't') editdataitem.text = annotation.text;
+                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'children': ho_result.items };
+                    if (annotation.type == 't') {
+                        editdataitem.text = annotation.text;
+                    } else if (annotation.type == 'ph') {
+                        editdataitem.text = annotation.phon;
+                    }
                     if (annotation.id) editdataitem.id = annotation.id;
                     if (annotation.hasOwnProperty('confidence')) {
                         editdataitem.confidence = annotation.confidence;
@@ -548,11 +749,18 @@ function showeditor(element) {
                         //default fallback
                         editdataitem.editform = 'direct';
                     }
+                    if (annotation.parentspan) {
+                        editdataitem.parentspan = annotation.parentspan;
+                    } else if (nestablespan.length > 0) {
+                        editdataitem.parentspan = "";
+                    }
 
                     //Set the target elements for this annotation (it may concern more than the selected element after all)
                     editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy, hence the json parse/stringify)
                     editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend (deep copy, hence the json parse/stringify)
                     editdata.push(editdataitem); //add this item
+                    renderedfields.push([annotation.type,s]);
+
 
                     if (isannotationfocus) {
                         //highlight other targets if this annotation type is the annotation focus (just mimicks user click)
@@ -564,9 +772,13 @@ function showeditor(element) {
                 }
 
             });
+
+            //display rendered fields in proper order
+            var s = "";
+            renderedfields.sort(sortdisplayorder);
+            renderedfields.forEach(function(e){s=s+e[1];});
             s = s + "<tr id=\"editrowplaceholder\"></tr>";
             idheader = "<div id=\"id\">" + element.id + "</div>";
-
 
 
             //extra fields list, adds a selector in the editor for adding extra annotation types to an element (must be previously declared)
@@ -582,7 +794,7 @@ function showeditor(element) {
             if ((annotationfocus) && (annotationfocusfound == -1)) {
                 //the annotation focus has not been found, so no field appears, add one automatically:
                 for (i = 0; i < editoraddablefields.length; i++) {
-                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set)) {
+                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set) && (folia_accepts(editedelementtype,annotationfocus.type)) ) {
                         annotationfocusfound = addeditorfield(i);
                         break;
                     }
@@ -593,7 +805,7 @@ function showeditor(element) {
                 for (i = 0; i < sentdata.length; i++) {
                     if (!sentdata[i].used) {
                         for (var j = 0; j < editoraddablefields.length; j++) {
-                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set)) {
+                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set) && (folia_accepts(editedelementtype,sentdata[i].type))) {
                                 addeditorfield(j);
                                 break;
                             }
@@ -605,7 +817,7 @@ function showeditor(element) {
             //render confidence sliders
             if (editconfidence) {
                 for (i = 0; i < editfields;i++){
-                    if (editdata[i].type != 't' && editdata[i].confidence !== "NONE") {
+                    if (editdata[i].type != 't' && editdata[i].type != "ph" && editdata[i].confidence !== "NONE") {
                         $('#confidencecheck' + i).attr('checked',true);
                         setconfidenceslider(i, Math.round(editdata[i].confidence * 100));
                     }
@@ -631,9 +843,16 @@ function showeditor(element) {
                 //Enable the span selector button
                 $('#spanselector' + i).off(); //prevent duplicates
                 $('#spanselector' + i).click(spanselector_click);
-                if ((annotationfocusfound == i) && (configuration.autoselectspan) && (!spanselectorclicked)) {
+                if ((annotationfocusfound == i) && (configuration.autoselectspan) && (!spanselectorclicked) && (folia_isspan(editdata[i].type))) {
                     $('#spanselector' + i).click();
                     spanselectorclicked = true;
+                }
+                if (editdata[i].children) {
+                    //Enable span selector buttons for span roles
+                    for (j = 0; j < editdata[i].children.length; j++) {
+                        $('#spanselector' + i + '_' + j).off(); //prevent duplicates
+                        $('#spanselector' + i + '_' + j).click(spanselector_click);
+                    }
                 }
 
                 //sort correctionclass
@@ -717,13 +936,8 @@ function closeeditor() {
 
 function addeditorfield(index) {
     /* add a new field to the editor, populated by setaddablefields() */
-    if ((setdefinitions) && (setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].label)) {
-        label = setdefinitions[editoraddablefields[index].set].label;
-    } else if (annotationtypenames[editoraddablefields[index].type]) {
-        label = annotationtypenames[editoraddablefields[index].type];
-    } else {
-        label = editoraddablefields[index].type;
-    }
+    var label = folia_label(editoraddablefields[index].type, editoraddablefields[index].set);
+    var setname;
     if (editoraddablefields[index].set) {
         setname = editoraddablefields[index].set;
     } else {
@@ -740,7 +954,7 @@ function addeditorfield(index) {
         }
     }
 
-    s = "";
+    var s = "";
     if ((annotationfocus) && (annotationfocus.type == editoraddablefields[index].type) && (annotationfocus.set == editoraddablefields[index].set)) {
         s = s + "<tr class=\"focus\">";
     } else {
@@ -758,24 +972,40 @@ function addeditorfield(index) {
             s = s + "<option value=\"\"></option>";
             selected_option = repeatreference.class;
         }
-        setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
-            c = setdefinitions[editoraddablefields[index].set].classes[cid];
-            s = s + getclassesasoptions(c, selected_option); // will add to s
-        });
+        if (setdefinitions[editoraddablefields[index].set].classorder) {
+            setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
+                c = setdefinitions[editoraddablefields[index].set].classes[cid];
+                s = s + getclassesasoptions(c, selected_option); // will add to s
+            });
+        }
         s = s + "</select>";
     } else {
         //text-field
         s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"\"/>";
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-    s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+
+    var isspan = folia_isspan(editoraddablefields[index].type);
+    var accepts_wrefs = folia_accepts_class(foliatag2class[editoraddablefields[index].type],'WordReference');
+    if (isspan && accepts_wrefs) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)
+        s = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or unselect as part of this annotation\">Select span&gt;</button><br />";
+    }
 
     if (editconfidence &&  editoraddablefields[index].type != 't') {
         s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
     }
 
-    ho_result = renderhigherorderfields(editfields, editoraddablefields[index]);
+    var ho_result = renderhigherorderfields(editfields, editoraddablefields[index]); //will always be empty but sets a proper placeholder we can use
     s  = s + ho_result.output;
+
+    var nestablespan = folia_nestablespan(editoraddablefields[index].type);
+    if (nestablespan.length > 0) {
+        editoraddablefields[index].layerparent = structure[editedelementid].parent;
+        while ((structure[editoraddablefields[index].layerparent].type == 'correction') || (structure[editoraddablefields[index].layerparent].type == 'part'))  {
+            editoraddablefields[index].layerparent = structure[editoraddablefields[index].layerparent].parent;
+        }
+        s = s + renderparentspanfield(editfields, editoraddablefields[index], nestablespan);
+    }
 
     s = s + "</td></tr><tr id=\"editrowplaceholder\"></tr>";
     $('#editrowplaceholder')[0].outerHTML = s;
@@ -784,8 +1014,27 @@ function addeditorfield(index) {
     $('#spanselector' + editfields).click(spanselector_click);
 
     editfields = editfields + 1; //increment after adding
-    editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': [editedelementid] , 'targets_begin': [editedelementid],'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'higherorder': ho_result.items };
+    var targets = [];
+    //add the selected element to the targets except if we are adding a span annotation that takes no direct wrefs (i.e. only its span roles take children)
+    if ((!isspan) || (accepts_wrefs)) {
+        targets = [editedelementid];
+    }
+    var editdataitem = {'type':editoraddablefields[index].type,'set':editoraddablefields[index].set, 'targets': targets, 'targets_begin': targets,'confidence': 'NONE', 'class':'', 'new': true, 'changed': true, 'children': ho_result.items };
+    if (nestablespan.length > 0) {
+        editdataitem.parentspan = "";
+    }
     editdata.push(editdataitem);
+
+
+    //automatically add required higher-order fields
+    var foliaelement = foliaelements[foliatag2class[editoraddablefields[index].type]];
+    if ((foliaelement.properties) && (foliaelement.properties.required_data)) {
+        for (var j = 0; j < foliaelement.properties.required_data.length; j++) {
+            var subtag = foliaelements[foliaelement.properties.required_data[j]].properties.xmltag;
+            addhigherorderfield(editoraddablefields[index].set, editdata.length - 1 ,subtag);
+        }
+    }
+
     setaddablefields();
     return editfields - 1;
 }
@@ -932,23 +1181,22 @@ function declare() {
 
 function editor_loadmenus() {
     /* Populate the editor menus */
-    s = "";
+    var menu = [];
     Object.keys(declarations).forEach(function(annotationtype){
       Object.keys(declarations[annotationtype]).forEach(function(set){
         if ((configuration.allowededitannotations === true) || (configuration.allowededitannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowededitannotations.indexOf(annotationtype) != -1)) {
             if ((configuration.initialeditannotations === true) || (configuration.initialeditannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialeditannotations.indexOf(annotationtype) != -1)) {
                 editannotations[annotationtype + "/" + set] = true;
             }
-            if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].label)) {
-                label = setdefinitions[set].label;
-            } else {
-                label = getannotationtypename(annotationtype);
-            }
-            s = s +  "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>";
+            label = folia_label(annotationtype, set);
+            menu.push([annotationtype, "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
         }
       });
     });
-    $('#annotationseditviewmenu').html(s);
+    var s_menu = "";
+    menu.sort(sortdisplayorder);
+    menu.forEach(function(e){s_menu+=e[1];});
+    $('#annotationseditviewmenu').html(s_menu);
 }
 
 function openconsole() {
@@ -981,15 +1229,12 @@ function update_queue_info() {
 }
 
 
-function editor_submit(addtoqueue) {
-    /* Submit the annotation prepared in the editor dialog */
-    //If addtoqueue is set, the annotation will not be performed yet but added to a queue (the console window), for later submission
-    if (arguments.length === 0) {
-        addtoqueue = false;
-    }
+function gather_changes() {
+    /* See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend? 
+     * This functions prepares validates the input and prepares the editdata structures so queries can be more
+     * easily formed in the next stage. Called by editor_submit()  */
 
 
-    //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
     var changes = false; //assume no changes, falsify:
     for (var i = 0; i < editfields;i++) {
         if ($('#editfield' + i) && (($('#editfield' + i).val() != editdata[i].class) || (editdata[i].editform == 'new') ) && ($('#editfield' + i).val() != 'undefined') ) {
@@ -998,15 +1243,13 @@ function editor_submit(addtoqueue) {
             editdata[i].oldclass = editdata[i].class;
             editdata[i].class = $('#editfield' + i).val().trim();
             editdata[i].changed = true;
-            changes = true;
         }
-        if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
+        if (((editdata[i].type == "t") || (editdata[i].type == "ph")) && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
             //Text content was changed
             //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
             editdata[i].oldtext = editdata[i].text;
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
             editdata[i].changed = true;
-            changes = true;
         }
         if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim())) {
             //edit of correction class only, affects existing correction
@@ -1014,28 +1257,31 @@ function editor_submit(addtoqueue) {
             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
             editdata[i].correctionset = $('#editformcorrectionset').val().trim();
             if (!editdata[i].correctionclass) {
-                editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                return false;
+                throw "Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered";
             }
             if ($('#editfield' + i) && ($('#editfield' + i).val() == editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
                 editdata[i].oldclass = editdata[i].class; //will remain equal
                 editdata[i].class = $('#editfield' + i).val().trim();
             }
-            if ((editdata[i].type == "t") && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
-                editdata[i].oldtext = editdata[i].text; //will remain requal
+            if (((editdata[i].type == "t") || (editdata[i].type == "ph"))  && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
+                editdata[i].oldtext = editdata[i].text; //will remain equal
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
             }
         }
+        if ((editdata[i].parentspan !== undefined) && (editdata[i].parentspan != $('#parentspan' + i).val())) {
+            editdata[i].parentspan = $('#parentspan' + i).val();
+            editdata[i].oldparentspan = editdata[i].parentspan;
+            editdata[i].changed = true;
+        }
+
         if ($('#confidencecheck' + i).is(':checked')) {
             var confidence = $('#confidenceslider' + i).slider('value') / 100;
             if ((confidence != editdata[i].confidence) && ((editdata[i].confidence == "NONE") || (Math.abs(editdata[i].confidence - confidence) >= 0.01)))  { //compensate for lack of slider precision: very small changes do not count
-                changes = true;
                 editdata[i].changed = true;
             }
             editdata[i].confidence = confidence;
         } else if (editdata[i].confidence != "NONE") {
             editdata[i].confidence = "NONE";
-            changes = true;
             editdata[i].changed = true;
         }
 
@@ -1046,26 +1292,61 @@ function editor_submit(addtoqueue) {
             editdata[i].respan = true;
         }
 
-        editdata[i].higherorderchanged = false;
-        if (editdata[i].higherorder.length > 0) {
-            for (var j = 0; j < editdata[i].higherorder.length; j++) {
-                editdata[i].higherorder[j].changed = false;
-                if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
+        editdata[i].higherorderchanged = false; //independent of editdata[i].changed
+        if (editdata[i].children.length > 0) {
+            for (var j = 0; j < editdata[i].children.length; j++) {
+                editdata[i].children[j].changed = false;
+                if ((editdata[i].children[j].type == 'comment') ||(editdata[i].children[j].type == 'desc')) {
+                    //Comments and descriptions
                     var value = $('#higherorderfield' + i +'_' + j).val();
-                    if (((editdata[i].higherorder[j].value) && (editdata[i].higherorder[j].value != value)) || (!editdata[i].higherorder[j].value)) {
-                        if (editdata[i].higherorder[j].value) { 
-                            editdata[i].higherorder[j].oldvalue =  editdata[i].higherorder[j].value;
+                    if (((editdata[i].children[j].value) && (editdata[i].children[j].value != value)) || (!editdata[i].children[j].value)) {
+                        if (editdata[i].children[j].value) { 
+                            editdata[i].children[j].oldvalue =  editdata[i].children[j].value;
                         } else {
-                            editdata[i].higherorder[j].oldvalue = null;
+                            editdata[i].children[j].oldvalue = null;
                         }
-                        editdata[i].higherorder[j].value = value;
-                        editdata[i].higherorder[j].changed = true;
+                        editdata[i].children[j].value = value;
+                        editdata[i].children[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    }
+                } else if (editdata[i].children[j].type == 'feat') {
+                    //Features
+                    var subset = $('#higherorderfield_subset_' + i +'_' + j).val();
+                    var cls = $('#higherorderfield_' + i +'_' + j).val();
+
+
+                    //has the subset been changed OR has the class been changed?
+                    if ((((editdata[i].children[j].subset) && (editdata[i].children[j].subset != subset)) || (!editdata[i].children[j].subset)) ||
+                       (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
+
+                        //remember old values (null if new)
+                        if (editdata[i].children[j].subset) { 
+                            editdata[i].children[j].oldsubset =  editdata[i].children[j].subset;
+                        } else {
+                            editdata[i].children[j].oldsubset = null;
+                        }
+                        if (editdata[i].children[j].class) { 
+                            editdata[i].children[j].oldclass =  editdata[i].children[j].class;
+                        } else {
+                            editdata[i].children[j].oldclass = null;
+                        }
+
+                        editdata[i].children[j].subset = subset;
+                        editdata[i].children[j].class = cls;
+                        editdata[i].children[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    }
+                } else if (folia_isspanrole(editdata[i].children[j].type)) {
+                    //Span roles: detect changes in span, and set the changed flag
+                    if ( (!editdata[i].children[j].targets_begin) || (JSON.stringify(editdata[i].children[j].targets) != JSON.stringify(editdata[i].children[j].targets_begin) )) {
+                        editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
                 }
             }
 
         }
+        if (editdata[i].higherorderchanged) changes = true;
 
         if (editdata[i].changed) {
             if (editdata[i].editform == 'correction') {
@@ -1073,12 +1354,11 @@ function editor_submit(addtoqueue) {
                 editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
                 editdata[i].correctionset = $('#editformcorrectionset').val().trim();
                 if (!editdata[i].correctionclass) {
-                    editor_error("Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered");
-                    return false;
+                    throw "Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered";
                 }
             }
             if (editdata[i].type == 't') {
-                if ((editdata[i].text.indexOf(' ') > 0) && (annotations[editedelementid].self.type == 'w'))  {
+                if ((editdata[i].text.indexOf(' ') > 0) && (structure[editedelementid].type == 'w'))  {
                     //there is a space in a token! This can mean a number
                     //of things
 
@@ -1109,9 +1389,80 @@ function editor_submit(addtoqueue) {
             }
         }
 
+        if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
+
+            changes = true;
+
+            if (editdata[i].new) editdata[i].editform = "new";
+
+            editdata[i].isspan = folia_isspan(editdata[i].type); //are we manipulating a span annotation element?
+    
+            //sort targets in proper order
+            if (editdata[i].targets.length > 1) {
+                editdata[i].targets = sort_targets(editdata[i].targets);
+            } else if (editdata[i].targets.length === 0) {
+                //annotation has no targets, this may be a span annotation that
+                //relies purely on span roles, find the implicit targets (i.e.
+                //the scope)
+                if ((editdata[i].isspan) && (editdata[i].children.length > 0)) {
+                    var match = {}; //will hold spanrole_type => bool 
+                    editdata[i].scope = [];
+                    for (var j = 0; j < editdata[i].children.length; j++) {
+                        if (editdata[i].children[j].targets) {
+                            for (var k = 0; k < editdata[i].children[j].targets.length; k++) {
+                                editdata[i].scope.push(editdata[i].children[j].targets[k]);
+                                match[editdata[i].children[j].type] = true;
+                            }
+                        }
+                    }
+                    var required_spanroles = folia_required_spanroles(editdata[i].type);
+                    for (var j = 0; j < required_spanroles.length; j++) {
+                        if (!match[required_spanroles[j]]) {
+                            throw "Error (" + i + "): Annotation of " + editdata[i].type + " incomplete, span role " + required_spanroles[j] + " has no targets defined";
+                        }
+                    }
+                    editdata[i].scope = sort_targets(editdata[i].scope);
+                } else {
+                    throw "Error (" + i + "), no targets for action";
+                }
+            }
+        }
+
     }
 
-    var queries = []; //will hold the FQL queries to be send to the backend
+    //second iteration, process parent spans:
+    //if a span annotation has targets x y z and its parentspan has targets u w v x y z, then remove x y z from the parentspan targets
+    for (var i = 0; i < editfields;i++) {
+        if (editdata[i].parentspan) {
+            for (var j = 0; j < editfields;j++) {
+                if (editdata[j].id == editdata[i].parentspan) {
+                    //i is the childspan, j is the parentspan:
+                    //
+                    var newtargets = [];
+                    for (var k = 0; k < editdata[j].targets.length; k++) {
+                        if (editdata[i].targets.indexOf(editdata[j].targets[k]) == -1) { //not found in child, good
+                            newtargets.push(editdata[j].targets[k]);
+                        }
+                    }
+                    if (newtargets.length !== editdata[j].targets.length) {
+                        editdata[j].targets = newtargets;
+                        editdata[j].changed = true;
+                        editdata[j].respan = true;
+                        editdata[j].editform = "direct";
+                        changes = true;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return changes;
+} 
+
+
+function build_queries(addtoqueue) {
+    /* Formulate FQL queries for all changes in the editdata structure */
+    var queries = [];
     var useclause;
     if ((namespace == "testflat") && (docid != "manual")) {
         useclause = "USE testflat/" + testname;
@@ -1123,35 +1474,15 @@ function editor_submit(addtoqueue) {
     sentdata = []; //will be used in repeatmode
     for (var i = 0; i < editfields;i++) {  //jshint ignore:line
         if ((editdata[i].changed) || (editdata[i].correctionclasschanged)) {
-            if (editdata[i].new) editdata[i].editform = "new";
-            //sort targets in proper order
-            var sortededittargets = [];
-            if (editdata[i].targets.length > 1) {
-                $('.' + view).each(function(){
-                    if (editdata[i].targets.indexOf(this.id) > -1) {
-                        sortededittargets.push(this.id);
-                    }
-                });
-            } else {
-                sortededittargets = editdata[i].targets;
-            }
-            if (sortededittargets.length != editdata[i].targets.length) {
-                editor_error("Error, unable to sort targets, expected " + editdata[i].targets.length + ", got " + sortededittargets.length);
-                return;
-            }
-            if (sortededittargets.length === 0) {
-                editor_error("Error, no targets for action");
-                return;
-            }
-            editdata[i].targets = sortededittargets;
+
             sentdata.push(editdata[i]);
 
             //compose query
             var action = "";
             var returntype = "target";
             var query = useclause + " ";
-            var isspan = annotationtypespan[editdata[i].type]; //are we manipulating a span annotation element?
-            if (isspan) {
+            var higherorder_subqueries_done = false;
+            if (editdata[i].isspan) {
                 if (editdata[i].id) {
                     returntype = "ancestor-focus";
                 } else {
@@ -1164,10 +1495,10 @@ function editor_submit(addtoqueue) {
                 query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                 returntype = "ancestor-focus";
                 //set target expression
-                if (sortededittargets.length > 0) {
+                if (editdata[i].targets.length > 0) {
                     query += " IN";
                     var forids = ""; //jshint ignore:line
-                    sortededittargets.forEach(function(t){
+                    editdata[i].targets.forEach(function(t){
                         if (forids) {
                             forids += " ,";
                         }
@@ -1178,12 +1509,12 @@ function editor_submit(addtoqueue) {
             } else if ((editdata[i].type == "t") && (editdata[i].text === "")) {
                 if (editdata[i].editform == "new") continue;
                 //deletion of text implies deletion of word
-                if (sortededittargets.length > 1) {
+                if (editdata[i].targets.length > 1) {
                     editor_error("Can't delete multiple words at once");
                     return;
                 }
                 action = "DELETE";
-                query += "DELETE w ID " + sortededittargets[0];
+                query += "DELETE w ID " + editdata[i].targets[0];
                 if (editdata[i].editform == "correction") {
                     query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
                 }
@@ -1237,13 +1568,15 @@ function editor_submit(addtoqueue) {
                         }
                     } else { //normal behaviour
                         query += " " +editdata[i].type;
-                        if ((editdata[i].id) && ( editdata[i].editform != "new")) {
+                        if ((editdata[i].id) && ( editdata[i].editform != "new") && (editdata[i].id != "undefined")) {
                             query += " ID " + editdata[i].id;
                         } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
                             query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                        } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
+                            query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
                             //no deletion
                             query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
@@ -1272,10 +1605,10 @@ function editor_submit(addtoqueue) {
                 }
                 if (editdata[i].respan) { //isspan && editdata[i].id && (action == "EDIT")) {
                     //we edit a span annotation, edittargets reflects the new span:
-                    if (sortededittargets.length > 0) {
+                    if (editdata[i].targets.length > 0) {
                         query += " RESPAN ";
                         var forids = "";
-                        sortededittargets.forEach(function(t){
+                        editdata[i].targets.forEach(function(t){
                             if (forids) {
                                     forids += " &";
                             }
@@ -1294,18 +1627,30 @@ function editor_submit(addtoqueue) {
                     query += " (AS ALTERNATIVE)";
                 }
 
+                if ((editdata[i].isspan) && (action == "ADD") && (editdata[i].targets.length == 0)) {
+                    //we are adding a span annotation without targets, we
+                    //use a special trick to get it right by formulating
+                    //an FQL query like: ADD .... RESPAN NONE FOR SPAN ID ..
+                    //This ensures the span is added at the proper level in
+                    //the FoLiA tree, but immediately respans it to be empty
+                    query += " RESPAN NONE ";
+                }
+
+                if ((action == "ADD") && (editdata[i].higherorderchanged)) {
+                    //process higher order queries as subqueries
+                    query += build_higherorder_queries(editdata[i], useclause, true);
+                    higherorder_subqueries_done = true;
+                }
 
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
-                } else if (!( (isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
+                } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
                     //set target expression
-                    if (sortededittargets.length > 0) {
-                        query += " FOR";
-                        if ((action == "SUBSTITUTE") || (isspan)) query += " SPAN";
+                    if (editdata[i].targets.length > 0) {
                         var forids = ""; //jshint ignore:line
-                        sortededittargets.forEach(function(t){
+                        editdata[i].targets.forEach(function(t){
                             if (forids) {
-                                if ((action == "SUBSTITUTE") || (isspan)) {
+                                if ((action == "SUBSTITUTE") || (editdata[i].isspan)) {
                                     forids += " &";
                                 } else {
                                     forids += " ,";
@@ -1317,7 +1662,38 @@ function editor_submit(addtoqueue) {
                                 $('#' + valid(t)).addClass('queued');
                             }
                         });
-                        query += forids;
+                        if (!editdata[i].parentspan) {
+                            //normal behaviour
+                            query += " FOR";
+                            if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
+                            query += forids;
+                        } else if ((editdata[i].parentspan) && (action == "ADD")) {
+                            //span element is nested within another
+                            //
+                            query += " SPAN " + forids;
+                            query += " FOR ID " + editdata[i].parentspan;
+
+                            //wrefs from the parent span that are part of the child now have to be removed from the parent
+                            //this has been taken into account in gather_changes() already
+                            //the parentspan span has been adapted accordingly
+                        }
+                    } else if ((editdata[i].isspan) && (action == "ADD")) {
+                        //we are adding a span annotation without targets, use
+                        //scope instead (using ADD.. RESPAN NONE FOR SPAN ID ..
+                        //trick)
+                        var forids = ""; //jshint ignore:line
+                        editdata[i].scope.forEach(function(t){
+                            if (forids) {
+                                forids += " &";
+                            }
+                            forids += " ID " + t;
+                            if (addtoqueue) {
+                                //elements are queued for later submission, highlight them
+                                $('#' + valid(t)).addClass('queued');
+                            }
+                        });
+                        //process higher order queries as subqueries
+                        query += " FOR SPAN " + forids;
                     }
                 }
 
@@ -1329,56 +1705,138 @@ function editor_submit(addtoqueue) {
             queries.push(query);
 
         }
-        //Process higher order annotations (if main action isn't a deletion)
-        if ((editdata[i].higherorderchanged) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
-            for (var j = 0; j < editdata[i].higherorder.length; j++) {
-                if (editdata[i].higherorder[j].changed) {
-                    if ((editdata[i].higherorder[j].type == 'comment') ||(editdata[i].higherorder[j].type == 'desc')) {
-                        //comments and descriptions
-                        if (editdata[i].higherorder[j].oldvalue) {
-                            if (editdata[i].higherorder[j].value) {
-                                //edit
-                                queries.push(useclause + " EDIT " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now  FORMAT flat RETURN ancestor-focus");
-                            } else {
-                                //delete 
-                                queries.push(useclause + " DELETE " + editdata[i].higherorder[j].type + " WHERE text = \"" + escape_fql_value(editdata[i].higherorder[j].oldvalue) + "\" FORMAT flat RETURN ancestor-focus");
+
+        //Process higher order annotations (if main action isn't a deletion and
+        //if we didn't already process them as subqueries)
+        if ((editdata[i].higherorderchanged) && (!higherorder_subqueries_done) && !(((editdata[i].type == "t") && (editdata[i].text === "")) ||((editdata[i].type != "t") && (editdata[i].class === "")))) { //not-clause checks if main action wasn't a deletion, in which case we needn't bother with higher annotations at all
+            queries = queries.concat(build_higherorder_queries(editdata[i], useclause));
+        }
+    }
+    return queries;
+}
+
+function build_higherorder_queries(edititem, useclause, build_subqueries) {
+    /* Builds FQL queries for higher order annotations (including span roles),
+     * called by build_queries() per item */
+    var queries = [];
+    for (var j = 0; j < edititem.children.length; j++) {
+        if (edititem.children[j].changed) {
+            var targetselector;
+            var query;
+            var returntype = "ancestor-focus";
+            if (build_subqueries) {
+                targetselector = "";
+            } else if ((edititem.id === undefined) || (edititem.id == "undefined")) {
+                //undefined ID, means parent annotation is new as well, select it by value:
+                targetselector = " FOR " + build_parentselector_query(edititem);
+            } else {
+                targetselector = " FOR ID \"" + edititem.id + "\"";
+            }
+            if ((edititem.children[j].type == 'comment') ||(edititem.children[j].type == 'desc')) {
+                //formulate query for comments and descriptions
+                if (edititem.children[j].oldvalue) {
+                    if (edititem.children[j].value) {
+                        //edit
+                        query = "EDIT " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
+                    } else {
+                        //delete 
+                        returntype = "ancestor-target";
+                        query = "DELETE " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" " + targetselector;
+                    }
+                } else if (edititem.children[j].value !== "") {
+                    //add 
+                    query = "ADD " + edititem.children[j].type + " WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
+                }
+            } else if ((edititem.children[j].type == 'feat')) {
+                //formulate query for features
+                if ((edititem.children[j].oldclass)  && (edititem.children[j].oldsubset) && ( (!edititem.children[j].class) || (!edititem.children[j].subset))) {
+                    //deletion
+                    returntype = "ancestor-target";
+                    query = "DELETE " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" " + targetselector;
+                } else if ((!edititem.children[j].oldclass) && (!edititem.children[j].oldsubset)) {
+                    //add
+                    if (edititem.id !== undefined) {
+                        query = "ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
+                    } else {
+                        //undefined ID, means parent annotation is new as well, select it by value:
+                        query = "ADD " + edititem.children[j].type + " WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
+                    }
+                } else if ((edititem.children[j].oldclass) && (edititem.children[j].oldclass != edititem.children[j].class) && (edititem.children[j].oldsubset == edititem.children[j].subset)) {
+                    //edit of class
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].subset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\"  WITH class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
+                } else if ((edititem.children[j].oldsubset) && (edititem.children[j].oldsubset != edititem.children[j].subset) && (edititem.children[j].oldclass == edititem.children[j].class)) {
+                    //edit of subset
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].class) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" " + targetselector;
+                } else {
+                    //edit of class and subset
+                    query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
+                }
+            } else if ((folia_isspanrole(edititem.children[j].type))) {
+                //formulate query for span roles
+                //foliadocserve adds IDs to all span roles
+                if ((edititem.children[j].targets_begin) && (edititem.children[j].targets_begin.length > 0) && (edititem.children[j].targets.length === 0)) {
+                    //deletion
+                    returntype = "ancestor-target";
+                    query = "DELETE " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" " + targetselector;
+                } else {
+                    //add or edit
+                    var forids = "";
+                    if (edititem.children[j].targets.length > 0) {
+                        sort_targets(edititem.children[j].targets).forEach(function(t){
+                            if (forids) {
+                                    forids += " &";
                             }
-                        } else if (editdata[i].higherorder[j].value !== "") {
-                            //add 
-                            if (editdata[i].id !== undefined) {
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR ID " + editdata[i].id + " FORMAT flat RETURN ancestor-focus");
-                            } else {
-                                //undefined ID, means parent annotation is new as well, select it by value:
-                                parentselector = editdata[i].type;
-                                if ((editdata[i].id) && ( editdata[i].editform != "new")) {
-                                    parentselector += " ID " + editdata[i].id;
-                                } else if ((editdata[i].set)  && (editdata[i].set != "undefined")) {
-                                    parentselector += " OF " + editdata[i].set;
-                                }
-                                if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                                    parentselector += " WHERE text = \"" + escape_fql_value(editdata[i].text) + "\"";
-                                } else if (editdata[i].class !== "") {
-                                    //no deletion
-                                    parentselector += " WHERE class = \"" + escape_fql_value(editdata[i].class) + "\"";
-                                }
-                                if (sortededittargets.length > 0) {
-                                    parentselector += " FOR";
-                                    var forids = ""; //jshint ignore:line
-                                    sortededittargets.forEach(function(t){
-                                        forids += " ID " + t;
-                                        return; //only one should be enough
-                                    });
-                                    parentselector += forids;
-                                }
-                                queries.push(useclause + " ADD " + editdata[i].higherorder[j].type + " WITH text \"" + escape_fql_value(editdata[i].higherorder[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now FOR " + parentselector + " FORMAT flat RETURN ancestor-focus");
-                            }
-                        }
+                            forids += " ID " + t;
+                        });
+                    } 
+                    if ((edititem.children[j].targets_begin.length === 0) && (edititem.children[j].targets.length > 0)) {
+                        //new
+                        query = "ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " " + targetselector;
+                    } else {
+                        //edit (span change)
+                        query = "EDIT " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " " + targetselector;
                     }
                 }
             }
+            if (build_subqueries) {
+                queries.push("(" + query.trim() + ")");
+            } else {
+                queries.push(useclause + " " + query + " FORMAT flat RETURN " + returntype);
+            }
+
         }
     }
 
+    if (build_subqueries) {
+        return queries.join(" ");
+    } else {
+        return queries;
+    }
+}
+
+
+function editor_submit(addtoqueue) {
+    /* Submit the annotations prepared in the editor dialog */
+
+    //If addtoqueue is set, the annotation will not be performed yet but added to a queue (the console window), for later submission
+    if (arguments.length === 0) {
+        addtoqueue = false;
+    }
+
+    var changes;
+    var queries;
+    try {
+        //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
+        changes = gather_changes(); 
+
+        //Build all the queries based on the gathered changes (in editdata)
+        queries = build_queries(addtoqueue); 
+    } catch (errormsg) {
+        editor_error(errormsg);
+        return false;
+    }
+
+    //queries are to be sent to the backend
     if ((addtoqueue) || ($('#openinconsole').prop('checked'))) {
         //Add-to-queue or delegate-to-console is selected (same thing, different route)
         var queuedqueries = $('#queryinput').val();
@@ -1414,6 +1872,7 @@ function editor_submit(addtoqueue) {
         if (namespace == "testflat") editor_error("No queries were formulated");
         return false;
     }
+
     //==========================================================================================
     //Queries are submitted now
 
@@ -1453,6 +1912,38 @@ function editor_submit(addtoqueue) {
     } else {
         testbackend(docid, username, sid, queries);
     }
+}
+
+function build_parentselector_query(edititem) {
+    //formulate a parentselector query (a partial query actually for an FQL FOR
+    //statement) that selects the annotation that is to
+    //become the parent of the higher order annotation
+    //This is used when the parent annotation can not be selected by ID,
+    //because it is newly added (i.e. the query has been formulated but not actually added yet)
+    //called from editor_submit()
+    //
+    var parentselector = edititem.type;
+    if ((edititem.id) && ( edititem.editform != "new")) {
+        parentselector += " ID " + edititem.id;
+    } else if ((edititem.set)  && (edititem.set != "undefined")) {
+        parentselector += " OF " + edititem.set;
+    }
+    if ((edititem.type == "t") && (edititem.text !== "")) {
+        parentselector += " WHERE text = \"" + escape_fql_value(edititem.text) + "\"";
+    } else if (edititem.class !== "") {
+        //no deletion
+        parentselector += " WHERE class = \"" + escape_fql_value(edititem.class) + "\"";
+    }
+    if (edititem.targets.length > 0) {
+        parentselector += " FOR";
+        var forids = ""; //jshint ignore:line
+        edititem.targets.forEach(function(t){
+            forids += " ID " + t;
+            return; //only one should be enough
+        });
+        parentselector += forids;
+    }
+    return parentselector;
 }
 
 function console_submit(savefunction) {
@@ -1566,8 +2057,8 @@ function editor_oninit() {
 
 
     var s = "";
-    Object.keys(annotationtypenames).forEach(function(annotationtype){
-        s = s + "<option value=\"" + annotationtype + "\">" + annotationtypenames[annotationtype] + "</option>";
+    folia_annotationlist().forEach(function(annotationtype){
+        s = s + "<option value=\"" + annotationtype + "\">" + folia_label(annotationtype) + "</option>";
     });
     $('#newdeclarationannotationtype').html(s);
 

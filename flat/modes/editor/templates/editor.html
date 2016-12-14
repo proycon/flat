@@ -4,6 +4,8 @@
 <!-- dependencies -->
 <link rel="StyleSheet" href="/style/flat.viewer.css" type="text/css" />
 <script type="text/javascript" src="/style/flat.viewer.js"></script> 
+<link rel="stylesheet" href="/style/treeview.css" type="text/css" />
+<script type="text/javascript" src="/style/svg-tree-drawer.js"></script> 
 {% endblock %}
 
 {% block js %}
@@ -43,7 +45,6 @@ initialcorrectionset = '{{ initialcorrectionset }}';
     {% endif %}
     <li><a href="javascript:showhistory()">History &amp; Undo</a></li>
     <li><a href="javascript:openconsole()">Query Console</a></li>
-    <li><a href="/download/{{ namespace }}/{{ docid }}.folia.xml">View FoLiA XML source</a></li>
 </ul>
 </li>
 {% endblock %}
@@ -51,6 +52,7 @@ initialcorrectionset = '{{ initialcorrectionset }}';
 {% block dialogs %}
 <div id="leftpane">
     <div id="perspective"></div>
+    <div id="selector"></div>
     <div id="textclassselector"></div>
     <div id="editformcorrectionsetselector">
     Correction set: <select id="editformcorrectionset"></select>
@@ -114,6 +116,7 @@ initialcorrectionset = '{{ initialcorrectionset }}';
     </div>
 </div>
 {% include "search.html" %}
+{% include "treeview.html" %}
 <div id="connectioninfo"></div>
 <div id="queueinfo">
     <button id="submitqueue" title="Submit all queued annotations">Submit queue</button>

@@ -1,72 +1,5 @@
 // jshint evil:true
 
-//Defines the human-readable labels for annotation types
-var annotationtypenames = {
-    'pos': 'Part-of-Speech',
-    'lemma': 'Lemma',
-    't': 'Text',
-    'ph': 'Phonetic Content',
-    'w': 'Word/Token',
-    's': 'Sentence',
-    'p': 'Paragraph',
-    'div': 'Division',
-    'entity': 'Entity',
-    'su': 'Syntax',
-    'chunk': 'Chunk',
-    'sense': 'Semantic Sense',
-    'semrole': 'Semantic Role',
-    'correction': 'Correction',
-    'errordetection': 'Error detection',
-    'dependency': 'Dependency',
-    'coreferencechain': 'Coreference',
-    'note': 'Note',
-    'entry': 'Entry',
-    'def': 'Definition',
-    'term': 'Term',
-    'gap': 'Gap',
-    'event': 'Event',
-    'alignment': 'Alignments',
-    'morpheme': 'Morpheme',
-    'phoneme': 'Phoneme',
-    'lang': 'Language',
-    'ex': 'Example',
-    'part': 'Part',
-    'timesegment': 'Time Segment',
-    'cell': 'Table cell',
-    'row': 'Table row',
-    'metric': 'Metric',
-    'str': 'String'
-};
-//
-//Defines whether elements are span elements or not
-var annotationtypespan = {
-    'pos': false,
-    'lemma': false,
-    't': false,
-    'ph': false,
-    'w': false,
-    's': false,
-    'p': false,
-    'div': false,
-    'entity': true,
-    'su': true,
-    'chunk': true,
-    'sense': true,
-    'semrole': true,
-    'correction': true,
-    'errordetection': false,
-    'dependency': true,
-    'coreferencechain': true,
-};
-//Defines elements that are structural elements
-var annotationtypestructure = ['p','w','s','div','event','utt'];
-//Defines span role elements for span annotation elementes
-var spanroles = {
-    'coreferencechain': ['coreferencelink'],
-    'dependency': ['hd','dep'],
-};
-
-
 //A random session ID
 var sid = ((Math.random() * 1e9) | 0); 
 
@@ -79,24 +12,22 @@ var perspective_ids = null;
 var perspective_start = null;
 var perspective_end = null;
 
+var selector = ""; //structural element to select when clicking/hovering: empty selector selects deepest element (default)
+
+var structure = {}; //structural items
 var annotations = {}; //annotations per structure item
+var latestannotations = {}; //latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
+var lateststructure = {}; //latest structure cache (structureid -> true map), will be populated again by loadstructure()
 var declarations = {};
-var corrections = {};
 var docid = null;
 var initialannotationlist = [];
 var initialdeclarationlist = [];
 var mouseX = 0;
 var mouseY = 0;
 
-var latestannotations = {}; //target -> annotationid -> true , holds only the latest updates
+var poll = true;
 
-function getannotationtypename(t) {
-    //Get the human-readable label for an annotation type (corresponding to XML tag), if defined
-    if (annotationtypenames[t]) {
-        return annotationtypenames[t];
-    }
-    return t;
-}
+//************************************************************************************************************************************************************************
 
 function function_exists(functionName) {
     //Test if a function exists
@@ -106,10 +37,6 @@ function function_exists(functionName) {
 }
 
 
-function isstructure(annotationtype) {
-    //Is the given element a structural element?
-    return (annotationtypestructure.indexOf(annotationtype) !== -1);
-}
 
 function hash(s){
   //Generic hash function
@@ -119,65 +46,62 @@ function hash(s){
   return 0;
 }
 
-function getannotationid(annotation) {
-    //Gets the ID for the annotation. It will be used by FLAT internally in
-    //many places. This may be a FoLiA ID but if there is no FoLiA ID it
-    //corresponds to other constructs like type/set
-    if (annotation.self) {
-        return "self";
-    }
-    if (annotation.id)  {
-        return annotation.id;
-    }
-    if (annotation.type === 't') {
-        return annotation.type + '/' + annotation.set + ':' + annotation.class;
-    }
-    if (annotation.set) {
-        return annotation.type + '/' + annotation.set;
-    }
-    if (annotation.type) {
-        return annotation.type;
-    }
-    alert("Unable to get ID for " + annotation);
-}
-
 function onfoliaclick() {
     //Called when an element (often a word) is clicked, delegates to *_onclick methods of the enabled mode
     if (function_exists(mode + '_onclick')) {
-        var f = eval(mode + '_onclick');
-        f(this);
+        if ((selector === "") || (selector == structure[this.id].type)) {
+            var f = eval(mode + '_onclick');
+            f(this);
+            return false;
+        }
     }
-    return false;
 }
 function onfoliadblclick() {
     //Called when an element (often a word) is double clicked, delegates to *_ondblclick methods of the enabled mode
     if (function_exists(mode + '_ondblclick')) {
-        var f = eval(mode + '_ondblclick');
-        f(this);
+        if ((selector === "") || (selector == structure[this.id].type)) {
+            var f = eval(mode + '_ondblclick');
+            f(this);
+            return false;
+        }
     }
-    return false;
 }
 function onfoliamouseenter() {
     //Called when an element (often a word) is entered with the cursor, delegates to *_mouseenter methods of the enabled mode
     if (function_exists(mode + '_onmouseenter')) {
-        var f = eval(mode + '_onmouseenter');
-        f(this);
+        if ((selector === "") || (selector == structure[this.id].type)) {
+            var f = eval(mode + '_onmouseenter');
+            f(this);
+            return false;
+        }
     }
-    return false;
 }
 function onfoliamouseleave() {
     //Called when an element (often a word) is exited with the cursor, delegates to *_mouseleave methods of the enabled mode
     if (function_exists(mode + '_onmouseleave')) {
-        var f = eval(mode + '_onmouseleave');
-        f(this);
+        if ((selector === "") || (selector == structure[this.id].type)) {
+            var f = eval(mode + '_onmouseleave');
+            f(this);
+            return false;
+        }
     }
-    return false;
 }
 
-function loadtext(annotationlist) {
+
+function loadstructure(structureresponse) {
+    //update structure data
+    Object.keys(structureresponse).forEach(function(structureid){
+        structure[structureid] = structureresponse[structureid];
+        lateststructure[structureid] = true;
+    });
+    //old (deleted) structure may linger in memory but is no longer
+    //referenced by other structure or other updated annotations
+}
+
+function loadtext(annotationresponse) {
     //reload text from the annotation data response back into the DOM structure, called by update()
-    annotationlist.forEach(function(annotation){
-        if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current")) {
+    forlatestannotations(function(annotation){
+        if ((annotation.type == "t") && (annotation.text) && (annotation.class == "current") && (annotation.auth)) {
             if (annotation.targets) {
                 annotation.targets.forEach(function(target){
                     if (target) { $('#' + valid(target) + " span.lbl").html(annotation.text); }
@@ -191,54 +115,13 @@ function loadtext(annotationlist) {
     }*/
 }
 
-function loadannotations(annotationlist) {
-    //load annotations from the annotation data response in memory, called by update()
-    
-    annotationlist.forEach(function(annotation){
-        annotation.targets.forEach(function(target){
-            if (!(annotations[target])) annotations[target] = {};
-            if (!(latestannotations[target])) latestannotations[target] = {};
-            var annotationid = getannotationid(annotation);
-            annotations[target][annotationid] = annotation;
-            annotations[target][annotationid].annotationid = annotationid;
-            latestannotations[target][annotationid] = true;
-        });
-        if ((annotation.type == "correction") && (annotation.id)) {
-            corrections[annotation.id] = annotation;
-            if ((annotation.suggestions.length > 0) && (annotation.new.length === 0)) {
-                //find the annotation the suggestions apply to and act as if
-                //that is part of the correction
-                target = annotation.targets[0];
-                Object.keys(annotations[target]).forEach(function(annotationid){
-                    if (annotationid != "self") {
-                        if ((annotations[target][annotationid].type == annotation.suggestions[0].type) && (annotations[target][annotationid].set == annotation.suggestions[0].set)) {
-                            if (!annotations[target][annotationid].incorrection) {
-                                annotations[target][annotationid].incorrection = [annotation.id];
-                            } else {
-                                annotations[target][annotationid].incorrection.push(annotation.id);
-                            }
-                        }
-                    }
-                });
-            }
-        }
+function loadannotations(annotationresponse) {
+    Object.keys(annotationresponse).forEach(function(annotationid){
+        annotations[annotationid] = annotationresponse[annotationid];
+        latestannotations[annotationid] = true;
     });
-
-    //find old annotations that are no longer in the response, delete them
-    Object.keys(latestannotations).forEach(function(target){
-        if (annotations[target]) {
-            Object.keys(annotations[target]).forEach(function(annotationid){
-                if (!latestannotations[target][annotationid]) delete annotations[target][annotationid];
-            });
-        }
-    });
-
-    /*
-    if (function_exists(mode + '_onloadannotations')) {
-        f = eval(mode + '_onloadannotations');
-        f(annotationlist);
-    }
-    */
+    //old (deleted) annotations may linger in memory but are no longer
+    //referenced by structure or other updated annotations
 }
 
 
@@ -250,22 +133,112 @@ function loaddeclarations(declarationlist) {
     });
 }
 
-function rendertextclass() {
-    //Renders the right text label based on the text class (currenet by default)
-    Object.keys(annotations).forEach(function(target){
-        Object.keys(annotations[target]).forEach(function(annotationid){
-            var annotation = annotations[target][annotationid];
-            if ((annotation.type == "t") && (annotation.class == textclass)) {
-                lbl = $('#' + valid(target) + " span.lbl");
-                if ((lbl.length == 1) && ($('#'  + valid(target)).hasClass('deepest'))) {
-                    if (annotation.htmltext) {
-                        lbl.html(annotation.htmltext);
-                    } else {
-                        lbl.html(annotation.text);
-                    }
-                }
+function forstructure(callback) {
+    Object.keys(structure).forEach(function(structure_id){
+        callback(structure[structure_id]);
+    });
+}
+
+function forlateststructure(callback) {
+    Object.keys(lateststructure).forEach(function(structure_id){
+        callback(structure[structure_id]);
+    });
+}
+
+function forannotations(structure_id, callback) {
+    /*  Calls a function for all annotations pertaining to a specific
+     *  structural element, includes span annotations as well */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].annotations.forEach(function(annotation_id){
+            if (annotations[annotation_id]) {
+                callback(annotations[annotation_id]);
             }
         });
+    }
+}
+
+function forsubstructure(structure_id, callback) {
+    /*  Calls a function for all structural elements pertaining to a specific
+     *  structural element */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].structure.forEach(function(sub_id){
+            if (structure[sub_id]) {
+                callback(structure[sub_id]);
+            }
+        });
+    }
+}
+
+
+function forlatestannotations(structure_id, callback) {
+    /*  Calls a function for all annotations pertaining to a specific
+     *  structural element, includes span annotations as well. Only includes
+     *  annotations that were returned in the latest response from server */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].annotations.forEach(function(annotation_id){
+            if (latestannotations[annotation_id]) {
+                callback(annotations[annotation_id]);
+            }
+        });
+    }
+}
+
+function forallannotations(callback) {
+    /*  Calls a function for all structure element and all annotations pertaining to the
+     *  structural element, includes span annotations as well. */
+    Object.keys(structure).forEach(function(structure_id){
+        if (structure[structure_id].annotations) {
+            structure[structure_id].annotations.forEach(function(annotation_id){
+                if (annotations[annotation_id]) {
+                    callback(structure[structure_id],annotations[annotation_id]);
+                } else {
+                    console.debug("Annotation " + annotation_id + " for structure " + structure_id + " is not defined");
+                }
+            });
+        }
+    });
+}
+
+function forspanannotations(structure_id, callback) {
+    /* Calls a function for all span annotations layered in a structural element, NOT span
+     * annotation applying over a structural element! */
+    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+        structure[structure_id].spanannotations.forEach(function(annotation_id){
+            if (annotations[annotation_id]) {
+                callback(annotations[annotation_id]);
+            }
+        });
+    }
+}
+
+function foralllatestannotations(callback) {
+    /*  Calls a function for all structure element and all annotations pertaining to the
+     *  structural element, includes span annotations as well. Only includes
+     *  annotations that were returned in the latest response from server */
+    Object.keys(lateststructure).forEach(function(structure_id){
+        if (structure[structure_id].annotations) {
+            structure[structure_id].annotations.forEach(function(annotation_id){
+                if (latestannotations[annotation_id]) {
+                    callback(structure[structure_id],annotations[annotation_id]);
+                }
+            });
+        }
+    });
+}
+
+function rendertextclass() {
+    //Renders the right text label based on the text class (current by default)
+    forallannotations(function(structureelement, annotation){
+        if ((annotation.type == "t") && (annotation.class == textclass)) {
+            lbl = $('#' + valid(structureelement.id) + " span.lbl");
+            if ((lbl.length == 1) && ($('#'  + valid(structureelement.id)).hasClass('deepest'))) {
+                if (annotation.htmltext) {
+                    lbl.html(annotation.htmltext);
+                } else {
+                    lbl.html(annotation.text);
+                }
+            }
+        }
     });
     $('div.deepest>span.lbl').show();
     //Delegate to mode's callback function
@@ -276,6 +249,7 @@ function rendertextclass() {
 }
 
 function setupcorrection(correction) {
+    //TODO: refactor
     if (!((correction.original) || (correction.new) || (correction.current) || (correction.suggestions))) {
         //process
         correction.children.forEach(function(correctionchild){
@@ -327,7 +301,10 @@ function shorten(s) {
 function update(data, extracallback) {
     //Process data response from the server, does a partial update, called through loadcontent() on initialisation
     //
-    latestannotations = {}; //reset latest annotations cache (target -> annotationid -> true map), will be populated again by loadannotations()
+
+    latststructure = {}; //reset latest structure cache (structureid -> true map), will be populated again by loadstructure()
+    latestannotations = {}; //reset latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
+
     if (data.error) {
         alert(data.error);
     }
@@ -344,7 +321,7 @@ function update(data, extracallback) {
                     //update the existing elements
                     selector[0].outerHTML = returnitem.html;
                 } else if (!havecontent) {
-                    //structure does not exist yet and we we don't have content
+                    //structure does not exist yet and we don't have content
                     //yet, add to main document
                     $('#document').append(returnitem.html);
                 }
@@ -353,9 +330,12 @@ function update(data, extracallback) {
                 //$('#replacing').after(data.html);
                 //$('#replacing').remove();
             }
+            if (returnitem.structure) {
+                loadstructure(returnitem.structure);
+            }
             if (returnitem.annotations) {
-                loadtext(returnitem.annotations);
                 loadannotations(returnitem.annotations);
+                loadtext(returnitem.annotations);
             }
             if (returnitem.elementid) {
                 //reregister handlers
@@ -536,7 +516,7 @@ function loadperspectivemenu() {
             } else {
                 opts += ">";
             }
-            opts += annotationtypenames[perspectives[i]] + "</option>";
+            opts += folia_label(perspectives[i]) + "</option>";
         }
     }
     if (perspectives.indexOf('toc') != -1) {
@@ -576,6 +556,35 @@ function loadperspectivemenu() {
         }
         loadcontent(perspective, perspective_ids,null, perspective_end);
     });
+}
+
+function selectorchange(){
+    selector = $('#selectormenu').val(); 
+}
+
+function loadselectormenu() {
+    var s = "<span class=\"title\">Selector</span>";
+    s += "<select id=\"selectormenu\">";
+    if (selector === "") { 
+        s += "<option value=\"\" selected=\"selected\">Automatic (deepest)</option>";
+    } else {
+        s += "<option value=\"\">Automatic (deepest)</option>";
+    }
+    folia_structurelist().forEach(function(structuretype){
+        var label = structuretype;
+        if (folia_label(structuretype)) {
+            label = folia_label(structuretype);
+        }
+        if (selector == structuretype) { 
+            s += "<option value=\"" + structuretype + "\" selected=\"selected\">"  + label + "</option>";
+        } else {
+            s += "<option value=\"" + structuretype + "\">"  + label + "</option>";
+        }
+    });
+    s += "</select>";
+    $('#selector').html(s);
+    $('#selectormenu').off();
+    $('#selectormenu').change(selectorchange);
 }
 
 function onpagechange(){
@@ -705,17 +714,54 @@ function auto_grow(element) {
     element.style.height = (element.scrollHeight)+"px";
 }
 
+
+function sort_targets(targets) {
+    //Sort a list of target IDs (words only) so that they are in proper order of appearance
+    var sameparent = false;
+    if ((targets.length > 0) && (structure[targets[0]]) && (structure[targets[0]].parent) && (structure[structure[targets[0]].parent].structure)) {
+        sameparent = structure[targets[0]].parent;
+        for (var i = 1; i < targets.length; i++) {
+            if (structure[targets[0]].parent != sameparent) {
+                sameparent = false;
+                break;
+            }
+        }
+    }
+    var sortedtargets = [];
+    if (sameparent) {
+        //sort targets by looking at the word order for the parent element
+        for (var j = 0; j < structure[sameparent].structure.length; j++) {
+            if (targets.indexOf(structure[sameparent].structure[j]) > -1) {
+                sortedtargets.push(structure[sameparent].structure[j]);
+            }
+        }
+    } else { 
+        //fallback: sort targets by simply looking at the order they are rendered in  the interface
+        $('.w').each(function(){
+            if (targets.indexOf(this.id) > -1) {
+                sortedtargets.push(this.id);
+            }
+        });
+    }
+    if (sortedtargets.length != targets.length) {
+        throw "Error, unable to sort targets, expected " + targets.length + ", got " + sortedtargets.length;
+    }
+    return sortedtargets;
+}
+
 function escape_fql_value(v) {
     //Escape values in FQL
     return v.replace(/"/g,'\\"').replace(/\n/g,"\\n");
 }
 
 $(function() {
-    //on document load
+    //on page load
     //
     //clear any wait screens (needed when user pressed back in browser)
     $('#wait').hide();
     if (typeof(mode) != "undefined") {
+        folia_parse(foliaspec, []);
+
         $('nav>ul>li').mouseenter(function(){
             $('>ul',this).css('left', mouseX-30);
         });

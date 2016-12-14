@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="/style/treeview.css" type="text/css" />
+<script type="text/javascript" src="/style/svg-tree-drawer.js"></script> 
+{% endblock %}
 
 {% block menu %}
 {% include "viewermenu.html" %}
@@ -12,11 +16,21 @@
 {% block dialogs %}
 <div id="leftpane">
     <div id="perspective"></div>
+    <div id="selector"></div>
     <div id="textclassselector"></div>
     <div id="legend"></div>
 </div>
 <div id="info"></div>
 {% include "search.html" %}
+<div id="viewer">
+    <div id="viewerheader">
+        <span>Annotation Viewer</span>
+        <button id="viewerdiscard">x</button>
+    </div>
+    <div class="body">
+    </div>
+</div>
+{% include "treeview.html" %}
 <div id="connectioninfo"></div>
 {% endblock %}
 

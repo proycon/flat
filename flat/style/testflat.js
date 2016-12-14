@@ -93,13 +93,23 @@ function ui_edit(selectexpression, value) {
 
 function ui_choose(selectexpression, value) {
     var e = ui_get(selectexpression);
-    e.prop('selectedIndex',value);
-    globalassert.equal( e.prop('selectedIndex') , value, "[UI] Choosing " + selectexpression + " , selecting option \"" + value + "\"");
+    e.val(value);
+    //e.prop('selectedIndex',value);
+    globalassert.equal( e.val() , value, "[UI] Choosing " + selectexpression + " , selecting option \"" + value + "\"");
     e.trigger('change');
 }
 
 function ui_click(selectexpression) {
     ui_get(selectexpression).trigger('click');
+}
+
+function ui_find(annotationtype){
+    for (var i = 0; i < editfields; i++) {
+        if (editdata[i].type === annotationtype) {
+            return i;
+        }
+    }
+    throw "Annotation type " + annotationtype + " not found";
 }
 
 //we want tests in the order defined here
@@ -109,8 +119,8 @@ testname = ""; //global variable
 globalassert = null;
 
 //these will need to be adjusted when set definitions change
-FLATTEST_ADD_NER = 5; 
-FLATTEST_CORRECTIONCLASS_UNCERTAIN = 11;
+FLATTEST_ADD_NER = "6"; 
+FLATTEST_CORRECTIONCLASS_UNCERTAIN = "uncertain";
 
 // This is how we detect the failure and cancel the rest of the tests...
 /*QUnit.testDone(function(details) {
@@ -124,43 +134,50 @@ FLATTEST_CORRECTIONCLASS_UNCERTAIN = 11;
 QUnit.asyncTest("Text Change", function(assert){
     testinit("textchange",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield1text',"mijn"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"mijn"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Class change (token annotation)", function(assert){
     testinit("classchange_token",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield3',"mijn");  //lemma
-    ui_click('#editform3direct'); 
+    var idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,"mijn");  //lemma
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Class change (span annotation)", function(assert){
     testinit("classchange_span",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_choose('#editfield4',21); 
-    ui_click('#editform4direct'); 
+    var idx = ui_find('chunk');
+    ui_choose('#editfield' + idx,'X'); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Text Change (Merging multiple words)", function(assert){
     testinit("textmerge",assert);
     ui_click('#untitleddoc.p.3.s.1.w.5');
-    ui_click('#spanselector1');
+    var idx = ui_find('t');
+    ui_click('#spanselector' + idx);
     ui_click('#untitleddoc.p.3.s.1.w.4');
-    ui_click('#spanselector1');
-    ui_edit('#editfield1text',"wegreden"); 
-    ui_click('#editform1direct'); 
+    ui_click('#spanselector' + idx);
+    ui_edit('#editfield' + idx + 'text',"wegreden"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Changing Text and multiple token annotations at once", function(assert){
     testinit("multiannotchange",assert);
     ui_click('#untitleddoc.p.3.s.6.w.8');
-    ui_edit('#editfield1text',"het"); 
-    ui_click('#editform1direct'); 
-    ui_edit('#editfield2',"LID(onbep,stan,rest)");  //pos
-    ui_click('#editform2direct'); 
-    ui_edit('#editfield3',"het");  //lemma
-    ui_click('#editform3direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"het"); 
+    ui_click('#editform' + idx + 'direct'); 
+    idx = ui_find('pos');
+    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");  //pos
+    ui_click('#editform' + idx + 'direct'); 
+    idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,"het");  //lemma
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Adding a new span annotation, out of order selection", function(assert){
@@ -174,195 +191,293 @@ QUnit.asyncTest("Adding a new span annotation, out of order selection", function
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
-    ui_choose('#editfield2',2); //corresponds to person as long as the set definition doesn't change
+    var idx = editfields-1;
+    ui_choose('#editfield' + idx,"per"); 
 
     //select span
-    ui_click('#spanselector2'); 
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.1.w.12');
-    ui_click('#spanselector2'); 
+    ui_click('#spanselector' + idx); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Adding new overlapping span", function(assert){
     testinit("newoverlapspan",assert);
     ui_click('#untitleddoc.p.3.s.9.w.8');
-    ui_choose('#editfield6',4); //corresponds to organisation as long as the set definition doesn't change
-    ui_click('#spanselector6'); 
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,"org");
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
     //8 and 9 are already selected!
-    ui_click('#spanselector6'); 
-    ui_click('#editform6new'); 
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'new'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word deletion", function(assert){
     testinit("worddelete",assert);
     ui_click('#untitleddoc.p.3.s.8.w.10');
-    ui_edit('#editfield1text',""); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',""); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word split", function(assert){
     testinit("wordsplit",assert);
     ui_click('#untitleddoc.p.3.s.12.w.5');
-    ui_edit('#editfield1text',"4 uur"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"4 uur"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word insertion to the right", function(assert){
     testinit("wordinsertionright",assert);
     ui_click('#untitleddoc.p.3.s.12.w.1');
-    ui_edit('#editfield1text',"en we"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"en we"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Word insertion to the left", function(assert){
     testinit("wordinsertionleft",assert);
     ui_click('#untitleddoc.p.3.s.13.w.12');
-    ui_edit('#editfield1text',"we hoorden"); 
-    ui_click('#editform1direct'); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"we hoorden"); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Span change", function(assert){
     testinit("spanchange",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_click('#spanselector8'); 
+    var idx = ui_find('entity');
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
-    ui_click('#spanselector8'); 
-    ui_click('#editform8direct'); 
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Deletion of token annotation", function(assert){
     testinit("tokenannotationdeletion",assert);
     ui_click('#untitleddoc.p.3.s.8.w.4');
-    ui_edit('#editfield3',""); 
-    ui_click('#editform3direct'); 
+    var idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,""); 
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Span deletion", function(assert){
     testinit("spandeletion",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_choose('#editfield8',0); //corresponds to empty class, implies deletion
-    ui_click('#editform8direct'); 
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,""); //corresponds to empty class, implies deletion
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Setting confidence",function(assert){
     testinit("confidence_set",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_click('#confidencecheck3');
-    $('#confidenceslider3').slider('value',88);
-    ui_click('#editform3direct'); 
+    var idx = ui_find('lemma');
+    ui_click('#confidencecheck' + idx);
+    $('#confidenceslider' + idx).slider('value',88);
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Editing confidence",function(assert){
     testinit("confidence_edit",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    $('#confidenceslider4').slider('value',88);
-    ui_click('#editform4direct'); 
+    var idx = ui_find('chunk');
+    $('#confidenceslider' + idx).slider('value',88);
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("Unsetting confidence",function(assert){
     testinit("confidence_unset",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_click('#confidencecheck4');
-    ui_click('#editform4direct'); 
+    var idx = ui_find('chunk');
+    ui_click('#confidencecheck' + idx);
+    ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Text Change", function(assert){
     testinit("correction_textchange",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
-    ui_edit('#editfield1text',"mijn"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"mijn"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function(assert){
     testinit("correction_textmerge",assert);
     ui_click('#untitleddoc.p.3.s.1.w.5');
-    ui_click('#spanselector1');
+    var idx = ui_find('t');
+    ui_click('#spanselector' + idx);
     ui_click('#untitleddoc.p.3.s.1.w.4');
-    ui_click('#spanselector1');
-    ui_edit('#editfield1text',"wegreden"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_click('#spanselector' + idx);
+    ui_edit('#editfield' + idx + 'text',"wegreden"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
     testinit("correction_tokenannotationchange",assert);
     ui_click('#untitleddoc.p.3.s.6.w.8');
-    ui_edit('#editfield2',"LID(onbep,stan,rest)");  //pos
-    ui_click('#editform2correction'); 
-    ui_choose('#editform2correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('pos');
+    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word deletion", function(assert){
     testinit("correction_worddelete",assert);
     ui_click('#untitleddoc.p.3.s.8.w.10');
-    ui_edit('#editfield1text',""); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',""); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word split", function(assert){
     testinit("correction_wordsplit",assert);
     ui_click('#untitleddoc.p.3.s.12.w.5');
-    ui_edit('#editfield1text',"4 uur"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN); 
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"4 uur"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx +'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN); 
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     testinit("correction_wordinsertionright",assert);
     ui_click('#untitleddoc.p.3.s.12.w.1');
-    ui_edit('#editfield1text',"en we"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"en we"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     testinit("correction_wordinsertionleft",assert);
     ui_click('#untitleddoc.p.3.s.13.w.12');
-    ui_edit('#editfield1text',"we hoorden"); 
-    ui_click('#editform1correction'); 
-    ui_choose('#editform1correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('t');
+    ui_edit('#editfield' + idx + 'text',"we hoorden"); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
     testinit("correction_tokenannotationdeletion",assert);
     ui_click('#untitleddoc.p.3.s.8.w.4');
-    ui_edit('#editfield3',""); 
-    ui_click('#editform3correction'); 
-    ui_choose('#editform3correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('lemma');
+    ui_edit('#editfield' + idx,""); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Span change", function(assert){
     testinit("correction_spanchange",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_click('#spanselector8'); 
+    var idx = ui_find('entity');
+    ui_click('#spanselector' + idx); 
     ui_click('#untitleddoc.p.3.s.9.w.7');
-    ui_click('#spanselector8'); 
-    ui_click('#editform8correction'); 
-    ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 
 QUnit.asyncTest("[As correction] Span deletion", function(assert){
     testinit("correction_spandeletion",assert);
     ui_click('#untitleddoc.p.3.s.9.w.9');
-    ui_choose('#editfield8',0); //corresponds to empty class, implies deletion
-    ui_click('#editform8correction'); 
-    ui_choose('#editform8correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,""); //corresponds to empty class, implies deletion
+    ui_click('#editform' + idx + 'correction'); 
+    ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit'); 
 });
 QUnit.asyncTest("[Higher order] Adding a comment to a span annotation",function(assert){
     testinit("comment_span",assert);
     ui_click('#untitleddoc.p.3.s.1.w.3');
-    ui_click('#editform4direct'); 
-    ui_click('#editoraddhigherorder4_comment');
-    ui_edit('#higherorderfield4_0',"This is a comment"); 
+    var idx = ui_find('chunk');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#editoraddhigherorder' + idx + '_comment');
+    ui_edit('#higherorderfield' + idx + '_0',"This is a comment"); 
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("[Higher order] Editing a feature (class)",function(assert){
+    testinit("feature_edit",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_edit('#higherorderfield_' + idx + '_0',"ADJX");  //head feature
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("[Higher order] Editing a feature (subset and class)",function(assert){
+    testinit("feature_edit2",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_edit('#higherorderfield_subset_' + idx + '_0',"headX");  //head feature
+    ui_edit('#higherorderfield_' + idx + '_0',"ADJX");  //head feature
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("[Higher order] Adding a new feature",function(assert){
+    testinit("feature_add",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#editoraddhigherorder' + idx + '_feat');
+    ui_edit('#higherorderfield_subset_' + idx + '_4',"testsubset");  //head feature
+    ui_edit('#higherorderfield_' + idx + '_4',"testvalue");  //head feature
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("[Higher order] Deleting a feature",function(assert){
+    testinit("feature_delete",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('pos');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_edit('#higherorderfield_' + idx + '_0',"");  //head feature
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Span role edit (respan)",function(assert){
+    testinit("spanrole_respan",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('dependency');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.1.w.12b');
+    ui_click('#spanselector' + idx + '_0');  
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Span role deletion",function(assert){
+    testinit("spanrole_delete",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('dependency');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.1.w.12');
+    ui_click('#spanselector' + idx + '_0');  
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Adding a new span annotation (dependency) with span roles from scratch",function(assert){
+    testinit("dependency_add",assert);
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_choose('#editoraddablefields',"5");  //5 corresponds to dependency, as long as the ordering doesn't change...
+    ui_click('#editoraddfield'); //click add button
+
+    //fill new field:
+    var idx = editfields-1;
+    ui_choose('#editfield' + idx,"crd"); 
+    //empty fields for the span roles should have been added automatically as they are required, no need to manually add them
+    ui_click('#spanselector' + idx + '_0');  //dep spanrole
+    ui_click('#untitleddoc.p.3.s.15.w.1');
+    ui_click('#spanselector' + idx + '_0');  //dep spanrole
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
+    ui_click('#editorsubmit'); 
+});
+
+
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
@@ -372,10 +487,76 @@ QUnit.asyncTest("Tests completed", function(assert){
 });
 
 function findcorrectionbytext(text) {
-    for (var key in annotations) {
-        if ((annotations[key]["t/undefined:current"]) && (annotations[key]["t/undefined:current"].incorrection) && (annotations[key]["t/undefined:current"].incorrection.length == 1)  && (annotations[key]["t/undefined:current"].text == text)) return annotations[key].self.id;
-    }
-    return null;
+    var correction = null;
+    forallannotations(function(structureelement, annotation){
+        if (annotation.type == "correction") {
+            if (annotation.structural) {
+                if (annotation.new) {
+                    for (var i = 0; i < annotation.new.length; i++) {
+                        var sid = annotation.new[i];
+                        forannotations(sid, function(annotation2){
+                            if ((annotation2.type == "t") && (annotation2.class == "current") && (annotation2.text === text)) {
+                                correction = sid;
+                                return;
+                            }
+                        });
+                    }
+                }
+                if (annotation.current) {
+                    for (var i = 0; i < annotation.current.length; i++) {
+                        var sid = annotation.current[i];
+                        forannotations(sid, function(annotation2){
+                            if ((annotation2.type == "t") && (annotation2.class == "current") && (annotation2.text === text)) {
+                                correction = sid;
+                                return;
+                            }
+                        });
+                    }
+                }
+            } else {
+                if (annotation.new) {
+                    for (var i = 0; i < annotation.new.length; i++) {
+                        var aid = annotation.new[i];
+                        if ((annotations[aid].type == "t") && (annotations[aid].class == "current") && (annotations[aid].text === text)) {
+                            correction = annotation.id;
+                            return;
+                        }
+                    }
+                }
+                if (annotation.current) {
+                    for (var i = 0; i < annotation.current.length; i++) {
+                        var aid = annotation.current[i];
+                        if ((annotations[aid].type == "t") && (annotations[aid].class == "current") && (annotations[aid].text === text)) {
+                            correction = annotation.id;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    globalassert.notEqual(correction, null,  "Checking if correction was found by text");
+    return correction;
+}
+
+function hasannotation(structure_id, annotation_id) {
+   return (structure[structure_id].annotations.indexOf(annotation_id) != -1);
+}
+
+function getannotations(structure_id, type) {
+    var l = [];
+    forannotations(structure_id, function(a){
+        if (a.type == type) {
+            l.push(a);
+            return;
+        }
+    });
+    return l;
+}
+
+function assert_ok(test, label) {
+    globalassert.ok(test, label);
+    return (test == true);
 }
 
 // TESTS -- Second stage, the actual test evaluation
@@ -394,29 +575,23 @@ function testeval(data) {
     if ((testname == "textchange") || (testname == "correction_textchange")) {
         testtext('#untitleddoc.p.3.s.1.w.2', "mijn");
     } else if (testname == "classchange_token") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "mijn");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2/lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "mijn");
     } else if (testname == "classchange_span") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].class, "X");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].class, "X");
     } else if ((testname == "textmerge")) {
         testtext('#untitleddoc.p.3.s.1.w.14', "wegreden");
     } else if ((testname == "correction_textmerge")) {
-        id = findcorrectionbytext("wegreden");
-        globalassert.notEqual(id,null,"Testing whether correction found (by text)");
-        testtext('#' + id, "wegreden");
+        var id = findcorrectionbytext("wegreden");
+        if (id) {
+            testtext('#' + id, "wegreden");
+        }
     } else if ((testname == "multiannotchange") ) {
         testtext('#untitleddoc.p.3.s.6.w.8', "het");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8/lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].class, "het", "Testing lemma class");
     } else if ((testname == "addentity") || (testname == "correction_addentity")) {
-        var e = null;
-        for (var key in annotations['untitleddoc.p.3.s.1.w.12']) {
-            if (annotations['untitleddoc.p.3.s.1.w.12'][key].type == "entity") {
-                e = annotations['untitleddoc.p.3.s.1.w.12'][key];
-                break;
-            }
-        }
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12'][e.id].class, "per", "Finding named entity on first word");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.12b'][e.id].class, "per", "Finding named entity on second word");
+        globalassert.equal(getannotations('untitleddoc.p.3.s.1.w.12','entity')[0].class, "per", "Finding named entity on first word");
+        globalassert.equal(getannotations('untitleddoc.p.3.s.1.w.12b','entity')[0].class, "per", "Finding named entity on second word");
     } else if ((testname == "worddelete") ||  (testname == "correction_worddelete")) {
         globalassert.equal($(valid('#untitleddoc.p.3.s.8.w.10')).length, 0, "Test if word is removed from interface");
     } else if ((testname == "wordsplit")) {
@@ -444,77 +619,72 @@ function testeval(data) {
         testtext('#untitleddoc.p.3.s.13.w.12',"hoorden");
         testtext('#' + id,"we");
     } else if ((testname == "spanchange") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on original word");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.7']["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Finding named entity on new word");
+        globalassert.equal(hasannotation('untitleddoc.p.3.s.9.w.9',"untitleddoc.p.3.s.9.entity.1"), true, "Finding named entity on original word");
+        globalassert.equal(hasannotation('untitleddoc.p.3.s.9.w.7',"untitleddoc.p.3.s.9.entity.1"), true, "Finding named entity on new word");
+        globalassert.equal(annotations["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Testing named entity class");
     } else if ((testname == "newoverlapspan") || (testname == "correction_newoverlapspan")) {
-        var e = null;
-        var e2 = null;
-        for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
-            if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
-                if (e !== null) {
-                    e2 = annotations['untitleddoc.p.3.s.9.w.9'][key];
-                    break;
-                } else {
-                    e = annotations['untitleddoc.p.3.s.9.w.9'][key];
-                }
-            }
-        }
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9'][e.id].class, "loc", "Finding first entity");
-        globalassert.equal(annotations['untitleddoc.p.3.s.9.w.9'][e2.id].class, "org", "Finding second entity");
+        globalassert.equal(getannotations( 'untitleddoc.p.3.s.9.w.9','entity')[0].class, "loc", "Finding first entity");
+        globalassert.equal(getannotations( 'untitleddoc.p.3.s.9.w.9','entity')[1].class, "org", "Finding second entity");
     } else if ((testname == "spandeletion")  || (testname == "correction_spandeletion")) {
     } else if ((testname == "tokenannotationdeletion")  ||(testname == "correction_tokenannotationdeletion")) {
     } 
 
     if (testname == "correction_textchange") {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["t/undefined:current"]['incorrection'][0], "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.2']["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
+        if (assert_ok(annotations["untitleddoc.p.3.s.1.w.2.correction.1/new/t/current"], "Corrected annotation exists")) {
+            globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1/new/t/current"].incorrection, "untitleddoc.p.3.s.1.w.2.correction.1", "Checking if annotation is in correction");
+        }
+        if (assert_ok(annotations["untitleddoc.p.3.s.1.w.2.correction.1"], "Correction exists")) {
+            globalassert.equal(annotations["untitleddoc.p.3.s.1.w.2.correction.1"].class, "uncertain", "Checking correction and its class");
+        }
     } else if (testname == "correction_textmerge") {
-        id = findcorrectionbytext("wegreden");
-        globalassert.equal(annotations[id]["t/undefined:current"]['incorrection'].length,1, "Checking if annotation is in correction");
-        corr_id = annotations[id]["t/undefined:current"]['incorrection'][0];
-        globalassert.equal(annotations['untitleddoc.p.3.s.1'][corr_id].class, "uncertain", "Checking correction and its class");
+        var id = findcorrectionbytext("wegreden");
+        if (id) {
+            if (assert_ok(annotations[id + "/new/t/current"], "Corrected annotation exists")) {
+                globalassert.equal(annotations[id + "/new/t/current"].incorrection, id,  "Checking if annotation is in correction");
+            }
+            if (assert_ok(annotations[id], "Correction exists")) {
+                globalassert.equal(annotations[id].class, "uncertain", "Checking correction and its class");
+            }
+        }
     } else if ((testname == "correction_tokenannotationchange") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"]['incorrection'][0] , "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
-        globalassert.equal(annotations['untitleddoc.p.3.s.6.w.8']["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
+        if (assert_ok(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"], "Corrected annotation exists")) {
+            globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].class, "LID(onbep,stan,rest)", "Testing POS class");
+            globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1/new/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].incorrection, "untitleddoc.p.3.s.6.w.8.correction.1", "Checking if annotation is in correction");
+        }
+        globalassert.equal(annotations["untitleddoc.p.3.s.6.w.8.correction.1"].class, "uncertain", "Checking correction and its class");
     } else if ((testname == "correction_spanchange") ) {
-        var e = null;
-        for (var key in annotations['untitleddoc.p.3.s.9.w.9']) {
-            if (annotations['untitleddoc.p.3.s.9.w.9'][key].type == "entity") {
-                e = annotations['untitleddoc.p.3.s.9.w.9'][key];
-                break;
-            }
-        }
-        if (e) {
-            globalassert.ok("Finding named entity on original word");
-            globalassert.equal(e.class, "loc", "Checking class of named entity on original word");
-        } else {
-            globalassert.ok(false, "Finding named entity on original word");
-        }
-
-        var e = null;
-        for (var key in annotations['untitleddoc.p.3.s.9.w.7']) {
-            if (annotations['untitleddoc.p.3.s.9.w.7'][key].type == "entity") {
-                e = annotations['untitleddoc.p.3.s.9.w.7'][key];
-                break;
-            }
-        }
-        if (e) {
-            globalassert.ok("Finding named entity on new word");
-            globalassert.equal(e.class, "loc", "Checking class of named entity on new word");
-        } else {
-            globalassert.ok(false, "Finding named entity on new word");
-        }
+        globalassert.equal(getannotations('untitleddoc.p.3.s.9.w.9', 'entity')[0].class, "loc", "Finding named entity on original word and checking class");
+        globalassert.equal(getannotations('untitleddoc.p.3.s.9.w.7', 'entity')[0].class, "loc", "Finding named entity on new word and checking class");
     } else if ((testname == "comment_span") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children.length, 1);
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].type, "comment");
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].value, "This is a comment");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].type, "comment");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].children[0].value, "This is a comment");
     } else if ((testname == "confidence_set") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].confidence, 0.88);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.3/lemma/http://ilk.uvt.nl/folia/sets/frog-mblem-nl"].confidence, 0.88);
     } else if ((testname == "confidence_edit") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, 0.88);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, 0.88);
     } else if ((testname == "confidence_unset") ) {
-        globalassert.equal(annotations['untitleddoc.p.3.s.1.w.3']["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, undefined);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.chunking.1.chunk.2"].confidence, undefined);
+    } else if ((testname == "feature_edit") ) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 4);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].subset, "head");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].class, "ADJX");
+    } else if ((testname == "feature_edit2") ) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 4);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].subset, "headX");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[0].class, "ADJX");
+    } else if ((testname == "feature_add") ) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 5);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[4].subset, "testsubset");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[4].class, "testvalue");
+    } else if ((testname == "feature_delete")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 3);
+    } else if ((testname == "spanrole_respan")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 2);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].targets.length, 2);
+    } else if ((testname == "spanrole_delete")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].type, "dep");
     }
     
     console.log("(testeval) (qunit.start)");

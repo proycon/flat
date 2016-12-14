@@ -18,31 +18,34 @@ div#editorheader {
     color: white;
     border-radius: 5px;
     margin-top: -3px;
+    cursor: move;
 }
 div#editorheader button {
     float: right;
     margin-top: -5px;
     background: #30677c;
+    cursor: pointer;
 }
 div#editor table {
     width: 100%;
 }
 div#editor th {
-    width: 150px;
     font-weight: bold;
     overflow: hidden;
     max-width: 150px;
+    vertical-align: top;
+    border-bottom: 1px #eee solid;
 }
 div#editor tr:hover th {
     color: #30677c;
 }
 div#editor th span.setname {
     font-weight: normal;
-    text-size: 8pt;
+    font-size: 8pt;
     padding-left: 10px;
 }
 div#editor td {
-    width: 59%
+    width: 70%;
     font-style: italic;
     border-bottom: 1px #eee solid;
 }
@@ -73,19 +76,18 @@ div#editor .buttoncontainer span {
 div#editor input.textedit, div#editor select.textedit, div#editor .text {
     color: #333;
     font-style: italic;
+    max-width: 280px;
 }
 div#editor input.classedit, div#editor select.classedit, div#editor .class {
     color: #3323cd;
+    max-width: 280px;
+}
+div#editor input.subsetedit, div#editor select.subsetedit, div#editor .subset {
+    color: #6d0000;
+    max-width: 280px;
 }
 input.changed {
     color: #660000;
-}
-div#editor span#editoraddfields button {
-    border-radius: 0;
-    background: transparent;
-    border: 1px solid #30677c;
-    color: #30677c;
-    padding: 1px;
 }
 div#editor .addhigherordermenu {
     float: right;
@@ -95,6 +97,7 @@ div#editor .addhigherordermenu {
     color: #30677c;
     padding: 1px;
     clear: both;
+    cursor: pointer;
 }
 .addhigherordermenu ul {
     display: none;
@@ -117,10 +120,11 @@ div#editor .addhigherordermenu {
     padding-right: 5px;
     color: white;
     font-weight: bold;
-    display: pointer;
+    cursor: pointer;
 }
 .addhigherordermenu li:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 .higherorderrow {
     vertical-align: top;
@@ -274,3 +278,9 @@ div.confidenceeditor div {
     border: 2px dashed black;
     text-align: center;
 }
+
+.parentspaneditor select {
+    max-width: 320px;
+    overflow: hidden;
+}
+

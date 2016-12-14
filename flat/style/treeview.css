@@ -1,0 +1,47 @@
+/* Adapted from https://github.com/westonruter/svg-tree-drawer by Weston Ruter */
+svg text {
+	padding:0.5em;
+	padding-left:0.20em;
+	padding-right:0.20em;
+}
+svg g.collapsed g text {
+	padding-left:0.5ex;
+	padding-right:0.5ex;
+}
+svg g.selected text.label {
+	fill: #b70404;
+	font-weight: bold;
+}
+svg line,
+svg polyline {
+	font-size:1em; /*height not honored here by WebKit*/
+}
+svg polyline {
+	fill:none;
+}
+
+svg text.label {
+    fill: #3323cd;
+}
+
+svg g.leaf text.label {
+    fill: #000000;
+	font-style: italic;
+	font-weight: normal;
+}
+
+svg g.selected g.leaf text.label {
+    fill: #000000;
+	font-style: italic;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+.shortTree line,
+.shortTree polyline {
+	font-size:0.25em;
+}
+.tallTree line,
+.tallTree polyline {
+	font-size:2em;
+}
