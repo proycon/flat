@@ -458,6 +458,25 @@ QUnit.asyncTest("Span role deletion",function(assert){
     ui_click('#spanselector' + idx + '_0');  
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Adding a new span annotation (dependency) with span roles from scratch",function(assert){
+    testinit("dependency_add",assert);
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_choose('#editoraddablefields',"5");  //5 corresponds to dependency, as long as the ordering doesn't change...
+    ui_click('#editoraddfield'); //click add button
+
+    //fill new field:
+    var idx = editfields-1;
+    ui_choose('#editfield' + idx,"crd"); 
+    //empty fields for the span roles should have been added automatically as they are required, no need to manually add them
+    ui_click('#spanselector' + idx + '_0');  //dep spanrole
+    ui_click('#untitleddoc.p.3.s.15.w.1');
+    ui_click('#spanselector' + idx + '_0');  //dep spanrole
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
+    ui_click('#editorsubmit'); 
+});
+
 
 
 QUnit.asyncTest("Tests completed", function(assert){
