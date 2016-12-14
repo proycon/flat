@@ -448,6 +448,17 @@ QUnit.asyncTest("Span role edit (respan)",function(assert){
     ui_click('#spanselector' + idx + '_0');  
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Span role deletion",function(assert){
+    testinit("spanrole_delete",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('dependency');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.1.w.12');
+    ui_click('#spanselector' + idx + '_0');  
+    ui_click('#editorsubmit'); 
+});
+
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
@@ -652,6 +663,9 @@ function testeval(data) {
     } else if ((testname == "spanrole_respan")) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 2);
         globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].targets.length, 2);
+    } else if ((testname == "spanrole_delete")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].type, "dep");
     }
     
     console.log("(testeval) (qunit.start)");
