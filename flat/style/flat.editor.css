@@ -189,6 +189,9 @@ div#newdeclaration button, div#history button, div#consoleheader button {
     margin-top: -5px;
     background: #30677c;
 }
+#newdeclarationset {
+    width: 75%;
+}
 span.editforms {
     display: inline-block;
     white-space: nowrap;

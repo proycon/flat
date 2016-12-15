@@ -2056,10 +2056,16 @@ function editor_oninit() {
     });
 
 
-    var s = "";
+    var l = [];
     folia_annotationlist().forEach(function(annotationtype){
-        s = s + "<option value=\"" + annotationtype + "\">" + folia_label(annotationtype) + "</option>";
+        var foliaelement = foliaelements[folia_elementclass(annotationtype)];
+        if ((foliaelement.properties.primaryelement !== false) && (annotationtype != "t") && (annotationtype != "ph") && (foliaspec.annotationtype.indexOf(foliaelement.properties.annotationtype) != -1)) {
+                l.push("<option value=\"" + annotationtype + "\">" + folia_label(annotationtype) + "</option>");
+        }
     });
+    var s = "";
+    l.sort();
+    l.forEach(function(e){s=s+e;});
     $('#newdeclarationannotationtype').html(s);
 
 
