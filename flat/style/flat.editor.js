@@ -2140,11 +2140,8 @@ function editor_oninit() {
                     $('#wait').hide();
                     editor_error("Received error from document server: " + data.error);
                 } else {
-                    loaddeclarations(data.declarations);
-                    viewer_loadmenus();
+                    location.reload(); //just reload the entire page for now
                     $('#wait').hide();
-                    $('#newdeclaration').hide();
-                    $('#saveversion').show();
                 }
             },
             error: function(req,err,exception) {
