@@ -438,6 +438,46 @@ QUnit.asyncTest("[Higher order] Deleting a feature",function(assert){
     ui_edit('#higherorderfield_' + idx + '_0',"");  //head feature
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Span role edit (respan)",function(assert){
+    testinit("spanrole_respan",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('dependency');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.1.w.12b');
+    ui_click('#spanselector' + idx + '_0');  
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Span role deletion",function(assert){
+    testinit("spanrole_delete",assert);
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('dependency');
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.1.w.12');
+    ui_click('#spanselector' + idx + '_0');  
+    ui_click('#editorsubmit'); 
+});
+QUnit.asyncTest("Adding a new span annotation (dependency) with span roles from scratch",function(assert){
+    testinit("dependency_add",assert);
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_choose('#editoraddablefields',"5");  //5 corresponds to dependency, as long as the ordering doesn't change...
+    ui_click('#editoraddfield'); //click add button
+
+    //fill new field:
+    var idx = editfields-1;
+    ui_choose('#editfield' + idx,"crd"); 
+    //empty fields for the span roles should have been added automatically as they are required, no need to manually add them
+    ui_click('#spanselector' + idx + '_0');  //dep spanrole
+    ui_click('#untitleddoc.p.3.s.15.w.1');
+    ui_click('#spanselector' + idx + '_0');  //dep spanrole
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
+    ui_click('#editorsubmit'); 
+});
+
+
 
 QUnit.asyncTest("Tests completed", function(assert){
     $('#wait').hide();
@@ -639,6 +679,12 @@ function testeval(data) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children[4].class, "testvalue");
     } else if ((testname == "feature_delete")) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 3);
+    } else if ((testname == "spanrole_respan")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 2);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].targets.length, 2);
+    } else if ((testname == "spanrole_delete")) {
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].type, "dep");
     }
     
     console.log("(testeval) (qunit.start)");
