@@ -654,11 +654,12 @@ function testeval(data) {
     } else if (testname == "correction_textmerge") {
         var id = findcorrectionbytext("wegreden");
         if (id) {
-            if (assert_ok(annotations[id + "/new/t/current"], "Corrected annotation exists")) {
-                globalassert.equal(annotations[id + "/new/t/current"].incorrection, id,  "Checking if annotation is in correction");
+            if (assert_ok(annotations[id + "/t/current"], "Corrected annotation exists")) {
+                globalassert.equal(annotations[id + "/t/current"].incorrection, id,  "Checking if annotation is in correction");
             }
-            if (assert_ok(annotations[id], "Correction exists")) {
-                globalassert.equal(annotations[id].class, "uncertain", "Checking correction and its class");
+            var correction_id = annotations[id].incorrection;
+            if (assert_ok(annotations[correction_id], "Correction exists")) {
+                globalassert.equal(annotations[correction_id].class, "uncertain", "Checking correction and its class");
             }
         }
     } else if ((testname == "correction_tokenannotationchange") ) {
