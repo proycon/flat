@@ -657,7 +657,7 @@ function testeval(data) {
             if (assert_ok(annotations[id + "/t/current"], "Corrected annotation exists")) {
                 globalassert.equal(annotations[id + "/t/current"].incorrection, id,  "Checking if annotation is in correction");
             }
-            var correction_id = annotations[id].incorrection;
+            var correction_id = structure[id].incorrection;
             if (assert_ok(annotations[correction_id], "Correction exists")) {
                 globalassert.equal(annotations[correction_id].class, "uncertain", "Checking correction and its class");
             }
