@@ -254,6 +254,17 @@ QUnit.asyncTest("Span change", function(assert){
     ui_click('#editform' + idx + 'direct'); 
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Span and class change", function(assert){
+    testinit("spanclasschange",assert);
+    ui_click('#untitleddoc.p.3.s.9.w.9');
+    var idx = ui_find('entity');
+    ui_choose('#editfield' + idx,"org");
+    ui_click('#spanselector' + idx); 
+    ui_click('#untitleddoc.p.3.s.9.w.7');
+    ui_click('#spanselector' + idx); 
+    ui_click('#editform' + idx + 'direct'); 
+    ui_click('#editorsubmit'); 
+});
 QUnit.asyncTest("Deletion of token annotation", function(assert){
     testinit("tokenannotationdeletion",assert);
     ui_click('#untitleddoc.p.3.s.8.w.4');
@@ -618,10 +629,14 @@ function testeval(data) {
         id = findcorrectionbytext("we");
         testtext('#untitleddoc.p.3.s.13.w.12',"hoorden");
         testtext('#' + id,"we");
-    } else if ((testname == "spanchange") ) {
+    } else if ((testname == "spanchange") || (testname=="spanclasschange") ) {
         globalassert.equal(hasannotation('untitleddoc.p.3.s.9.w.9',"untitleddoc.p.3.s.9.entity.1"), true, "Finding named entity on original word");
         globalassert.equal(hasannotation('untitleddoc.p.3.s.9.w.7',"untitleddoc.p.3.s.9.entity.1"), true, "Finding named entity on new word");
-        globalassert.equal(annotations["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Testing named entity class");
+        if (testname == "spanclasschange") {
+            globalassert.equal(annotations["untitleddoc.p.3.s.9.entity.1"].class, "org", "Testing named entity class");
+        } else {
+            globalassert.equal(annotations["untitleddoc.p.3.s.9.entity.1"].class, "loc", "Testing named entity class");
+        }
     } else if ((testname == "newoverlapspan") || (testname == "correction_newoverlapspan")) {
         globalassert.equal(getannotations( 'untitleddoc.p.3.s.9.w.9','entity')[0].class, "loc", "Finding first entity");
         globalassert.equal(getannotations( 'untitleddoc.p.3.s.9.w.9','entity')[1].class, "org", "Finding second entity");
