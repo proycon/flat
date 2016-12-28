@@ -893,28 +893,32 @@ function renderglobannotations(all) {
                                     //If the previous word is in the same
                                     //span we do not repeat it explicitly
                                     //but draw a line
-                                    var prevwordid = structureelement.previousword;
-                                    if (structure[prevwordid]) {
-                                        forannotations(prevwordid, function(prevannotation){
-                                            if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
-                                                //previous word part of span already
-                                                if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
-                                                    previnspan = true;
+                                    if (structureelement.previousword) {
+                                        var prevwordid = structureelement.previousword;
+                                        if (structure[prevwordid]) {
+                                            forannotations(prevwordid, function(prevannotation){
+                                                if ((prevannotation.class == annotation.class) && (prevannotation.layerparent == annotation.layerparent)) {
+                                                    //previous word part of span already
+                                                    if ((annotation.type != "dependency") || (!partofspanhead(prevannotation, prevwordid))) { //for dependencies we're only interested in dependents
+                                                        previnspan = true;
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
 
                                     //is the next word still part of the span?
-                                    var nextwordid = structureelement.nextword;
-                                    if (structure[nextwordid]) {
-                                        forannotations(nextwordid, function(nextannotation){
-                                            if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
-                                                if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
-                                                    nextinspan = true;
+                                    if (structureelement.nextword) {
+                                        var nextwordid = structureelement.nextword;
+                                        if (structure[nextwordid]) {
+                                            forannotations(nextwordid, function(nextannotation){
+                                                if ((nextannotation.class == annotation.class) && (nextannotation.layerparent == annotation.layerparent)) {
+                                                    if ((annotation.type != "dependency") || (!partofspanhead(nextannotation, nextwordid))) { //for dependencies we're only interested in dependents
+                                                        nextinspan = true;
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
 
                                     if ((previnspan) && (nextinspan)) {
