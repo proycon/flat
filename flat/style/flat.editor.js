@@ -1286,7 +1286,7 @@ function gather_changes() {
         }
 
 
-        if ((!editdata[i].changed) && (JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin)) && (editdata[i].editform != 'new')) {
+        if ((JSON.stringify(editdata[i].targets) != JSON.stringify(editdata[i].targets_begin)) && (editdata[i].editform != 'new')) {
             //detect changes in span, and set the changed flag
             editdata[i].changed = true;
             editdata[i].respan = true;
@@ -1603,7 +1603,7 @@ function build_queries(addtoqueue) {
                         query += "SUBSTITUTE w WITH text \"" + escape_fql_value(editdata[i].text) + "\"";
                     }
                 }
-                if (editdata[i].respan) { //isspan && editdata[i].id && (action == "EDIT")) {
+                if ((editdata[i].respan) && (action != "SUBSTITUTE")) { //isspan && editdata[i].id && (action == "EDIT")) {
                     //we edit a span annotation, edittargets reflects the new span:
                     if (editdata[i].targets.length > 0) {
                         query += " RESPAN ";
@@ -1617,6 +1617,8 @@ function build_queries(addtoqueue) {
                         query += forids;
                     } 
                     returntype = "ancestor-focus";
+                } else if (action == "SUBSTIUTE") {
+                    editdata[i].respan = false;
                 }
 
 
