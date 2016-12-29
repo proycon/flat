@@ -52,11 +52,16 @@ Features
 * Supports FoLiA Set Definitions to display label sets. Sets are not predefined
   in FoLiA and anybody can create their own.
 * Supports Token Annotation and Span Annotation
+* Supports complex span annotations such as dependency relations, syntactic units (constituents), predicates and semantic roles, sentiments, stratements/attribution, observations
 * Simple metadata editor for editing/adding arbitrary metadata to a document.
   Selected metadata fields can be shown in the document index as well.
 * User permission model featuring groups, group namespaces, and assignable permissions
 * File/document management functions (copying, moving, deleting)
 * Allows converter extensions to convert from other formats to FoLiA on upload
+* In-document search (CQL or FQL), advanced searches can be predefined by administrators
+* Morphosyntactic tree visualisation (constituency parses and morphemes)
+* Higher-order annotation: associate features, comments, descriptions with any
+  linguistic annotation
 
 ============================================
 Architecture
