@@ -185,3 +185,23 @@ Extensive history with limitless undo ability, git-based:
     :alt: FLAT screenshot
     :align: center
 
+Advanced search queries in CQL (Corpus Query Language) or FQL (FoLiA Query Language):
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/searchcql.png
+    :alt: FLAT screenshot
+    :align: center
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/search.png
+    :alt: FLAT screenshot
+    :align: center
+
+Tree visualisation of syntax and morphology: 
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/syntree.png
+    :alt: FLAT screenshot
+    :align: center
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/morphtree.png
+    :alt: FLAT screenshot
+    :align: center
+
