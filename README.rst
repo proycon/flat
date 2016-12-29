@@ -54,7 +54,7 @@ Features
 * Supports Token Annotation and Span Annotation
 * Simple metadata editor for editing/adding arbitrary metadata to a document.
   Selected metadata fields can be shown in the document index as well.
-* User permission model featururing groups, group namespaces, and assignable permissions
+* User permission model featuring groups, group namespaces, and assignable permissions
 * File/document management functions (copying, moving, deleting)
 * Allows converter extensions to convert from other formats to FoLiA on upload
 
