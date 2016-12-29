@@ -12,6 +12,21 @@ import json
 import requests
 
 
+REQUIREFOLIADOCSERVE = '0.5'
+
+def checkversion(version):
+    """Checks foliadocserve version, returns 1 if the document is newer than the library, -1 if it is older, 0 if it is equal"""
+    try:
+        for refversion, responseversion in zip([int(x) for x in REQUIREFOLIADOCSERVE.split('.')], [int(x) for x in version.split('.')]):
+            if responseversion > refversion:
+                return 1 #response is newer than library
+            elif responseversion < refversion:
+                return -1 #response is older than library
+        return 0 #versions are equal
+    except ValueError:
+        raise ValueError("Unable to parse version, invalid syntax")
+
+
 def getsid(request):
     if 'X-sessionid' in request.META:
         return request.session.session_key + '_' + request.GET['sid']
@@ -45,7 +60,12 @@ def query(request, query, parsejson=True, **extradata):
     if contents and contents[0] in ('{','['):
         #assume this is json
         if parsejson:
-            return json.loads(contents)
+            parsed = json.loads(contents)
+            if 'version' not in parsed:
+                raise Exception("No version information supplied by foliadocserve, it is likely too old, please upgrade")
+            elif checkversion(parsed['version']) == -1:
+                raise Exception("Foliadocserve version is too old, got " + parsed['version'] + ", expected at " + REQUIREFOLIADOCSERVE + ", please upgrade")
+            return parsed
         else:
             return contents
     elif contents:
