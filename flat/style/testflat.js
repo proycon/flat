@@ -487,6 +487,25 @@ QUnit.asyncTest("Adding a new span annotation (dependency) with span roles from 
     ui_click('#spanselector' + idx + '_1');  //head spanrole
     ui_click('#editorsubmit'); 
 });
+QUnit.asyncTest("Adding a new syntax annotation from scratch",function(assert){
+    testinit("syntax_add",assert);
+    ui_click('#untitleddoc.p.3.s.15.w.1');
+    ui_choose('#editoraddablefields',"6");  //5 corresponds to syntax, as long as the ordering doesn't change...
+    ui_click('#editoraddfield'); //click add button
+
+    //fill new field:
+    var idx = editfields-1;
+    ui_choose('#editfield' + idx,"crd"); 
+    //empty fields for the span roles should have been added automatically as they are required, no need to manually add them
+    ui_click('#spanselector' + idx);  
+    ui_click('#untitleddoc.p.3.s.15.w.2');
+    ui_click('#untitleddoc.p.3.s.15.w.3');
+    ui_click('#untitleddoc.p.3.s.15.w.4');
+    ui_click('#untitleddoc.p.3.s.15.w.5');
+    ui_click('#spanselector' + idx);  
+    ui_choose('#editfield' + idx,"s"); 
+    ui_click('#editorsubmit'); 
+});
 
 
 
