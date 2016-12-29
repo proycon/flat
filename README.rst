@@ -125,6 +125,11 @@ FLAT Documentation can be found in the form of the following three guides:
 * `Administration Guide <http://flat.readthedocs.io/en/latest/administration_guide.html>`_. - Explains how to configure FLAT for your annotation task.
 * `User Guide <http://flat.readthedocs.io/en/latest/user_guide.html>`_. - Explains how to use FLAT.
 
+Moreover, a screencast video has been created to show FLAT in action and
+offeran impression of its features:
+
+* `FLAT Demonstration Video <https://www.youtube.com/watch?v=tYF6grtldVQ>`_.
+
 =============================================
 Screenshots
 =============================================
