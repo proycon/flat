@@ -126,7 +126,7 @@ FLAT Documentation can be found in the form of the following three guides:
 * `User Guide <http://flat.readthedocs.io/en/latest/user_guide.html>`_. - Explains how to use FLAT.
 
 Moreover, a screencast video has been created to show FLAT in action and
-offeran impression of its features:
+offer an impression of its features:
 
 * `FLAT Demonstration Video <https://www.youtube.com/watch?v=tYF6grtldVQ>`_.
 
