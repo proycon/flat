@@ -1,4 +1,4 @@
-pynlpl >= 1.0.7
-foliadocserve >= 0.4.1
+pynlpl >= 1.1.2
+foliadocserve >= 0.5
 Django>=1.8.13
 requests
