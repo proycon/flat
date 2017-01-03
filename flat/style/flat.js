@@ -393,11 +393,18 @@ function loadcontent(perspective, ids, start, end, extracallback) {
     }
     query += " FORMAT flat";
 
+    var url;
+    if (namespace == "pub") {
+        url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+    } else {
+        url = "/" + namespace + "/"+ docid + "/query/";
+    }
+
 
     //Submit to backend
     $.ajax({
         type: 'POST',
-        url: "/" + namespace + "/"+ docid + "/query/",
+        url: url,
         contentType: "application/json",
         //processData: false,
         headers: {'X-sessionid': sid },

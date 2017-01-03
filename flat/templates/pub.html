@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<img id="logo" src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" />
+
+<div class="dialog">
+    <h3>Upload</h3>
+    <p>
+    Here you can upload a new FoLiA document to the editor:
+    </p>
+    <form action="/pub/upload/" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <label>Select file:</label> <input type="file" name="file" /><br/>
+        <label>Configuration:</label> <select name="configuration">
+            {% for confname, conf in configurations.items %}
+            {% if confname == defaultconfiguration %}
+            <option value="{{ confname }}" selected="selected">{{ conf.name }}</option>
+            {% else %}
+            <option value="{{ confname }}">{{ conf.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select></br>
+        <input type="hidden" name="inputformat" value="folia" />
+        <div class="buttoncontainer">
+            <input id="uploadbutton" class="button" type="submit" value="Upload" onclick="$('#wait .msg').html('Uploading document...'); $('#wait').show()" />
+            <button id="cancelupload" class="button">Cancel</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+

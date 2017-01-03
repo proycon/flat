@@ -31,3 +31,14 @@ def poll(request, namespace, docid):
     else:
         return HttpResponseForbidden("Permission denied")
 
+def pub_view(request, configuration, docid):
+    """The initial viewer, does not provide the document content yet"""
+    return initdoc(request, 'pub',docid, 'viewer', 'viewer.html', configuration=configuration)
+
+def pub_poll(request, docid):
+    """The initial viewer, does not provide the document content yet"""
+    try:
+        r = flat.comm.get(request, '/poll/pub/' + docid + '/', False)
+    except URLError:
+        return HttpResponseForbidden("Unable to connect to the document server [viewer/poll]")
+    return HttpResponse(r, content_type='application/json')

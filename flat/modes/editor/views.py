@@ -32,9 +32,20 @@ def view(request, namespace, docid):
         return fatalerror(request,"Permission denied")
 
 
+def pub_view(request, docid, configuration):
+    """The initial view, does not provide the document content yet"""
+    if 'autodeclare' in settings.CONFIGURATIONS[configuration]:
+        for annotationtype, set in settings.CONFIGURATIONS['configuration']['autodeclare']:
+            try:
+                r = flat.comm.query(request, "USE pub/" + docid + " DECLARE " + annotationtype + " OF " + set)
+            except Exception as e:
+                return fatalerror(request,e)
+
+    return initdoc(request, 'pub',docid, 'editor', 'editor.html')
+
 @login_required
 def history(request,namespace, docid):
-    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
+    if namespace == 'pub' or flat.users.models.hasreadpermission(request.user.username, namespace, request):
         try:
             if hasattr(request, 'body'):
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
@@ -48,7 +59,7 @@ def history(request,namespace, docid):
 
 @login_required
 def revert(request,namespace, docid, commithash):
-    if flat.users.models.haswritepermission(request.user.username, namespace, request):
+    if namespace == 'pub' or flat.users.models.haswritepermission(request.user.username, namespace, request):
         try:
             if hasattr(request, 'body'):
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/?commithash=' + commithash,False)
@@ -62,7 +73,7 @@ def revert(request,namespace, docid, commithash):
 
 @login_required
 def save(request,namespace, docid):
-    if flat.users.models.haswritepermission(request.user.username, namespace, request):
+    if namespace == 'pub' or flat.users.models.haswritepermission(request.user.username, namespace, request):
         if 'message' in request.GET:
             message = request.GET['message']
         else:

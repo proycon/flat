@@ -19,6 +19,7 @@ urlpatterns = [
     # Examples:
     url(r'^$', flat.views.index, name='index'),
     url(r'^index/?$', flat.views.index, name='index'),
+    url(r'^pub/?$', flat.views.pub, name='pub'),
     url(r'^index/(?P<namespace>[\w\d\-_\./@]+)/?$', flat.views.index, name='index'),
     url(r'^login/?$', flat.views.login, name='login'),
     url(r'^logout/?$', flat.views.logout, name='logout'),
@@ -26,11 +27,15 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^register/?$', flat.views.register, name='register'),
+    url(r'^download/pub/(?P<docid>[\w\d\-_\.]+)\.folia\.xml/?$', flat.views.pub_download, name='download'),
+    url(r'^download/pub/(?P<docid>[\w\d\-_\.]+)/?$', flat.views.pub_download, name='download'),
     url(r'^download/(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)\.folia\.xml/?$', flat.views.download, name='download'),
     url(r'^download/(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/?$', flat.views.download, name='download'),
+    url(r'^pub/upload/?$', flat.views.pub_upload, name='pub_upload'),
     url(r'^upload/?$', flat.views.upload, name='upload'),
     url(r'^filemanagement/?$', flat.views.filemanagement, name='filemanagement'),
     url(r'^addnamespace/?$', flat.views.addnamespace, name='addnamespace'),
+    url(r'^pub/(?P<configuration>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.pub_query, name='query'), #generic query function
     url(r'^(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.query, name='query'), #generic query function
     # url(r'^flat/', include('flat.foo.urls')),
 

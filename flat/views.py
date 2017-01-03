@@ -23,29 +23,33 @@ if sys.version < '3':
 else:
     from urllib.error import URLError, HTTPError
 
-def getcontext(request,namespace,docid, doc, mode):
-    if 'configuration' not in request.session:
-        raise Exception("Session has been logged out")
+def getcontext(request,namespace,docid, doc, mode, configuration = None):
+    if configuration is None:
+        if 'configuration' not in request.session:
+            raise Exception("Session has been logged out")
+        else:
+            configuration = request.session['configuration']
     return {
-            'configuration': settings.CONFIGURATIONS[request.session['configuration']],
-            'configuration_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]),
+            'configuration_id': configuration,
+            'configuration': settings.CONFIGURATIONS[configuration],
+            'configuration_json': json.dumps(settings.CONFIGURATIONS[configuration]),
             'namespace': namespace,
             'testnum': request.GET.get('testNumber',0),
             'docid': docid,
             'mode': mode,
-            'modes': settings.CONFIGURATIONS[request.session['configuration']]['modes'] ,
-            'modes_json': json.dumps([x[0] for x in settings.CONFIGURATIONS[request.session['configuration']]['modes'] ]),
-            'perspectives_json': json.dumps(settings.CONFIGURATIONS[request.session['configuration']]['perspectives']),
+            'modes': settings.CONFIGURATIONS[configuration]['modes'] ,
+            'modes_json': json.dumps([x[0] for x in settings.CONFIGURATIONS[configuration]['modes'] ]),
+            'perspectives_json': json.dumps(settings.CONFIGURATIONS[configuration]['perspectives']),
             'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
             'metadata': json.dumps(doc['metadata']) if 'metadata' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
             'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",
             'rtl': True if 'rtl' in doc and doc['rtl'] else False,
-            'loggedin': request.user.is_authenticated(),
-            'isadmin': request.user.is_staff,
+            'loggedin': request.user.is_authenticated() if request.user else False,
+            'isadmin': request.user.is_staff if request.user else False,
             'version': settings.VERSION,
-            'username': request.user.username,
+            'username': request.user.username if namespace != "pub" else "anonymous",
             'waitmessage': "Loading document on server and initialising web-environment...",
     }
 
@@ -98,34 +102,40 @@ def docserveerror(e, d=None):
     return d
 
 
-def initdoc(request, namespace, docid, mode, template, context=None):
+def initdoc(request, namespace, docid, mode, template, context=None, configuration=None):
     """Initialise a document (not invoked directly)"""
     perspective = request.GET.get('perspective','document')
     if context is None: context = {}
+    if 'configuration' in request.session:
+        configuration = request.session['configuration']
+    elif configuration is None:
+        return fatalerror(request, "No configuration specified")
+    if configuration not in settings.CONFIGURATIONS:
+        return fatalerror(request, "Specified configuration does not exist")
     flatargs = {
         'setdefinitions': True,
         'declarations': True,
         'metadata': True,
         'toc': True,
-        'slices': request.GET.get('slices',settings.CONFIGURATIONS[request.session['configuration']].get('slices','p:25,s:100')), #overriden either by configuration or by user
+        'slices': request.GET.get('slices',settings.CONFIGURATIONS[configuration].get('slices','p:25,s:100')), #overriden either by configuration or by user
         'customslicesize': 0, #disabled for initial probe
         'textclasses': True,
     }
     error = False
     try:
         doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " PROBE", **flatargs) #retrieves only the meta information, not document content
-        context.update(getcontext(request,namespace,docid, doc, mode))
+        context.update(getcontext(request,namespace,docid, doc, mode, configuration))
     except Exception as e:
         context.update(docserveerror(e))
         error = True
 
     if not error:
-        dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']
+        dorequiredeclaration = 'requiredeclaration' in settings.CONFIGURATIONS[configuration] and settings.CONFIGURATIONS[configuration]['requiredeclaration']
         if dorequiredeclaration:
             if not 'declarations' in doc:
                 return fatalerror(request, "Refusing to load document, missing expected declarations, none declared")
             declarations = doc['declarations']
-            for annotationtype, annotationset in settings.CONFIGURATIONS[request.session['configuration']]['requiredeclaration']:
+            for annotationtype, annotationset in settings.CONFIGURATIONS[configuration]['requiredeclaration']:
                 found = False
                 for d in declarations:
                     if annotationtype == d['annotationtype'] and (not annotationset or annotationset == d['set']):
@@ -137,10 +147,10 @@ def initdoc(request, namespace, docid, mode, template, context=None):
                     else:
                         return fatalerror(request, "Refusing to load document, missing expected declaration for annotation type " + annotationtype)
 
-        dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[request.session['configuration']] and settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']
+        dometadataindex = 'metadataindex' in settings.CONFIGURATIONS[configuration] and settings.CONFIGURATIONS[configuration]['metadataindex']
         if dometadataindex:
             metadata = json.loads(context['metadata'])
-            for metakey in settings.CONFIGURATIONS[request.session['configuration']]['metadataindex']:
+            for metakey in settings.CONFIGURATIONS[configuration]['metadataindex']:
                 if metakey in metadata:
                     MetadataIndex.objects.update_or_create(namespace=namespace,docid=docid, key=metakey,defaults={'value':metadata[metakey]})
     response = render(request, template, context)
@@ -148,65 +158,75 @@ def initdoc(request, namespace, docid, mode, template, context=None):
         response.status_code = 500
     return response
 
+def query_helper(request,namespace, docid, configuration=None):
+    """Does the actual query, called by query() or pub_query(), not directly"""
+    flatargs = {
+        'customslicesize': request.POST.get('customslicesize',settings.CONFIGURATIONS[configuration].get('customslicesize','50')), #for pagination of search results
+    }
+    #stupid compatibility stuff
+    if sys.version < '3':
+        if hasattr(request, 'body'):
+            data = json.loads(unicode(request.body,'utf-8')) #pylint: disable=undefined-variable
+        else: #older django
+            data = json.loads(unicode(request.raw_post_data,'utf-8')) #pylint: disable=undefined-variable
+    else:
+        if hasattr(request, 'body'):
+            data = json.loads(str(request.body,'utf-8'))
+        else: #older django
+            data = json.loads(str(request.raw_post_data,'utf-8'))
+
+    if not data['queries']:
+        return HttpResponseForbidden("No queries to run")
+
+    for query in data['queries']:
+        #get document selector and check it doesn't violate the namespace
+        docselector, query = getdocumentselector(query)
+        if not docselector:
+            return HttpResponseForbidden("Query does not start with a valid document selector (USE keyword)!")
+        elif docselector[0] != namespace:
+            return HttpResponseForbidden("Query would affect a different namespace than your current one, forbidden!")
+
+        if query != "GET" and query[:4] != "CQL " and query[:4] != "META":
+            #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
+            try:
+                query = fql.Query(query)
+            except fql.SyntaxError as e:
+                return HttpResponseForbidden("FQL Syntax Error: " + str(e))
+            needwritepermission = query.declarations or query.action and query.action.action != "SELECT"
+        else:
+            needwritepermission = False
+
+    if needwritepermission and configuration != "pub" and not flat.users.models.haswritepermission(request.user.username, namespace, request):
+        return HttpResponseForbidden("Permission denied, no write access")
+
+    query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
+    try:
+        d = flat.comm.query(request, query,**flatargs)
+    except Exception as e:
+        if sys.version < '3':
+            errmsg = docserveerror(e)['fatalerror_text']
+            return HttpResponseForbidden("FoLiA Document Server error: ".encode('utf-8') + errmsg.encode('utf-8'))
+        else:
+            return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
+    return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
+
+
+
 @login_required
 def query(request,namespace, docid):
     if request.method != 'POST':
         return HttpResponseForbidden("POST method required for " + namespace + "/" + docid + "/query")
 
-    flatargs = {
-        'customslicesize': request.POST.get('customslicesize',settings.CONFIGURATIONS[request.session['configuration']].get('customslicesize','50')), #for pagination of search results
-    }
-
     if flat.users.models.hasreadpermission(request.user.username, namespace, request):
-
-        #stupid compatibility stuff
-        if sys.version < '3':
-            if hasattr(request, 'body'):
-                data = json.loads(unicode(request.body,'utf-8')) #pylint: disable=undefined-variable
-            else: #older django
-                data = json.loads(unicode(request.raw_post_data,'utf-8')) #pylint: disable=undefined-variable
-        else:
-            if hasattr(request, 'body'):
-                data = json.loads(str(request.body,'utf-8'))
-            else: #older django
-                data = json.loads(str(request.raw_post_data,'utf-8'))
-
-        if not data['queries']:
-            return HttpResponseForbidden("No queries to run")
-
-        for query in data['queries']:
-            #get document selector and check it doesn't violate the namespace
-            docselector, query = getdocumentselector(query)
-            if not docselector:
-                return HttpResponseForbidden("Query does not start with a valid document selector (USE keyword)!")
-            elif docselector[0] != namespace:
-                return HttpResponseForbidden("Query would affect a different namespace than your current one, forbidden!")
-
-            if query != "GET" and query[:4] != "CQL " and query[:4] != "META":
-                #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
-                try:
-                    query = fql.Query(query)
-                except fql.SyntaxError as e:
-                    return HttpResponseForbidden("FQL Syntax Error: " + str(e))
-                needwritepermission = query.declarations or query.action and query.action.action != "SELECT"
-            else:
-                needwritepermission = False
-
-        if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace, request):
-            return HttpResponseForbidden("Permission denied, no write access")
-
-        query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
-        try:
-            d = flat.comm.query(request, query,**flatargs)
-        except Exception as e:
-            if sys.version < '3':
-                errmsg = docserveerror(e)['fatalerror_text']
-                return HttpResponseForbidden("FoLiA Document Server error: ".encode('utf-8') + errmsg.encode('utf-8'))
-            else:
-                return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
-        return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
+        return query_helper(request, namespace,docid, request.session['configuration'])
     else:
         return HttpResponseForbidden("Permission denied, no read access")
+
+def pub_query(request,configuration, docid):
+    if request.method != 'POST':
+        return HttpResponseForbidden("POST method required for pub/" + docid + "/query")
+
+    return query_helper(request, 'pub',docid, configuration)
 
 def login(request):
     if 'username' in request.POST and 'password' in request.POST:
@@ -344,9 +364,19 @@ def index(request, namespace=""):
 
     return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'recursivedirs': recursivedirs, 'subdirs': subdirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'allowcopy': request.user.has_perm('auth.allowcopy'), 'allowdelete': request.user.has_perm('auth.allowdelete'),'version': settings.VERSION})
 
+def pub(request):
+    if hasattr(settings,'ALLOWPUBLICUPLOAD') and settings.ALLOWPUBLICUPLOAD:
+        return render(request, 'pub.html', {'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username,"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION})
+    else:
+        return fatalerror(request, "Public anonymous write permission denied",403)
+
 @login_required
 def download(request, namespace, docid):
     data = flat.comm.query(request, "USE " + namespace + "/" + docid + " GET",False)
+    return HttpResponse(data, content_type='text/xml')
+
+def pub_download(request, docid):
+    data = flat.comm.query(request, "USE pub/" + docid + " GET",False)
     return HttpResponse(data, content_type='text/xml')
 
 @login_required
@@ -403,76 +433,88 @@ def filemanagement(request):
     else:
         return fatalerror(request, "Method denied",403)
 
+
+def upload_helper(request, namespace):
+    if request.POST['inputformat'] != 'folia':
+        #we need to convert the input
+        converter = None
+        for cv in get_converters(request):
+            if request.POST['inputformat'] == cv.id:
+                converter = cv
+        if not converter:
+            return fatalerror(request, "Converter not found or specified",404)
+
+        try:
+            parameters = converter.parse_parameters(request, 'parameters')
+        except:
+            return fatalerror(request, "Invalid syntax for conversion parameters",403)
+
+        if 'TMPDIR' in os.environ:
+            tmpdir = os.environ['TMPDIR']
+        else:
+            tmpdir = '/tmp'
+
+        tmpinfile = os.path.join(tmpdir, request.FILES['file'].name)
+        with open(tmpinfile,'wb') as f_tmp:
+            for chunk in request.FILES['file'].chunks():
+                f_tmp.write(chunk)
+
+        tmpoutfile = converter.get_output_name(os.path.join(tmpdir, request.FILES['file'].name))
+        success, msg = converter.convert(tmpinfile, tmpoutfile, **parameters)
+        if not success:
+            return fatalerror(request, "Input conversion failed: " + msg,403)
+
+        #removing temporary input file
+        os.unlink(tmpinfile)
+
+        #reading temporary output file
+        f_folia =  open(tmpoutfile, 'rb')
+    else:
+        f_folia = request.FILES['file']
+
+    #if sys.version < '3':
+    #    data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
+    #else:
+    #    data = str(request.FILES['file'].read(),'utf-8')
+    failed = False
+    try:
+        response = flat.comm.postxml(request,"upload/" + namespace , f_folia)
+    except Exception as e:
+        failed = True
+        response = fatalerror(request,e)
+
+    if request.POST['inputformat'] != 'folia':
+        f_folia.close()
+        #removing temporary output file after conversion
+        os.unlink(tmpoutfile)
+
+    if failed:
+        return response
+    elif 'error' in response and response['error']:
+        return fatalerror(request, response['error'],403)
+    else:
+        docid = response['docid']
+        return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
+
 @login_required
 def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(request.user.username, namespace, request) and 'file' in request.FILES:
-            if request.POST['inputformat'] != 'folia':
-                #we need to convert the input
-                converter = None
-                for cv in get_converters(request):
-                    if request.POST['inputformat'] == cv.id:
-                        converter = cv
-                if not converter:
-                    return fatalerror(request, "Converter not found or specified",404)
-
-                try:
-                    parameters = converter.parse_parameters(request, 'parameters')
-                except:
-                    return fatalerror(request, "Invalid syntax for conversion parameters",403)
-
-                if 'TMPDIR' in os.environ:
-                    tmpdir = os.environ['TMPDIR']
-                else:
-                    tmpdir = '/tmp'
-
-                tmpinfile = os.path.join(tmpdir, request.FILES['file'].name)
-                with open(tmpinfile,'wb') as f_tmp:
-                    for chunk in request.FILES['file'].chunks():
-                        f_tmp.write(chunk)
-
-                tmpoutfile = converter.get_output_name(os.path.join(tmpdir, request.FILES['file'].name))
-                success, msg = converter.convert(tmpinfile, tmpoutfile, **parameters)
-                if not success:
-                    return fatalerror(request, "Input conversion failed: " + msg,403)
-
-                #removing temporary input file
-                os.unlink(tmpinfile)
-
-                #reading temporary output file
-                f_folia =  open(tmpoutfile, 'rb')
-            else:
-                f_folia = request.FILES['file']
-
-            #if sys.version < '3':
-            #    data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
-            #else:
-            #    data = str(request.FILES['file'].read(),'utf-8')
-            failed = False
-            try:
-                response = flat.comm.postxml(request,"upload/" + namespace , f_folia)
-            except Exception as e:
-                failed = True
-                response = fatalerror(request,e)
-
-            if request.POST['inputformat'] != 'folia':
-                f_folia.close()
-                #removing temporary output file after conversion
-                os.unlink(tmpoutfile)
-
-            if failed:
-                return response
-            elif 'error' in response and response['error']:
-                return fatalerror(request, response['error'],403)
-            else:
-                docid = response['docid']
-                return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
+            return upload_helper(request, namespace)
         else:
             return fatalerror(request, "Write permission denied",403)
     else:
         return fatalerror(request, "Method denied",403)
 
+def pub_upload(request):
+    if request.method == 'POST':
+        if hasattr(settings,'ALLOWPUBLICUPLOAD') and settings.ALLOWPUBLICUPLOAD:
+            return upload_helper(request, 'pub')
+        else:
+            return fatalerror(request, "Public anonymous write permission denied",403)
+    else:
+        return fatalerror(request, "Method denied",403)
 
 @login_required
 def addnamespace(request):

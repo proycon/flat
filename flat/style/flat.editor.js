@@ -1882,11 +1882,18 @@ function editor_submit(addtoqueue) {
     $('#wait span.msg').val("Submitting edits");
     $('#wait').show();
 
+    var url;
+    if (namespace == "pub") {
+        url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+    } else {
+        url = "/" + namespace + "/"+ docid + "/query/";
+    }
+
     if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission
         //submit queries
         $.ajax({
             type: 'POST',
-            url: "/" + namespace + "/"+ docid + "/query/",
+            url: url,
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
@@ -1961,9 +1968,16 @@ function console_submit(savefunction) {
     $('#wait span.msg').val("Executing query and obtaining results");
     $('#wait').show();
 
+    var url;
+    if (namespace == "pub") {
+        url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+    } else {
+        url = "/" + namespace + "/"+ docid + "/query/";
+    }
+
     $.ajax({
         type: 'POST',
-        url: "/" + namespace + "/"+ docid + "/query/",
+        url: url,
         contentType: "application/json",
         //processData: false,
         headers: {'X-sessionid': sid },
@@ -2128,11 +2142,17 @@ function editor_oninit() {
 
     $('#newdeclarationsubmit').click(function(){
         $('#wait').show();
+        var url;
+        if (namespace == "pub") {
+            url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+        } else {
+            url = "/" + namespace + "/"+ docid + "/query/";
+        }
         queries = [];
         queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());
         $.ajax({
             type: 'POST',
-            url: "/" + namespace + "/"+ docid + "/query/",
+            url: url,
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },

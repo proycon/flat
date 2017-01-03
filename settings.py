@@ -93,6 +93,8 @@ DEFAULTMODE = 'editor'
 # will be selected by default:
 DEFAULTCONFIGURATION = 'full'
 
+# Allow public anonymous uploads without any authentication?
+ALLOWPUBLICUPLOAD = False
 
 #These are the configurations, add new ones by copying the 'full' configuration and adapting it to your needs.
 CONFIGURATIONS = {
