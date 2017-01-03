@@ -49,11 +49,16 @@ Features
 * Supports FoLiA Set Definitions to display label sets. Sets are not predefined
   in FoLiA and anybody can create their own.
 * Supports Token Annotation and Span Annotation
+* Supports complex span annotations such as dependency relations, syntactic units (constituents), predicates and semantic roles, sentiments, stratements/attribution, observations
 * Simple metadata editor for editing/adding arbitrary metadata to a document.
   Selected metadata fields can be shown in the document index as well.
-* User permission model featururing groups, group namespaces, and assignable permissions
+* User permission model featuring groups, group namespaces, and assignable permissions
 * File/document management functions (copying, moving, deleting)
 * Allows converter extensions to convert from other formats to FoLiA on upload
+* In-document search (CQL or FQL), advanced searches can be predefined by administrators
+* Morphosyntactic tree visualisation (constituency parses and morphemes)
+* Higher-order annotation: associate features, comments, descriptions with any
+  linguistic annotation
 
 ============================================
 Architecture
@@ -117,6 +122,11 @@ FLAT Documentation can be found in the form of the following three guides:
 * `Administration Guide <http://flat.readthedocs.io/en/latest/administration_guide.html>`_. - Explains how to configure FLAT for your annotation task.
 * `User Guide <http://flat.readthedocs.io/en/latest/user_guide.html>`_. - Explains how to use FLAT.
 
+Moreover, a screencast video has been created to show FLAT in action and
+offer an impression of its features:
+
+* `FLAT Demonstration Video <https://www.youtube.com/watch?v=tYF6grtldVQ>`_.
+
 =============================================
 Screenshots
 =============================================
@@ -174,6 +184,26 @@ Proper right-to-left support for languages such as Arabic, Farsi and Hebrew.
 Extensive history with limitless undo ability, git-based:
 
 .. image:: https://raw.github.com/proycon/flat/master/docs/history.png
+    :alt: FLAT screenshot
+    :align: center
+
+Advanced search queries in CQL (Corpus Query Language) or FQL (FoLiA Query Language):
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/searchcql.png
+    :alt: FLAT screenshot
+    :align: center
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/search.png
+    :alt: FLAT screenshot
+    :align: center
+
+Tree visualisation of syntax and morphology: 
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/syntree.png
+    :alt: FLAT screenshot
+    :align: center
+
+.. image:: https://raw.github.com/proycon/flat/master/docs/morphtree.png
     :alt: FLAT screenshot
     :align: center
 

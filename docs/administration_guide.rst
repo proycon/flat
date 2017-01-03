@@ -117,6 +117,8 @@ We will discuss the individual configuration options here:
 * ``metadataindex`` -- List of metadata keys that will be shown in the document index (there is only space for a limited few). 
 * ``metadataconstraints``  -- Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example: ``'metadataconstraints': {'language': ['fr','en,'es']}``
 * ``converters`` -- List of converters that can convert from arbitrary formats to FoLiA XML on document upload. See the section on converters further below for syntax.
+* ``searches`` -- List of pre-defined search queries, each will get their own
+  entry in the tools & options menu. Example: ``'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities"}]``
 
 =====================
 User permissions
