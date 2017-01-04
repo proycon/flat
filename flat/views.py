@@ -435,7 +435,7 @@ def filemanagement(request):
 
 
 def upload_helper(request, namespace):
-    if request.POST['inputformat'] != 'folia':
+    if 'inputformat' in request.POST and request.POST['inputformat'] != 'folia':
         #we need to convert the input
         converter = None
         for cv in get_converters(request):
@@ -483,7 +483,7 @@ def upload_helper(request, namespace):
         failed = True
         response = fatalerror(request,e)
 
-    if request.POST['inputformat'] != 'folia':
+    if 'inputformat' in request.POST and request.POST['inputformat'] != 'folia':
         f_folia.close()
         #removing temporary output file after conversion
         os.unlink(tmpoutfile)
