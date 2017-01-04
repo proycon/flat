@@ -7,6 +7,7 @@ from collections import defaultdict
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt 
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpRequest
 import django.contrib.auth
 from django.conf import settings
@@ -507,6 +508,8 @@ def upload(request):
     else:
         return fatalerror(request, "Method denied",403)
 
+
+@csrf_exempt
 def pub_upload(request):
     if request.method == 'POST':
         if hasattr(settings,'ALLOWPUBLICUPLOAD') and settings.ALLOWPUBLICUPLOAD:
