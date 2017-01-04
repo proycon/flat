@@ -435,7 +435,16 @@ def filemanagement(request):
         return fatalerror(request, "Method denied",403)
 
 
-def upload_helper(request, namespace):
+def upload_helper(request, namespace, configuration=None, mode=None):
+    if not mode:
+        mode = settings.DEFAULTMODE
+    if not configuration:
+        configuration = settings.DEFAULTCONFIGURATION
+    if mode not in dict(settings.MODES):
+        return fatalerror(request, "Invalid mode",403)
+    if configuration not in settings.CONFIGURATIONS:
+        return fatalerror(request, "Invalid configuration",403)
+
     if 'inputformat' in request.POST and request.POST['inputformat'] != 'folia':
         #we need to convert the input
         converter = None
@@ -495,7 +504,10 @@ def upload_helper(request, namespace):
         return fatalerror(request, response['error'],403)
     else:
         docid = response['docid']
-        return HttpResponseRedirect("/" + settings.DEFAULTMODE + "/" + namespace + "/" + docid  )
+        if namespace == "pub":
+            return HttpResponseRedirect("/" + mode + "/pub/" + configuration + "/" + docid  )
+        else:
+            return HttpResponseRedirect("/" + mode + "/" + namespace + "/" + docid  )
 
 @login_required
 def upload(request):
@@ -513,7 +525,15 @@ def upload(request):
 def pub_upload(request):
     if request.method == 'POST':
         if hasattr(settings,'ALLOWPUBLICUPLOAD') and settings.ALLOWPUBLICUPLOAD:
-            return upload_helper(request, 'pub')
+            if 'configuration' in request.POST:
+                configuration = request.POST['configuration']
+            else:
+                configuration = settings.DEFAULTCONFIGURATION
+            if 'mode' in request.POST:
+                mode = request.POST['mode']
+            else:
+                mode = settings.DEFAULTMODE
+            return upload_helper(request, 'pub', configuration, mode)
         else:
             return fatalerror(request, "Public anonymous write permission denied",403)
     else:
