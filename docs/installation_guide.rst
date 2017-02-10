@@ -44,7 +44,7 @@ of the above steps:
 issues, you are missing one or more global dependencies. Make to 
 install the following through your distribution's package manager::
 
-    $ apt-get install libxml2 libxml2-dev libxslt1.1-dev libxslt1.
+    $ apt-get install libxml2 libxml2-dev libxslt1.1-dev libxslt1
 
 Then run ``pip install FoLiA-Linguistic-Annotation-Tool`` again. Note that the
 above instruction is geared towards Debian/Ubuntu systems, look up the
