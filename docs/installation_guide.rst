@@ -40,6 +40,18 @@ of the above steps:
 * pynlpl (https://github.com/proycon/pynlpl) (contains the FoLiA and FQL library)
 * django (https://www.djangoproject.com)
 
+*Troubleshooting*: If the pip installation procedure fails because of libxml2
+issues, you are missing one or more global dependencies. Make to 
+install the following through your distribution's package manager::
+
+    $ apt-get install libxml2 libxml2-dev libxslt1.1-dev libxslt1.
+
+Then run ``pip install FoLiA-Linguistic-Annotation-Tool`` again. Note that the
+above instruction is geared towards Debian/Ubuntu systems, look up the
+corresponding package names and invoke your distribution's package manager if
+you are on another system.
+
+
 ------------
 Upgrade
 ------------
