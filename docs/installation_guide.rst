@@ -81,11 +81,11 @@ FoLiA Document Server (``foliadocserve``) after each upgrade.
 FLAT Configuration
 ---------------------------
 
-Copy the ``settings.py`` that comes with FLAT (or grab it from
-https://github.com/proycon/flat/blob/master/settings.py) to some custom
-location, edit it and add a configuration for your system. The file is heavily
-commented to guide you along with the configuration. It is here where you
-specify what your users will see and what function are enabled..
+Download the ``settings.py`` from
+https://raw.githubusercontent.com/proycon/flat/master/settings.py to some
+custom location, edit it and add a configuration for your system. The file is
+heavily commented to guide you along with the configuration. It is here where
+you specify what your users will see and what function are enabled..
 
 Further documentation on configuration FLAT, after completing the installation
 and configuration described in the remainder of this section, can be found in

@@ -19,7 +19,8 @@ Configuration of FLAT is done in the typical unix fashion by editing a
 configuration file, there is no web interface for this. For FLAT
 ``settings.py`` (or however you renamed) fulfills this role. Making it a
 centralized place for all settings. The file is heavily commented to guide you
-along.
+along. The template is obtainable from
+https://raw.githubusercontent.com/proycon/flat/master/settings.py .
 
 Although ``settings.py`` is a Python script, no Python knowledge is necessary.
 It may help some to know that, the pythonic configuration syntax is also very
