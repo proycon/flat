@@ -124,7 +124,7 @@ ul#doclist,ul#dirlist {
     color: black;
     min-height: 50px;
     list-style: none;
-    clear: both; 
+    clear: both;
 }
 ul#dirlist>li {
     font-weight: bold;
@@ -173,6 +173,8 @@ a:hover {
     padding: 5px;
     padding-left: 10px;
     padding-right: 10px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 #topbar nav li li {
     display: inline-block;
@@ -266,7 +268,7 @@ span.helptext {
 }
 #aborted {
     display: none;
-    margin-top: -100px; 
+    margin-top: -100px;
 }
 #aborted, #fatalerror {
     width: 50%;
@@ -321,7 +323,7 @@ div#leftpane .title {
     padding: 2px;
     margin: 5px;
     color: black;
-    clear: both; 
+    clear: both;
     font-size: 80%;
     padding-left: 30px;
     padding-bottom: 30px;
