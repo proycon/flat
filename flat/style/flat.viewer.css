@@ -22,13 +22,13 @@ span.ab>span, span.ab>span.abc>span { /*items/rows in annotation box*/
     display: block;
     margin-right: 4px;
 }
-span.ab span.pos{ 
+span.ab span.pos{
     color: #5c6280;
 }
-span.ab span.lemma{ 
+span.ab span.lemma{
     color: #7a805c;
 }
-span.ab span.su{ 
+span.ab span.su{
     color: #528ed2;
 }
 span.ab span.dependency {
@@ -154,9 +154,10 @@ div#info {
 }
 div#info table {
     width: 100%;
+    table-layout:fixed;
 }
 div#info th {
-    width: 39%;
+    width: 50%;
     font-weight: bold;
     vertical-align: top;
 }
@@ -167,10 +168,13 @@ div#info th span.setname {
     font-weight: normal;
     font-size: 8pt;
     padding-left: 10px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 div#info td {
-    width: 59%;
+    width: 49%;
     font-style: italic;
+    text-align: right;
 }
 .class {
     color: #3323cd;
@@ -253,7 +257,7 @@ div#search{
     display: none;
     width: 520px;
     padding: 10px;
-    background: #cdcdcd; 
+    background: #cdcdcd;
     color: #333;
     border: #30677c 1px solid;
     border-radius: 15px;
@@ -317,7 +321,7 @@ div#treeview, div#viewer {
     position: absolute;
     display: none;
     padding: 10px;
-    background: #cdcdcd; 
+    background: #cdcdcd;
     color: #333;
     border: #30677c 1px solid;
     border-radius: 15px;
