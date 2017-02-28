@@ -14,7 +14,7 @@ FLAT runs on Python 3 (the document server requires Python 3, the rest can
 also work on Python 2). We recommend installation in a Python *virtualenv* with
 Python 3, create one as follows::
 
-    $ virtualenv --python=python3 env 
+    $ virtualenv --python=python3 env
 
 Activate the virtual environment as follows (you will need to do this every
 time you want to access the virtual environment)::
@@ -32,7 +32,7 @@ Or alternatively from the cloned git repository::
 
 If you are the system administrator and opt for a global installation instead
 of using a virtualenv, then just add ``sudo`` on most Linux distributions.
- 
+
 The following dependencies will be pulled in automatically if you follow either
 of the above steps:
 
@@ -41,7 +41,7 @@ of the above steps:
 * django (https://www.djangoproject.com)
 
 *Troubleshooting*: If the pip installation procedure fails because of libxml2
-issues, you are missing one or more global dependencies. Make to 
+issues, you are missing one or more global dependencies. Make to
 install the following through your distribution's package manager::
 
     $ apt-get install libxml2 libxml2-dev libxslt1.1-dev libxslt1
@@ -56,7 +56,8 @@ you are on another system.
 Upgrade
 ------------
 
-To upgrade your existing instalation of flat to the latest version, run::
+To upgrade your existing instalation of flat to the latest version, run the
+following from within your virtual environment::
 
     $ pip install -U FoLiA-Linguistic-Annotation-Tool
 
@@ -121,7 +122,7 @@ required component that needs not necessarily be on the same host. Your copy of
 ``settings.py`` should point to the host and port where FLAT can reach the
 document server, start it as follows::
 
-    $ foliadocserve -d /path/to/document/root -p 8080 --git 
+    $ foliadocserve -d /path/to/document/root -p 8080 --git
 
 The document path will be a directory that will contain all FoLiA documents.
 Create a root directory and ensure the user the foliadocserve is running under has
@@ -192,7 +193,7 @@ directive. Create a file ``flat`` in ``/etc/apache2/sites-available/`` (or simil
         ServerName flat.yourdomain.org
 
         WSGIScriptAlias / /path/to/your_copy_of_template.wsgi
-        Alias /static/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/ 
+        Alias /static/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/
         Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
         <Directory /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/>
           Options All
