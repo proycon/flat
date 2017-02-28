@@ -463,9 +463,22 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 #Remove this when done configuring:
 raise Exception("settings.py hasn't been configured yet!!")
 
+
 # Now you can start FLAT as follows:
 
 # $ export PYTHONPATH=/your/settings/path/
-# $ django-admin runserver --settings settings
+# $ export DJANGO_SETTINGS_MODULE=settings
+# $ django-admin runserver
 
-# Don't forget to start the document server too
+# But before the first time you run you will want to run the migrations and populate the
+# database:
+
+# $ export PYTHONPATH=/your/settings/path/
+# $ export DJANGO_SETTINGS_MODULE=settings
+# $ django-admin makemigrations
+# $ django-admin migrate --run-syncdb
+# $ django-admin createsuperuser
+
+# In any case, don't forget to start the document server too:
+
+# $ foliadocserve -d /path/to/document/root -p 8080 --git
