@@ -12,7 +12,7 @@ import json
 import requests
 
 
-REQUIREFOLIADOCSERVE = '0.5'
+REQUIREFOLIADOCSERVE = '0.6'
 
 def checkversion(version):
     """Checks foliadocserve version, returns 1 if the document is newer than the library, -1 if it is older, 0 if it is equal"""
@@ -28,10 +28,15 @@ def checkversion(version):
 
 
 def getsid(request):
-    if 'X-sessionid' in request.META:
-        return request.session.session_key + '_' + request.GET['sid']
+    #the session ID consist of a FLAT session key, an underscore, and a foliadocserve session id
+    if 'HTTP_X_SESSIONID' in request.META:
+        return request.META['HTTP_X_SESSIONID'] #accesses X-sessionid header
+    elif 'sid' in request.POST:
+        return request.POST['sid']
+    elif 'sid' in request.GET:
+        return request.GET['sid']
     else:
-        return request.session.session_key + '_NOSID'
+        return 'NOSID'
 
 def setsid(request, sid):
     request.add_header('X-sessionid', sid)
