@@ -329,9 +329,9 @@ function renderfeaturefields(set, subset, cls, index, ho_index) {
     var s = "";
 
     //subset field
-    if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets)) {
+    if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (!$.isEmptyObject(setdefinitions[set].subsets))) {
         //subsets are defined in set definition; present drop-down selection box
-        s += "<select class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\" onchange=\"$('#higherorderfield_" + index + "_" + ho_index + "')[0].outerHTML = renderfeatureclassfield('" + set + "',$(this).val(),''," + index + "," + ho_index + ");\">"; 
+        s += "<select class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\" onchange=\"$('#higherorderfield_" + index + "_" + ho_index + "')[0].outerHTML = renderfeatureclassfield('" + set + "',$(this).val(),''," + index + "," + ho_index + ");\">";
         s += "<option value=\"\"></option>";
         Object.keys(setdefinitions[set].subsets).forEach(function(subsetid){
             var label = subsetid;
@@ -347,7 +347,7 @@ function renderfeaturefields(set, subset, cls, index, ho_index) {
         s += "</select>";
     } else {
         //subsets are open; present a free field
-        s += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />"; 
+        s += "<input class=\"subsetedit\" id=\"higherorderfield_subset_" + index + "_" + ho_index + "\" value=\"" +subset + "\" placeholder=\"(feature subset)\" title=\"Feature subset\" />";
     }
 
     //class field
@@ -361,16 +361,16 @@ function renderfeatureclassfield(set, subset, cls, index, ho_index) {
     var s = "";
     if ((setdefinitions) && (setdefinitions[set]) && (setdefinitions[set].subsets) && (setdefinitions[set].subsets[subset])) {
         //classes for the subset are defined in set definition; present drop-down selection box
-        s += "<select class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">"; 
+        s += "<select class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +subset + "\" title=\"Feature subset\">";
         s += "<option value=\"\"></option>";
         setdefinitions[set].subsets[subset].classorder.forEach(function(cid){
             c = setdefinitions[set].subsets[subset].classes[cid];
-            s = s + getclassesasoptions(c, cls); 
+            s = s + getclassesasoptions(c, cls);
         });
         s += "</select>";
     } else {
         //subsets are open; present a free field
-        s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +cls + "\" placeholder=\"(feature class)\" title=\"Feature class\" />"; 
+        s += "<input class=\"classedit\" id=\"higherorderfield_" + index + "_" + ho_index + "\" value=\"" +cls + "\" placeholder=\"(feature class)\" title=\"Feature class\" />";
     }
     return s;
 }
@@ -400,7 +400,7 @@ function addhigherorderfield(set, index, type) {
     if (newchildannotation !== null) {
         $('#higherorderfields' + index +  "placeholder")[0].outerHTML =
             "<tr class=\"higherorderrow\">" +
-            renderhigherorderfield(index, ho_index, newchildannotation, set) + 
+            renderhigherorderfield(index, ho_index, newchildannotation, set) +
             "</tr><tr id=\"higherorderfields" + index + "placeholder\"></tr>";
         editdata[index].children.push(newchildannotation);
         $('#spanselector' + index + '_' + (editdata[index].children.length-1) ).off().click(spanselector_click);
@@ -432,10 +432,10 @@ function spanselector_click(){
     underscore = this.id.indexOf('_'); //underscore is used for span selectors on higher order annotation elements (i.e. span roles)
     //get index ID (we can't reuse i from the larger scope here!!)
     if (underscore == -1) {
-        i = parseInt(this.id.substr(12));  
+        i = parseInt(this.id.substr(12));
         sub = -1;
     } else {
-        i = parseInt(this.id.substr(12, underscore-12));  
+        i = parseInt(this.id.substr(12, underscore-12));
         sub = parseInt(this.id.substr(underscore+1));
     }
 
@@ -503,8 +503,8 @@ function applysuggestion(e,i) {
 
 function renderparentspanfield(index, annotation, nestableparents) {
     //This is a nestable span element
-    var s = "<div class=\"parentspaneditor\">Parent span: " + 
-            "<select id=\"parentspan" + index + "\">" + 
+    var s = "<div class=\"parentspaneditor\">Parent span: " +
+            "<select id=\"parentspan" + index + "\">" +
             "<option value=\"\">(none/root)</option>";
     forspanannotations(annotation.layerparent, function(spanannotation){
         for (var i = 0; i < nestableparents.length; i++) {
@@ -714,7 +714,7 @@ function showeditor(element) {
                     ho_result = renderhigherorderfields(editfields, annotation);
                     s  = s + ho_result.output;
 
-                    
+
                     var nestablespan = folia_nestablespan(annotation.type);
                     if (nestablespan.length > 0) {
                         s = s + renderparentspanfield(editfields, annotation, nestablespan);
@@ -1230,7 +1230,7 @@ function update_queue_info() {
 
 
 function gather_changes() {
-    /* See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend? 
+    /* See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
      * This functions prepares validates the input and prepares the editdata structures so queries can be more
      * easily formed in the next stage. Called by editor_submit()  */
 
@@ -1300,7 +1300,7 @@ function gather_changes() {
                     //Comments and descriptions
                     var value = $('#higherorderfield' + i +'_' + j).val();
                     if (((editdata[i].children[j].value) && (editdata[i].children[j].value != value)) || (!editdata[i].children[j].value)) {
-                        if (editdata[i].children[j].value) { 
+                        if (editdata[i].children[j].value) {
                             editdata[i].children[j].oldvalue =  editdata[i].children[j].value;
                         } else {
                             editdata[i].children[j].oldvalue = null;
@@ -1320,12 +1320,12 @@ function gather_changes() {
                        (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
 
                         //remember old values (null if new)
-                        if (editdata[i].children[j].subset) { 
+                        if (editdata[i].children[j].subset) {
                             editdata[i].children[j].oldsubset =  editdata[i].children[j].subset;
                         } else {
                             editdata[i].children[j].oldsubset = null;
                         }
-                        if (editdata[i].children[j].class) { 
+                        if (editdata[i].children[j].class) {
                             editdata[i].children[j].oldclass =  editdata[i].children[j].class;
                         } else {
                             editdata[i].children[j].oldclass = null;
@@ -1396,7 +1396,7 @@ function gather_changes() {
             if (editdata[i].new) editdata[i].editform = "new";
 
             editdata[i].isspan = folia_isspan(editdata[i].type); //are we manipulating a span annotation element?
-    
+
             //sort targets in proper order
             if (editdata[i].targets.length > 1) {
                 editdata[i].targets = sort_targets(editdata[i].targets);
@@ -1405,7 +1405,7 @@ function gather_changes() {
                 //relies purely on span roles, find the implicit targets (i.e.
                 //the scope)
                 if ((editdata[i].isspan) && (editdata[i].children.length > 0)) {
-                    var match = {}; //will hold spanrole_type => bool 
+                    var match = {}; //will hold spanrole_type => bool
                     editdata[i].scope = [];
                     for (var j = 0; j < editdata[i].children.length; j++) {
                         if (editdata[i].children[j].targets) {
@@ -1457,7 +1457,7 @@ function gather_changes() {
         }
     }
     return changes;
-} 
+}
 
 
 function build_queries(addtoqueue) {
@@ -1615,7 +1615,7 @@ function build_queries(addtoqueue) {
                             forids += " ID " + t;
                         });
                         query += forids;
-                    } 
+                    }
                     returntype = "ancestor-focus";
                 } else if (action == "SUBSTIUTE") {
                     editdata[i].respan = false;
@@ -1640,6 +1640,7 @@ function build_queries(addtoqueue) {
 
                 if ((action == "ADD") && (editdata[i].higherorderchanged)) {
                     //process higher order queries as subqueries
+                    if ((query.length > 0) && (query[query.length-1] != " ")) query += " ";
                     query += build_higherorder_queries(editdata[i], useclause, true);
                     higherorder_subqueries_done = true;
                 }
@@ -1741,12 +1742,12 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                         //edit
                         query = "EDIT " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
                     } else {
-                        //delete 
+                        //delete
                         returntype = "ancestor-target";
                         query = "DELETE " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" " + targetselector;
                     }
                 } else if (edititem.children[j].value !== "") {
-                    //add 
+                    //add
                     query = "ADD " + edititem.children[j].type + " WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
                 }
             } else if ((edititem.children[j].type == 'feat')) {
@@ -1790,7 +1791,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                             }
                             forids += " ID " + t;
                         });
-                    } 
+                    }
                     if ((edititem.children[j].targets_begin.length === 0) && (edititem.children[j].targets.length > 0)) {
                         //new
                         query = "ADD " + edititem.children[j].type + " ID \"" + edititem.children[j].id  + "\" SPAN " + forids + " " + targetselector;
@@ -1829,10 +1830,10 @@ function editor_submit(addtoqueue) {
     var queries;
     try {
         //See if there are any changes in the values: did the user do something and do we have to prepare a query for the backend?
-        changes = gather_changes(); 
+        changes = gather_changes();
 
         //Build all the queries based on the gathered changes (in editdata)
-        queries = build_queries(addtoqueue); 
+        queries = build_queries(addtoqueue);
     } catch (errormsg) {
         editor_error(errormsg);
         return false;
