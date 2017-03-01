@@ -52,7 +52,7 @@ function toggledeletions() {
     renderdeletions();
 }
 
-function renderdeletions() { 
+function renderdeletions() {
     /* Renders deletions and suggestions for insertion (both corrections) for structural elements */
     $('.deleted').remove();
     $('.suggestinsertion').remove();
@@ -65,7 +65,7 @@ function renderdeletions() {
                 //check if the deletion has a colored class
                 if ((classrank) && (classrank[annotation.class])) {
                     c = ' class' + classrank[annotation.class];
-                }                                
+                }
                 //find original text
                 var originalid = "";
                 var originaltype = "";
@@ -86,21 +86,21 @@ function renderdeletions() {
                             originalid = original.id;
                         }
                     }
-                });                        
+                });
                 if ((originalid) && (originaltype)) {
                     s = '<div id="'  + originalid + '" class="F ' + originaltype + ' deepest deleted ' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
-                    if (annotation.previous) { 
+                    if (annotation.previous) {
                         $('#' + valid(annotation.previous)).after(s);
                     } else if (annotation.next) {
                         $('#' + valid(annotation.next)).before(s);
                     }
                     $('#' + valid(originalid)).click(onfoliaclick).dblclick(onfoliadblclick).mouseenter(onfoliamouseenter).mouseleave(onfoliamouseleave);
                 }
-            } 
+            }
             if ((annotation.type == 'correction') && (annotation.specialtype=='suggest insertion' )) {
                 if ((classrank) && (classrank[annotation.class])) {
                     c = ' class' + classrank[annotation.class];
-                }                                
+                }
                 var suggestionid = "";
                 var suggestiontype = "";
                 annotation.suggestions.forEach(function(suggestion){
@@ -117,10 +117,10 @@ function renderdeletions() {
                                     }
                                 });
                             }
-                        });                        
+                        });
                     }
                     return; //first suggestion only
-                });                        
+                });
                 if ((suggestiontype !== "") && (suggestionid !== "")) {
                     s = '<div id="'  + suggestionid + '" class="F ' + suggestiontype + ' deepest suggestinsertion ' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>';
                     if (annotation.previous) {
@@ -166,7 +166,7 @@ function toggleoriginal() {
                             textblob += original.text;
                         }
                     }
-                });                        
+                });
 
                 if (structureelement.type == 'w') {
                     $('#' + valid(structureelement.id) + ' span.lbl').html(textblob);
@@ -184,7 +184,7 @@ function toggleoriginal() {
                             var c = '';
                             if (classrank[annotation.class]) {
                                 c = ' class' + classrank[annotation.class];
-                            }                                
+                            }
                             $('#' + valid(structureelement.previousword)).after('<div id="'  + originalid + '" class="F w deepest deleted' + c +'"><span class="lbl" style="display: inline;">' + textblob + '&nbsp;</span></div>');
                         }
                     }
@@ -228,7 +228,7 @@ function getspantext(annotation, explicit) {
     if (targets === undefined) {
         console.debug(annotation);
         throw "Invalid annotation; defines no targets/scope! ";
-    } 
+    }
     targets = sort_targets(targets);
     targets.forEach(function(target){
         forannotations(target,function(annotation2){
@@ -445,7 +445,7 @@ function renderspanrole(spanroledata) {
 }
 
 function renderstructure(structureelement, norecurse, noheader, extended) {
-    /* renders a structure element in the details popup 
+    /* renders a structure element in the details popup
 		extended is true for the actionable viewer, false for the default popup
 	*/
     var s = "";
@@ -627,7 +627,7 @@ function showinfo(element, extendedcontainer) {
         if (element.id) {
             var s = "";
             var structureelement = structure[element.id];
-            if ((structureelement) && (structureelement.auth)) {            
+            if ((structureelement) && (structureelement.auth)) {
                 s = renderstructure(structureelement,false, false, (extendedcontainer !== undefined));
             } else if ($(element).hasClass('deleted')) {
                 s = "<div id=\"id\"> " + element.id + "</div>";
@@ -646,7 +646,7 @@ function showinfo(element, extendedcontainer) {
 					} else {
 						$('#info').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX - $('#info').width() } );
 					}
-					$('#info').show();    
+					$('#info').show();
 				} else {
 					$(extendedcontainer).html(s);
 				}
@@ -673,7 +673,7 @@ function toggleglobannotationview(annotationtype, set) {
     } else {
         $('#globannotationtypeview_' + annotationtype + "_" + hash(set)).removeClass('on');
     }
-    $('span.ab').css('display','none'); 
+    $('span.ab').css('display','none');
     $('span.ab').html("");
     renderglobannotations(true);
 }
@@ -681,7 +681,7 @@ function toggleglobannotationview(annotationtype, set) {
 function resetglobannotationview() {
     $('#globannotationsviewmenu li').removeClass('on');
     viewglobannotations = {};
-    $('span.ab').css('display','none'); 
+    $('span.ab').css('display','none');
     $('span.ab').html("");
     renderglobannotations(true);
 }
@@ -756,7 +756,7 @@ function computeclassfreq() {
 
 function setclasscolors() {
     //count class distribution
-    
+
     var legendtype = annotationfocus.type;
     var legendset = annotationfocus.set;
     var legendtitle = folia_label(legendtype, legendset);
@@ -809,7 +809,7 @@ function setclasscolors() {
 function showdeletions() {
     //remove all deletions
     $('.deletion').remove();
-    
+
 }
 
 function partofspanhead(annotation, target) {
@@ -847,7 +847,7 @@ function renderglobannotations(all) {
             var targetabselection = null;
             if (paintedglobannotations[structureelement.id]) {
                 targetabselection = $('#' + valid(structureelement.id) + " span.ab");
-                targetabselection.css('display','none'); //we clear on this level 
+                targetabselection.css('display','none'); //we clear on this level
                 targetabselection.html("");
                 paintedglobannotations[structureelement.id] = false;
             }
@@ -868,7 +868,7 @@ function renderglobannotations(all) {
                                 var usecontext = true;
                                 if (annotation.type == "dependency") {
                                     //for dependencies we point from the dependents to the head.
-        
+
                                     //grab the head
                                     var headtext = "";
                                     var partofhead = partofspanhead(annotation, structureelement.id);
@@ -976,17 +976,17 @@ function renderglobannotations(all) {
                                 }
 
                                 containers[containerkey].push({
-                                    'html': s, 
+                                    'html': s,
                                     'annotation': annotation,
                                     'target': structureelement.id,
                                     'slot': slot,
-                                }); 
+                                });
                                 paintedglobannotations[structureelement.id] = true;
                         } else {
                             //no span, no need for intermediate container structure, directly add
                             if (targetabselection === null) {
                                 targetabselection = $('#' + valid(structureelement.id) + " span.ab");
-                                targetabselection.css('display','none'); 
+                                targetabselection.css('display','none');
                                 paintedglobannotations[structureelement.id] = true;
                             }
                             targetabselection.append(s);
@@ -995,10 +995,10 @@ function renderglobannotations(all) {
                 }); ///
             });
 
-            //if (changed) targetabselection.css('display','block'); 
-            if (targetabselection !== null) targetabselection.css('display','block'); 
+            //if (changed) targetabselection.css('display','block');
+            if (targetabselection !== null) targetabselection.css('display','block');
         });
-        
+
         var displaycontainers = {}; //will hold the actual containers for display
         Object.keys(containers).forEach(function(containerkey){
             //find maximum slot and gather targets
@@ -1020,7 +1020,7 @@ function renderglobannotations(all) {
                 var abcs = $('#' + valid(target) + " span.ab span.abc");
                 var displaycontainer = abcs[abcs.length-1]; //nasty patch cause I can't get last() to work
 
-                //fill the slots in order 
+                //fill the slots in order
                 var displaycontainer_html = "";
                 var slot;
                 for (slot = 0; slot <= maxslot; slot++) {
@@ -1037,7 +1037,7 @@ function renderglobannotations(all) {
                     }
                 }
                 $(displaycontainer).html(displaycontainer_html);
-                
+
                 //add to structure so we can compute height later on
                 if (displaycontainers[containerkey] === undefined) {
                     displaycontainers[containerkey] = {};
@@ -1086,6 +1086,13 @@ function viewer_onupdate() {
     $('div.persp').removeClass('persp');
     if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
         $('div.' + perspective).addClass('persp');
+        var perspitems = $('.persp')
+        if (slicesize[perspective]) {
+            var page = $('#pagemenu').val();
+            perspitems.each(function(idx){
+                perspitems[idx].innerHTML = "<span class=\"seqnr\">" + (((page -1) * slicesize[perspective]) + (idx +1))  + "</span>" + perspitems[idx].innerHTML;
+            });
+        }
     }
     $('div.deepest>span.lbl').show();
 
@@ -1099,7 +1106,7 @@ function viewer_onupdate() {
 }
 
 function viewer_ontimer() {
-    if ((namespace != "testflat") && (poll)) { //no polling for tests 
+    if ((namespace != "testflat") && (poll)) { //no polling for tests
        $.ajax({
             type: 'GET',
             headers: {'X-sessionid': sid },
@@ -1108,7 +1115,7 @@ function viewer_ontimer() {
                 update(data);
             },
             dataType: "json"
-        }); 
+        });
     }
 }
 
@@ -1120,7 +1127,7 @@ function viewer_loadmenus() {
     var focusmenu = [];
     var globmenu = [];
     Object.keys(declarations).forEach(function(annotationtype){
-     if (!folia_isstructure(annotationtype)) { 
+     if (!folia_isstructure(annotationtype)) {
       Object.keys(declarations[annotationtype]).forEach(function(set){
         if ((configuration.allowedviewannotations === true) || (configuration.allowedviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedviewannotations.indexOf(annotationtype) != -1)) {
             var state = "";
@@ -1154,7 +1161,7 @@ function viewer_loadmenus() {
     var s_viewmenu = "";
     viewmenu.sort(sortdisplayorder);
     viewmenu.forEach(function(e){s_viewmenu+=e[1];});
-    $('#annotationsviewmenu').html(s_viewmenu); 
+    $('#annotationsviewmenu').html(s_viewmenu);
     var s_globmenu = "";
     globmenu.sort(sortdisplayorder);
     globmenu.forEach(function(e){s_globmenu+=e[1];});
@@ -1214,7 +1221,7 @@ function highlight(data) {
     $('.highlighted').removeClass('highlighted');
     if (data.elements) {
         data.elements.forEach(function(returnitem){
-            if (returnitem.elementid) { 
+            if (returnitem.elementid) {
                 $('#' + valid(returnitem.elementid)).addClass("highlighted");
             }
         });
@@ -1302,12 +1309,12 @@ function treeview_structure(selected_id, ignoreselection) {
 }
 
 function viewer_oninit() {
-    closewait = false; //to notify called we'll handle it ourselves 
+    closewait = false; //to notify called we'll handle it ourselves
 
 
     $('#document').mouseleave( function(e) {
         $('#info').hide();
-    });  
+    });
     annotatordetails = false;
     if ((configuration.annotationfocustype) && (configuration.annotationfocusset)) {
         setannotationfocus(configuration.annotationfocustype, configuration.annotationfocusset);
@@ -1332,15 +1339,15 @@ function viewer_oninit() {
 
     $('#searchclear').click(function(){
         //clear search results
-        $('#searchqueryinput').val(''); 
+        $('#searchqueryinput').val('');
         $(".highlighted").removeClass("highlighted");
         searchsubmitted = false;
     });
 
-    $('#searchsubmit').click(function(){ 
+    $('#searchsubmit').click(function(){
         //execute the search
 
-        var queries = $('#searchqueryinput').val().split("\n"); 
+        var queries = $('#searchqueryinput').val().split("\n");
         var changeperspective = $('#searchperspective').is(':checked');
         searchsubmitted = true;
 
@@ -1360,9 +1367,9 @@ function viewer_oninit() {
                     queries[i] = queries[i].trim();
                 } else {
                     queries[i] = "USE " + namespace + "/" + docid + " " + queries[i].trim();
-                }  
+                }
                 if (queries[i].indexOf('FORMAT') == -1) {
-                    queries[i] += " FORMAT flat"; 
+                    queries[i] += " FORMAT flat";
                 }
             }
         }
@@ -1376,7 +1383,7 @@ function viewer_oninit() {
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },
-            data: JSON.stringify( { 'queries': queries}), 
+            data: JSON.stringify( { 'queries': queries}),
             success: function(data) {
                 if (data.error) {
                     $('#wait').hide();
@@ -1396,7 +1403,7 @@ function viewer_oninit() {
                     $('#wait').hide();
                 }
             },
-            error: function(req,err,exception) { 
+            error: function(req,err,exception) {
                 $('#wait').hide();
                 alert("Query failed: " + err + " " + exception + ": " + req.responseText);
             },

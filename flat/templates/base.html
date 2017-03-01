@@ -13,14 +13,14 @@
         {% endif %}
         <link rel="StyleSheet" href="/style/jquery-ui.min.css" type="text/css" />
         <link rel="StyleSheet" href="/style/flat.css" type="text/css" />
-        <script type="text/javascript" src="/style/foliaspec.js"></script> 
-        <script type="text/javascript" src="/style/folia.js"></script> 
-        <script type="text/javascript" src="/style/flat.js"></script> 
+        <script type="text/javascript" src="/style/foliaspec.js"></script>
+        <script type="text/javascript" src="/style/folia.js"></script>
+        <script type="text/javascript" src="/style/flat.js"></script>
         {% block head %}
         {% endblock %}
         {% if mode %}
         <link rel="StyleSheet" href="/style/flat.{{ mode }}.css" type="text/css" />
-        <script type="text/javascript" src="/style/flat.{{ mode }}.js"></script> 
+        <script type="text/javascript" src="/style/flat.{{ mode }}.js"></script>
         {% endif %}
         {% if docid and not fatalerror %}
         <script type="text/javascript">
@@ -50,6 +50,9 @@
             {% if slices %}
             slices = {{ slices|safe }};
             {% endif %}
+            {% if slicesize %}
+            slicesize = {{ slicesize|safe }};
+            {% endif %}
             {% if rtl %}
             rtl = true;
             {% else %}
@@ -72,7 +75,7 @@
                 <li>Modes
                 <ul>
                         {% for mode, modename in modes %}
-                        {% if namespace == "pub" %} 
+                        {% if namespace == "pub" %}
                         <li><a href="/{{ mode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a></li>
                         {% else %}
                         <li><a href="/{{ mode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a></li>
@@ -133,7 +136,7 @@
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>
         {% endif %}
-        
+
         <div id="wait">
             <span class="msg">{{ waitmessage }}</span>
             <img src="/style/loader.gif" alt="processing" />

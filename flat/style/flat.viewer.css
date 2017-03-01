@@ -349,3 +349,11 @@ div.opentreeview {
     min-height: 34px;
     cursor: pointer;
 }
+div#document span.seqnr {
+    float: left;
+    display: inline-block;
+    margin-left: -20px;
+    font-family: monospace;
+    font-size: 52%;
+    color: #999;
+}

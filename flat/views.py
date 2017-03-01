@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt 
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpRequest
 import django.contrib.auth
 from django.conf import settings
@@ -46,6 +46,7 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
             'metadata': json.dumps(doc['metadata']) if 'metadata' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
             'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",
+            'slicesize': json.dumps(doc['slicesize']) if 'slicesize' in doc else "{}",
             'rtl': True if 'rtl' in doc and doc['rtl'] else False,
             'loggedin': request.user.is_authenticated() if request.user else False,
             'isadmin': request.user.is_staff if request.user else False,
@@ -392,7 +393,7 @@ def filemanagement(request):
                 targetnamespace = request.POST['movetarget'].replace('..','.').replace(' ','').replace('&','')
             else:
                 return fatalerror(request, "Invalid operation",404)
- 
+
             docs = []
             for key, value in request.POST.items():
                 if key.startswith('docselect'):
