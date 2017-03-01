@@ -28,7 +28,6 @@ def checkversion(version):
 
 
 def getsid(request):
-    #the session ID consist of a FLAT session key, an underscore, and a foliadocserve session id
     if 'HTTP_X_SESSIONID' in request.META:
         return request.META['HTTP_X_SESSIONID'] #accesses X-sessionid header
     elif 'sid' in request.POST:
