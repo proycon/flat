@@ -1,7 +1,7 @@
 // jshint evil:true
 
 //A random session ID
-var sid = ((Math.random() * 1e9) | 0); 
+var sid = ((Math.random() * 1e9) | 0);
 
 var havecontent = false; //we start assuming we have no content
 var closewait = true; //close the wait mask when we are done loading
@@ -302,7 +302,7 @@ function update(data, extracallback) {
     //Process data response from the server, does a partial update, called through loadcontent() on initialisation
     //
 
-    latststructure = {}; //reset latest structure cache (structureid -> true map), will be populated again by loadstructure()
+    lateststructure = {}; //reset latest structure cache (structureid -> true map), will be populated again by loadstructure()
     latestannotations = {}; //reset latest annotations cache (annotationid -> true map), will be populated again by loadannotations()
 
     if (data.error) {
@@ -566,13 +566,13 @@ function loadperspectivemenu() {
 }
 
 function selectorchange(){
-    selector = $('#selectormenu').val(); 
+    selector = $('#selectormenu').val();
 }
 
 function loadselectormenu() {
     var s = "<span class=\"title\">Selector</span>";
     s += "<select id=\"selectormenu\">";
-    if (selector === "") { 
+    if (selector === "") {
         s += "<option value=\"\" selected=\"selected\">Automatic (deepest)</option>";
     } else {
         s += "<option value=\"\">Automatic (deepest)</option>";
@@ -582,7 +582,7 @@ function loadselectormenu() {
         if (folia_label(structuretype)) {
             label = folia_label(structuretype);
         }
-        if (selector == structuretype) { 
+        if (selector == structuretype) {
             s += "<option value=\"" + structuretype + "\" selected=\"selected\">"  + label + "</option>";
         } else {
             s += "<option value=\"" + structuretype + "\">"  + label + "</option>";
@@ -742,7 +742,7 @@ function sort_targets(targets) {
                 sortedtargets.push(structure[sameparent].structure[j]);
             }
         }
-    } else { 
+    } else {
         //fallback: sort targets by simply looking at the order they are rendered in  the interface
         $('.w').each(function(){
             if (targets.indexOf(this.id) > -1) {
