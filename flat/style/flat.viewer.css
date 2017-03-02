@@ -157,7 +157,7 @@ div#info table {
     table-layout:fixed;
 }
 div#info th {
-    width: 50%;
+    width: 44%;
     font-weight: bold;
     vertical-align: top;
 }
@@ -172,16 +172,19 @@ div#info th span.setname {
     word-wrap: break-word;
 }
 div#info td {
-    width: 49%;
+    width: 55%;
     font-style: italic;
-    text-align: right;
 }
 .class {
     color: #3323cd;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 #info .text, #viewer .text {
     font-style: italic;
     color: #333;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 .annotator {
     font-style: italic;
@@ -224,7 +227,7 @@ div#info .id, div#viewer .id {
 }
 
 div.correction {
-    width: 90%;
+    width: 98%;
     background: #d4e2e3;
     border: 1px solid #fff;
     padding: 2px;
