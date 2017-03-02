@@ -1090,7 +1090,7 @@ function viewer_onupdate() {
         if (slicesize[perspective]) {
             var page = $('#pagemenu').val();
             perspitems.each(function(idx){
-                perspitems[idx].innerHTML = "<span class=\"seqnr\">" + (((page -1) * slicesize[perspective]) + (idx +1))  + "</span>" + perspitems[idx].innerHTML;
+                $(perspitems[idx]).prepend("<span class=\"seqnr\">" + (((page -1) * slicesize[perspective]) + (idx +1))  + "</span>");
             });
         }
     }

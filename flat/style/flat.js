@@ -312,7 +312,7 @@ function update(data, extracallback) {
         $('#connectioninfo').html("<span title=\"This is the number of people that are currently viewing/editing this document, yourself included\">" + data.sessions + "</span>");
     }
     if (data.elements) {
-        reregisterhandler = false;
+        reregisterhandlers = false;
         data.elements.forEach(function(returnitem){
             if ((returnitem.html) && (returnitem.elementid)) {
                 var selector = $('#' + valid(returnitem.elementid));
