@@ -20,7 +20,7 @@ FLAT is written in Python using the Django framework. The user interface is
 written using javascript with jquery.  The FoLiA Document Server
 (https://github.com/proycon/foliadocserve) , the back-end
 of the system, is written in Python with CherryPy and is used as a RESTful
-webservice. 
+webservice.
 
 FLAT is open source software developed at the Centre of Language and Speech
 Technology, Radboud University Nijmegen. It is licensed under the GNU Public
@@ -36,14 +36,14 @@ Features
 * Server-side document storage, divided into 'namespaces', by default each user
   has his own namespace. Active documents are held in memory server-side.
   Read and write permissions to access namespaces are fully configurable.
-* Concurrency (multiple users may edit the same document similtaneously)  [**not completed yet**]
+* Concurrency (multiple users may edit the same document similtaneously)
 * Full versioning control for documents (using git), allowing limitless undo operations. (in foliadocserve)
 * Full annotator information, with timestamps, is stored in the FoLiA XML and can be displayed by the interface. The git log also contains verbose information on annotations.
 * Annotators can indicate their confidence for each annotation
 * Highly configurable interface; interface options may be disabled on a
   per-configuration basis. Multiple configurations can be deployed on a single
   installation
-* Displays and retains document structure (divisions, paragraphs, sentence, lists, etc) 
+* Displays and retains document structure (divisions, paragraphs, sentence, lists, etc)
 * Support for corrections, of text or linguistic annotations, and alternative annotations. Corrections are never mere substitutes, originals are always preserved!
 * Spelling corrections for runons, splits, insertions and deletions are supported.
 * Supports FoLiA Set Definitions to display label sets. Sets are not predefined
@@ -197,7 +197,7 @@ Advanced search queries in CQL (Corpus Query Language) or FQL (FoLiA Query Langu
     :alt: FLAT screenshot
     :align: center
 
-Tree visualisation of syntax and morphology: 
+Tree visualisation of syntax and morphology:
 
 .. image:: https://raw.github.com/proycon/flat/master/docs/syntree.png
     :alt: FLAT screenshot

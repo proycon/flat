@@ -29,7 +29,7 @@ def checkversion(version):
 
 def getsid(request):
     if 'HTTP_X_SESSIONID' in request.META:
-        return request.META['HTTP_X_SESSIONID'] #accesses X-sessionid header
+        return request.META['HTTP_X_SESSIONID'] #accesses X-Sessionid header
     elif 'sid' in request.POST:
         return request.POST['sid']
     elif 'sid' in request.GET:
