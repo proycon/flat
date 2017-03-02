@@ -296,6 +296,7 @@ div#leftpane {
     left:10px;
     top: 50px;
     font-size: 9px;
+    overflow-x: hidden;
 }
 div#perspective, div#selector {
     width: 160px;
