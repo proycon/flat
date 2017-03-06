@@ -482,3 +482,7 @@ raise Exception("settings.py hasn't been configured yet!!")
 # In any case, don't forget to start the document server too:
 
 # $ foliadocserve -d /path/to/document/root -p 8080 --git
+
+# If you use the --git option, make sure your git identity is configured
+#    git config --global user.email "you@example.com"
+#    git config --global user.name "Your Name"

@@ -134,7 +134,10 @@ same host, so a localhost connection is sufficient.
 
 The ``--git`` option enables git versioning support, allowing users to undo annotations
 and go back to previous revisions, it requires ``git`` to be installed on the
-system.
+system and your git identity to be configured configured::
+
+    $ git config --global user.email "you@example.com"
+    $ git config --global user.name "Your Name"
 
 -------------------------------------
 Starting FLAT (development server)

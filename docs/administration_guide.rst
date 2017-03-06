@@ -19,7 +19,7 @@ Configuration of FLAT is done in the typical unix fashion by editing a
 configuration file, there is no web interface for this. For FLAT
 ``settings.py`` (or however you renamed) fulfills this role. Making it a
 centralized place for all settings. The file is heavily commented to guide you
-along. The template is obtainable from
+along. The template can be obtained from
 https://raw.githubusercontent.com/proycon/flat/master/settings.py .
 
 Although ``settings.py`` is a Python script, no Python knowledge is necessary.
@@ -73,7 +73,7 @@ features, which will easily overwhelm the user if all are enabled. You will
 want to constrain this for your annotation task.
 
 The ``DEFAULTCONFIGURATION`` variable refers to the configuration that is pre-selected
-upon login, and will therefore be the default unless the user selects another. 
+upon login, and will therefore be the default unless the user selects another.
 
 All configurations are defined in ``CONFIGURATIONS`` (a simple Python
 dictionary for those familiar with Python, the keys correspond to the
@@ -94,13 +94,13 @@ We will discuss the individual configuration options here:
 * ``annotationfocustype`` - Sets the annotation type for the default annotation focus, effectively highlighting annotations of this type immediately upon opening the document. The type needs to be a valid FoLiA tag name (see the FoLiA documentation at https://proycon.github.io/folia), such as ``'pos'``, ``'lemma'``, ``'entity'``, etc...  If you set this, also set the next option.
 * ``annotationfocusset`` - Sets the set for the default annotation focus. The set is a URL pointing to a FoLiA Set Definition file. Set to ``None`` if not used, use with the above otherwise.
 * ``autoselectspan`` - Boolean, automatically click the select span button for the annotation focus when opening the editor dialog. Defaults to ``False``.
-* ``allowannotationfocus`` - List of FoLiA annotation types (corresponding to the xml tags) that are allowed as annotation focus, i.e. that can be selected by the user through the menu. Set to ``True`` to enable all. 
+* ``allowannotationfocus`` - List of FoLiA annotation types (corresponding to the xml tags) that are allowed as annotation focus, i.e. that can be selected by the user through the menu. Set to ``True`` to enable all.
 * ``initialviewannotation`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the local annotation viewer, i.e. the pop-up when the user hovers over elements. Set to ``True`` to enable all.
 * ``initialglobviewannotations`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the global annotation viewers (the annotation boxes above the words).
 * ``allowedviewannotation`` - List of FoLiA annotation types (xml tags) that are allowed to be viewed,  a superset of initialviewannotations/initialglobviewannotations. Users can enable/disable each as they see fit. Set to ``True`` to enable all.
 * ``initialeditannotations`` - List of FoLiA annotation types (xml tags) that are initially enabled in the editor dialog (when users click an element for editing), set to ``True`` to enable all.
 * ``allowededitannotations`` - List of FoLiA annotation types (xml tags) that are allowed in the editor dialog (the user can enable/disable each as he/she sees fit), set to ``True`` to enable all.
-* ``allowaddfields`` - Boolean value, allow the user to add annotation types not yet present on a certain element? 
+* ``allowaddfields`` - Boolean value, allow the user to add annotation types not yet present on a certain element?
 * ``allowdeclare`` -- Boolean value, allow the user to add annotation types not yet present in the document?
 * ``editformdirect`` -- Boolean, enable the direct editing form (this is the default and most basic form of editing, consult the user guide). It should be ``True`` unless you want to force other editing forms.
 * ``editformcorrection`` -- Boolean, enable editing as correction.
@@ -112,10 +112,10 @@ We will discuss the individual configuration options here:
 * ``alloweditformnew`` -- Boolean, allow the user the enable/disable new editing himself/herself.
 * ``allowconfidence`` -- Boolean, allow confidence values to be set/added?
 * ``initialcorrectionset`` - String to the set definition used for corrections.
-* ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone) 
+* ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone)
 * ``requiredeclaration`` -- Require that documents already have the specified declarations, and if not, refuse to load them. This is a more or less the oppossite of ``autodeclare`` and is also a list of 2-tuples ``(tag,set)``.
 * ``creategroupnamespaces`` -- Boolean, automatically create namespace directories for all groups the user belongs to (upon login). The directory name corresponds to the group name.
-* ``metadataindex`` -- List of metadata keys that will be shown in the document index (there is only space for a limited few). 
+* ``metadataindex`` -- List of metadata keys that will be shown in the document index (there is only space for a limited few).
 * ``metadataconstraints``  -- Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example: ``'metadataconstraints': {'language': ['fr','en,'es']}``
 * ``converters`` -- List of converters that can convert from arbitrary formats to FoLiA XML on document upload. See the section on converters further below for syntax.
 * ``searches`` -- List of pre-defined search queries, each will get their own
@@ -192,7 +192,7 @@ presentable labels (they may also impose taxonomies, put constraints on class
 combinations,  and link to data category registries). FLAT relies on
 these set definitions a great deal, as it uses them to present the labels for
 the classes. Examples of set definitions can be found here:
-https://github.com/proycon/folia/tree/master/setdefinitions 
+https://github.com/proycon/folia/tree/master/setdefinitions
 
 For more information about FoLiA, see https://proycon.github.io/folia , the
 format itself is extensively documented.
@@ -221,7 +221,7 @@ These converters are configured in ``settings.py`` as follows:
 
 .. code:: python
 
-    'converters': [ 
+    'converters': [
         { 'id': 'parseme_tsv',  #a unique identifier for internal use
           'module': 'tsv2folia.tsv2folia', #the python module where the converter is implemented
           'function': 'flat_convert', #the python function (in the above module) that implements the conversion hook
