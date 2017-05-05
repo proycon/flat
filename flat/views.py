@@ -1,8 +1,10 @@
 from __future__ import print_function, unicode_literals, division, absolute_import
+import sys
 import os
 import json
 import datetime
-import sys
+import logging
+
 from collections import defaultdict
 
 from django.shortcuts import render, redirect
@@ -23,6 +25,9 @@ if sys.version < '3':
     from urllib2 import URLError, HTTPError #pylint: disable=import-error
 else:
     from urllib.error import URLError, HTTPError
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 def getcontext(request,namespace,docid, doc, mode, configuration = None):
     if configuration is None:
@@ -505,6 +510,7 @@ def upload_helper(request, namespace, configuration=None, mode=None):
         return fatalerror(request, response['error'],403)
     else:
         docid = response['docid']
+        logger.info("Succesfully uploaded " + docid + "(namespace=" + namespace+")")
         if namespace == "pub":
             return HttpResponseRedirect("/" + mode + "/pub/" + configuration + "/" + docid  )
         else:
@@ -534,6 +540,7 @@ def pub_upload(request):
                 mode = request.POST['mode']
             else:
                 mode = settings.DEFAULTMODE
+            logger.info("Receiving public upload for configuration " + configuration + ", mode " + mode)
             return upload_helper(request, 'pub', configuration, mode)
         else:
             return fatalerror(request, "Public anonymous write permission denied",403)

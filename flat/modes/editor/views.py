@@ -41,7 +41,7 @@ def pub_view(request, docid, configuration):
             except Exception as e:
                 return fatalerror(request,e)
 
-    return initdoc(request, 'pub',docid, 'editor', 'editor.html')
+    return initdoc(request, 'pub',docid, 'editor', 'editor.html', configuration=configuration)
 
 @login_required
 def history(request,namespace, docid):
