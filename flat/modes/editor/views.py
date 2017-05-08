@@ -7,6 +7,7 @@ if sys.version < '3':
     from urllib2 import URLError
 else:
     from urllib.error import URLError
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import flat.comm
 import flat.users

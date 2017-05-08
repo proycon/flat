@@ -2,6 +2,7 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import flat.comm
 import flat.users
