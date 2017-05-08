@@ -32,6 +32,7 @@ def view(request, namespace, docid):
         return fatalerror(request,"Permission denied")
 
 
+@csrf_exempt
 def pub_view(request, docid, configuration):
     """The initial view, does not provide the document content yet"""
     if 'autodeclare' in settings.CONFIGURATIONS[configuration]:

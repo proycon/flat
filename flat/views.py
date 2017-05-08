@@ -229,6 +229,7 @@ def query(request,namespace, docid):
     else:
         return HttpResponseForbidden("Permission denied, no read access")
 
+@csrf_exempt
 def pub_query(request,configuration, docid):
     if request.method != 'POST':
         return HttpResponseForbidden("POST method required for pub/" + docid + "/query")
@@ -382,6 +383,7 @@ def download(request, namespace, docid):
     data = flat.comm.query(request, "USE " + namespace + "/" + docid + " GET",False)
     return HttpResponse(data, content_type='text/xml')
 
+@csrf_exempt
 def pub_download(request, docid):
     data = flat.comm.query(request, "USE pub/" + docid + " GET",False)
     return HttpResponse(data, content_type='text/xml')

@@ -31,10 +31,12 @@ def poll(request, namespace, docid):
     else:
         return HttpResponseForbidden("Permission denied")
 
+@csrf_exempt
 def pub_view(request, configuration, docid):
     """The initial viewer, does not provide the document content yet"""
     return initdoc(request, 'pub',docid, 'viewer', 'viewer.html', configuration=configuration)
 
+@csrf_exempt
 def pub_poll(request, docid):
     """The initial viewer, does not provide the document content yet"""
     try:
