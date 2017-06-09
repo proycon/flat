@@ -93,6 +93,9 @@ DEFAULTMODE = 'editor'
 # will be selected by default:
 DEFAULTCONFIGURATION = 'full'
 
+# Allow users to register their own accounts?
+ALLOWREGISTRATION = True
+
 # Allow public anonymous uploads without any authentication?
 ALLOWPUBLICUPLOAD = False
 
