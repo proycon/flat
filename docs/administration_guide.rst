@@ -280,7 +280,8 @@ Again, we first urge people o familiarise themselves with `FoLiA <https://proyco
 document into FoLiA; you may use certain existing options, depending on the source format you are departing from.  One
 of the most basic options if you start with plain text documents is to use the `ucto tokeniser
 <https://languagemachines.github.io/ucto/>`_. This tool tokenises your document and can produce FoLiA XML output. It
-support multiple languages. Tokenisation is a necessary prerequisite for most forms of linguistic annotation.
+supports multiple languages. Tokenisation is a necessary prerequisite for most forms of linguistic annotation so is a
+good starting point.
 
 There are also many dedicated NLP tools that produce FoLiA output and as-such can be imported directly into FLAT.
 Examples are `Frog <https://languagemachines.github.io/frog/>`_ (for various kinds of linguistic enrichment on Dutch
