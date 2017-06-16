@@ -272,6 +272,33 @@ context in which it is run. The positional arguments (``args``) are not used at
 this time. Your converter function should a boolean to indicate success or in
 case of failure it can return a 2-tuple containing ``False``, and an error message string.
 
+------------------------------------------------
+How to get my document into the FoLiA format?
+------------------------------------------------
+
+Again, we first urge people o familiarise themselves with `FoLiA <https://proycon.github.io/folia>`_. To get your
+document into FoLiA; you may use certain existing options, depending on the source format you are departing from.  One
+of the most basic options if you start with plain text documents is to use the `ucto tokeniser
+<https://languagemachines.github.io/ucto/>`_. This tool tokenises your document and can produce FoLiA XML output. It
+support multiple languages. Tokenisation is a necessary prerequisite for most forms of linguistic annotation.
+
+There are also many dedicated NLP tools that produce FoLiA output and as-such can be imported directly into FLAT.
+Examples are `Frog <https://languagemachines.github.io/frog/>`_ (for various kinds of linguistic enrichment on Dutch
+texts), `Gecco <https://github.com/proycon/gecco/>`_ (a spelling correction system), and `PICCL
+<https://github.com/LanguageMachines/PICCL>`_ (a corpus creation pipeline including OCR and post-OCR normalisation).
+
+Various other converters are available as part of the FoLiA Tools (https://pypi.python.org/pypi/FoLiA-tools). A notable
+example is ``rst2folia`` a convertor from ReStructuredText to FoLiA that can accurately convert document structure
+(things like bulleted lists, etc). The output of this could again be fed to ``ucto`` for tokenisation.
+
+If you have another format, it should not be hard to write a Python script to convert it to FoLiA using the FoLiA
+library for Python (part of `PyNLPl <https://pypi.python.org/pypi/PyNLPl>`_ and extensively `documented here <
+http://pynlpl.readthedocs.io/en/latest/folia.html>`_. An example of such a conversion script, from a tab delimited
+columned format for a particular annotation task, can be found `here <https://github.com/proycon/parseme-support>`_,
+this tool also has been turned into a converter that can be plugged into FLAT, as described in the previous section.
+
+
+
 
 
 
