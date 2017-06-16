@@ -242,7 +242,7 @@ CONFIGURATIONS = {
     #Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example:
     #'metadataconstraints': {'language': ['fr','en','es'], 'status':['completed','inprogress']},
 
-    #'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities"}]
+    #'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities", 'changeperspective': false}]
 },
 }
 
