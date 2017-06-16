@@ -162,6 +162,17 @@ administators, to enable them for specific users, assign the *User may copy
 documents wherever he/she has write permission* and *User may delete documents
 wherever he/she has write permission*.
 
+-------------------
+Global permissions
+-------------------
+
+There are some global permission directives in your ``settings.py`` that apply to the whole FLAT installation:
+
+* ``ALLOWPUBLICUPLOAD`` (boolean) -- Determines whether documents can be uploaded to FLAT anonymously **without logging
+  in**. This turns the FLAT installation into a publicly usable FoLiA viewer and editor. Certain external tools may rely
+  on this functionality.
+* ``ALLOWREGISTRATION`` (boolean) -- Determines whether users are allowed to register their own account on your FLAT
+  installation, if set to ``False``, accounts will have to be explicitly created by the administrator.
 
 ===============================
 Preparing your data in FoLiA
