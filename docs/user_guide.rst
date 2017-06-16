@@ -43,10 +43,9 @@ see tools to copy/move/delete selected documents.
 Upload document
 ---------------------
 
-You can upload FoLiA documents by clicking the **Upload document** button
-and selecting a local file to upload. Note that only `FoLiA
-<https://proycon.github.io/folia/>`_ documents are
-supported, a very specific file format for linguistic annotation.
+You can upload FoLiA documents by clicking the **Upload document** button and selecting a local file to upload. Note
+that only `FoLiA <https://proycon.github.io/folia/>`_ documents are supported, a very specific file format for
+linguistic annotation. The administration guide provides some pointers on how to get your input converted to FoLiA.
 
 Administrators may have disabled this functionality.
 
@@ -215,7 +214,7 @@ enabled, and will be discussed in aiseparate subsection below.
 
 You can also assign a **confidence value**, expressing the confidence you as annotator hold in the
 particular annotation you are making. This is set by ticking the checkbox before confidence and
-moving the slider that appears on a scale from 0% confidence to 100% confidence. 
+moving the slider that appears on a scale from 0% confidence to 100% confidence.
 
 .. image:: confidenceslider.png
     :alt: Confidence slider
@@ -277,7 +276,7 @@ Higher order annotation
 FLAT allows you to put annotations on annotations. A notable example is the
 ability to assign arbitrary human readable comments or descriptions with any
 annotation. In order to add such an annotation, access the higher order
-annotation menu on the right of every annotation: 
+annotation menu on the right of every annotation:
 
 .. image:: higherorderbutton.png
     :alt: Higher order button
