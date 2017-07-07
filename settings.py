@@ -478,7 +478,6 @@ raise Exception("settings.py hasn't been configured yet!!")
 
 # $ export PYTHONPATH=/your/settings/path/
 # $ export DJANGO_SETTINGS_MODULE=settings
-# $ django-admin makemigrations
 # $ django-admin migrate --run-syncdb
 # $ django-admin createsuperuser
 

@@ -108,7 +108,6 @@ populated. Set ``PYTHONPATH`` to the directory that contains your
 
     $ export PYTHONPATH=/your/settings/path/
     $ export DJANGO_SETTINGS_MODULE=settings
-    $ django-admin makemigrations
     $ django-admin migrate --run-syncdb
     $ django-admin createsuperuser
 
