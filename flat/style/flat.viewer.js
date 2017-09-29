@@ -1195,6 +1195,10 @@ function viewer_onpagechange() {
     //resubmit any searches if there is a search and highlight mode is selected
     if ((searchsubmitted) && ($('#searchqueryinput').val() !== "") && ($('#searchhighlight').is(':checked'))) {
         $('#searchsubmit').click();
+    } else if (configuration.searches) {
+        for (var i = 0; i < configuration.searches.length; i++) {
+            if (configuration.searches[i].auto) presetsearch(i);
+        }
     }
 }
 
