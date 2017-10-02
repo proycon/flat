@@ -84,6 +84,7 @@ def query(request, query, parsejson=True, **extradata):
 
 
 def get( request, url, parsejson=True):
+    if url and url[0] == '/': url = url[1:]
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
     setsid(docservereq, getsid(request))
     f = urlopen(docservereq)
@@ -130,6 +131,7 @@ def filemanagement(request, filemanmode, namespace, doc, **data):
 def postjson( request, url, data):
     if isinstance(data, dict) or isinstance(data,list) or isinstance(data, tuple):
         data = json.dumps(data)
+    if url and url[0] == '/': url = url[1:]
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url + '/' + sid) #or opener.open()
     setsid(docservereq, getsid(request))
     docservereq.add_header('Content-Type', 'application/json')
@@ -170,6 +172,7 @@ def postxml( request, url, f):
     #contents = f.read()
     #f.close()
 
+    if url and url[0] == '/': url = url[1:]
     response = requests.post("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url, data=f, headers={'Content-Type':'application/xml; charset=utf-8'})
     contents = response.text
     if contents and contents[0] == '{':

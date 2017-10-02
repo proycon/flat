@@ -86,6 +86,7 @@ def getbody(html):
 
 def docserveerror(e, d=None):
     if d is None: d={}
+    raise e
     if isinstance(e, HTTPError):
         body = getbody(e.read())
         d['fatalerror'] =  "<strong>Fatal Error:</strong> The document server returned an error<pre style=\"font-weight: bold\">" + str(e) + "</pre><pre>" + body +"</pre>"
