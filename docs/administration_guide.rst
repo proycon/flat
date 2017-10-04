@@ -120,6 +120,7 @@ We will discuss the individual configuration options here:
 * ``converters`` -- List of converters that can convert from arbitrary formats to FoLiA XML on document upload. See the section on converters further below for syntax.
 * ``searches`` -- List of pre-defined search queries, each will get their own
   entry in the tools & options menu. Example: ``'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities", 'changeperspective': 'false' }]``. The ``changeperspective`` option can be enabled if you want the search to not just highlight the results, but switch perspective to display only the results. If you want a search to get automatically run on page load, add ``'auto': 'true'``.
+* ``excludeclasses`` -- Map of set defniition to lists of classes to exclude in the editor. Example: ``'excludeclasses': {'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml': ['missingpunctuation']}``
 
 =====================
 User permissions
