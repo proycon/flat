@@ -28,17 +28,17 @@ function metadata_oninit() {
         s = s + metadata_addfield(key,i);
         i++;
     });
-    if (configuration.autoaddmetadata) {
-        Object.keys(configuration.autoaddmetadata).forEach(function(key){
-            if (!(key in metadata)) {
-                s = s + metadata_addfield(key,i);
-                i++;
-            }
-        });
-    }
 
     metadatafields = i;
     newfields = 0;
+    if (configuration.autoaddmetadata) {
+        Object.keys(configuration.autoaddmetadata).forEach(function(key){
+            if (!(key in metadata)) {
+                s = s + metadata_addfield(key,metadatafields+newfields);
+                newfields++;
+            }
+        });
+    }
     s = s + "<tr id=\"metadataplaceholder\"></tr>";
     s = s + "</table>";
     s = s + "<div class=\"buttons\"><button id=\"metadatasubmit\" onclick=\"metadata_submit()\">Save changes</button> <button onclick=\"metadata_addinput()\">+</button></div>";
