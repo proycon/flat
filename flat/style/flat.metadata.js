@@ -48,6 +48,13 @@ function metadata_addinput() {
     var s = "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"\" onchange=\"metadata_changekey(" + i + ")\" /></td><td class=\"value\"><input id=\"metavalue" + i + "\" value=\"\" /></td></tr>\n";
     s = s + "<tr id=\"metadataplaceholder\"></tr>";
     $('#metadataplaceholder')[0].outerHTML = s;
+    if (configuration.metadataconstraints) {
+        var suggestions = [];
+        Object.keys(configuration.metadataconstraints).forEach(function(key){
+            suggestions.push(key);
+        });
+        $('#metakey' + i).autocomplete({source: suggestions});
+    }
 }
 
 function metadata_changekey(i) {
