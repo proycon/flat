@@ -4,45 +4,49 @@ var metadatafields = 0;
 function metadata_ontimer() {
 }
 
+function metadata_addfield(key,i) {
+    var s = "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"" + key + "\" /></td><td class=\"value\">";
+    if ((configuration.metadataconstraints) && (configuration.metadataconstraints[key])) {
+        s = s + metadata_getvalueoptions(key, i);
+    } else if (metadata[key] !== undefined) {
+        s = s + "<input id=\"metavalue" + i + "\" value=\"" + metadata[key] + "\" />";
+    } else if ((configuration.autometadata) && (configuration.autometadata[key] !== undefined)) {
+        s = s + "<input id=\"metavalue" + i + "\" value=\"" + configuration.autometadata[key] + "\" />";
+    } else {
+        s = s + "<input id=\"metavalue" + i + "\" value=\"\" />";
+    }
+    s = s + "</td></tr>\n";
+    return s;
+}
+
 function metadata_oninit() {
     var s = "<h2>Metadata</h2>";
     s = s + "<table><tr><th>Metadata Field/Key</th><th>Value</th></tr>\n";
 
     var i = 0;
     Object.keys(metadata).forEach(function(key){
-        s = s + "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"" + key + "\" /></td><td class=\"value\">";
-        if ((configuration.metadataconstraints) && (configuration.metadataconstraints[key])) {
-            s = s + "<select id=\"metavalue" + i +"\">";
-            var found = false;
-            for (j = 0; j < configuration.metadataconstraints[key].length; j++) {
-                if (configuration.metadataconstraints[key][j] == metadata[key]) {
-                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\" selected=\"selected\">" + configuration.metadataconstraints[key][j] + "</option>";
-                    found = true;
-                } else {
-                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\">" + configuration.metadataconstraints[key][j] + "</option>";
-                }
-            }
-            if ((!found) && (metadata[key] !== undefined)) {
-                //value not in constraints but it has been set anyway, add it to the list
-                s = s + "<option value=\"" + metadata[key] + "\" selected=\"selected\">" + metadata[key] + "</option>";
-            }
-            s = s + "</select>";
-        } else {
-            s = s + "<input id=\"metavalue" + i + "\" value=\"" + metadata[key] + "\" />";
-        }
-        s = s + "</td></tr>\n";
+        s = s + metadata_addfield(key,i);
         i++;
     });
+    if (configuration.autoaddmetadata) {
+        Object.keys(configuration.autoaddmetadata).forEach(function(key){
+            if (!(key in metadata)) {
+                s = s + metadata_addfield(key,i);
+                i++;
+            }
+        });
+    }
+
     metadatafields = i;
     newfields = 0;
     s = s + "<tr id=\"metadataplaceholder\"></tr>";
     s = s + "</table>";
     s = s + "<div class=\"buttons\"><button id=\"metadatasubmit\" onclick=\"metadata_submit()\">Save changes</button> <button onclick=\"metadata_addinput()\">+</button></div>";
     $('#metadata').html(s);
-    metadata_addinput();
+    metadata_addnewemptyfield();
 }
 
-function metadata_addinput() {
+function metadata_addnewemptyfield() {
     var i = metadatafields + newfields;
     newfields++;
     var s = "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"\" onchange=\"metadata_changekey(" + i + ")\" /></td><td class=\"value\"><input id=\"metavalue" + i + "\" value=\"\" /></td></tr>\n";
@@ -57,28 +61,38 @@ function metadata_addinput() {
     }
 }
 
+
+function metadata_getvalueoptions(key, i) {
+    //get value options from metadata constraints
+    var s = "<select id=\"metavalue" + i +"\">";
+    var found = false;
+    for (j = 0; j < configuration.metadataconstraints[key].length; j++) {
+        if (configuration.metadataconstraints[key][j] == metadata[key]) {
+            s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\" selected=\"selected\">" + configuration.metadataconstraints[key][j] + "</option>";
+            found = true;
+        } else {
+            s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\">" + configuration.metadataconstraints[key][j] + "</option>";
+        }
+    }
+    if (!found) {
+        if ((metadata[key] !== undefined)) {
+            //value not in constraints but it has been set anyway, add it to the list
+            s = s + "<option value=\"" + metadata[key] + "\" selected=\"selected\">" + metadata[key] + "</option>";
+        } else if (configuration.autometadata[key] !== undefined) {
+            s = s + "<option value=\"" + configuration.autometadata[key] + "\" selected=\"selected\">" + configuration.autometadata[key] + "</option>";
+        }
+    }
+    s = s + "</select>";
+    return s;
+}
+
 function metadata_changekey(i) {
     //triggered when a new key has been entered (onChange)
     var key = $('#metakey'+i).val();
     if ((configuration.metadataconstraints) && (configuration.metadataconstraints[key])) {
         var value = $('#metavalue'+i).val();
         if (value === "") {
-            var s = "<select id=\"metavalue" + i +"\">"; //TODO: refactor overlap with metadata_oninit into separate function
-            var found = false;
-            for (j = 0; j < configuration.metadataconstraints[key].length; j++) {
-                if (configuration.metadataconstraints[key][j] == metadata[key]) {
-                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\" selected=\"selected\">" + configuration.metadataconstraints[key][j] + "</option>";
-                    found = true;
-                } else {
-                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\">" + configuration.metadataconstraints[key][j] + "</option>";
-                }
-            }
-            if ((!found) && (metadata[key] !== undefined)) {
-                //value not in constraints but it has been set anyway, add it to the list
-                s = s + "<option value=\"" + metadata[key] + "\" selected=\"selected\">" + metadata[key] + "</option>";
-            }
-            s = s + "</select>";
-            $('#metavalue' + i)[0].outerHTML = s;
+            $('#metavalue' + i)[0].outerHTML = metadata_getvalueoptions(key, i);
         }
     }
 }
