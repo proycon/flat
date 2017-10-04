@@ -232,7 +232,7 @@ function addeditforms(preselectcorrectionclass) {
             s = s + "<option value=\"\"></option>";
             setdefinitions[correctionset].classorder.forEach(function(cid){
                 c = setdefinitions[correctionset].classes[cid];
-                s = s + getclassesasoptions(c, preselectcorrectionclass); // will add to s
+                s = s + getclassesasoptions(c, preselectcorrectionclass, correctionset); // will add to s
             });
             s = s + "</select>";
         } else {
@@ -365,7 +365,7 @@ function renderfeatureclassfield(set, subset, cls, index, ho_index) {
         s += "<option value=\"\"></option>";
         setdefinitions[set].subsets[subset].classorder.forEach(function(cid){
             c = setdefinitions[set].subsets[subset].classes[cid];
-            s = s + getclassesasoptions(c, cls);
+            s = s + getclassesasoptions(c, cls, set);
         });
         s += "</select>";
     } else {
@@ -407,9 +407,10 @@ function addhigherorderfield(set, index, type) {
     }
 }
 
-function getclassesasoptions(c, selected) {
+function getclassesasoptions(c, selected, set) {
     /* get classes pertaining to a set, from a set definition, as option elements (used in select) supports recursive classes */
     var s;
+    if ((excludeclasses[set]) && (excludeclasses[set].indexOf(c.id) != -1)) return ""; //class is explicitly excluded
     if (c.id == selected) {
         s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
     } else {
@@ -417,7 +418,7 @@ function getclassesasoptions(c, selected) {
     }
     if (c.subclasses) {
         Object.keys(c.subclasses).forEach(function(cid){
-            s = s + getclassesasoptions(c.subclasses[cid], selected);
+            s = s + getclassesasoptions(c.subclasses[cid], selected, set);
         });
     }
     return s;
@@ -637,10 +638,10 @@ function showeditor(element) {
                             setdefinitions[annotation.set].classorder.forEach(function(cid){
                                 c = setdefinitions[annotation.set].classes[cid];
                                 if (repeatmode) {
-                                    s = s + getclassesasoptions(c, repeatreference.class); // will add to s
+                                    s = s + getclassesasoptions(c, repeatreference.class, annotation.set); // will add to s
                                     if (annotation.class != repeatreference.class) { repeat_preset = true; }
                                 } else {
-                                    s = s + getclassesasoptions(c, annotation.class); // will add to s
+                                    s = s + getclassesasoptions(c, annotation.class, annotation.set); // will add to s
                                 }
                             });
                             s = s + "</select>";
@@ -975,7 +976,7 @@ function addeditorfield(index) {
         if (setdefinitions[editoraddablefields[index].set].classorder) {
             setdefinitions[editoraddablefields[index].set].classorder.forEach(function(cid){
                 c = setdefinitions[editoraddablefields[index].set].classes[cid];
-                s = s + getclassesasoptions(c, selected_option); // will add to s
+                s = s + getclassesasoptions(c, selected_option, editoraddablefields[index].set); // will add to s
             });
         }
         s = s + "</select>";

@@ -48,6 +48,7 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
             'perspectives_json': json.dumps(settings.CONFIGURATIONS[configuration]['perspectives']),
             'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
+            'excludeclasses': json.dumps(settings.CONFIGURATIONS[configuration]['excludeclasses']) if 'excludeclasses' in settings.CONFIGURATIONS[configuration] else "{}",
             'metadata': json.dumps(doc['metadata']) if 'metadata' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
             'slices': json.dumps(doc['slices']) if 'slices' in doc else "{}",

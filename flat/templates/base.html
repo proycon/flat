@@ -41,6 +41,9 @@
             {% if setdefinitions %}
             setdefinitions = {{ setdefinitions|safe }};
             {% endif %}
+            {% if excludeclasses %}
+            excludeclasses = {{ excludeclasses|safe }};
+            {% endif %}
             {% if metadata %}
             metadata = {{ metadata|safe }};
             {% endif %}
