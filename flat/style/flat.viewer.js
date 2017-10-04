@@ -1181,6 +1181,11 @@ function viewer_contentloaded(data) {
     if (annotationfocus) {
         setannotationfocus(annotationfocus.type, annotationfocus.set);
     }
+    if (configuration.searches) {
+        for (var i = 0; i < configuration.searches.length; i++) {
+            if (configuration.searches[i].auto) presetsearch(i);
+        }
+    }
 }
 
 
