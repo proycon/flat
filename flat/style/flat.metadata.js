@@ -22,7 +22,7 @@ function metadata_oninit() {
                     s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\">" + configuration.metadataconstraints[key][j] + "</option>";
                 }
             }
-            if (!found) {
+            if ((!found) && (metadata[key] !== undefined)) {
                 //value not in constraints but it has been set anyway, add it to the list
                 s = s + "<option value=\"" + metadata[key] + "\" selected=\"selected\">" + metadata[key] + "</option>";
             }
@@ -44,10 +44,36 @@ function metadata_oninit() {
 
 function metadata_addinput() {
     var i = metadatafields + newfields;
-    newfields++; 
-    var s = "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"\" /></td><td class=\"value\"><input id=\"metavalue" + i + "\" value=\"\" /></td></tr>\n";
+    newfields++;
+    var s = "<tr><td class=\"key\"><input id=\"metakey" + i + "\" value=\"\" onchange=\"metadata_changekey(" + i + ")\" /></td><td class=\"value\"><input id=\"metavalue" + i + "\" value=\"\" /></td></tr>\n";
     s = s + "<tr id=\"metadataplaceholder\"></tr>";
     $('#metadataplaceholder')[0].outerHTML = s;
+}
+
+function metadata_changekey(i) {
+    //triggered when a new key has been entered (onChange)
+    var key = $('#metakey'+i).val();
+    if ((configuration.metadataconstraints) && (configuration.metadataconstraints[key])) {
+        var value = $('#metavalue'+i).val();
+        if (value === "") {
+            var s = "<select id=\"metavalue" + i +"\">"; //TODO: refactor overlap with metadata_oninit into separate function
+            var found = false;
+            for (j = 0; j < configuration.metadataconstraints[key].length; j++) {
+                if (configuration.metadataconstraints[key][j] == metadata[key]) {
+                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\" selected=\"selected\">" + configuration.metadataconstraints[key][j] + "</option>";
+                    found = true;
+                } else {
+                    s = s + "<option value=\"" + configuration.metadataconstraints[key][j] + "\">" + configuration.metadataconstraints[key][j] + "</option>";
+                }
+            }
+            if ((!found) && (metadata[key] !== undefined)) {
+                //value not in constraints but it has been set anyway, add it to the list
+                s = s + "<option value=\"" + metadata[key] + "\" selected=\"selected\">" + metadata[key] + "</option>";
+            }
+            s = s + "</select>";
+            $('#metavalue' + i)[0].outerHTML = s;
+        }
+    }
 }
 
 function metadata_submit() {
