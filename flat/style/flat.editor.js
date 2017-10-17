@@ -662,6 +662,8 @@ function showeditor(element) {
                     var preselectcorrectionclass = "";
                     if (annotation.incorrection) {
                         preselectcorrectionclass = annotations[annotation.incorrection].class;
+                    } else if ((annotation.targets.length == 1) && (structure[annotation.targets[0]].incorrection)) {
+                        preselectcorrectionclass = annotations[structure[annotation.targets[0]].incorrection].class;
                     }
                     if (annotation.hassuggestions) {
                         //The annotation has suggestions (for correction)
