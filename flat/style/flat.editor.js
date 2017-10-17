@@ -1501,7 +1501,7 @@ function build_queries(addtoqueue) {
                 if (editdata[i].correctionclass == ""){
                     //delete a correction and restore the original
                     action = "DELETE";
-                    query += "DELETE correction OF " + editdata[i].correctionset + " WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\""; //might not be specific enough? use ID instead
+                    query += "DELETE correction OF " + editdata[i].correctionset + " WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\" RESTORE ORIGINAL"; //might not be specific enough? use ID instead
                     returntype = "ancestor-focus";
                     //set target expression
                     if (editdata[i].targets.length > 0) {
@@ -1515,8 +1515,6 @@ function build_queries(addtoqueue) {
                         });
                         query += forids;
                     }
-                    //restore the original
-
                 } else {
                     action = "EDIT";
                     query += "EDIT correction OF " + editdata[i].correctionset + " WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\" WITH class \"" + escape_fql_value(editdata[i].correctionclass)  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence; //might not be specific enough? use ID instead
