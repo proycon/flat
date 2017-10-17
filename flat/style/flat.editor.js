@@ -747,6 +747,7 @@ function showeditor(element) {
                     //set default edit form (seteditform will be called later to affect the interface)
                     if (editforms.correction) {
                         editdataitem.editform = 'correction';
+                        editdataitem.oldcorrectionclass = preselectcorrectionclass;
                     } else if (editforms.direct) {
                         editdataitem.editform = 'direct';
                     } else if (editforms.alternative) {
@@ -1257,13 +1258,14 @@ function gather_changes() {
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
             editdata[i].changed = true;
         }
-        if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim())) {
+        if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && ($('#editform' + i + 'correctionclass').val().trim() != editdata[i].oldcorrectionclass)) {
             //edit of correction class only, affects existing correction
             editdata[i].correctionclasschanged = true;
             editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
             editdata[i].correctionset = $('#editformcorrectionset').val().trim();
-            if (!editdata[i].correctionclass) {
+            if ((!editdata[i].correctionclass) && (editdata[i].oldcorrectionclass == "")) {
                 throw "Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered";
+                //if oldcorrectionclass is set we have an explicit removal of a correction
             }
             if ($('#editfield' + i) && ($('#editfield' + i).val() == editdata[i].class) && ($('#editfield' + i).val() != 'undefined') ) {
                 editdata[i].oldclass = editdata[i].class; //will remain equal
@@ -1496,21 +1498,41 @@ function build_queries(addtoqueue) {
                 }
             }
             if ((editdata[i].correctionclasschanged) && (!editdata[i].respan)) {
-                //TODO: this will change ALL corrections under the element, too generic
-                action = "EDIT";
-                query += "EDIT correction OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
-                returntype = "ancestor-focus";
-                //set target expression
-                if (editdata[i].targets.length > 0) {
-                    query += " IN";
-                    var forids = ""; //jshint ignore:line
-                    editdata[i].targets.forEach(function(t){
-                        if (forids) {
-                            forids += " ,";
-                        }
-                        forids += " ID " + t;
-                    });
-                    query += forids;
+                if (editdata[i].correctionclass == ""){
+                    //delete a correction and restore the original
+                    action = "DELETE";
+                    query += "DELETE correction OF " + editdata[i].correctionset + " WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\""; //might not be specific enough? use ID instead
+                    returntype = "ancestor-focus";
+                    //set target expression
+                    if (editdata[i].targets.length > 0) {
+                        query += " IN";
+                        var forids = ""; //jshint ignore:line
+                        editdata[i].targets.forEach(function(t){
+                            if (forids) {
+                                forids += " ,";
+                            }
+                            forids += " ID " + t;
+                        });
+                        query += forids;
+                    }
+                    //restore the original
+
+                } else {
+                    action = "EDIT";
+                    query += "EDIT correction OF " + editdata[i].correctionset + " WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\" WITH class \"" + escape_fql_value(editdata[i].correctionclass)  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence; //might not be specific enough? use ID instead
+                    returntype = "ancestor-focus";
+                    //set target expression
+                    if (editdata[i].targets.length > 0) {
+                        query += " IN";
+                        var forids = ""; //jshint ignore:line
+                        editdata[i].targets.forEach(function(t){
+                            if (forids) {
+                                forids += " ,";
+                            }
+                            forids += " ID " + t;
+                        });
+                        query += forids;
+                    }
                 }
             } else if ((editdata[i].type == "t") && (editdata[i].text === "")) {
                 if (editdata[i].editform == "new") continue;
