@@ -660,6 +660,9 @@ function showeditor(element) {
                         s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button><br />";
                     }
                     var preselectcorrectionclass = "";
+                    if (annotation.incorrection) {
+                        preselectcorrectionclass = annotations[annotation.incorrection].class;
+                    }
                     if (annotation.hassuggestions) {
                         //The annotation has suggestions (for correction)
                         //
@@ -703,7 +706,7 @@ function showeditor(element) {
                     }
 
                     //Add edit form buttons (direct edit (D), correction (C), new (N), alternative (A))
-                    editformdata = addeditforms();
+                    editformdata = addeditforms(preselectcorrectionclass);
                     editformcount = editformdata[1];
                     s = s + editformdata[0];
 

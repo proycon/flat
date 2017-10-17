@@ -31,8 +31,8 @@ function metadata_oninit() {
 
     metadatafields = i;
     newfields = 0;
-    if (configuration.autoaddmetadata) {
-        Object.keys(configuration.autoaddmetadata).forEach(function(key){
+    if (configuration.autometadata) {
+        Object.keys(configuration.autometadata).forEach(function(key){
             if (!(key in metadata)) {
                 s = s + metadata_addfield(key,metadatafields+newfields);
                 newfields++;
