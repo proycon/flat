@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^login/?$', flat.views.login, name='login'),
     url(r'^logout/?$', flat.views.logout, name='logout'),
     url(r'^account/', include('django.contrib.auth.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls if VERSION[0] >= 2 else include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^register/?$', flat.views.register, name='register'),
     url(r'^download/pub/(?P<docid>[\w\d\-_\.]+)\.folia\.xml/?$', flat.views.pub_download, name='download'),
@@ -38,7 +38,6 @@ urlpatterns = [
     url(r'^pub/(?P<configuration>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.pub_query, name='query'), #generic query function
     url(r'^(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.query, name='query'), #generic query function
     # url(r'^flat/', include('flat.foo.urls')),
-
 ]
 
 if VERSION[0] == 1 and VERSION[1] < 8: #Django <1.8
