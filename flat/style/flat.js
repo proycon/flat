@@ -724,11 +724,12 @@ function auto_grow(element) {
 
 function sort_targets(targets) {
     //Sort a list of target IDs (words only) so that they are in proper order of appearance
+    //TODO: implement better common ancestors algorithm
     var sameparent = false;
     if ((targets.length > 0) && (structure[targets[0]]) && (structure[targets[0]].parent) && (structure[structure[targets[0]].parent].structure)) {
         sameparent = structure[targets[0]].parent;
         for (var i = 1; i < targets.length; i++) {
-            if (structure[targets[0]].parent != sameparent) {
+            if (structure[targets[i]].parent != sameparent) {
                 sameparent = false;
                 break;
             }
@@ -751,7 +752,7 @@ function sort_targets(targets) {
         });
     }
     if (sortedtargets.length != targets.length) {
-        throw "Error, unable to sort targets, expected " + targets.length + ", got " + sortedtargets.length;
+        throw "Error, unable to sort targets, expected " + targets.length + ", got " + sortedtargets.length + ", sameparent=" + sameparent;
     }
     return sortedtargets;
 }
