@@ -304,7 +304,7 @@ this tool also has been turned into a converter that can be plugged into FLAT, a
 Public/anonymous upload for third-party applications
 -------------------------------------------------------
 
-If the ``ALLOWPUBLICUPLOAD`` parameter is set to ``True`` in your configuration, then FLAT enables an web-API endpoint
+If the ``ALLOWPUBLICUPLOAD`` parameter is set to ``True`` in your configuration, then FLAT enables a web-API endpoint
 where third-party applications can upload FoLiA documents and load them in any of available FLAT configurations. The
 uploaded documents are not publicly browsable but are identified by their URL, so sharing the URL enables everybody to
 view and edit that particular document. Note that these URLs are completely separate (recognisable by ``/pub/`` in the
