@@ -558,6 +558,11 @@ def pub_upload(request):
     else:
         return fatalerror(request, "Method denied",403)
 
+@csrf_exempt
+def config(request):
+    return HttpResponse(json.dumps({ "configurations": settings.CONFIGURATIONS, "defaultconfiguration": settings.DEFAULTCONFIGURATION, "defaultmode": settings.DEFAULTMODE, "allowpublicupload": settings.ALLOWPUBLICUPLOAD, "allowregistration": settings.ALLOWREGISTRATION } ), content_type="application/json")
+
+
 @login_required
 def addnamespace(request):
     if request.method == 'POST':

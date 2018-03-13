@@ -300,6 +300,27 @@ http://pynlpl.readthedocs.io/en/latest/folia.html>`_. An example of such a conve
 columned format for a particular annotation task, can be found `here <https://github.com/proycon/parseme-support>`_,
 this tool also has been turned into a converter that can be plugged into FLAT, as described in the previous section.
 
+-------------------------------------------------------
+Public/anonymous upload for third-party applications
+-------------------------------------------------------
+
+If the ``ALLOWPUBLICUPLOAD`` parameter is set to ``True`` in your configuration, then FLAT enables an web-API endpoint
+where third-party applications can upload FoLiA documents and load them in any of available FLAT configurations. The
+uploaded documents are not publicly browsable but are identified by their URL, so sharing the URL enables everybody to
+view and edit that particular document. Note that these URLs are completely separate (recognisable by ``/pub/`` in the
+URL) from the documents in the authenticated user workspaces, for which this principle does not apply.
+
+To upload a document, issue a HTTP POST with request on ``/pub/upload`` with Content-Type ``multipart/form-data``
+(i.e. a regular HTTP file upload), and with the following fields:
+
+* ``file``, the contents of the file you want to upload (mandatory)
+* ``inputformat``, optional parameter indicating the input type, this is only relevant when your FLAT installation has an automatic converter installed to convert it to FoLiA.
+* ``configuration``, the configuration you would like to open FLAT in (i.e. usually corresponding with a particular annotation task). You can query ``/config`` to get a JSON representation of all possible configurations and their settings. If not set, the default of the FLAT installation will be chosen automatically.
+* ``mode``, the mode you would like to open FLAT in (viewer, editor, etc). If not set, the default of the FLAT installation will be chosen automatically.
+
+
+
+
 
 
 

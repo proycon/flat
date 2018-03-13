@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^$', flat.views.index, name='index'),
     url(r'^index/?$', flat.views.index, name='index'),
     url(r'^pub/?$', flat.views.pub, name='pub'),
+    url(r'^config/?$', flat.views.config, name='config'),
     url(r'^index/(?P<namespace>[\w\d\-_\./@]+)/?$', flat.views.index, name='index'),
     url(r'^login/?$', flat.views.login, name='login'),
     url(r'^logout/?$', flat.views.logout, name='logout'),
