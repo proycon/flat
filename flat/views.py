@@ -250,16 +250,17 @@ def login(request):
         password = request.POST['password']
         request.session['configuration'] = request.POST['configuration']
         user = django.contrib.auth.authenticate(username=username, password=password)
+        base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
         if user is not None:
             if user.is_active:
                 django.contrib.auth.login(request, user)
                 # Redirect to a success page.
                 if 'next' in request.POST:
-                    return redirect("/" + request.POST['next'])
+                    return redirect(base_prefix + "/" + request.POST['next'])
                 elif 'next' in request.GET:
-                    return redirect("/" + request.GET['next'])
+                    return redirect(base_prefix + "/" + request.GET['next'])
                 else:
-                    return redirect("/")
+                    return redirect(base_prefix + "/")
             else:
                 # Return a 'disabled account' error message
                 return render(request, 'login.html', {'error': "This account is disabled","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS , 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" } )
@@ -274,24 +275,26 @@ def logout(request):
     if 'configuration' in request.session:
         del request.session['configuration']
     django.contrib.auth.logout(request)
-    return redirect("/login")
+    base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
+    return redirect(base_prefix + "/login")
 
 
 def register(request):
     if hasattr(settings, 'ALLOWREGISTRATION') and not settings.ALLOWREGISTRATION:
         return HttpResponseForbidden("Registration disabled")
 
+    base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
     if request.method == 'POST':
         form = django.contrib.auth.forms.UserCreationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-            return HttpResponseRedirect("/login/")
+            return HttpResponseRedirect(base_prefix +"/login/")
     else:
         form = django.contrib.auth.forms.UserCreationForm()
     return render(request, "register.html", {
         'form': form,
         'version': settings.VERSION,
-        'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
+        'base_prefix':  base_prefix
     })
 
 def fatalerror(request, e,code=404):
@@ -442,12 +445,13 @@ def filemanagement(request):
                 except Exception as e:
                     return fatalerror(request,e)
 
+            base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
             if targetnamespace:
-                return HttpResponseRedirect("/index/" + targetnamespace )
+                return HttpResponseRedirect(base_prefix + "/index/" + targetnamespace )
             elif namespace:
-                return HttpResponseRedirect("/index/" + namespace )
+                return HttpResponseRedirect(base_prefix + "/index/" + namespace )
             else:
-                return HttpResponseRedirect("/")
+                return HttpResponseRedirect(base_prefix + "/")
 
         else:
             return fatalerror(request, "No mode specified",403)
@@ -525,10 +529,11 @@ def upload_helper(request, namespace, configuration=None, mode=None):
     else:
         docid = response['docid']
         logger.info("Succesfully uploaded " + docid + "(namespace=" + namespace+")")
+        base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
         if namespace == "pub":
-            return HttpResponseRedirect("/" + mode + "/pub/" + configuration + "/" + docid  )
+            return HttpResponseRedirect(base_prefix + "/" + mode + "/pub/" + configuration + "/" + docid  )
         else:
-            return HttpResponseRedirect("/" + mode + "/" + namespace + "/" + docid  )
+            return HttpResponseRedirect(base_prefix + "/" + mode + "/" + namespace + "/" + docid  )
 
 @login_required
 def upload(request):
@@ -568,6 +573,7 @@ def config(request):
 
 @login_required
 def addnamespace(request):
+    base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         newdirectory = request.POST['newdirectory'].replace('/','').replace('..','.').replace(' ','').replace('&','')
@@ -579,9 +585,9 @@ def addnamespace(request):
             if 'error' in response and response['error']:
                 return fatalerror(request, response['error'],403)
             elif namespace:
-                return HttpResponseRedirect("/index/" + namespace + '/' + newdirectory  )
+                return HttpResponseRedirect(base_prefix + "/index/" + namespace + '/' + newdirectory  )
             else:
-                return HttpResponseRedirect("/index/" + newdirectory  )
+                return HttpResponseRedirect(base_prefix + "/index/" + newdirectory  )
         else:
             return fatalerror(request, "Permission denied",403)
     else:
