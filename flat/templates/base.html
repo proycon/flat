@@ -4,26 +4,27 @@
         <meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8"/>
         <meta name="author" content="Maarten van Gompel" />
         <title>FoLiA Linguistic Annotation Tool</title>
-        <script type="text/javascript" src="/style/jquery-3.1.0.min.js"></script>
-        <script type="text/javascript" src="/style/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/style/jquery-3.1.0.min.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/style/jquery-ui.min.js"></script>
         {% if namespace == "testflat" and docid != "manual" %}
-            <link rel="StyleSheet" href="/style/qunit-1.17.1.css" type="text/css" />
-            <script type="text/javascript" src="/style/qunit-1.17.1.js"></script>
-            <script type="text/javascript" src="/style/testflat.js"></script>
+            <link rel="StyleSheet" href="{{base_prefix}}/style/qunit-1.17.1.css" type="text/css" />
+            <script type="text/javascript" src="{{base_prefix}}/style/qunit-1.17.1.js"></script>
+            <script type="text/javascript" src="{{base_prefix}}/style/testflat.js"></script>
         {% endif %}
-        <link rel="StyleSheet" href="/style/jquery-ui.min.css" type="text/css" />
-        <link rel="StyleSheet" href="/style/flat.css" type="text/css" />
-        <script type="text/javascript" src="/style/foliaspec.js"></script>
-        <script type="text/javascript" src="/style/folia.js"></script>
-        <script type="text/javascript" src="/style/flat.js"></script>
+        <link rel="StyleSheet" href="{{base_prefix}}/style/jquery-ui.min.css" type="text/css" />
+        <link rel="StyleSheet" href="{{base_prefix}}/style/flat.css" type="text/css" />
+        <script type="text/javascript" src="{{base_prefix}}/style/foliaspec.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/style/folia.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/style/flat.js"></script>
         {% block head %}
         {% endblock %}
         {% if mode %}
-        <link rel="StyleSheet" href="/style/flat.{{ mode }}.css" type="text/css" />
-        <script type="text/javascript" src="/style/flat.{{ mode }}.js"></script>
+        <link rel="StyleSheet" href="{{base_prefix}}/style/flat.{{ mode }}.css" type="text/css" />
+        <script type="text/javascript" src="{{base_prefix}}/style/flat.{{ mode }}.js"></script>
         {% endif %}
         {% if docid and not fatalerror %}
         <script type="text/javascript">
+            base_prefix = "{{ base_prefix|safe }}";
             configuration_id = "{{ configuration_id|safe }}";
             configuration = {{ configuration_json|safe }};
             username = "{{ username|safe }}";
@@ -79,9 +80,9 @@
                 <ul>
                         {% for mode, modename in modes %}
                         {% if namespace == "pub" %}
-                        <li><a href="/{{ mode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a></li>
+                        <li><a href="{{base_prefix}}/{{ mode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a></li>
                         {% else %}
-                        <li><a href="/{{ mode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a></li>
+                        <li><a href="{{base_prefix}}/{{ mode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a></li>
                         {% endif %}
                         {% endfor %}
                 </ul>
@@ -93,9 +94,9 @@
             </nav>
             </div>
             {% if docid %}
-                <span class="title"><img src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> {{ docid }}</span>
+                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> {{ docid }}</span>
                 {% else %}
-                <span class="title"><img src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool</span>
+                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool</span>
             {% endif %}
             <div class="right">
             <ul>
@@ -105,14 +106,14 @@
             </ul>
             <nav>
             <ul>
-            <li><a href="/">Document Index</a></li>
+                <li><a href="{{base_prefix}}/">Document Index</a></li>
             <li>{{ username }}
                 <ul>
                 {% if isadmin %}
-                <li><a href="/admin/">Administation</a></li>
+                <li><a href="{{base_prefix}}/admin/">Administation</a></li>
                 {% endif %}
-                <li><a href="/account/password_change/">Change password</a></li>
-                <li><a href="/logout/">Log out</a></li>
+                <li><a href="{{base_prefix}}/account/password_change/">Change password</a></li>
+                <li><a href="{{base_prefix}}/logout/">Log out</a></li>
                 </ul>
             </li>
             </ul>
@@ -142,11 +143,11 @@
 
         <div id="wait">
             <span class="msg">{{ waitmessage }}</span>
-            <img src="/style/loader.gif" alt="processing" />
+            <img src="{{base_prefix}}/style/loader.gif" alt="processing" />
         </div>
 
         <div id="footer">
-            <a href="http://proycon.github.io/folia"><strong>FoLiA Linguistic Annotation Tool</strong></a> ({{ version }}) - by Maarten van Gompel - Centre for Language and Speech Technology - Radboud University Nijmegen
+            <a href="https://proycon.github.io/folia"><strong>FoLiA Linguistic Annotation Tool</strong></a> ({{ version }}) - by Maarten van Gompel - Centre for Language and Speech Technology - Radboud University Nijmegen
         </div>
     {% endif %}
     </body>

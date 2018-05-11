@@ -128,7 +128,7 @@ function metadata_submit() {
         $('#wait').show();
         $.ajax({
             type: 'POST',
-            url: "/" + namespace + "/"+ docid + "/query/",
+            url: base_prefix + "/" + namespace + "/"+ docid + "/query/",
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },

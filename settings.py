@@ -316,12 +316,19 @@ MEDIA_URL = 'http://flat.science.ru.nl/usermedia/' #not used currently by FLAT
 # Example: "/var/www/example.com/static/"
 STATIC_ROOT = BASE_DIR + '/flat/static/'
 
+
+#If you don't run at the document root of your webserver/virtual host, set BASE_PREFIX to your URL prefix (no trailing slash), e.g BASE_PREFIX = "/flat"
+#leave empty in all other scenarios
+BASE_PREFIX = ""
+if BASE_PREFIX: FORCE_SCRIPT_NAME = BASE_PREFIX
+
+
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = BASE_PREFIX + '/static/'
 
 STYLE_ROOT = BASE_DIR + '/flat/style/'
-STYLE_URL = '/style/'
+STYLE_URL = BASE_PREFIX + '/style/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -340,7 +347,7 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-LOGIN_URL = "/login/" #don't change this
+LOGIN_URL = BASE_PREFIX + "/login/" #don't change this
 
 
 

@@ -1052,7 +1052,7 @@ function showhistory() {
     $('#wait').show();
     $.ajax({
         type: 'GET',
-        url: "/editor/" + namespace + "/"+ docid + "/history/",
+        url: base_prefix + "/editor/" + namespace + "/"+ docid + "/history/",
         contentType: "application/json",
         headers: {'X-sessionid': sid },
         processData: true,
@@ -1085,7 +1085,7 @@ function revert(commithash) {
     $('#wait').show();
     $.ajax({
         type: 'GET',
-        url: "/editor/" + namespace + "/"+ docid + "/revert/" + commithash,
+        url: base_prefix + "/editor/" + namespace + "/"+ docid + "/revert/" + commithash,
         contentType: "application/json",
         headers: {'X-sessionid': sid },
         //processData: false,
@@ -1915,9 +1915,9 @@ function editor_submit(addtoqueue) {
 
     var url;
     if (namespace == "pub") {
-        url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+        url = base_prefix + "/pub/" + configuration_id + "/"+ docid + "/query/";
     } else {
-        url = "/" + namespace + "/"+ docid + "/query/";
+        url = base_prefix + "/" + namespace + "/"+ docid + "/query/";
     }
 
     if ((namespace != "testflat") || (docid == "manual")) {  //tests will be handled by different ajax submission
@@ -2001,9 +2001,9 @@ function console_submit(savefunction) {
 
     var url;
     if (namespace == "pub") {
-        url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+        url = base_prefix + "/pub/" + configuration_id + "/"+ docid + "/query/";
     } else {
-        url = "/" + namespace + "/"+ docid + "/query/";
+        url = base_prefix + "/" + namespace + "/"+ docid + "/query/";
     }
 
     $.ajax({
@@ -2049,7 +2049,7 @@ function saveversion() {
     $('#wait').show();
     $.ajax({
         type: 'GET',
-        url: "/editor/" + namespace + "/"+ docid + "/save/",
+        url: base_prefix + "/editor/" + namespace + "/"+ docid + "/save/",
         contentType: "application/json",
         headers: {'X-sessionid': sid },
         data: {'message': $('#versionlabel').val() },
@@ -2175,9 +2175,9 @@ function editor_oninit() {
         $('#wait').show();
         var url;
         if (namespace == "pub") {
-            url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+            url = base_prefix + "/pub/" + configuration_id + "/"+ docid + "/query/";
         } else {
-            url = "/" + namespace + "/"+ docid + "/query/";
+            url = base_prefix + "/" + namespace + "/"+ docid + "/query/";
         }
         queries = [];
         queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());

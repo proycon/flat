@@ -1110,7 +1110,7 @@ function viewer_ontimer() {
        $.ajax({
             type: 'GET',
             headers: {'X-sessionid': sid },
-            url: "/viewer/" + namespace + "/"+ docid + "/poll/",
+            url: base_prefix + "/viewer/" + namespace + "/"+ docid + "/poll/",
             success: function(data) {
                 update(data);
             },
@@ -1388,7 +1388,7 @@ function viewer_oninit() {
 
         $.ajax({
             type: 'POST',
-            url: "/" + namespace + "/"+ docid + "/query/",
+            url: base_prefix + "/" + namespace + "/"+ docid + "/query/",
             contentType: "application/json",
             //processData: false,
             headers: {'X-sessionid': sid },

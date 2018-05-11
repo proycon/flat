@@ -2,10 +2,10 @@
 
 {% block head %}
 <!-- dependencies -->
-<link rel="StyleSheet" href="/style/flat.viewer.css" type="text/css" />
-<script type="text/javascript" src="/style/flat.viewer.js"></script> 
-<link rel="stylesheet" href="/style/treeview.css" type="text/css" />
-<script type="text/javascript" src="/style/svg-tree-drawer.js"></script> 
+<link rel="StyleSheet" href="{{base_prefix}}/style/flat.viewer.css" type="text/css" />
+<script type="text/javascript" src="{{base_prefix}}/style/flat.viewer.js"></script>
+<link rel="stylesheet" href="{{base_prefix}}/style/treeview.css" type="text/css" />
+<script type="text/javascript" src="{{base_prefix}}/style/svg-tree-drawer.js"></script>
 {% endblock %}
 
 {% block js %}
@@ -89,7 +89,7 @@ initialcorrectionset = '{{ initialcorrectionset }}';
     </div>
     <p>Here you can declare a new type of linguistic annotation, by choosing the type and pointing it to a valid FoLiA Set Definition that defines what classes (e.g. label/tag set) is to be used.</p>
     <label>Annotation Type:</label> <select id="newdeclarationannotationtype"></select><br />
-    <label>Set Definition URL:</label> <input id="newdeclarationset" /> 
+    <label>Set Definition URL:</label> <input id="newdeclarationset" />
     <div class="buttoncontainer">
         <input id="newdeclarationsubmit" type="submit" value="Add declaration" class="button" />
     </div>

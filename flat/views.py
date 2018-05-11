@@ -40,6 +40,7 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
     else:
         authenticated = False
     return {
+            'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "",
             'configuration_id': configuration,
             'configuration': settings.CONFIGURATIONS[configuration],
             'configuration_json': json.dumps(settings.CONFIGURATIONS[configuration]),

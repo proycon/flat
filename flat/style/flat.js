@@ -395,9 +395,9 @@ function loadcontent(perspective, ids, start, end, extracallback) {
 
     var url;
     if (namespace == "pub") {
-        url = "/pub/" + configuration_id + "/"+ docid + "/query/";
+        url = base_prefix + "/pub/" + configuration_id + "/"+ docid + "/query/";
     } else {
-        url = "/" + namespace + "/"+ docid + "/query/";
+        url = base_prefix + "/" + namespace + "/"+ docid + "/query/";
     }
 
 

@@ -2,14 +2,14 @@
 
 
 {% block main %}
-<img id="logo" src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" />
+<img id="logo" src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" />
 
 <div class="dialog">
     <h3>Upload</h3>
     <p>
     Here you can upload a new FoLiA document to the editor:
     </p>
-    <form action="/pub/upload/" enctype="multipart/form-data" method="post">
+    <form action="{{base_prefix}}/pub/upload/" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <label>Select file:</label> <input type="file" name="file" /><br/>
         <label>Configuration:</label> <select name="configuration">

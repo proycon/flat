@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block main %}
-<img id="logo" src="/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" />
+<img id="logo" src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" />
 <div id="logindialog" class="dialog">
     <h3>Log in</h3>
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
-    <form action="/login/" method="post">
+    <form action="{{base_prefix}}/login/" method="post">
     <label>Username:</label> <input name="username" /><br />
     <label>Password:</label> <input type="password" name="password" /><br/>
     <label>Configuration:</label> <select name="configuration">
@@ -22,7 +22,7 @@
     <div class="buttoncontainer">
         <input class="button" type="submit" value="Log in" />
         <span class="helptext">
-         ({% if allowregistration %} no account yet? <a href="/register/">Register here</a> |{% endif %} <a href="/account/password_reset/">Forgot password?</a>)
+         ({% if allowregistration %} no account yet? <a href="{{base_prefix}}/register/">Register here</a> |{% endif %} <a href="{{base_prefix}}/account/password_reset/">Forgot password?</a>)
         </span>
     </div>
     {% csrf_token %}

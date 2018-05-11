@@ -2,7 +2,7 @@
 
 {% block head %}
 <!-- dependencies -->
-<link rel="StyleSheet" href="/style/flat.editor.css" type="text/css" />
+<link rel="StyleSheet" href="{{base_prefix}}/style/flat.editor.css" type="text/css" />
 {% endblock %}
 
 {% block menu %}
@@ -25,7 +25,7 @@
         <select id="editoraddablefields">
         </select>
         <button id="editoraddfield">+</button></span>
-        
+
         <span id="editortargets">Targets:
         <select id="editortargetlist">
         </select>
