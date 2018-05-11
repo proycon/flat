@@ -113,6 +113,7 @@ def docserveerror(e, d=None):
     elif isinstance(e, Exception):
         # we don't handle other exceptions, raise!
         raise e
+    d['base_prefix'] = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
     return d
 
 
@@ -261,12 +262,12 @@ def login(request):
                     return redirect("/")
             else:
                 # Return a 'disabled account' error message
-                return render(request, 'login.html', {'error': "This account is disabled","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS , 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION} )
+                return render(request, 'login.html', {'error': "This account is disabled","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS , 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" } )
         else:
             # Return an 'invalid login' error message.
-            return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION} )
+            return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" } )
     else:
-        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, "version": settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION})
+        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, "version": settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" })
 
 
 def logout(request):
@@ -290,6 +291,7 @@ def register(request):
     return render(request, "register.html", {
         'form': form,
         'version': settings.VERSION,
+        'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
     })
 
 def fatalerror(request, e,code=404):
@@ -297,7 +299,7 @@ def fatalerror(request, e,code=404):
     if isinstance(e, Exception):
         response = render(request,'base.html', docserveerror(e))
     else:
-        response = render(request,'base.html', {'fatalerror': str(e)})
+        response = render(request,'base.html', {'fatalerror': str(e),'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""})
     response.status_code = code
     return response
 
@@ -380,11 +382,11 @@ def index(request, namespace=""):
     else:
         parentdir = ""
 
-    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'recursivedirs': recursivedirs, 'subdirs': subdirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'allowcopy': request.user.has_perm('auth.allowcopy'), 'allowdelete': request.user.has_perm('auth.allowdelete'),'version': settings.VERSION})
+    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'recursivedirs': recursivedirs, 'subdirs': subdirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'allowcopy': request.user.has_perm('auth.allowcopy'), 'allowdelete': request.user.has_perm('auth.allowdelete'),'version': settings.VERSION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""})
 
 def pub(request):
     if hasattr(settings,'ALLOWPUBLICUPLOAD') and settings.ALLOWPUBLICUPLOAD:
-        return render(request, 'pub.html', {'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username,"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION})
+        return render(request, 'pub.html', {'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username,"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""})
     else:
         return fatalerror(request, "Public anonymous write permission denied",403)
 
