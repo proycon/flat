@@ -202,7 +202,7 @@ function forallannotations(callback) {
 function forspanannotations(structure_id, callback) {
     /* Calls a function for all span annotations layered in a structural element, NOT span
      * annotation applying over a structural element! */
-    if ((structure[structure_id]) && (structure[structure_id].annotations)) {
+    if ((structure[structure_id]) && (structure[structure_id].spanannotations)) {
         structure[structure_id].spanannotations.forEach(function(annotation_id){
             if (annotations[annotation_id]) {
                 callback(annotations[annotation_id]);
