@@ -1635,7 +1635,9 @@ function build_queries(addtoqueue) {
                 }
                 if ((editdata[i].respan) && (action != "SUBSTITUTE")) { //isspan && editdata[i].id && (action == "EDIT")) {
                     //we edit a span annotation, edittargets reflects the new span:
-                    if (editdata[i].targets.length > 0) {
+                    if (editdata[i].targets.length === 0) {
+                        query += " RESPAN NONE";
+                    } else if (editdata[i].targets.length > 0) {
                         query += " RESPAN ";
                         var forids = "";
                         editdata[i].targets.forEach(function(t){
