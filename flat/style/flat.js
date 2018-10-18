@@ -756,7 +756,7 @@ function sort_targets(targets) {
         if($.inArray(el, uniquetargets) === -1) uniquetargets.push(el);
     });
     if (sortedtargets.length != uniquetargets.length) {
-        throw "Error, unable to sort targets, expected " + targets.length + ", got " + sortedtargets.length + ", sameparent=" + sameparent;
+        throw "Error, unable to sort targets, expected " + uniquetargets.length + ", got " + sortedtargets.length + ", sameparent=" + sameparent;
     }
     return sortedtargets;
 }
