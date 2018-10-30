@@ -1239,6 +1239,10 @@ function highlight(data) {
 
 
 function treenode(annotation, selected_id) {
+    //Self-recursive function to compute the tree structure that is
+    //passed to the treeviewer.
+    //This is the variant for syntax annotation.
+    //See treenode_structure() for structure annotation
     var node = {'label': annotation.class, children: [] };
 	if (annotation.id === selected_id) {
 		node.class = "selected";
@@ -1262,22 +1266,12 @@ function treenode(annotation, selected_id) {
     return node;
 }
 
-function treeview(selected_id, ignoreselection) {
-    //find the root
-    $('#treeview').show();
-	$('#treeview').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
-    $('#treeview').draggable();
-    var root = annotations[selected_id];
-    while (root.parentspan) {
-         root = annotations[root.parentspan];
-    }
-    var treedata = treenode(root, !ignoreselection ? selected_id : "");
-    treedata.extended = true;
-    var tree = new TreeDrawer( document.getElementById('tree'), treedata);
-    tree.draw();
-}
 
 function treenode_structure(structureelement, type, selected_id) {
+    //Self-recursive function to compute the tree structure that is
+    //passed to the treeviewer.
+    //This is the variant for structural annotation. See treenode() for syntax annotation
+
     var node = {'label': structureelement.class, children: [] };
 	if (structureelement.id === selected_id) {
 		node.class = "selected";
@@ -1304,6 +1298,21 @@ function treenode_structure(structureelement, type, selected_id) {
     return node;
 }
 
+function treeview(selected_id, ignoreselection) {
+    //find the root
+    $('#treeview').show();
+	$('#treeview').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
+    $('#treeview').draggable();
+    var root = annotations[selected_id];
+    while (root.parentspan) {
+         root = annotations[root.parentspan];
+    }
+    var treedata = treenode(root, !ignoreselection ? selected_id : "");
+    treedata.extended = true;
+    var tree = new TreeDrawer( document.getElementById('tree'), treedata);
+    tree.draw();
+}
+
 function treeview_structure(selected_id, ignoreselection) {
     //find the root
     $('#treeview').show();
@@ -1318,6 +1327,8 @@ function treeview_structure(selected_id, ignoreselection) {
 }
 
 function viewer_oninit() {
+    //Called on initialisation of the viewer
+
     closewait = false; //to notify called we'll handle it ourselves
 
 
