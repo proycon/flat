@@ -5,6 +5,9 @@
 .. image:: http://applejack.science.ru.nl/lamabadge.php/flat
    :target: http://applejack.science.ru.nl/languagemachines/
 
+.. image:: https://zenodo.org/badge/15584383.svg
+   :target: https://zenodo.org/badge/latestdoi/15584383
+
 *****************************************
 FLAT - FoLiA Linguistic Annotation Tool
 *****************************************
