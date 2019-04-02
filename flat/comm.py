@@ -1,18 +1,13 @@
 import sys
-if sys.version < '3':
-    from urllib import urlencode
-    from urllib2 import urlopen, Request
-    from StringIO import StringIO
-else:
-    from urllib.parse import urlencode
-    from urllib.request import urlopen, Request
-    from io import BytesIO as StringIO
+from urllib.parse import urlencode
+from urllib.request import urlopen, Request
+from io import BytesIO as StringIO
 from django.conf import settings
 import json
 import requests
 
 
-REQUIREFOLIADOCSERVE = '0.6'
+REQUIREFOLIADOCSERVE = '0.7'
 
 def checkversion(version):
     """Checks foliadocserve version, returns 1 if the document is newer than the library, -1 if it is older, 0 if it is equal"""

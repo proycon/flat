@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirec
 import django.contrib.auth
 from django.conf import settings
 
-from pynlpl.formats import fql
+from folia import fql
 
 import flat.comm
 import flat.users
