@@ -1,4 +1,4 @@
-/home/proycon/work/folia/schemas/folia.yml = {
+foliaspec = {
     "annotationtype": [
         "TEXT",
         "TOKEN",
