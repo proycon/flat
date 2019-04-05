@@ -248,14 +248,24 @@ function rendertextclass() {
     }
 }
 
+function getprocessor_helper(processor_id, processors) {
+    return processors.find(function(processor){
+        if (processor.id == processor_id) {
+            return processor;
+        } else if (processor.processors) {
+            var result = getprocessor_helper(processor_id, processor.processors);
+            if (result !== undefined) {
+                result.parent = processor;
+                return result;
+            }
+        }
+    });
+}
+
 function getprocessor(processor_id) {
     /* Get processor by ID */
     if ((provenance) && (provenance.processors)) {
-        return provenance.processors.find(function(processor){
-            if (processor.id == processor_id) {
-                return processor;
-            }
-        });
+        return getprocessor_helper(processor_id, provenance.processors);
     } else {
         return {};
     }

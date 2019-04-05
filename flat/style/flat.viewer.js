@@ -540,7 +540,17 @@ function renderannotation(annotation, norecurse, extended) {
     if (annotatordetails) {
         if (annotation.processor) {
             var processor = getprocessor(annotation.processor);
-            s = s + "<br/><span class=\"annotator\">" + processor.name + " (" + processor.type + ")</span>";
+            s2 = "";
+            while (processor) {
+                if (s2) s2 += "; ";
+                s2 = s2 + processor.name + " (" + processor.type + ")";
+                if (processor.parent) {
+                    processor = processor.parent;
+                } else {
+                    processor = null;
+                }
+            }
+            s = s + "<br/><span class=\"annotator\">" + s2 + "</span>";
         } else if (annotation.annotator) {
             s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
         }
