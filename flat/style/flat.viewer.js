@@ -543,7 +543,11 @@ function renderannotation(annotation, norecurse, extended) {
             s2 = "";
             while (processor) {
                 if (s2) s2 += "; ";
-                s2 = s2 + processor.name + " (" + processor.type + ")";
+                s2 = s2 + processor.name;
+                if (processor.version) {
+                    s2 = s2 + " version " + processor.version;
+                }
+                s2 = s2 + " (" + processor.type + ")";
                 if (processor.parent) {
                     processor = processor.parent;
                 } else {

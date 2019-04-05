@@ -249,17 +249,21 @@ function rendertextclass() {
 }
 
 function getprocessor_helper(processor_id, processors) {
-    return processors.find(function(processor){
-        if (processor.id == processor_id) {
-            return processor;
-        } else if (processor.processors) {
-            var result = getprocessor_helper(processor_id, processor.processors);
-            if (result !== undefined) {
-                result.parent = processor;
-                return result;
+    var found = null;
+    processors.forEach(function(processor){
+        if (found === null) {
+            if (processor.id == processor_id) {
+                found = processor;
+            } else if (processor.processors) {
+                var result = getprocessor_helper(processor_id, processor.processors);
+                if (result) {
+                    result.parent = processor;
+                    found = result;
+                }
             }
         }
     });
+    return found;
 }
 
 function getprocessor(processor_id) {
