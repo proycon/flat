@@ -54,6 +54,7 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
             'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
             'provenance': json.dumps(doc['provenance']) if 'provenance' in doc else "{}",
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
+            'provenance': json.dumps(doc['provenance']) if 'provenance' in doc else "{}",
             'excludeclasses': json.dumps(settings.CONFIGURATIONS[configuration]['excludeclasses']) if 'excludeclasses' in settings.CONFIGURATIONS[configuration] else "{}",
             'metadata': json.dumps(doc['metadata']) if 'metadata' in doc else "{}",
             'toc': json.dumps(doc['toc']) if 'toc' in doc else "[]",
@@ -130,7 +131,7 @@ def initdoc(request, namespace, docid, mode, template, context=None, configurati
         return fatalerror(request, "Specified configuration does not exist")
     flatargs = {
         'setdefinitions': True,
-        'declarations': True,
+        'declarations': True, #implies provenance as well
         'metadata': True,
         'toc': True,
         'slices': request.GET.get('slices',settings.CONFIGURATIONS[configuration].get('slices','p:25,s:100')), #overriden either by configuration or by user
