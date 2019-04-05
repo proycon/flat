@@ -38,6 +38,7 @@
             {% endif %}
             {% if docdeclarations %}
             initialdeclarationlist = {{ docdeclarations|safe }};
+            provenance = {{ provenance|safe }};
             {% endif %}
             {% if setdefinitions %}
             setdefinitions = {{ setdefinitions|safe }};

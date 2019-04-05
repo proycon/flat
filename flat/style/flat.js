@@ -248,6 +248,19 @@ function rendertextclass() {
     }
 }
 
+function getprocessor(processor_id) {
+    /* Get processor by ID */
+    if ((provenance) && (provenance.processors)) {
+        return provenance.processors.find(function(processor){
+            if (processor.id == processor_id) {
+                return processor;
+            }
+        });
+    } else {
+        return {};
+    }
+}
+
 function setupcorrection(correction) {
     //TODO: refactor
     if (!((correction.original) || (correction.new) || (correction.current) || (correction.suggestions))) {

@@ -537,8 +537,13 @@ function renderannotation(annotation, norecurse, extended) {
         if (annotation.class != "current") s = s + "<br />";
         s = s + "<span class=\"text\">" + annotation.phon + "</span>";
     }
-    if (annotatordetails && annotation.annotator) {
-        s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
+    if (annotatordetails) {
+        if (annotation.processor) {
+            var processor = getprocessor(annotation.processor);
+            s = s + "<br/><span class=\"annotator\">" + processor.name + " (" + processor.type + ")</span>";
+        } else if (annotation.annotator) {
+            s = s + "<br/><span class=\"annotator\">" + annotation.annotator + " (" + annotation.annotatortype + ")</span>";
+        }
         if (annotation.datetime) {
             s = s + "<br/><span class=\"datetime\">" + annotation.datetime +"</span>";
         }
@@ -1086,7 +1091,7 @@ function viewer_onupdate() {
     $('div.persp').removeClass('persp');
     if ((perspective) && (perspective != "document") && ((!perspective_ids) || (perspective_ids.length > 1))) {
         $('div.' + perspective).addClass('persp');
-        var perspitems = $('.persp')
+        var perspitems = $('.persp');
         if (slicesize[perspective]) {
             var page = $('#pagemenu').val();
             perspitems.each(function(idx){
