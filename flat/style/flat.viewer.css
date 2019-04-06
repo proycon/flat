@@ -190,6 +190,11 @@ div#info td {
     font-style: italic;
     color: #2d7431;
 }
+.annotatortype {
+    font-style: italic;
+    color: #2d7431;
+    font-size: 80%;
+}
 .datetime {
     font-style: italic;
     color: #72742d;

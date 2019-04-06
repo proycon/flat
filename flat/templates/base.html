@@ -4,23 +4,23 @@
         <meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8"/>
         <meta name="author" content="Maarten van Gompel" />
         <title>FoLiA Linguistic Annotation Tool</title>
-        <script type="text/javascript" src="{{base_prefix}}/style/jquery-3.1.0.min.js"></script>
-        <script type="text/javascript" src="{{base_prefix}}/style/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/script/jquery-3.1.0.min.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/script/jquery-ui.min.js"></script>
         {% if namespace == "testflat" and docid != "manual" %}
-            <link rel="StyleSheet" href="{{base_prefix}}/style/qunit-1.17.1.css" type="text/css" />
-            <script type="text/javascript" src="{{base_prefix}}/style/qunit-1.17.1.js"></script>
-            <script type="text/javascript" src="{{base_prefix}}/style/testflat.js"></script>
+            <link rel="StyleSheet" href="{{base_prefix}}/script/qunit-1.17.1.css" type="text/css" />
+            <script type="text/javascript" src="{{base_prefix}}/script/qunit-1.17.1.js"></script>
+            <script type="text/javascript" src="{{base_prefix}}/script/testflat.js"></script>
         {% endif %}
         <link rel="StyleSheet" href="{{base_prefix}}/style/jquery-ui.min.css" type="text/css" />
         <link rel="StyleSheet" href="{{base_prefix}}/style/flat.css" type="text/css" />
-        <script type="text/javascript" src="{{base_prefix}}/style/foliaspec.js"></script>
-        <script type="text/javascript" src="{{base_prefix}}/style/folia.js"></script>
-        <script type="text/javascript" src="{{base_prefix}}/style/flat.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/script/foliaspec.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/script/folia.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/script/flat.js"></script>
         {% block head %}
         {% endblock %}
         {% if mode %}
         <link rel="StyleSheet" href="{{base_prefix}}/style/flat.{{ mode }}.css" type="text/css" />
-        <script type="text/javascript" src="{{base_prefix}}/style/flat.{{ mode }}.js"></script>
+        <script type="text/javascript" src="{{base_prefix}}/script/flat.{{ mode }}.js"></script>
         {% endif %}
         {% if docid and not fatalerror %}
         <script type="text/javascript">

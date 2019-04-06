@@ -330,12 +330,16 @@ STATIC_URL = BASE_PREFIX + '/static/'
 STYLE_ROOT = BASE_DIR + '/flat/style/'
 STYLE_URL = BASE_PREFIX + '/style/'
 
+SCRIPT_ROOT = BASE_DIR + '/flat/script/'
+SCRIPT_URL = BASE_PREFIX + '/script/'
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     BASE_DIR + '/flat/style/',
+    BASE_DIR + '/flat/script/',
 )
 
 
