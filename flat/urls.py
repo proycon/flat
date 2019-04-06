@@ -47,10 +47,12 @@ if VERSION[0] == 1 and VERSION[1] < 8: #Django <1.8
 if settings.DEBUG:
     if VERSION[0] > 1 or VERSION[1] >= 6: #Django 1.6
         urlpatterns += static(settings.STYLE_URL, document_root=settings.STYLE_ROOT)
+        urlpatterns += static(settings.SCRIPT_URL, document_root=settings.SCRIPT_ROOT)
     else:
         #Django 1.3
         urlpatterns += patterns('',
             (r'^style/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STYLE_ROOT}),
+            (r'^script/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SCRIPT_ROOT}),
         )
 
 
