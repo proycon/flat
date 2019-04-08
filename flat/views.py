@@ -16,6 +16,7 @@ from django.conf import settings
 
 from folia import fql
 
+from flat import VERSION
 import flat.comm
 import flat.users
 from flat.converters import get_converters, inputformatchangefunction
@@ -205,6 +206,9 @@ def query_helper(request,namespace, docid, configuration=None):
 
         if query != "GET" and query[:4] != "CQL " and query[:4] != "META":
             #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
+            #first resolve variables to dummies (real ones will be handled server-side) as it won't be valid FQL otherwise
+            query = query.replace("$FOLIADOCSERVE_PROCESSOR", "PROCESSOR name \"foliadocserve\"")
+            query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\"")
             try:
                 query = fql.Query(query)
             except fql.SyntaxError as e:

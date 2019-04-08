@@ -5,6 +5,7 @@ from io import BytesIO as StringIO
 from django.conf import settings
 import json
 import requests
+from flat import VERSION
 
 
 REQUIREFOLIADOCSERVE = '0.7'
@@ -36,25 +37,18 @@ def setsid(request, sid):
     request.add_header('X-sessionid', sid)
 
 def query(request, query, parsejson=True, **extradata):
+    query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\"")
     data = {'query':query}
     for key, value in extradata.items():
         if isinstance(value, bool):
             data[key] = int(value)
         else:
             data[key] = value
-    if sys.version < '3':
-        #encode for python 2
-        for key, value in data.items():
-            if isinstance(value,unicode): #pylint: disable=undefined-variable
-                data[key] = value.encode('utf-8')
 
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/query/")
     setsid(docservereq, getsid(request))
     f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
-    if sys.version < '3':
-        contents = unicode(f.read(),'utf-8') #pylint: disable=undefined-variable
-    else:
-        contents = str(f.read(),'utf-8')
+    contents = str(f.read(),'utf-8')
     f.close()
     if contents and contents[0] in ('{','['):
         #assume this is json
@@ -83,10 +77,7 @@ def get( request, url, parsejson=True):
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + url) #or opener.open()
     setsid(docservereq, getsid(request))
     f = urlopen(docservereq)
-    if sys.version < '3':
-        contents = unicode(f.read(),'utf-8')
-    else:
-        contents = str(f.read(),'utf-8')
+    contents = str(f.read(),'utf-8')
     f.close()
     if contents and contents[0] in ('{','['):
         #assume this is json

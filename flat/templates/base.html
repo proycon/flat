@@ -24,6 +24,7 @@
         {% endif %}
         {% if docid and not fatalerror %}
         <script type="text/javascript">
+            version = "{{ version|safe }}";
             base_prefix = "{{ base_prefix|safe }}";
             configuration_id = "{{ configuration_id|safe }}";
             configuration = {{ configuration_json|safe }};

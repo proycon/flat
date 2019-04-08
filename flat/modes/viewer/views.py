@@ -8,10 +8,7 @@ import flat.users
 from flat.views import initdoc, query
 import json
 import sys
-if sys.version < '3':
-    from urllib2 import URLError
-else:
-    from urllib.error import URLError
+from urllib.error import URLError
 
 
 

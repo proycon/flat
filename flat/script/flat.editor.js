@@ -1478,6 +1478,8 @@ function build_queries(addtoqueue) {
         useclause = "USE " + namespace + "/" + docid;
     }
 
+    var processorclause = "PROCESSOR name \"" + escape_fql_value(username) + "\" type manual IN $FLAT_PROCESSOR IN $FOLIADOCSERVE_PROCESSOR"; //the processor placeholders will be expanded and replaced server-side
+
     //gather edits that changed, and sort targets
     sentdata = []; //will be used in repeatmode
     for (var i = 0; i < editfields;i++) {  //jshint ignore:line
@@ -1488,7 +1490,7 @@ function build_queries(addtoqueue) {
             //compose query
             var action = "";
             var returntype = "target";
-            var query = useclause + " ";
+            var query = useclause + " " + processorclause + " ";
             var higherorder_subqueries_done = false;
             if (editdata[i].isspan) {
                 if (editdata[i].id) {
@@ -1521,7 +1523,7 @@ function build_queries(addtoqueue) {
                     if (editdata[i].oldcorrectionclass !== "") {
                         query += "WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\" "
                     }
-                    query += "WITH class \"" + escape_fql_value(editdata[i].correctionclass)  + "\" annotator \"" + username + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence; //might not be specific enough? use ID instead
+                    query += "WITH class \"" + escape_fql_value(editdata[i].correctionclass)  + "\" datetime now confidence " + editdata[i].confidence; //might not be specific enough? use ID instead
                     returntype = "ancestor-focus";
                     //set target expression
                     if (editdata[i].targets.length > 0) {
@@ -1546,7 +1548,7 @@ function build_queries(addtoqueue) {
                 action = "DELETE";
                 query += "DELETE w ID " + editdata[i].targets[0];
                 if (editdata[i].editform == "correction") {
-                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" datetime now confidence " + editdata[i].confidence + ")";
                 }
                 returntype = "ancestor-focus";
             } else {
@@ -1589,12 +1591,12 @@ function build_queries(addtoqueue) {
                     if (editdata[i].insertright) { //APPEND (insertion)
                         query += " w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //PREPEND (insertion)
                         query += " w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else { //normal behaviour
                         query += " " +editdata[i].type;
@@ -1604,24 +1606,24 @@ function build_queries(addtoqueue) {
                             query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
                         } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
-                            query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
                             //no deletion
-                            query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     }
                 } else { //substitute
                     if (editdata[i].insertright) { //insertright as substitute
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //insertleft as substitue
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\"  datetime now confidence " + editdata[i].confidence;
                         }
                     } if (editdata[i].dosplit) {
                         parts = editdata[i].text.split(" ");
@@ -1656,7 +1658,7 @@ function build_queries(addtoqueue) {
 
                 //set AS expression
                 if ((editdata[i].editform == "correction") && ((!editdata[i].correctionclasschanged) || (editdata[i].respan))) {
-                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + escape_fql_value(editdata[i].correctionclass) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now confidence " + editdata[i].confidence + ")";
+                    query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + escape_fql_value(editdata[i].correctionclass) + "\" datetime now confidence " + editdata[i].confidence + ")";
                 } else if (editdata[i].editform == "alternative") {
                     query += " (AS ALTERNATIVE)";
                 }
@@ -1772,7 +1774,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                 if (edititem.children[j].oldvalue) {
                     if (edititem.children[j].value) {
                         //edit
-                        query = "EDIT " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
+                        query = "EDIT " + edititem.children[j].type + " WHERE text = \"" + escape_fql_value(edititem.children[j].oldvalue) + "\" WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" datetime now " + targetselector;
                     } else {
                         //delete
                         returntype = "ancestor-target";
@@ -1780,7 +1782,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     }
                 } else if (edititem.children[j].value !== "") {
                     //add
-                    query = "ADD " + edititem.children[j].type + " WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" annotator \"" + escape_fql_value(username) + "\" annotatortype \"manual\" datetime now " + targetselector;
+                    query = "ADD " + edititem.children[j].type + " WITH text \"" + escape_fql_value(edititem.children[j].value) + "\" datetime now " + targetselector;
                 }
             } else if ((edititem.children[j].type == 'feat')) {
                 //formulate query for features
