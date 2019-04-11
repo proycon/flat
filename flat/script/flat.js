@@ -248,16 +248,18 @@ function rendertextclass() {
     }
 }
 
-function getprocessor_helper(processor_id, processors) {
+function getprocessor_helper(processor_id, processors, parent) {
     var found = null;
     processors.forEach(function(processor){
+        if (parent) {
+            processor.parent = parent;
+        }
         if (found === null) {
             if (processor.id == processor_id) {
                 found = processor;
             } else if (processor.processors) {
-                var result = getprocessor_helper(processor_id, processor.processors);
+                var result = getprocessor_helper(processor_id, processor.processors, processor);
                 if (result) {
-                    result.parent = processor;
                     found = result;
                 }
             }
