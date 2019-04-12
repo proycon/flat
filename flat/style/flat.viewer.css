@@ -8,8 +8,11 @@ div.div, div.p {
     display: block;
     margin-bottom: 5px;
 }
-div.s, div.w,div.part,div.s div.quote,div.p div.quote {
+div.s, div.w,div.hiddenw,div.part,div.s div.quote,div.p div.quote {
     display: inline-block;
+}
+div.hiddenw {
+    color: #000;
 }
 span.ab { /*annotation box*/
     display: none;
@@ -249,6 +252,7 @@ div.correctionchild {
 
 div.deleted span.lbl {
     text-decoration: line-through;
+    text-decoration-color: line-through;
     color: red;
 }
 div.suggestinsertion span.lbl {

@@ -774,7 +774,7 @@ function sort_targets(targets) {
         }
     } else {
         //fallback: sort targets by simply looking at the order they are rendered in  the interface
-        $('.w').each(function(){
+        $('.w, .hiddenw').each(function(){
             if (targets.indexOf(this.id) > -1) {
                 sortedtargets.push(this.id);
             }
