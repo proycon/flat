@@ -781,7 +781,7 @@ function sort_targets(targets) {
         });
     }
     var uniquetargets = [];
-    $.each(names, function(i, el) {
+    $.each(targets, function(i, el) {
         if($.inArray(el, uniquetargets) === -1) uniquetargets.push(el);
     });
     if (sortedtargets.length != uniquetargets.length) {
