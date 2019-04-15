@@ -169,7 +169,8 @@ div#viewer th {
 }
 div#info th span.setname {
     font-weight: normal;
-    font-size: 8pt;
+    font-size: 7pt;
+    color: #a42727;
     padding-left: 10px;
     overflow-wrap: break-word;
     word-wrap: break-word;

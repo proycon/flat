@@ -3,7 +3,7 @@ div#editor {
     display: none;
     width: 540px;
     padding: 10px;
-    background: #cdcdcd; 
+    background: #cdcdcd;
     color: #333;
     border: #30677c 1px solid;
     border-radius: 15px;
@@ -41,8 +41,9 @@ div#editor tr:hover th {
 }
 div#editor th span.setname {
     font-weight: normal;
-    font-size: 8pt;
     padding-left: 10px;
+    font-size: 7pt;
+    color: #a42727;
 }
 div#editor td {
     width: 70%;
@@ -167,7 +168,7 @@ div#newdeclaration, div#history, div#console {
     display: none;
     width: 520px;
     padding: 10px;
-    background: #cdcdcd; 
+    background: #cdcdcd;
     color: #333;
     border: #30677c 1px solid;
     border-radius: 15px;
