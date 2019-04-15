@@ -7,7 +7,6 @@ import json
 import requests
 from flat import VERSION
 
-
 REQUIREFOLIADOCSERVE = '0.7'
 
 def checkversion(version):
@@ -37,7 +36,7 @@ def setsid(request, sid):
     request.add_header('X-sessionid', sid)
 
 def query(request, query, parsejson=True, **extradata):
-    query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\"")
+    query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\" src \"" + request.build_absolute_uri() + "\"")
     data = {'query':query}
     for key, value in extradata.items():
         if isinstance(value, bool):
