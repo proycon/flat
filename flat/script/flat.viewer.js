@@ -1257,7 +1257,7 @@ function highlight(data) {
 }
 
 
-function treenode(annotation, selected_id) {
+function treenode(annotation, selected_id, handled) {
     //Self-recursive function to compute the tree structure that is
     //passed to the treeviewer.
     //This is the variant for syntax annotation.
@@ -1266,22 +1266,49 @@ function treenode(annotation, selected_id) {
 	if (annotation.id === selected_id) {
 		node.class = "selected";
 	}
+
+    var subtrees = {}; //map targer IDs to subtrees
+    //populate subtrees
     if ((annotation.annotations) && (annotation.annotations.length > 0)) {
         for (var i = 0; i < annotation.annotations.length; i++) {
-            if (annotations[annotation.annotations[i]].type == "su") {
-                node.children.push(treenode(annotations[annotation.annotations[i]], selected_id));
+            var subannotation = annotations[annotation.annotations[i]];
+            if (subannotation.type == "su") {
+                var subtargets = sort_targets(subannotation.scope);
+                subtargets.forEach(function(subtarget){
+                    subtrees[subtarget] = annotation.annotations[i];
+                });
             }
         }
-    } else {
-		var targets = sort_targets(annotation.scope);
-		targets.forEach(function(target){
-			forannotations(target,function(annotation2){
-				if ((annotation2.type == "t") && (annotation2.class == "current")) {
-					node.children.push({'label':annotation2.text}); //add leaf node with word text
-				}
-			});
-		});
     }
+    console.log(annotation.id);
+    console.log(subtrees);
+
+    //collect all targets in scope
+    var targets = sort_targets(annotation.scope);
+    if (handled === undefined) {
+        handled = {}; //keep track of subtrees we already handled
+    }
+    //iterate over all targets
+    targets.forEach(function(target){
+        //do we have a subtree or a leaf?
+        if (subtrees[target] !== undefined) {
+            //subtree
+            if (handled[target] === undefined) {
+                node.children.push(treenode(annotations[subtrees[target]], selected_id, handled));
+                handled[target] = true;
+            }
+        } else {
+            //leaf
+			forannotations(target,function(subannotation){
+                if (handled[target] === undefined) {
+                    if ((subannotation.type == "t") && (subannotation.class == "current")) {
+                        node.children.push({'label':subannotation.text}); //add leaf node with word text
+                        handled[target] = true;
+                    }
+                }
+			});
+        }
+    });
     return node;
 }
 
