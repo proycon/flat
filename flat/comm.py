@@ -36,7 +36,7 @@ def setsid(request, sid):
     request.add_header('X-sessionid', sid)
 
 def query(request, query, parsejson=True, **extradata):
-    query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\" src \"" + request.build_absolute_uri() + "\"")
+    query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\" src \"" + request.build_absolute_uri("/") + "\"") #also another instance in views.py
     data = {'query':query}
     for key, value in extradata.items():
         if isinstance(value, bool):

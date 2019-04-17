@@ -207,7 +207,7 @@ def query_helper(request,namespace, docid, configuration=None):
             #parse query on this end to catch syntax errors prior to sending, should be fast enough anyway
             #first resolve variables to dummies (real ones will be handled server-side) as it won't be valid FQL otherwise
             query = query.replace("$FOLIADOCSERVE_PROCESSOR", "PROCESSOR name \"foliadocserve\"")
-            query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\"")
+            query = query.replace("$FLAT_PROCESSOR", "PROCESSOR name \"FLAT\" version \"" + VERSION + "\" host \"" + request.get_host() + "\" src \"" + request.build_absolute_uri("/") + "\"") #also another instance in comm.py
             try:
                 query = fql.Query(query)
             except fql.SyntaxError as e:
