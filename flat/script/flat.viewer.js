@@ -592,6 +592,25 @@ function renderannotation(annotation, norecurse, extended) {
         });
         s = s + "</div>";
     }
+    if (annotation.type == "relation") {
+        s = s + "<div class=\"relationinfo\">Links: ";
+        for (i = 0; i < annotation.children.length; i++) {
+            if (annotation.children[i].type) {
+                if (annotation.children[i].type == "xref") {
+                    s = s + "<span class=\"linkreference\">→";
+                    if (annotation.children[i].linktype) {
+                        s = s + " Type: " + annotation.children[i].linktype;
+                    }
+                    if (annotation.children[i].t) {
+                        s = s + " Text: " + annotation.children[i].t;
+                    }
+                    s = s + " ID: " + annotation.children[i].idref;
+                    s = s + "</span>";
+                }
+            }
+        }
+        s = s + "</div>";
+    }
     if (annotation.children) {
         //Render higher order annotation
         for (i = 0; i < annotation.children.length; i++) {
@@ -600,6 +619,8 @@ function renderannotation(annotation, norecurse, extended) {
                     s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": " + annotation.children[i].value + "</span>";
                 } else if (annotation.children[i].type == "feat") {
                     s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + " " + folia_subset_label(annotation.set, annotation.children[i].subset) + ": <span class=\"class\">" + folia_feature_label(annotation.set, annotation.children[i].subset, annotation.children[i].class) + "</span></span>";
+                } else if (annotation.children[i].type == "relation") {
+                    s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": <div class=\"higherorderrelation\">" + renderannotation(annotation.children[i]) + "</div></span>";
                 }
             }
         }
