@@ -270,6 +270,9 @@ function renderhigherorderfields(index, annotation) {
     if (folia_accepts(annotation.type, 'feat')) {
         s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
+    if (folia_accepts(annotation.type, 'relation')) {
+        s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'relation')\">Add Relation</li>";
+    }
     if (folia_isspan(annotation.type)) {
         var spanroles = folia_spanroles(annotation.type);
         for (var j in spanroles) {
