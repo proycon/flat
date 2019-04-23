@@ -821,7 +821,7 @@ $(function() {
             //Request content to be loaded (will be a call to server) and eventually calls update()
             loadcontent(perspective, perspective_ids, perspective_start, perspective_end);
             if (failedsetdefinitions.length > 0) {
-                alert("Warning, there are one or more set definitions that could not be loaded:" + JSON.stringify(failedsetdefinitions));
+                alert("Warning, there are one or more set definitions that could not be loaded. We will continue as usual but this may negatively impact the ability to visualise and edit the afflicted set(s). The set definition(s) are:" + failedsetdefinitions);
             }
         }
 
