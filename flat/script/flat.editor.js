@@ -1369,20 +1369,34 @@ function gather_changes() {
                 }
             }
             if (editdata[i].type == 't') {
-                if ((editdata[i].text.indexOf(' ') > 0) && (structure[editedelementid].type == 'w'))  {
+                if ((editdata[i].text.indexOf(' ') > 0) && (structure[editedelementid].type == 'w'))  { //MAYBE TODO: extend for other wrefables?
                     //there is a space in a token! This can mean a number
                     //of things
 
                     //Is the leftmost word the same as the original word?
                     //Then the user wants to do an insertion to the right
                     if (editdata[i].text.substr(0,editdata[i].oldtext.length+1) == editdata[i].oldtext + ' ') {
+                        editdata[i].insertright_type = 'w';
                         editdata[i].insertright = editdata[i].text.substr(editdata[i].oldtext.length+1);
                         editdata[i].text = editdata[i].oldtext;
+                        var l = editdata[i].insertright.length;
+                        if ((l > 2) && (editdata[i].insertright[0] == '~') && (editdata[i].insertright[l-1] == '~')) {
+                            //text between tildes signals a hidden word
+                            editdata[i].insertright_type = 'hiddenw';
+                            editdata[i].insertright = editdata[i].insertright.substr(1, l-2);
+                        }
                     //Is the rightmost word the same as the original word?
                     //Then the user wants to do an insertion to the left
                     } else if (editdata[i].text.substr(editdata[i].text.length -  editdata[i].oldtext.length - 1, editdata[i].oldtext.length + 1) == ' ' + editdata[i].oldtext)  {
+                        editdata[i].insertleft_type = 'w';
                         editdata[i].insertleft = editdata[i].text.substr(0,editdata[i].text.length - editdata[i].oldtext.length - 1);
                         editdata[i].text = editdata[i].oldtext;
+                        var l = editdata[i].insertleft.length;
+                        if ((l > 2) && (editdata[i].insertleft[0] == '~') && (editdata[i].insertleft[l-1] == '~')) {
+                            //text between tildes signals a hidden word
+                            editdata[i].insertleft_type = 'hiddenw';
+                            editdata[i].insertleft = editdata[i].insertleft.substr(1, l-2);
+                        }
                     } else {
                         //Words are different? than the user may want to split
                         //the original token into new ones:
@@ -1592,12 +1606,12 @@ function build_queries(addtoqueue) {
                 if (action != "SUBSTITUTE") {
                     query += action;
                     if (editdata[i].insertright) { //APPEND (insertion)
-                        query += " w";
+                        query += " " + editdata[i].insertright_type;
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //PREPEND (insertion)
-                        query += " w";
+                        query += " " + editdata[i].insertleft_type;
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" datetime now confidence " + editdata[i].confidence;
                         }
@@ -1623,7 +1637,7 @@ function build_queries(addtoqueue) {
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" datetime now confidence " + editdata[i].confidence;
                         }
-                    } else if (editdata[i].insertleft) { //insertleft as substitue
+                    } else if (editdata[i].insertleft) { //insertleft as substitute
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
                             query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\"  datetime now confidence " + editdata[i].confidence;
