@@ -55,6 +55,7 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
             'docdeclarations': json.dumps(doc['declarations']) if 'declarations' in doc else "{}",
             'provenance': json.dumps(doc['provenance']) if 'provenance' in doc else "{}",
             'setdefinitions': json.dumps(doc['setdefinitions']) if 'setdefinitions' in doc else "{}",
+            'failedsetdefinitions': json.dumps(doc['failedsetdefinitions']) if 'failedsetdefinitions' in doc else "[]",
             'provenance': json.dumps(doc['provenance']) if 'provenance' in doc else "{}",
             'excludeclasses': json.dumps(settings.CONFIGURATIONS[configuration]['excludeclasses']) if 'excludeclasses' in settings.CONFIGURATIONS[configuration] else "{}",
             'metadata': json.dumps(doc['metadata']) if 'metadata' in doc else "{}",

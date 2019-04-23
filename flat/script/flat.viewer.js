@@ -593,22 +593,31 @@ function renderannotation(annotation, norecurse, extended) {
         s = s + "</div>";
     }
     if (annotation.type == "relation") {
-        s = s + "<div class=\"relationinfo\">Links: ";
+        s = s + "<div class=\"relationinfo\">";
+        if (annotation.href) {
+            s = s + "Relation target: <a href=\"" + annotation.href + "\">" + annotation.href + "</a>";
+            if (annotation.format) {
+                s = s + " (" + annotation.format + ")";
+            }
+            s = s + "<br/>";
+        }
+        var s2 = "";
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 if (annotation.children[i].type == "xref") {
-                    s = s + "<span class=\"linkreference\">→";
+                    s2 = s2 + "<span class=\"linkreference\">→";
                     if (annotation.children[i].linktype) {
-                        s = s + " Type: " + annotation.children[i].linktype;
+                        s2 = s2 + " Type: " + annotation.children[i].linktype;
                     }
                     if (annotation.children[i].t) {
-                        s = s + " Text: " + annotation.children[i].t;
+                        s2 = s2 + " Text: " + annotation.children[i].t;
                     }
-                    s = s + " ID: " + annotation.children[i].idref;
-                    s = s + "</span>";
+                    s2 = s2 + " ID: " + annotation.children[i].idref;
+                    s2 = s2 + "</span>";
                 }
             }
         }
+        if (s2) s = s + "Link references: " + s2;
         s = s + "</div>";
     }
     if (annotation.children) {

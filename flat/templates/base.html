@@ -43,6 +43,11 @@
             {% endif %}
             {% if setdefinitions %}
             setdefinitions = {{ setdefinitions|safe }};
+            {% if failedsetdefinition %}
+            failedsetdefinitions = {{ failedsetdefinitions|safe }};
+            {% else %}
+            failedsetdefinitions = [];
+            {% endif %}
             {% endif %}
             {% if excludeclasses %}
             excludeclasses = {{ excludeclasses|safe }};

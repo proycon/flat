@@ -820,7 +820,11 @@ $(function() {
             }
             //Request content to be loaded (will be a call to server) and eventually calls update()
             loadcontent(perspective, perspective_ids, perspective_start, perspective_end);
+            if (failedsetdefinitions.length > 0) {
+                alert("Warning, there are one or more set definitions that could not be loaded:" + JSON.stringify(failedsetdefinitions));
+            }
         }
+
         //Delegate to mode-specific callback
         if (function_exists(mode + '_oninit')) {
             f = eval(mode + '_oninit');
