@@ -195,10 +195,10 @@ CONFIGURATIONS = {
     'editformdirect': True, #boolean
 
     #Enable editing as correction
-    'editformcorrection': True, #boolean
+    'editformcorrection': False, #boolean
 
     #Enable editing as alternative
-    'editformalternative': True, #boolean
+    'editformalternative': False, #boolean
 
     #Enable editing as new, this allows for adding multiple or overlapping annotations of the same type
     'editformnew': True, #boolean
