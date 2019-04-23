@@ -33,14 +33,14 @@ function folia_parse(element, ancestors) {
           nextancestors = ancestors.slice(); //copy
       } else {
           nextancestors = [];
-      } 
+      }
       if (element.class) {
           nextancestors.push(element.class);
       }
       for (var i = 0; i < element.elements.length; i++) {
           folia_parse(element.elements[i],nextancestors);
       }
-   } 
+   }
 }
 
 function folia_label(tag, set) {
@@ -166,7 +166,7 @@ function folia_accepts_class(parentclass, childclass) {
                 return true;
             }
         }
-        
+
         //check if the parent element accepts an abstract class that is an ancestor of the child
         if ( (foliaelements[childclass].ancestors) && (foliaelements[parentclass].properties) && (foliaelements[parentclass].properties.accepted_data)) {
             for (var i = 0; i < foliaelements[childclass].ancestors.length; i++) {
@@ -181,7 +181,7 @@ function folia_accepts_class(parentclass, childclass) {
 
 function folia_accepts(parenttag, childtag) {
     /* Is the child element accepted under the parent element? (elements correspond to tags) */
-    if ((parenttag == 'w') && (folia_isspan(childtag))) {
+    if (folia_iswrefable(parenttag) && (folia_isspan(childtag))) {
         return true;
     } else {
         var parentclass = foliatag2class[parenttag];
@@ -190,7 +190,9 @@ function folia_accepts(parenttag, childtag) {
     }
 }
 
-
+function folia_iswrefable(tag) {
+    return tag == 'w' || tag == 'hiddenw' || tag == 'morpheme' || tag == 'phoneme'; //TODO: pull from foliaspec
+}
 
 function folia_spanroles(tag) {
     /* Collect all span annotation roles (tags) for the given span annotation element */
