@@ -243,6 +243,25 @@ CONFIGURATIONS = {
     #'metadataconstraints': {'language': ['fr','en','es'], 'status':['completed','inprogress']},
 
     #'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities", 'changeperspective': false}]
+
+    'converters': [
+        { 'id': 'conllu2folia',
+          'module': 'foliatools.conllu2folia',
+          'function': 'flat_convert',
+          'name': "CONLL-U",
+          'parameter_help': 'Metadata. Set <em>"direction": "rtl"</em> for right-to left languages (JSON syntax without the envelopping curly braces)', #human readable help for parameters
+          'parameter_default': '', #default parameter, JSON syntax without the envelopping {}
+          'inputextensions': ['conllu','conll'],
+        },
+        { 'id': 'rst2folia',
+          'module': 'foliatools.rst2folia',
+          'function': 'flat_convert',
+          'name': "ReStructuredText",
+          'parameter_help': '', #human readable help for parameters
+          'parameter_default': '', #default parameter, JSON syntax without the envelopping {}
+          'inputextensions': ['rst'],
+        },
+    ]
 },
 }
 
