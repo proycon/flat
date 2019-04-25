@@ -308,6 +308,7 @@ QUnit.asyncTest("Unsetting confidence",function(assert){
 });
 QUnit.asyncTest("[As correction] Text Change", function(assert){
     testinit("correction_textchange",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.1.w.2');
     var idx = ui_find('t');
     ui_edit('#editfield' + idx + 'text',"mijn");
@@ -317,6 +318,7 @@ QUnit.asyncTest("[As correction] Text Change", function(assert){
 });
 QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function(assert){
     testinit("correction_textmerge",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.1.w.5');
     var idx = ui_find('t');
     ui_click('#spanselector' + idx);
@@ -329,6 +331,7 @@ QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function
 });
 QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
     testinit("correction_tokenannotationchange",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.6.w.8');
     var idx = ui_find('pos');
     ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");
@@ -338,6 +341,7 @@ QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
 });
 QUnit.asyncTest("[As correction] Word deletion", function(assert){
     testinit("correction_worddelete",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.8.w.10');
     var idx = ui_find('t');
     ui_edit('#editfield' + idx + 'text',"");
@@ -347,6 +351,7 @@ QUnit.asyncTest("[As correction] Word deletion", function(assert){
 });
 QUnit.asyncTest("[As correction] Word split", function(assert){
     testinit("correction_wordsplit",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.12.w.5');
     var idx = ui_find('t');
     ui_edit('#editfield' + idx + 'text',"4 uur");
@@ -356,6 +361,7 @@ QUnit.asyncTest("[As correction] Word split", function(assert){
 });
 QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
     testinit("correction_wordinsertionright",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.12.w.1');
     var idx = ui_find('t');
     ui_edit('#editfield' + idx + 'text',"en we");
@@ -366,6 +372,7 @@ QUnit.asyncTest("[As correction] Word insertion to the right", function(assert){
 
 QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     testinit("correction_wordinsertionleft",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.13.w.12');
     var idx = ui_find('t');
     ui_edit('#editfield' + idx + 'text',"we hoorden");
@@ -376,6 +383,7 @@ QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
 
 QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
     testinit("correction_tokenannotationdeletion",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.8.w.4');
     var idx = ui_find('lemma');
     ui_edit('#editfield' + idx,"");
@@ -386,6 +394,7 @@ QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert)
 
 QUnit.asyncTest("[As correction] Span change", function(assert){
     testinit("correction_spanchange",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.9.w.9');
     var idx = ui_find('entity');
     ui_click('#spanselector' + idx);
@@ -398,6 +407,7 @@ QUnit.asyncTest("[As correction] Span change", function(assert){
 
 QUnit.asyncTest("[As correction] Span deletion", function(assert){
     testinit("correction_spandeletion",assert);
+    if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.9.w.9');
     var idx = ui_find('entity');
     ui_choose('#editfield' + idx,""); //corresponds to empty class, implies deletion
