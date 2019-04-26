@@ -464,9 +464,9 @@ QUnit.asyncTest("Span role edit (respan)",function(assert){
     ui_click('#untitleddoc.p.3.s.1.w.11');
     var idx = ui_find('dependency');
     ui_click('#editform' + idx + 'direct');
-    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
     ui_click('#untitleddoc.p.3.s.1.w.12b');
-    ui_click('#spanselector' + idx + '_0');
+    ui_click('#spanselector' + idx + '_1');
     ui_click('#editorsubmit');
 });
 QUnit.asyncTest("Span role deletion",function(assert){
@@ -474,9 +474,9 @@ QUnit.asyncTest("Span role deletion",function(assert){
     ui_click('#untitleddoc.p.3.s.1.w.11');
     var idx = ui_find('dependency');
     ui_click('#editform' + idx + 'direct');
-    ui_click('#spanselector' + idx + '_0');  //head spanrole
+    ui_click('#spanselector' + idx + '_1');  //head spanrole
     ui_click('#untitleddoc.p.3.s.1.w.12');
-    ui_click('#spanselector' + idx + '_0');
+    ui_click('#spanselector' + idx + '_1');
     ui_click('#editorsubmit');
 });
 QUnit.asyncTest("Adding a new span annotation (dependency) with span roles from scratch",function(assert){
@@ -725,11 +725,11 @@ function testeval(data) {
     } else if ((testname == "feature_delete")) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.w.11/pos/http://ilk.uvt.nl/folia/sets/frog-mbpos-cgn-nonexistant"].children.length, 3);
     } else if ((testname == "spanrole_respan")) {
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 2);
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].targets.length, 2);
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 2, "Testing number of children (span roles)");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[1].targets.length, 2, "Testing number of target word for head span");
     } else if ((testname == "spanrole_delete")) {
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 1);
-        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].type, "dep");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 1,  "Testing number of children (span roles)");
+        globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].type, "dep" ,"Testing class of span role");
     }
 
     console.log("(testeval) (qunit.start)");
