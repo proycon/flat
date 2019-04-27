@@ -3,7 +3,11 @@
     <head>
         <meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8"/>
         <meta name="author" content="Maarten van Gompel" />
-        <title>FoLiA Linguistic Annotation Tool</title>
+        {% if docid %}
+        <title>FLAT :: {{docid }}</title>
+        {% else %}
+        <title>FLAT: FoLiA Linguistic Annotation Tool</title>
+        {% endif %}
         <script type="text/javascript" src="{{base_prefix}}/script/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="{{base_prefix}}/script/jquery-ui.min.js"></script>
         {% if namespace == "testflat" and docid != "manual" %}
@@ -80,9 +84,9 @@
     {% else %}
         <div id="topbar">
             {% if docid %}
-                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool :: <em>{{ docid }}</em></span>
+            <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FLAT <span>::</span> FoLiA Linguistic Annotation Tool <span>::</span> <em>{{ docid }}</em></span>
                 {% else %}
-                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool</span>
+                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FLAT: FoLiA Linguistic Annotation Tool</span>
             {% endif %}
             <div class="menu">
              <nav>
@@ -146,7 +150,7 @@
         </div>
 
         <div id="footer">
-            <a href="https://proycon.github.io/folia"><strong>FoLiA Linguistic Annotation Tool</strong></a> ({{ version }}) - by Maarten van Gompel - Centre for Language and Speech Technology - Radboud University Nijmegen
+            <a href="https://proycon.github.io/folia"><strong>FLAT: FoLiA Linguistic Annotation Tool</strong></a> v{{ version }} - by Maarten van Gompel - Centre for Language and Speech Technology - Radboud University Nijmegen
         </div>
     {% endif %}
     </body>

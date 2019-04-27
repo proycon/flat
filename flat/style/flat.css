@@ -103,9 +103,17 @@ div.buttoncontainer {
     text-align: center;
     color: #cbd9de;
     margin-bottom: 5px;
-    font-size: 110%;
+    font-size: 100%;
     padding-bottom: 2px;
     border-bottom: 1px #333 solid;
+}
+#topbar span.title span {
+    font-size: 90%;
+    color: #999;
+}
+#topbar span.title em {
+    font-size: 110%;
+    color: #6cce6c;
 }
 #topbar span.title img {
     height: 12pt;
