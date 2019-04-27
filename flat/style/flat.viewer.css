@@ -216,6 +216,7 @@ nav li .setname {
     max-width: 150px;
     font-size: 8px;
     font-style: italic;
+    color: #aaa;
 }
 div#id {
     width: 100%;

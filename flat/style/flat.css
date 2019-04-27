@@ -29,14 +29,9 @@ body {
 }
 #topbar li:hover {
     background: #444;
+    border-radius: 5px;
 }
-#topbar .left {
-    float: left;
-    margin-left: 20px;
-}
-#topbar .right {
-    float: right;
-    margin-right: 20px;
+#topbar .menu {
 }
 
 #topbar a {
@@ -103,9 +98,14 @@ div.buttoncontainer {
     text-align: center;
 }
 #topbar span.title {
+    display: block;
     font-weight: bold;
     text-align: center;
     color: #cbd9de;
+    margin-bottom: 5px;
+    font-size: 110%;
+    padding-bottom: 2px;
+    border-bottom: 1px #333 solid;
 }
 #topbar span.title img {
     height: 12pt;
@@ -161,12 +161,14 @@ a:hover {
 }
 #topbar nav ul li:hover > ul {
     position: absolute;
+    left: 0px;
     min-width: 160px;
     display: block;
     background: black;
     padding: 5px;
     padding-left: 10px;
     opacity: 0.9;
+    border-radius: 10px;
 }
 #topbar nav ul li:hover > ul li {
     display: block;
@@ -175,12 +177,15 @@ a:hover {
     padding-right: 10px;
     overflow-wrap: break-word;
     word-wrap: break-word;
+    border-radius: 5px;
 }
 #topbar nav li li {
     display: inline-block;
     list-style-type: none;
     padding-left: 5px;
     padding-right: 5px;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 nav>ul>li {
     font-weight: bold;

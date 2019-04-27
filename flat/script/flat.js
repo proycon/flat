@@ -800,12 +800,14 @@ $(function() {
     //
     //clear any wait screens (needed when user pressed back in browser)
     $('#wait').hide();
+    $('nav>ul>li').mouseenter(function(){
+        $('>ul',this).css('left', mouseX-30);
+    });
+    $('nav>ul>li>ul>li').click(function(){
+        $('>a',this)[0].click();
+    });
     if (typeof(mode) != "undefined") {
         folia_parse(foliaspec, []);
-
-        $('nav>ul>li').mouseenter(function(){
-            $('>ul',this).css('left', mouseX-30);
-        });
 
         //Load the declarations, set definitions
         loaddeclarations(initialdeclarationlist);

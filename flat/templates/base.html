@@ -79,53 +79,45 @@
         <div id="fatalerror">{{fatalerror|safe}}</div>
     {% else %}
         <div id="topbar">
-            <div class="left">
-            <nav>
-                {% if docid %}
-                <ul>
-                <li>Modes
-                <ul>
-                        {% for mode, modename in modes %}
-                        {% if namespace == "pub" %}
-                        <li><a href="{{base_prefix}}/{{ mode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a></li>
-                        {% else %}
-                        <li><a href="{{base_prefix}}/{{ mode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a></li>
-                        {% endif %}
-                        {% endfor %}
-                </ul>
-                </li>
-                {% block menu %}
-                {% endblock %}
-                </ul>
-                {% endif %}
-            </nav>
-            </div>
             {% if docid %}
-                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> {{ docid }}</span>
+                <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool :: <em>{{ docid }}</em></span>
                 {% else %}
                 <span class="title"><img src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" /> FoLiA Linguistic Annotation Tool</span>
             {% endif %}
-            <div class="right">
-            <ul>
-            {% block topbar_right %}
-            {% endblock %}
-            {% if loggedin %}
-            </ul>
-            <nav>
-            <ul>
-                <li><a href="{{base_prefix}}/">Document Index</a></li>
-            <li>{{ username }}
+            <div class="menu">
+             <nav>
                 <ul>
-                {% if isadmin %}
-                <li><a href="{{base_prefix}}/admin/">Administation</a></li>
-                {% endif %}
-                <li><a href="{{base_prefix}}/account/password_change/">Change password</a></li>
-                <li><a href="{{base_prefix}}/logout/">Log out</a></li>
+                    {% if docid %}
+                    <li>Modes
+                    <ul>
+                            {% for mode, modename in modes %}
+                            {% if namespace == "pub" %}
+                            <li><a href="{{base_prefix}}/{{ mode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a></li>
+                            {% else %}
+                            <li><a href="{{base_prefix}}/{{ mode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                    </ul>
+                    </li>
+                    {% block menu %}
+                    {% endblock %}
+                    {% endif %}
+                    {% block topbar_right %}
+                    {% endblock %}
+                    <li><a href="{{base_prefix}}/">Document Index</a></li>
+                    {% if loggedin %}
+                    <li>User: {{ username }}
+                        <ul>
+                            {% if isadmin %}
+                            <li><a href="{{base_prefix}}/admin/">Administation</a></li>
+                            {% endif %}
+                            <li><a href="{{base_prefix}}/account/password_change/">Change password</a></li>
+                            <li><a href="{{base_prefix}}/logout/">Log out</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
-            </li>
-            </ul>
-            </nav>
-            {% endif %}
+             </nav>
             </div>
             <span style="clear: both"></span>
         </div>
