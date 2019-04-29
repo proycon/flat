@@ -217,8 +217,9 @@ def query_helper(request,namespace, docid, configuration=None):
         else:
             needwritepermission = False
 
-    if needwritepermission and configuration != "pub" and not flat.users.models.haswritepermission(request.user.username, namespace, request):
-        return HttpResponseForbidden("Permission denied, no write access")
+    if configuration != "pub":
+        if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace, request):
+            return HttpResponseForbidden("Permission denied, no write access")
 
     query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
     try:
