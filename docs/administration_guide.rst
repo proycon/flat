@@ -318,7 +318,9 @@ To upload a document, issue a HTTP POST with request on ``/pub/upload`` with Con
 * ``configuration``, the configuration you would like to open FLAT in (i.e. usually corresponding with a particular annotation task). You can query ``/config`` to get a JSON representation of all possible configurations and their settings. If not set, the default of the FLAT installation will be chosen automatically.
 * ``mode``, the mode you would like to open FLAT in (viewer, editor, etc). If not set, the default of the FLAT installation will be chosen automatically.
 
-The following example shows how to use this funcionality through ``curl``: ``curl -v -F "mode=editor" -F "file=@/path/to/file"``
+The following example shows how to use this funcionality through ``curl``, in this example FLAT is hosted on ``http://127.0.01:8080/flat``::
+
+   curl -v -F "mode=editor" -F "file=@/path/to/file"`` http://127.0.0.1:8080/flat/pub/upload
 
 This API end-point will respond with a HTTP 302 Redirect response to ``/pub/<CONFIGURATION>/<DOCUMENT_ID>`` after a successful upload, redirecting you to the document.
 The document ID is obtained from the uploaded FoLiA document (as specified in the document), so doesn't necessarily correspond to the filename used during upload.
