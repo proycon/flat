@@ -217,7 +217,7 @@ def query_helper(request,namespace, docid, configuration=None):
         else:
             needwritepermission = False
 
-    if configuration != "pub":
+    if namespace != "pub":
         if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace, request):
             return HttpResponseForbidden("Permission denied, no write access")
 
