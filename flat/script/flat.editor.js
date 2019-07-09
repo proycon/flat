@@ -568,9 +568,9 @@ function showeditor(element) {
                     //Get the human-presentable label for the annotation type
                     label = folia_label(annotation.type, annotation.set);
                     if (annotation.inalternative) {
-                        if (!showalternatives) {
+                        //if (!showalternatives) { //TODO: enable when editing works
                             return;
-                        }
+                        //}
                         label = "Alternative " + label;
                     }
 
