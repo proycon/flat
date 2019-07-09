@@ -175,6 +175,14 @@ div#info th span.setname {
     overflow-wrap: break-word;
     word-wrap: break-word;
 }
+div#info th tt.alt {
+    color: #a999aa;
+    font-weight: normal;
+    font-size: 7pt;
+    padding-left: 10px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
 div#info td {
     width: 55%;
     font-style: italic;
@@ -309,6 +317,10 @@ div#search button {
 }
 .strinfo {
     border: 2px dashed #1765b5;
+}
+.alternative {
+    border: 1px dashed #a817b5;
+    background: #ccc;
 }
 .specialtype{
     display: block;

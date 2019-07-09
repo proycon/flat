@@ -4,6 +4,7 @@ var paintedglobannotations = {}; //target => bool,  target ids for which global 
 var annotationfocus = null;
 var annotatordetails = false; //show annotor details
 var showoriginal = false; //show originals instead of corrections
+var showalternatives = false; //show alternative annotations
 var showdeletions = false; //show deletions
 var hover = null;
 var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from top to bottom
@@ -133,6 +134,15 @@ function renderdeletions() {
                 }
             }
         });
+    }
+}
+
+function togglealternatives() {
+    showalternatives = !showalternatives;
+    if (showalternatives) {
+        $('#togglealternatives').addClass("on");
+    } else {
+        $('#togglealternatives').removeClass("on");
     }
 }
 
@@ -462,12 +472,19 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
         if ((annotation.type != 'str') || ((annotation.type == 'str') && (annotation.id == hoverstr))) { //show strings too but only if they are hovered over
             if ((viewannotations[annotation.type+"/" + annotation.set]) && (annotation.type != "correction"  )) { //non-structural corrections are handled by renderannotation() itself, structural corrections are handled separately after this section
                 var label = folia_label(annotation.type, annotation.set);
+                if (annotation.inalternative) {
+                    if (!showalternatives) return;
+                    label = "Alternative " + label;
+                }
                 var setname = "";
                 if (annotation.set) {
                     setname = annotation.set;
                 }
                 if (setname === "undefined") setname = "";
                 var s = "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+                if (annotation.inalternative) {
+                    s += "<br/><tt class=\"alt\">" + annotation.inalternative +"</tt>";
+                }
 				if ((annotation.type == "su") && (extended)) {
 					s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
 				}
@@ -511,6 +528,9 @@ function renderannotation(annotation, norecurse, extended) {
     //renders the annotation in the details popup
     var s = "";
     var i;
+    if (annotation.inalternative) {
+        s = s + "<div class=\"alternative\">";
+    }
     if (!(((annotation.type == "t") || (annotation.type == "ph")) && (annotation.class == "current"))) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
@@ -656,6 +676,9 @@ function renderannotation(annotation, norecurse, extended) {
                 }
             }
         });
+    }
+    if (annotation.inalternative) {
+        s = s + "</div>";
     }
     return s;
 }
