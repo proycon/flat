@@ -568,9 +568,9 @@ function showeditor(element) {
                     //Get the human-presentable label for the annotation type
                     label = folia_label(annotation.type, annotation.set);
                     if (annotation.inalternative) {
-                        //if (!showalternatives) { //TODO: enable when editing works
+                        if (!showalternatives) {
                             return;
-                        //}
+                        }
                         label = "Alternative " + label;
                     }
 
@@ -1503,6 +1503,9 @@ function build_queries(addtoqueue) {
 
     var processorclause = "PROCESSOR name \"" + escape_fql_value(username) + "\" type manual IN $FLAT_PROCESSOR IN $FOLIADOCSERVE_PROCESSOR"; //the processor placeholders will be expanded and replaced server-side
 
+    var altid = null; //alternative ID
+    var altlayersid = null; //alternative ID
+
     //gather edits that changed, and sort targets
     sentdata = []; //will be used in repeatmode
     for (var i = 0; i < editfields;i++) {  //jshint ignore:line
@@ -1575,7 +1578,7 @@ function build_queries(addtoqueue) {
                 }
                 returntype = "ancestor-focus";
             } else {
-                if ((editdata[i].editform == "new")) {
+                if ((editdata[i].editform == "new") || editdata[i].editform == "alternative") {
                     action = "ADD";
                     if (editdata[i].class === "") continue;
                 } else if (editdata[i].class === "") {
@@ -1674,7 +1677,7 @@ function build_queries(addtoqueue) {
                         query += forids;
                     }
                     returntype = "ancestor-focus";
-                } else if (action == "SUBSTIUTE") {
+                } else if (action == "SUBSTITUTE") {
                     editdata[i].respan = false;
                 }
 
@@ -1682,8 +1685,31 @@ function build_queries(addtoqueue) {
                 //set AS expression
                 if ((editdata[i].editform == "correction") && ((!editdata[i].correctionclasschanged) || (editdata[i].respan))) {
                     query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + escape_fql_value(editdata[i].correctionclass) + "\" datetime now confidence " + editdata[i].confidence + ")";
-                } else if (editdata[i].editform == "alternative") {
-                    query += " (AS ALTERNATIVE)";
+                } else if ((editdata[i].editform == "alternative") && (!editdata[i].inalternative)) {
+                    //Add a new alternative
+                    //alternatives submitted in the same editor submission will land in the same alternative block and therefore be considered dependent.
+                    if (editdata[i].targets.length == 0) {
+                        editor_error("Can't add alternatives without target");
+                        return;
+                    }
+                    if (editdata[i].isspan) {
+                        if (!altlayersid) {
+                            altlayersid = editdata[i].targets[0] + ".alt." + ((Math.random() * 1e9) | 0);
+                        }
+                        query += " (AS ALTERNATIVE ID \"" + altlayersid + "\")";
+                    } else {
+                        if (editdata[i].targets.length > 1) {
+                            editor_error("Can't add alternatives for multiple words at once");
+                            return;
+                        }
+                        if (!altid) {
+                            altid = editdata[i].targets[0] + ".alt." + ((Math.random() * 1e9) | 0);
+                        }
+                        query += " (AS ALTERNATIVE ID \"" + altid + "\")";
+                    }
+                } else if (editdata[i].inalternative) {
+                    //for editing of alternatives
+                    query += " (AS ALTERNATIVE ID \"" + editdata[i].inalternative + "\")";
                 }
 
                 if ((editdata[i].isspan) && (action == "ADD") && (editdata[i].targets.length == 0)) {
@@ -1705,56 +1731,7 @@ function build_queries(addtoqueue) {
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
                 } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
-                    //set target expression
-                    if (editdata[i].targets.length > 0) {
-                        var forids = ""; //jshint ignore:line
-                        editdata[i].targets.forEach(function(t){
-                            if (forids) {
-                                if ((action == "SUBSTITUTE") || (editdata[i].isspan)) {
-                                    forids += " &";
-                                } else {
-                                    forids += " ,";
-                                }
-                            }
-                            forids += " ID " + t;
-                            if (addtoqueue) {
-                                //elements are queued for later submission, highlight them
-                                $('#' + valid(t)).addClass('queued');
-                            }
-                        });
-                        if (!editdata[i].parentspan) {
-                            //normal behaviour
-                            query += " FOR";
-                            if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
-                            query += forids;
-                        } else if ((editdata[i].parentspan) && (action == "ADD")) {
-                            //span element is nested within another
-                            //
-                            query += " SPAN " + forids;
-                            query += " FOR ID " + editdata[i].parentspan;
-
-                            //wrefs from the parent span that are part of the child now have to be removed from the parent
-                            //this has been taken into account in gather_changes() already
-                            //the parentspan span has been adapted accordingly
-                        }
-                    } else if ((editdata[i].isspan) && (action == "ADD")) {
-                        //we are adding a span annotation without targets, use
-                        //scope instead (using ADD.. RESPAN NONE FOR SPAN ID ..
-                        //trick)
-                        var forids = ""; //jshint ignore:line
-                        editdata[i].scope.forEach(function(t){
-                            if (forids) {
-                                forids += " &";
-                            }
-                            forids += " ID " + t;
-                            if (addtoqueue) {
-                                //elements are queued for later submission, highlight them
-                                $('#' + valid(t)).addClass('queued');
-                            }
-                        });
-                        //process higher order queries as subqueries
-                        query += " FOR SPAN " + forids;
-                    }
+                    query += build_target_expression(editdata, i, action, addtoqueue);
                 }
 
             }
@@ -1773,6 +1750,61 @@ function build_queries(addtoqueue) {
         }
     }
     return queries;
+}
+
+function build_target_expression(editdata, i, action, addtoqueue) {
+    var query = "";
+    //set target expression
+    if (editdata[i].targets.length > 0) {
+        var forids = ""; //jshint ignore:line
+        editdata[i].targets.forEach(function(t){
+            if (forids) {
+                if ((action == "SUBSTITUTE") || (editdata[i].isspan)) {
+                    forids += " &";
+                } else {
+                    forids += " ,";
+                }
+            }
+            forids += " ID " + t;
+            if (addtoqueue) {
+                //elements are queued for later submission, highlight them
+                $('#' + valid(t)).addClass('queued');
+            }
+        });
+        if (!editdata[i].parentspan) {
+            //normal behaviour
+            query += " FOR";
+            if ((action == "SUBSTITUTE") || (editdata[i].isspan)) query += " SPAN";
+            query += forids;
+        } else if ((editdata[i].parentspan) && (action == "ADD")) {
+            //span element is nested within another
+            //
+            query += " SPAN " + forids;
+            query += " FOR ID " + editdata[i].parentspan;
+
+            //wrefs from the parent span that are part of the child now have to be removed from the parent
+            //this has been taken into account in gather_changes() already
+            //the parentspan span has been adapted accordingly
+        }
+    } else if ((editdata[i].isspan) && (action == "ADD")) {
+        //we are adding a span annotation without targets, use
+        //scope instead (using ADD.. RESPAN NONE FOR SPAN ID ..
+        //trick)
+        var forids = ""; //jshint ignore:line
+        editdata[i].scope.forEach(function(t){
+            if (forids) {
+                forids += " &";
+            }
+            forids += " ID " + t;
+            if (addtoqueue) {
+                //elements are queued for later submission, highlight them
+                $('#' + valid(t)).addClass('queued');
+            }
+        });
+        //process higher order queries as subqueries
+        query += " FOR SPAN " + forids;
+    }
+    return query;
 }
 
 function build_higherorder_queries(edititem, useclause, build_subqueries) {
