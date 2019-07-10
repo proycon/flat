@@ -1542,9 +1542,9 @@ function build_queries(addtoqueue) {
                     }
                 } else {
                     action = "EDIT";
-                    query += "EDIT correction OF " + editdata[i].correctionset + " "
+                    query += "EDIT correction OF " + editdata[i].correctionset + " ";
                     if (editdata[i].oldcorrectionclass !== "") {
-                        query += "WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\" "
+                        query += "WHERE class = \"" + escape_fql_value(editdata[i].oldcorrectionclass) + "\" ";
                     }
                     query += "WITH class \"" + escape_fql_value(editdata[i].correctionclass)  + "\" datetime now confidence " + editdata[i].confidence; //might not be specific enough? use ID instead
                     returntype = "ancestor-focus";
