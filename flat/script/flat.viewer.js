@@ -138,11 +138,10 @@ function renderdeletions() {
 }
 
 function togglealternatives() {
+    $('#togglealternatives').removeClass("on");
     showalternatives = !showalternatives;
     if (showalternatives) {
         $('#togglealternatives').addClass("on");
-    } else {
-        $('#togglealternatives').removeClass("on");
     }
 }
 

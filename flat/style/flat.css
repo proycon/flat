@@ -28,7 +28,6 @@ body {
     padding-right: 20px;
 }
 #topbar li:hover {
-    background: #444;
     border-radius: 5px;
 }
 #topbar .menu {
@@ -199,11 +198,17 @@ nav>ul>li {
     font-weight: bold;
 }
 
+nav ul ul li:hover {
+    background: #444;
+}
 
 nav ul ul li.on {
     background: #0b470a;
 }
 
+nav ul ul li.on:hover {
+    background: #278525;
+}
 
 
 #document {
