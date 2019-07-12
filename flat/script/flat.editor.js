@@ -1731,6 +1731,7 @@ function build_queries(addtoqueue) {
                 if (editsuggestinsertion) {
                     query += " FOR SPAN ID \"" + editsuggestinsertion + "\"";
                 } else if (!( (editdata[i].isspan && editdata[i].id && (action == "EDIT")) )) { //only if we're not editing an existing span annotation
+                    //build target expression (FOR ...)
                     query += build_target_expression(editdata, i, action, addtoqueue);
                 }
 
