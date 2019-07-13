@@ -810,6 +810,9 @@ $(function() {
     $('nav>ul>li>ul>li').click(function(){
         $('>a',this)[0].click();
     });
+    $('nav>ul>li>ul>li>a').click(function(e){
+        e.stopPropagation();
+    });
     if (typeof(mode) != "undefined") {
         folia_parse(foliaspec, []);
 
