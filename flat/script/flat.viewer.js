@@ -1209,7 +1209,12 @@ function viewer_loadmenus() {
                 state = "";
             }
             label = folia_label(annotationtype, set);
-            viewmenu.push([annotationtype, "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
+            var labelhtml = "<li id=\"annotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleannotationview('" + annotationtype + "', '" + set + "')\">" + label;
+            if (set != "null") {
+                labelhtml += "<span class=\"setname\">" + set + "</span>";
+            }
+            labelhtml += "</a></li>";
+            viewmenu.push([annotationtype, labelhtml]);
             if (globannotationsorder.indexOf(annotationtype) != -1) {
                 if (('initialglobviewannotations' in configuration  ) &&  ((configuration.initialglobviewannotations === true) || (configuration.initialglobviewannotations.indexOf(annotationtype + '/' + set) != -1) || (configuration.initialglobviewannotations.indexOf(annotationtype) != -1))) {
                     viewglobannotations[annotationtype + "/" + set] = true;
@@ -1217,11 +1222,21 @@ function viewer_loadmenus() {
                 } else {
                     state = "";
                 }
-                globmenu.push([annotationtype, "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
+                var glabelhtml = "<li id=\"globannotationtypeview_" +annotationtype+"_" + hash(set) + "\" " + state + "><a href=\"javascript:toggleglobannotationview('" + annotationtype + "', '" + set + "')\">" + label;
+                if (set != "null") {
+                    glabelhtml += "<span class=\"setname\">" + set + "</span>";
+                }
+                glabelhtml += "</a></li>";
+                globmenu.push([annotationtype, glabelhtml]);
             }
         }
         if ((configuration.allowedannotationfocus === true) || (configuration.allowedannotationfocus.indexOf(annotationtype + '/' + set) != -1) || (configuration.allowedannotationfocus.indexOf(annotationtype) != -1)) {
-            focusmenu.push([annotationtype,"<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label +  "<span class=\"setname\">" + set + "</span></a></li>"]);
+            var labelhtml = "<li id=\"annotationtypefocus_" +annotationtype+"_" + hash(set) + "\"><a href=\"javascript:setannotationfocus('" + annotationtype + "','" + set + "')\">" + label;
+            if (set != "null") {
+                labelhtml += "<span class=\"setname\">" + set + "</span>";
+            }
+            labelhtml += "</a></li>";
+            focusmenu.push([annotationtype,labelhtml]);
         }
 
       });

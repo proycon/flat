@@ -1205,7 +1205,12 @@ function editor_loadmenus() {
                 editannotations[annotationtype + "/" + set] = true;
             }
             label = folia_label(annotationtype, set);
-            menu.push([annotationtype, "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label + "<span class=\"setname\">" + set + "</span></a></li>"]);
+            var labelhtml = "<li id=\"annotationtypeedit_" +annotationtype+"_" + hash(set) + "\" class=\"on\"><a href=\"javascript:toggleannotationedit('" + annotationtype + "', '" + set + "')\">" + label;
+            if (set != "null") {
+                labelhtml += "<span class=\"setname\">" + set + "</span>";
+            }
+            labelhtml += "</a></li>";
+            menu.push([annotationtype, labelhtml]);
         }
       });
     });
