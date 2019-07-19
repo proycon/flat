@@ -459,7 +459,7 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 	*/
     var s = "";
 	if (!noheader) {
-		s += "<div id=\"id\">" + folia_label(structureelement.type, structureelement.set) + " &bull; " + structureelement.id;
+		s += "<div id=\"id\"><span class=\"typelabel\">" + folia_label(structureelement.type, structureelement.set) + "</span> &bull; " + structureelement.id;
 		if (structureelement.class) {
 			s = s + " &bull; <span class=\"class\">" + structureelement.class + "</span>";
 		}

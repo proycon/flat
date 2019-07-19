@@ -233,6 +233,9 @@ div#id {
     font-style: italic;
     color: #666;
 }
+div#id span.typelabel {
+    font-weight: bold;
+}
 div#info .id, div#viewer .id {
     display: block;
     font-size: 8px;

@@ -185,7 +185,7 @@ function seteditform(index, value) {
     }
 }
 
-function addeditforms(preselectcorrectionclass) {
+function rendereditforms(preselectcorrectionclass) {
     /* Add edit form buttons (direct edit (D), correction (C), new (N), alternative (A)) */
 
     //preselectcorrectionclass - (str)  used to preset a correction class in the correction edit form
@@ -249,7 +249,7 @@ function addeditforms(preselectcorrectionclass) {
         editformcount++;
     }
     s = s + "</span>";
-    return [s,editformcount];
+    return {'html': s,'editformcount': editformcount};
 }
 
 function renderhigherorderfields(index, annotation) {
@@ -414,10 +414,14 @@ function getclassesasoptions(c, selected, set) {
     /* get classes pertaining to a set, from a set definition, as option elements (used in select) supports recursive classes */
     var s;
     if ((excludeclasses[set]) && (excludeclasses[set].indexOf(c.id) != -1)) return ""; //class is explicitly excluded
+    var label = c.label;
+    if (label === "") {
+        label = c.id; //fallback to ID
+    }
     if (c.id == selected) {
-        s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + c.label + "</option>";
+        s = s + "<option selected=\"selected\" value=\"" + c.id + "\">" + label + "</option>";
     } else {
-        s = s + "<option value=\"" + c.id + "\">" + c.label + "</option>";
+        s = s + "<option value=\"" + c.id + "\">" + label + "</option>";
     }
     if (c.subclasses) {
         Object.keys(c.subclasses).forEach(function(cid){
@@ -536,8 +540,9 @@ function showeditor(element) {
         if (structure[element.id]) { //are there annotations for this element?
             editoropen = true;
             sethover(element);
-            editedelementid = element.id;
-            editedelementtype = structure[element.id].type;
+            editedelement = structure[element.id];
+            editedelementid = element.id; //sets global so other things know what we edit
+            editedelementtype = structure[element.id].type; //global variable
             editfields = 0;
             editdata = [];
 
@@ -549,6 +554,20 @@ function showeditor(element) {
             var annotationfocusfound = -1;
             var editformcount = 0;
             var renderedfields = [];
+
+            //Process the structural element itself (proycon/flat#152)
+            if ((!annotationfocus) || (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+                var s = "";
+                if (editedelement.set) {
+                    var isannotationfocus = ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set));
+                    var result = rendereditannotation(editedelement, editfields, isannotationfocus);
+                    s = s + result.html;
+                    editformcount = result.editformcount;
+                    editdata.push( setup_editdata(editedelement, result.children, result.nestablespan) );
+                    editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
+                    renderedfields.push([editedelement.type,s]);
+                }
+            }
 
             //Iterate over all annotations for the selected target element
             forannotations(element.id,function(annotation){
@@ -564,217 +583,14 @@ function showeditor(element) {
 
                 //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus? (corrections are never shown directly)
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
-
-                    //Get the human-presentable label for the annotation type
-                    label = folia_label(annotation.type, annotation.set);
-                    if (annotation.inalternative) {
-                        if (!showalternatives) {
-                            return;
-                        }
-                        label = "Alternative " + label;
-                    }
-
-                    if (annotation.set) {
-                        setname = annotation.set;
-                    } else {
-                        setname = "";
-                    }
-                    var repeatreference;
-                    if (repeatmode) {
-                        for (var i = 0; i < sentdata.length;i++) {
-                            if ((sentdata[i].type === annotation.type) && (sentdata[i].set === annotation.set)) {
-                                repeatreference = sentdata[i];
-                                sentdata[i].used = true; //mark as used (unused elements will be added later)
-                            }
-                        }
-                    }
-                    if (isannotationfocus) {
-                        s = s + "<tr class=\"focus\">"; //annotation focus is highlighted in the editor
-                    } else {
-                        s = s + "<tr>";
-                    }
-                    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
-                    if (annotation.type == "su") {
-                        s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
-                    }
-                    s = s + "</th><td>";
-                    var repeat_preset = false; //is this annotation preset because of repeatmode?
-                    var class_value;
-                    if ((annotation.type == 't') || (annotation.type == 'ph')) {
-                        //Annotation concerns text content
-                        class_value = annotation.class;
-                        if (repeatmode) {
-                            class_value = repeatreference.class;
-                            if (class_value != annotation.class) { repeat_preset = true; }
-                        }
-                        var text_value;
-                        if (annotation.type == 't') {
-                            text_value = annotation.text;
-                            if (repeatmode) {
-                                text_value = repeatreference.text;
-                                if (text_value != annotation.text) { repeat_preset = true; }
-                            }
-                        } else if (annotation.type == 'ph') {
-                            text_value = annotation.phon;
-                            if (repeatmode) {
-                                text_value = repeatreference.phon;
-                                if (text_value != annotation.phon) { repeat_preset = true; }
-                            }
-                        }
-                        if (annotation.class != "current") {
-                            s = s + "Class: <input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/><br/>Text:";
-                        } else {
-                            s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/>";
-                        }
-                        s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
-                    } else {
-                        //Annotation concerns a class
-                        if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
-                            //Annotation is a span annotation, gather the text of the entire span for presentation:
-                            //omit span annotations that only have span roles
-                            if (annotation.type == 'su') {
-                                spantext = getspantext(annotation, false);
-                            } else {
-                                spantext = getspantext(annotation, true);
-                            }
-                            s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
-                            s  = s + "<br/>";
-                        }
-                        if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
-                            //Annotation type uses a closed set of options, present a drop-down list
-                            s = s + "<select id=\"editfield" + editfields + "\" class=\"classedit\">";
-                            s = s + "<option value=\"\"></option>";
-                            setdefinitions[annotation.set].classorder.forEach(function(cid){
-                                c = setdefinitions[annotation.set].classes[cid];
-                                if (repeatmode) {
-                                    s = s + getclassesasoptions(c, repeatreference.class, annotation.set); // will add to s
-                                    if (annotation.class != repeatreference.class) { repeat_preset = true; }
-                                } else {
-                                    s = s + getclassesasoptions(c, annotation.class, annotation.set); // will add to s
-                                }
-                            });
-                            s = s + "</select>";
-                        } else {
-                            //Annotation type uses a free-fill value, present a textbox:
-                            class_value = annotation.class;
-                            if (repeatmode) {
-                                class_value = repeatreference.class;
-                                if (annotation.class != class_value) { repeat_preset = true; }
-                            }
-                            s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
-                        }
-                    }
-                    if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
-                    if ((annotation.type == "t") || ((folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)... also accept a span selector for text (needed for word merges/splits)
-                        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button><br />";
-                    }
-                    var preselectcorrectionclass = "";
-                    if (annotation.incorrection) {
-                        preselectcorrectionclass = annotations[annotation.incorrection].class;
-                    } else if ((annotation.targets.length == 1) && (structure[annotation.targets[0]].incorrection)) {
-                        preselectcorrectionclass = annotations[structure[annotation.targets[0]].incorrection].class;
-                    }
-                    if (annotation.hassuggestions) {
-                        //The annotation has suggestions (for correction)
-                        //
-                        s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
-                        var onchange;
-                        //if (annotation.type == 't') {
-                        //    s += "<select id=\"editsuggestions\" onchange=\"applysuggestion_text(this," + editfields + ")\">";
-                        //} else {
-                        s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
-                        //}
-                        s += "<option value=\"\"></option>";
-                        var suggestions = [];
-                        annotation.hassuggestions.forEach(function(correctionid){
-                            if (annotations[correctionid]) {
-                                var correction = annotations[correctionid];
-                                correction.suggestions.forEach(function(suggestion){
-                                    if (suggestion.annotations) { //we're in an annotation context so won't have to worry about structural corrections here
-                                        suggestion.annotations.forEach(function(child_id){
-                                            var child = annotations[child_id];
-                                            if ((child.type == annotation.type) && (child.set == annotation.set)) {
-                                                var value;
-                                                if (child.type == "t") {
-                                                    value = child.text;
-                                                } else if (child.type == "ph") {
-                                                    value = child.phon;
-                                                } else{
-                                                    value = child.cls;
-                                                }
-                                                if (suggestions.indexOf(value) == -1) {
-                                                    suggestions.push(value);
-                                                    s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                        s += "</select>";
-                        s += "</div>";
-                    }
-
-                    //Add edit form buttons (direct edit (D), correction (C), new (N), alternative (A))
-                    editformdata = addeditforms(preselectcorrectionclass);
-                    editformcount = editformdata[1];
-                    s = s + editformdata[0];
-
-                    //Add confidence slider
-                    if (editconfidence && annotation.type != 't' && annotation.type != 'ph') {
-                        s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are in this annotation using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
-                    }
-
-                    ho_result = renderhigherorderfields(editfields, annotation);
-                    s  = s + ho_result.output;
-
-
-                    var nestablespan = folia_nestablespan(annotation.type);
-                    if (nestablespan.length > 0) {
-                        s = s + renderparentspanfield(editfields, annotation, nestablespan);
-
-                    }
-
-                    s = s + "</td></tr>";
+                    var result = rendereditannotation(annotation, editfields, isannotationfocus);
+                    s = s + result.html;
+                    editformcount = result.editformcount;
 
                     //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
+                    editdata.push( setup_editdata(annotation, result.children, result.nestablespan) );
+                    //increase editfields for the next one
                     editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
-                    editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'children': ho_result.items };
-                    if (annotation.type == 't') {
-                        editdataitem.text = annotation.text;
-                    } else if (annotation.type == 'ph') {
-                        editdataitem.text = annotation.phon;
-                    }
-                    if (annotation.id) editdataitem.id = annotation.id;
-                    if (annotation.hasOwnProperty('confidence')) {
-                        editdataitem.confidence = annotation.confidence;
-                    } else {
-                        editdataitem.confidence = "NONE"; //not set, FQL keyword
-                    }
-
-                    //set default edit form (seteditform will be called later to affect the interface)
-                    if (editforms.correction) {
-                        editdataitem.editform = 'correction';
-                        editdataitem.oldcorrectionclass = preselectcorrectionclass;
-                    } else if (editforms.direct) {
-                        editdataitem.editform = 'direct';
-                    } else if (editforms.alternative) {
-                        editdataitem.editform = 'alternative';
-                    } else {
-                        //default fallback
-                        editdataitem.editform = 'direct';
-                    }
-                    if (annotation.parentspan) {
-                        editdataitem.parentspan = annotation.parentspan;
-                    } else if (nestablespan.length > 0) {
-                        editdataitem.parentspan = "";
-                    }
-
-                    //Set the target elements for this annotation (it may concern more than the selected element after all)
-                    editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy, hence the json parse/stringify)
-                    editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend (deep copy, hence the json parse/stringify)
-                    editdata.push(editdataitem); //add this item
                     renderedfields.push([annotation.type,s]);
 
 
@@ -794,7 +610,8 @@ function showeditor(element) {
             renderedfields.sort(sortdisplayorder);
             renderedfields.forEach(function(e){s=s+e[1];});
             s = s + "<tr id=\"editrowplaceholder\"></tr>";
-            idheader = "<div id=\"id\">" + element.id + "</div>";
+            var idheader = "<div id=\"id\">" + element.id + "</div>";
+            var typelabel = folia_label(editedelement.type, editedelement.set);
 
 
             //extra fields list, adds a selector in the editor for adding extra annotation types to an element (must be previously declared)
@@ -803,6 +620,7 @@ function showeditor(element) {
             //render editor
             s = idheader + "<table>"  + s + "</table>";
             $('#editor div.body').html(s);
+            $('#editor span#editortype').html("&bull; " + typelabel);
             $('#editor').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
 
 
@@ -810,7 +628,7 @@ function showeditor(element) {
             if ((annotationfocus) && (annotationfocusfound == -1)) {
                 //the annotation focus has not been found, so no field appears, add one automatically:
                 for (i = 0; i < editoraddablefields.length; i++) {
-                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set) && (folia_accepts(editedelementtype,annotationfocus.type)) ) {
+                    if ((editoraddablefields[i].type == annotationfocus.type) && (editoraddablefields[i].set == annotationfocus.set) && (folia_accepts(editedelement.type,annotationfocus.type)) ) {
                         annotationfocusfound = addeditorfield(i);
                         break;
                     }
@@ -821,7 +639,7 @@ function showeditor(element) {
                 for (i = 0; i < sentdata.length; i++) {
                     if (!sentdata[i].used) {
                         for (var j = 0; j < editoraddablefields.length; j++) {
-                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set) && (folia_accepts(editedelementtype,sentdata[i].type))) {
+                            if ((editoraddablefields[j].type == sentdata[i].type) && (editoraddablefields[j].set == sentdata[i].set) && (folia_accepts(editedelement.type,sentdata[i].type))) {
                                 addeditorfield(j);
                                 break;
                             }
@@ -934,6 +752,260 @@ function showeditor(element) {
             editsuggestinsertion = suggestinsertion[element.id].id;
         }
     }
+}
+
+function rendereditannotation(annotation, editfields, isannotationfocus) {
+    /* Renders an annotation for the editor */
+
+    var s = "";
+    //Get the human-presentable label for the annotation type
+    var label = folia_label(annotation.type, annotation.set);
+    if (annotation.inalternative) {
+        if (!showalternatives) {
+            return;
+        }
+        label = "Alternative " + label;
+    } else if (folia_isstructure(annotation.type, annotation.set)) {
+        label =  label + " class"; //explicitly add the word class
+    }
+
+    var setname;
+    if (annotation.set) {
+        setname = annotation.set;
+    } else {
+        setname = "";
+    }
+    var repeatreference;
+    if (repeatmode) {
+        for (var i = 0; i < sentdata.length;i++) {
+            if ((sentdata[i].type === annotation.type) && (sentdata[i].set === annotation.set)) {
+                repeatreference = sentdata[i];
+                sentdata[i].used = true; //mark as used (unused elements will be added later)
+            }
+        }
+    }
+    if (isannotationfocus) {
+        s = s + "<tr class=\"focus\">"; //annotation focus is highlighted in the editor
+    } else {
+        s = s + "<tr>";
+    }
+    s = s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+    if (annotation.type == "su") {
+        s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
+    }
+    s = s + "</th><td>";
+    var repeat_preset = false; //is this annotation preset because of repeatmode?
+    var class_value;
+    if ((annotation.type == 't') || (annotation.type == 'ph')) {
+        //Annotation concerns text or phonological content
+        s = s + rendereditfield_content(annotation, editfields);
+    } else {
+        //Annotation concerns class
+        s = s + rendereditfield_class(annotation, editfields);
+    }
+    if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
+    if ((annotation.type == "t") || ((folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)... also accept a span selector for text (needed for word merges/splits)
+        s  = s + "<button id=\"spanselector" + editfields + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button><br />";
+    }
+    var preselectcorrectionclass = "";
+    if (annotation.incorrection) {
+        preselectcorrectionclass = annotations[annotation.incorrection].class;
+    } else if ((annotation.targets) && (annotation.targets.length == 1) && (structure[annotation.targets[0]].incorrection)) {
+        preselectcorrectionclass = annotations[structure[annotation.targets[0]].incorrection].class;
+    }
+    if (annotation.hassuggestions) {
+        //The annotation has suggestions (for correction)
+        s = s + rendereditsuggestions(annotation, editfields);
+    }
+
+    //Add edit form buttons (direct edit (D), correction (C), new (N), alternative (A))
+    var editformcount = 0;
+    if (!folia_isstructure(annotation.type)) {
+        var editformdata = rendereditforms(preselectcorrectionclass);
+        s = s + editformdata.html;
+        editformcount = editformdata.editformcount;
+    }
+
+    //Add confidence slider
+    if (editconfidence && annotation.type != 't' && annotation.type != 'ph') {
+        s = s + "<div class=\"confidenceeditor\"><input type=\"checkbox\" id=\"confidencecheck" + editfields + "\" title=\"Select how confident you are in this annotation using the slider, slide to the right for more confidence\" onchange=\"setconfidenceslider(" + editfields + ");\" /> confidence: <div id=\"confidenceslider" + editfields + "\">(not set)</div></div>";
+    }
+
+    var ho_result = renderhigherorderfields(editfields, annotation);
+    var children = ho_result.items;
+    s  = s + ho_result.output;
+
+
+    var nestablespan = folia_nestablespan(annotation.type);
+    if (nestablespan.length > 0) {
+        s = s + renderparentspanfield(editfields, annotation, nestablespan);
+
+    }
+    s = s + "</td></tr>";
+    return {
+        "html": s,
+        "children": children,
+        "editformcount": editformcount, //we need to return this so the editor knows whether to show or hide the buttons
+        "nestablespan": nestablespan,
+    };
+}
+
+function rendereditfield_class(annotation, editfields) {
+    /* renders an edit field for editing a class */
+    var s = "";
+    //Annotation concerns a class
+    if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
+        //Annotation is a span annotation, gather the text of the entire span for presentation:
+        //omit span annotations that only have span roles
+        if (annotation.type == 'su') {
+            spantext = getspantext(annotation, false);
+        } else {
+            spantext = getspantext(annotation, true);
+        }
+        s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
+        s  = s + "<br/>";
+    }
+    if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
+        //Annotation type uses a closed set of options, present a drop-down list
+        s = s + "<select id=\"editfield" + editfields + "\" class=\"classedit\">";
+        s = s + "<option value=\"\"></option>";
+        setdefinitions[annotation.set].classorder.forEach(function(cid){
+            var c = setdefinitions[annotation.set].classes[cid];
+            if (repeatmode) {
+                s = s + getclassesasoptions(c, repeatreference.class, annotation.set); // will add to s
+                if (annotation.class != repeatreference.class) { repeat_preset = true; }
+            } else {
+                s = s + getclassesasoptions(c, annotation.class, annotation.set); // will add to s
+            }
+        });
+        s = s + "</select>";
+    } else {
+        //Annotation type uses a free-fill value, present a textbox:
+        var class_value = annotation.class;
+        if (repeatmode) {
+            class_value = repeatreference.class;
+            if (annotation.class != class_value) { repeat_preset = true; }
+        }
+        s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
+    }
+    return s;
+}
+
+function rendereditfield_content(annotation, editfields) {
+    /* renders an edit field for editing text/phonological content */
+    var s = "";
+    var class_value = annotation.class;
+    if (repeatmode) {
+        class_value = repeatreference.class;
+        if (class_value != annotation.class) { repeat_preset = true; }
+    }
+    var text_value;
+    if (annotation.type == 't') {
+        text_value = annotation.text;
+        if (repeatmode) {
+            text_value = repeatreference.text;
+            if (text_value != annotation.text) { repeat_preset = true; }
+        }
+    } else if (annotation.type == 'ph') {
+        text_value = annotation.phon;
+        if (repeatmode) {
+            text_value = repeatreference.phon;
+            if (text_value != annotation.phon) { repeat_preset = true; }
+        }
+    }
+    if (annotation.class != "current") {
+        s = s + "Class: <input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/><br/>Text:";
+    } else {
+        s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/>";
+    }
+    s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
+    return s;
+}
+
+function rendereditsuggestions(annotation, editfields) {
+    /* Renderers suggestions (for correction) */
+
+    var s = "";
+    s += "<div class=\"suggestions\"><label>Suggestions:</label> ";
+    s += "<select id=\"editsuggestions\" onchange=\"applysuggestion(this," + editfields + ")\">";
+    s += "<option value=\"\"></option>";
+    var suggestions = [];
+    annotation.hassuggestions.forEach(function(correctionid){
+        if (annotations[correctionid]) {
+            var correction = annotations[correctionid];
+            correction.suggestions.forEach(function(suggestion){
+                if (suggestion.annotations) { //we're in an annotation context so won't have to worry about structural corrections here
+                    suggestion.annotations.forEach(function(child_id){
+                        var child = annotations[child_id];
+                        if ((child.type == annotation.type) && (child.set == annotation.set)) {
+                            var value;
+                            if (child.type == "t") {
+                                value = child.text;
+                            } else if (child.type == "ph") {
+                                value = child.phon;
+                            } else{
+                                value = child.cls;
+                            }
+                            if (suggestions.indexOf(value) == -1) {
+                                suggestions.push(value);
+                                s += "<option value=\"" + value + "|" + correction.class + "\">" + value + "</option>";
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+    s += "</select>";
+    s += "</div>";
+    return s;
+}
+
+function setup_editdata(annotation, children, nestablespan) {
+    /* Set up the data structure for this annotation input, changes in the forms will be reflected back into this  */
+    if (typeof children === 'undefined') {
+        children = [];
+    }
+    var editdataitem = {'type':annotation.type,'set':annotation.set, 'class':annotation.class, 'new': false, 'changed': false, 'children': children };
+    if (annotation.type == 't') {
+        editdataitem.text = annotation.text;
+    } else if (annotation.type == 'ph') {
+        editdataitem.text = annotation.phon;
+    }
+    if (annotation.id) editdataitem.id = annotation.id;
+    if (annotation.hasOwnProperty('confidence')) {
+        editdataitem.confidence = annotation.confidence;
+    } else {
+        editdataitem.confidence = "NONE"; //not set, FQL keyword
+    }
+
+
+    if (folia_isstructure(annotation.type)) {
+        editdataitem.isstructure = true;
+        editdataitem.editform = 'direct'; //other edit forms not supported for structure
+    } else {
+        //set default edit form (seteditform will be called later to affect the interface)
+        if (editforms.correction) {
+            editdataitem.editform = 'correction';
+            editdataitem.oldcorrectionclass = preselectcorrectionclass;
+        } else if (editforms.direct) {
+            editdataitem.editform = 'direct';
+        } else if (editforms.alternative) {
+            editdataitem.editform = 'alternative';
+        } else {
+            //default fallback
+            editdataitem.editform = 'direct';
+        }
+        if (annotation.parentspan) {
+            editdataitem.parentspan = annotation.parentspan;
+        } else if (nestablespan.length > 0) {
+            editdataitem.parentspan = "";
+        }
+        //Set the target elements for this annotation (it may concern more than the selected element after all)
+        editdataitem.targets_begin = JSON.parse(JSON.stringify(annotation.targets)); //there are two versions so we can compare if there was a change in span (deep copy, hence the json parse/stringify)
+        editdataitem.targets = JSON.parse(JSON.stringify(annotation.targets)); //only this version will be altered by the interface and passed to the backend (deep copy, hence the json parse/stringify)
+    }
+    return editdataitem;
 }
 
 function closeeditor() {
