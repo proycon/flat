@@ -1304,6 +1304,7 @@ function editor_error(errormsg) {
         globalassert.ok(false,"Editor error: " + errormsg);
         QUnit.start(); //continue with next test
     } else {
+        console.error(errormsg);
         alert(errormsg); //make nicer someday, alerts are evil
     }
 }
