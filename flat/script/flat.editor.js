@@ -8,6 +8,7 @@ var editedelementtype = null;
 var editfields = 0;
 var editsuggestinsertion = null; //will hold a correction ID if a suggestion for insertion is accepted
 var editconfidence = true; //allow setting/editing confidence, will be overwritten to configuration value on init
+var editstructure = true; //allow editing the selected structure elements (its class), will be overwritten to configuration value on init
 var repeatmode = false;
 var sentdata = []; //list of the last submitted edits (js objects, pre-fql)
 
@@ -55,6 +56,16 @@ function toggleeditconfidence() {
         $('#toggleeditconfidence').addClass("on");
     } else {
         $('#toggleeditconfidence').removeClass("on");
+    }
+}
+
+function toggleeditstructure() {
+    /* called by clicking the menu toggle button to enable/disable confidence editing */
+    editstructure = !editstructure;
+    if (editstructure) {
+        $('#toggleeditstructure').addClass("on");
+    } else {
+        $('#toggleeditstructure').removeClass("on");
     }
 }
 
@@ -556,7 +567,8 @@ function showeditor(element) {
             var renderedfields = [];
 
             //Process the structural element itself (proycon/flat#152)
-            if ((!annotationfocus) || (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+            if (editstructure) {
+              if ((!annotationfocus) || (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
                 var s = "";
                 if (editedelement.set) {
                     var isannotationfocus = ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set));
@@ -567,6 +579,7 @@ function showeditor(element) {
                     editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
                     renderedfields.push([editedelement.type,s]);
                 }
+              }
             }
 
             //Iterate over all annotations for the selected target element
@@ -2271,6 +2284,10 @@ function editor_oninit() {
     editconfidence = (configuration.allowconfidence === true); //allow setting/editing confidence?
     if (editconfidence) {
         $('#toggleeditconfidence').addClass('on');
+    }
+    editstructure = (configuration.alloweditstructure === true); //allow setting/editing structure?
+    if (editstructure) {
+        $('#toggleeditstructure').addClass('on');
     }
 
 

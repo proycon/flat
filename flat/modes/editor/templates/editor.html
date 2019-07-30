@@ -40,6 +40,9 @@ initialcorrectionset = '{{ initialcorrectionset }}';
     {% if configuration.allowconfidence %}
     <li id="toggleeditconfidence"><a href="javascript:toggleeditconfidence()">Enable confidence editing elements</a></li>
     {% endif %}
+    {% if configuration.alloweditstructure %}
+    <li id="toggleeditstructure"><a href="javascript:toggleeditstructure()">Enable editing the selected structure</a></li>
+    {% endif %}
     {% if configuration.allowdeclare %}
     <li><a href="javascript:declare()">Add new Annotation Type</a></li>
     {% endif %}

@@ -213,6 +213,9 @@ CONFIGURATIONS = {
     #Allow confidence values to be set/edited?
     'allowconfidence': True,
 
+    #Allow editing the structure element (i.e. its class)
+    'alloweditstructure': True,
+
     # FoLiA set to use for corrections
     #'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
 
