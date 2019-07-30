@@ -614,7 +614,7 @@ function renderannotation(annotation, norecurse, extended) {
     if (annotation.type == "relation") {
         s = s + "<div class=\"relationinfo\">";
         if (annotation.href) {
-            s = s + "Relation target: <a href=\"" + annotation.href + "\">" + annotation.href + "</a>";
+            s = s + "Relation to external target: <a href=\"" + annotation.href + "\">" + annotation.href + "</a>";
             if (annotation.format) {
                 s = s + " (" + annotation.format + ")";
             }

@@ -327,6 +327,10 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
         s = "<th>" + folia_label(childannotation.type) + ":</th><td>";
         s += renderfeaturefields(set, childannotation.subset, childannotation.class, index, ho_index);
         s += "</td>";
+    } else if (childannotation.type == 'relation') {
+        s = "<th>" + folia_label(childannotation.type) + ":</th><td>";
+        s += renderrelationfields(set, childannotation, index, ho_index);
+        s += "</td>";
     } else if (folia_isspanrole(childannotation.type)) {
         s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + ho_index+ "\" class=\"text\">" + getspantext(childannotation, true) + "</span>";
         s += "<button id=\"spanselector" + index + "_" + ho_index + "\" class=\"spanselector\" title=\"Toggle span selection for this annotation type: click additional words in the text to select or deselect as part of this annotation\">Select span&gt;</button>";
@@ -336,6 +340,72 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
         s = "<tr class=\"higherorderrow\">" + s + "</tr>";
     }
     return s;
+}
+
+function renderrelationfields(set, annotation, index, ho_index) {
+    /* Renders two fields to edit a specific relation: a class field and a target field, called by renderhigherorderfields() and addhigherorderfield() */
+    var s = "";
+    //Class field
+    if ((setdefinitions[set]) && (setdefinitions[set].type == "closed")) {
+        //Annotation type uses a closed set of options, present a drop-down list
+        s = s + "<select id=\"higherorderfield_" + index + "_" + ho_index + "\" class=\"classedit\">";
+        s = s + "<option value=\"\"></option>";
+        setdefinitions[set].classorder.forEach(function(cid){
+            var c = setdefinitions[set].classes[cid];
+            if (repeatmode) {
+                s = s + getclassesasoptions(c, repeatreference.class, set); // will add to s
+                if (annotation.class != repeatreference.class) { repeat_preset = true; }
+            } else {
+                s = s + getclassesasoptions(c, annotation.class, set); // will add to s
+            }
+        });
+        s = s + "</select>";
+    } else {
+        //Annotation type uses a free-fill value, present a textbox:
+        var class_value = annotation.class;
+        if (repeatmode) {
+            class_value = repeatreference.class;
+            if (cls != class_value) { repeat_preset = true; }
+        }
+        s = s + "<input id=\"higherorderfield_" + index + "_" + ho_index + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
+    }
+
+    //Target field
+    s += "<br/>Target resource:";
+    if (annotation.href) {
+        s += "<input id=\"higherorderfield_href_"+ index + "_" + ho_index+ "\" class=\"relationtarget\" value=\"" + annotation.href + "\" ";
+    } else {
+        s += "<input id=\"higherorderfield_href_"+ index + "_" + ho_index+ "\" class=\"relationtarget\" value=\"\" ";
+    }
+    s += " title=\"URL to the target document, leave empty if the relation is inside this FoLiA document itself\" />";
+    s += "<br/>Target format:";
+    if (annotation.format) {
+        s += "<input id=\"higherorderfield_format_"+ index + "_" + ho_index+ "\" class=\"relationformat\" value=\"" + annotation.format + "\" ";
+    } else {
+        s += "<input id=\"higherorderfield_format_"+ index + "_" + ho_index+ "\" class=\"relationformat\" value=\"\" ";
+    }
+    s += " title=\"MIME Type indicating the format of the target document, just leave empty if the relation is inside this FoLiA document itself\" /><br/>";
+    var s2 = "";
+    for (i = 0; i < annotation.children.length; i++) {
+        //TODO: add remove button
+        if (annotation.children[i].type) {
+            if (annotation.children[i].type == "xref") {
+                s2 = s2 + "<span class=\"linkreference\">→";
+                if (annotation.children[i].linktype) {
+                    s2 = s2 + " Type: " + annotation.children[i].linktype;
+                }
+                if (annotation.children[i].t) {
+                    s2 = s2 + " Text: " + annotation.children[i].t;
+                }
+                s2 = s2 + " ID: " + annotation.children[i].idref;
+                s2 = s2 + "</span>";
+            }
+        }
+        //TODO: Add 'add' button
+    }
+    if (s2) s = s + "Link references: " + s2;
+    return s;
+
 }
 
 function renderfeaturefields(set, subset, cls, index, ho_index) {
