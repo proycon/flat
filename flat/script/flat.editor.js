@@ -1507,7 +1507,9 @@ function gather_changes() {
             editdata[i].isspan = folia_isspan(editdata[i].type); //are we manipulating a span annotation element?
 
             //sort targets in proper order
-            if (editdata[i].targets.length > 1) {
+            if (typeof editdata[i].targets === "undefined") {
+                //there are no targets defined, this happens for structural edits
+            } else if (editdata[i].targets.length > 1) {
                 editdata[i].targets = sort_targets(editdata[i].targets);
             } else if (editdata[i].targets.length === 0) {
                 //annotation has no targets, this may be a span annotation that
@@ -1834,7 +1836,10 @@ function build_queries(addtoqueue) {
 function build_target_expression(editdata, i, action, addtoqueue) {
     var query = "";
     //set target expression
-    if (editdata[i].targets.length > 0) {
+    if (typeof editdata[i].targets === "undefined") {
+        //no targets defined, this happens for structural edits, we don't need a target expression at all here
+        return "";
+    } else if (editdata[i].targets.length > 0) {
         var forids = ""; //jshint ignore:line
         editdata[i].targets.forEach(function(t){
             if (forids) {
