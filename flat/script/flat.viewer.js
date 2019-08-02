@@ -530,6 +530,9 @@ function renderannotation(annotation, norecurse, extended) {
     if (annotation.inalternative) {
         s = s + "<div class=\"alternative\">";
     }
+    if (annotation.type === "relation") {
+        s = s + "<div class=\"relation\">";
+    }
     if (!(((annotation.type == "t") || (annotation.type == "ph")) && (annotation.class == "current"))) {
         if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type != "open") && (setdefinitions[annotation.set].classes[annotation.class]) ) {
             s = s + "<span class=\"class\">" +  setdefinitions[annotation.set].classes[annotation.class].label + "</span>";
@@ -614,7 +617,7 @@ function renderannotation(annotation, norecurse, extended) {
     if (annotation.type == "relation") {
         s = s + "<div class=\"relationinfo\">";
         if (annotation.href) {
-            s = s + "Relation to external target: <a href=\"" + annotation.href + "\">" + annotation.href + "</a>";
+            s = s + "⇒ <a href=\"" + annotation.href + "\">" + annotation.href + "</a>";
             if (annotation.format) {
                 s = s + " (" + annotation.format + ")";
             }
@@ -623,15 +626,18 @@ function renderannotation(annotation, norecurse, extended) {
         var s2 = "";
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
-                if (annotation.children[i].type == "xref") {
-                    s2 = s2 + "<span class=\"linkreference\">→";
+                if (nnotation.children[i].type == "xref") {
+                    s2 = s2 + "<span class=\"linkreference\">↳";
                     if (annotation.children[i].linktype) {
-                        s2 = s2 + " Type: " + annotation.children[i].linktype;
+                        s2 = s2 + " <strong>Type:</strong> " + annotation.children[i].linktype;
+                    }
+                    if (annotation.children[i].class) {
+                        s2 = s2 + " <strong>Class:</strong> " + annotation.children[i].class;
                     }
                     if (annotation.children[i].t) {
-                        s2 = s2 + " Text: " + annotation.children[i].t;
+                        s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
                     }
-                    s2 = s2 + " ID: " + annotation.children[i].idref;
+                    s2 = s2 + " <strong>ID:</strong> " + annotation.children[i].idref;
                     s2 = s2 + "</span>";
                 }
             }
@@ -644,11 +650,11 @@ function renderannotation(annotation, norecurse, extended) {
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 if ((annotation.children[i].type == "comment") || (annotation.children[i].type == "desc")) {
-                    s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": " + annotation.children[i].value + "</span>";
+                    s = s + "<div class=\"higherorder\"><label>" + folia_label(annotation.children[i].type) + ":</label> " + annotation.children[i].value + "</div>";
                 } else if (annotation.children[i].type == "feat") {
-                    s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + " " + folia_subset_label(annotation.set, annotation.children[i].subset) + ": <span class=\"class\">" + folia_feature_label(annotation.set, annotation.children[i].subset, annotation.children[i].class) + "</span></span>";
+                    s = s + "<div class=\"higherorder\"><label>" + folia_label(annotation.children[i].type) + "</label> " + folia_subset_label(annotation.set, annotation.children[i].subset) + ": <span class=\"class\">" + folia_feature_label(annotation.set, annotation.children[i].subset, annotation.children[i].class) + "</span></div>";
                 } else if (annotation.children[i].type == "relation") {
-                    s = s + "<br/><span class=\"higherorder\">" + folia_label(annotation.children[i].type) + ": <div class=\"higherorderrelation\">" + renderannotation(annotation.children[i]) + "</div></span>";
+                    s = s + "<div class=\"higherorder\"><label>" + folia_label(annotation.children[i].type) + ":</label> <div class=\"higherorderrelation\">" + renderannotation(annotation.children[i]) + "</div></div>";
                 }
             }
         }
@@ -675,6 +681,9 @@ function renderannotation(annotation, norecurse, extended) {
                 }
             }
         });
+    }
+    if (annotation.type === "relation") {
+        s = s + "</div>";
     }
     if (annotation.inalternative) {
         s = s + "</div>";

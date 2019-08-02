@@ -216,8 +216,13 @@ div#info td {
     color: #b363a7;
 }
 .higherorder {
-    font-style: italic;
     color: #6d0000;
+    border: 1px #6d0000 dotted;
+    border-radius: 5px;
+    margin-bottom: 2px;
+}
+.higherorder label {
+    font-weight: bold;
 }
 nav li .setname {
     display: block;
@@ -385,4 +390,7 @@ div#document span.seqnr {
     font-family: monospace;
     font-size: 52%;
     color: #999;
+}
+div.relation {
+    background: #d6e8ee;
 }

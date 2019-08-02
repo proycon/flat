@@ -392,12 +392,15 @@ function renderrelationfields(set, annotation, index, ho_index) {
             if (annotation.children[i].type == "xref") {
                 s2 = s2 + "<span class=\"linkreference\">→";
                 if (annotation.children[i].linktype) {
-                    s2 = s2 + " Type: " + annotation.children[i].linktype;
+                    s2 = s2 + " <strong>Type:</strong> " + annotation.children[i].linktype;
+                }
+                if (annotation.children[i].class) {
+                    s2 = s2 + " <strong>Class:</strong> " + annotation.children[i].class;
                 }
                 if (annotation.children[i].t) {
-                    s2 = s2 + " Text: " + annotation.children[i].t;
+                    s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
                 }
-                s2 = s2 + " ID: " + annotation.children[i].idref;
+                s2 = s2 + " <strong>ID:</strong> " + annotation.children[i].idref;
                 s2 = s2 + "</span>";
             }
         }
