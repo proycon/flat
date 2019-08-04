@@ -2088,6 +2088,43 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     //edit of class and subset
                     query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                 }
+            } else if ((edititem.children[j].type == 'relation')) {
+                var where_clause = "";
+                var with_clause = "";
+                if (edititem.children[j].oldclass) {
+                    if (edititem.children[j].class === "") {
+                        query = "DELETE " + edititem.children[j].type;
+                    } else {
+                        query = "EDIT " + edititem.children[j].type;
+                        with_clause += "class \"" + escape_fql_value(edititem.children[j].class) + "\" ";
+                    }
+                    where_clause += "class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" ";
+                } else {
+                    query = "ADD " + edititem.children[j].type;
+                }
+                if (edititem.children[j].oldhref) {
+                    where_clause += "href = \"" + escape_fql_value(edititem.children[j].oldhref) + "\" ";
+                }
+                if ((((edititem.children[j].oldhref) && (edititem.children[j].oldhref != edititem.children[j].href))) || (!edititem.children[j].oldhref))  {
+                    with_clause += " href \""+edititem.children[j].href+"\"";
+                }
+                if (edititem.children[j].oldformat) {
+                    where_clause += "format = \"" + escape_fql_value(edititem.children[j].oldformat) + "\" ";
+                }
+                if ((((edititem.children[j].oldformat) && (edititem.children[j].oldformat != edititem.children[j].format))) || (!edititem.children[j].oldformat))  {
+                    with_clause += " format \""+edititem.children[j].format+"\"";
+                }
+                if (edititem.children[j].class === "") {
+                    //deletion
+                    returntype = "ancestor-target";
+                    query = query + " WHERE " + where_clause + " " + targetselector;
+                } else {
+                    query = query + " WITH " + with_clause;
+                    if (edititem.children[j].xref_subqueries) {
+                        query = query + " " + edititem.children[j].xref_subqueries;
+                    }
+                    query = query + " WHERE " + where_clause + " " + targetselector;
+                }
             } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
                 //foliadocserve adds IDs to all span roles
