@@ -329,7 +329,7 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
         s += "</td>";
     } else if (childannotation.type == 'relation') {
         s = "<th>" + folia_label(childannotation.type) + ":</th><td>";
-        s += renderrelationfields(set, childannotation, index, ho_index);
+        s += renderrelationfields(childannotation, index, ho_index);
         s += "</td>";
     } else if (folia_isspanrole(childannotation.type)) {
         s = "<th>" + folia_label(childannotation.type) + ":</th><td><span id=\"spantext" + index + "_" + ho_index+ "\" class=\"text\">" + getspantext(childannotation, true) + "</span>";
@@ -342,9 +342,10 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
     return s;
 }
 
-function renderrelationfields(set, annotation, index, ho_index) {
+function renderrelationfields(annotation, index, ho_index) {
     /* Renders two fields to edit a specific relation: a class field and a target field, called by renderhigherorderfields() and addhigherorderfield() */
     var s = "";
+    var set = childannotation.set;
     //Class field
     if ((setdefinitions[set]) && (setdefinitions[set].type == "closed")) {
         //Annotation type uses a closed set of options, present a drop-down list
