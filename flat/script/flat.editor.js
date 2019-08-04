@@ -387,6 +387,7 @@ function renderrelationfields(annotation, index, ho_index) {
     }
     s += " title=\"MIME Type indicating the format of the target document, just leave empty if the relation is inside this FoLiA document itself\" /><br/>";
     var s2 = "";
+    var xref_subqueries = "";
     for (i = 0; i < annotation.children.length; i++) {
         if (annotation.children[i].type) {
             if (annotation.children[i].type == "xref") {
@@ -404,9 +405,14 @@ function renderrelationfields(annotation, index, ho_index) {
                 //TODO: make button functional
                 s2 = s2 + " <button>X</button>";
                 s2 = s2 + "</span>";
+                if (xref_subqueries !== "") {
+                    xref_subqueries += " ";
+                }
+                xref_subqueries += "(TO ID \"" + annotation.children[i].idref + "\")";
             }
         }
     }
+    s += "<input id=\"higherorderfield_xrefs_"+ index + "_" + ho_index+ "\" class=\"relationformat\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
     if (s2) s = s + "Link references: " + s2;
     //TODO: make button functional
     s = s + "<button>Add internal link reference</button>";
