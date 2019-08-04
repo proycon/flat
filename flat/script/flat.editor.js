@@ -388,7 +388,6 @@ function renderrelationfields(annotation, index, ho_index) {
     s += " title=\"MIME Type indicating the format of the target document, just leave empty if the relation is inside this FoLiA document itself\" /><br/>";
     var s2 = "";
     for (i = 0; i < annotation.children.length; i++) {
-        //TODO: add remove button
         if (annotation.children[i].type) {
             if (annotation.children[i].type == "xref") {
                 s2 = s2 + "<span class=\"linkreference\">→";
@@ -402,12 +401,15 @@ function renderrelationfields(annotation, index, ho_index) {
                     s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
                 }
                 s2 = s2 + " <strong>ID:</strong> " + annotation.children[i].idref;
+                //TODO: make button functional
+                s2 = s2 + " <button>X</button>";
                 s2 = s2 + "</span>";
             }
         }
-        //TODO: Add 'add' button
     }
     if (s2) s = s + "Link references: " + s2;
+    //TODO: make button functional
+    s = s + "<button>Add internal link reference</button>";
     return s;
 
 }
