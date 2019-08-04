@@ -1526,6 +1526,52 @@ function gather_changes() {
                         editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
                     }
+                } else if (editdata[i].children[j].type == 'relation') {
+                    //Relations
+                    var cls = $('#higherorderfield_' + i +'_' + j).val();
+                    var href = $('#higherorderfield_href_' + i +'_' + j).val();
+                    var format = $('#higherorderfield_format_' + i +'_' + j).val();
+
+                    //has the class been changed OR has the format been changed?
+                    if ((((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
+                        if (editdata[i].children[j].class) {
+                            editdata[i].children[j].oldclass =  editdata[i].children[j].class;
+                        } else {
+                            editdata[i].children[j].oldclass = null;
+                        }
+                        editdata[i].children[j].class = cls;
+                        editdata[i].children[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    }
+                    if ((((editdata[i].children[j].href) && (editdata[i].children[j].href != href)) || (!editdata[i].children[j].href)) ||
+                       (((editdata[i].children[j].format) && (editdata[i].children[j].format != cls)) || (!editdata[i].children[j].format))) {
+                        //remember old values (null if new)
+                        if (editdata[i].children[j].href) {
+                            editdata[i].children[j].oldhref =  editdata[i].children[j].href;
+                        } else {
+                            editdata[i].children[j].oldhref = null;
+                        }
+                        if (editdata[i].children[j].format) {
+                            editdata[i].children[j].oldformat =  editdata[i].children[j].format;
+                        } else {
+                            editdata[i].children[j].oldformat = null;
+                        }
+                        editdata[i].children[j].href = href;
+                        editdata[i].children[j].format = format;
+                        editdata[i].children[j].changed = true;
+                        editdata[i].higherorderchanged = true;
+                    } else {
+                        //have the xrefs been changed?
+
+                        var xref_subqueries = $('#higherorderfield_xrefs_' + i +'_' + j).val();
+                        var xref_changed = $('#higherorderfield_xrefchanged_' + i +'_' + j).val() == "yes";
+
+                        if ((xref_subqueries) && (xref_changed)) {
+                            editdata[i].children[j].xref_subqueries = xref_subqueries;
+                            editdata[i].children[j].changed = true;
+                            editdata[i].higherorderchanged = true;
+                        }
+                    }
                 } else if (folia_isspanrole(editdata[i].children[j].type)) {
                     //Span roles: detect changes in span, and set the changed flag
                     if ( (!editdata[i].children[j].targets_begin) || (JSON.stringify(editdata[i].children[j].targets) != JSON.stringify(editdata[i].children[j].targets_begin) )) {
