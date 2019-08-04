@@ -345,7 +345,7 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
 function renderrelationfields(annotation, index, ho_index) {
     /* Renders two fields to edit a specific relation: a class field and a target field, called by renderhigherorderfields() and addhigherorderfield() */
     var s = "";
-    var set = childannotation.set;
+    var set = annotation.set;
     //Class field
     if ((setdefinitions[set]) && (setdefinitions[set].type == "closed")) {
         //Annotation type uses a closed set of options, present a drop-down list
