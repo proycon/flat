@@ -627,18 +627,28 @@ function renderannotation(annotation, norecurse, extended) {
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 if (annotation.children[i].type == "xref") {
-                    s2 = s2 + "<span class=\"linkreference\">↳";
+                    s2 = s2 + "<div class=\"linkreference\">↳";
+                    var linkedannotation = annotations[annotation.children[i].idref];
                     if (annotation.children[i].linktype) {
-                        s2 = s2 + " <strong>Type:</strong> " + annotation.children[i].linktype;
+                        s2 = s2 + " to " + folia_label(annotation.children[i].linktype) + " (<tt>" + annotation.children[i].idref + "</tt>)";
+                    } else {
+                        s2 = s2 + " to <tt>" + annotation.children[i].idref + "</tt>";
                     }
-                    if (annotation.children[i].class) {
-                        s2 = s2 + " <strong>Class:</strong> " + annotation.children[i].class;
+                    s2 = s2 + "<br/>";
+                    if (typeof linkedannotation === "undefined") {
+                        s2 = s2 + "(reference target missing or not currently loaded)<br/>";
+                        if (annotation.children[i].class) {
+                            s2 = s2 + " <strong>Class:</strong> " + annotation.children[i].class;
+                        }
+                        if (annotation.children[i].t) {
+                            s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
+                        }
+                    } else {
+                        s2 = s2 + "<div class=\"linkreference_body\">";
+                        s2 = s2 + renderannotation(annotations[annotation.children[i].idref], true,false);
+                        s2 = s2 + "</div>";
                     }
-                    if (annotation.children[i].t) {
-                        s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
-                    }
-                    s2 = s2 + " <strong>ID:</strong> " + annotation.children[i].idref;
-                    s2 = s2 + "</span>";
+                    s2 = s2 + "</div>";
                 }
             }
         }

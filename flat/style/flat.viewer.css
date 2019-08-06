@@ -394,3 +394,11 @@ div#document span.seqnr {
 div.relation {
     background: #d6e8ee;
 }
+div.linkreference {
+    padding-left: 5px;
+}
+div.linkreference tt {
+    font-size: 75%;
+}
+div.linkreference_body {
+    padding-left: 10px;
