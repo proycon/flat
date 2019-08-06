@@ -288,4 +288,14 @@ div.confidenceeditor div {
     max-width: 320px;
     overflow: hidden;
 }
-
+div.pendinglinkrefs {
+    color: red;
+    font-size: 80%;
+}
+button.addlinkrefs {
+    font-size: 80%;
+}
+button.linkselectoron {
+    background: yellow;
+    color: black;
+}

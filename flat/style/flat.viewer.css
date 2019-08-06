@@ -402,3 +402,13 @@ div.linkreference tt {
 }
 div.linkreference_body {
     padding-left: 10px;
+}
+button.clearlinkrefs {
+    float: right;
+    margin-bottom: 2px;
+    font-size: 80%;
+}
+button.addlinkrefs {
+    margin-bottom: 2px;
+    font-size: 80%;
+}

@@ -2,6 +2,9 @@ var editannotations = {};
 var editoropen = false;
 var coselector = -1; //disabled, otherwise the index of the field to which the coselector is currently bound
 var coselector_sub = -1; //disabled, otherwise index of the higher order field (i.e. a span role) to which the coselector is currently bound
+var linkselector = -1; //disabled, otherwise the index of the field to which the linkselector is currently bound
+var linkselector_sub = -1; //disabled, otherwise the index of the higher order field to which the linkselector is currently bound
+var linkselector_query = "";  //the composed query to select a link
 var editforms = {'direct': true, 'correction': false,'alternative': false, 'new': true} ;
 var editedelementid = null;
 var editedelementtype = null;
@@ -391,20 +394,7 @@ function renderrelationfields(annotation, index, ho_index) {
     for (i = 0; i < annotation.children.length; i++) {
         if (annotation.children[i].type) {
             if (annotation.children[i].type == "xref") {
-                s2 = s2 + "<span class=\"linkreference\">→";
-                if (annotation.children[i].linktype) {
-                    s2 = s2 + " <strong>Type:</strong> " + annotation.children[i].linktype;
-                }
-                if (annotation.children[i].class) {
-                    s2 = s2 + " <strong>Class:</strong> " + annotation.children[i].class;
-                }
-                if (annotation.children[i].t) {
-                    s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
-                }
-                s2 = s2 + " <strong>ID:</strong> " + annotation.children[i].idref;
-                //TODO: make button functional
-                s2 = s2 + " <button>X</button>";
-                s2 = s2 + "</span>";
+                s2 = s2 + renderlinkreference(annotation.children[i]);
                 if (xref_subqueries !== "") {
                     xref_subqueries += " ";
                 }
@@ -413,9 +403,12 @@ function renderrelationfields(annotation, index, ho_index) {
         }
     }
     s += "<input id=\"higherorderfield_xrefs_"+ index + "_" + ho_index+ "\" class=\"relationformat\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
-    if (s2) s = s + "Link references: " + s2;
-    //TODO: make button functional
-    s = s + "<button>Add internal link reference</button>";
+    if (s2) {
+        s2 = s2 + " <button onclick=\"clearlinkrefs(" + index + "," + ho_index + ")\" class=\"clearlinkrefs\">Clear link references</button></br>";
+        s = s + "Link references: " + s2;
+    }
+    s = s + "<button onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
+    s = s +"<div id=\"higherorderfields_pendinglinkrefs_" + index + "_" + ho_index + "\" class=\"pendinglinkrefs\"></div>";
     return s;
 
 }
@@ -1111,8 +1104,10 @@ function closeeditor() {
     $('#wait').hide();
     editoropen = false;
     coselector = -1;
+    linkselector = -1;
     $('#document .selected').removeClass("selected");
     $('#editor .selectoron').removeClass("selectoron");
+    $('#editor .linkselectoron').removeClass("linkselectoron");
 }
 
 
@@ -2168,6 +2163,23 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
     }
 }
 
+
+function clearlinkrefs(index, ho_index) {
+    $("#higherorderfields_pendinglinkrefs_" + index + "_" + ho_index).html("These link references will be removed upon submission!");
+    $("#higherorderfields_xrefs_" + index + "_" + ho_index).val("");
+}
+
+function addlinkrefs(index, ho_index) {
+    //Bound to a button to Add link references, enabled/disables the link selector
+    if (linkselector >= 0) {
+        linkselector = -1;
+        $(this).removeClass("linkselectoron");
+    } else {
+        linkselector = index;
+        linkselector_sub = ho_index;
+        $(this).addClass("linkselectoron");
+    }
+}
 
 function editor_submit(addtoqueue) {
     /* Submit the annotations prepared in the editor dialog */
