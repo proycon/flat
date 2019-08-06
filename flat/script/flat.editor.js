@@ -407,7 +407,7 @@ function renderrelationfields(annotation, index, ho_index) {
         s2 = s2 + " <button onclick=\"clearlinkrefs(" + index + "," + ho_index + ")\" class=\"clearlinkrefs\">Clear link references</button></br>";
         s = s + "Link references: " + s2;
     }
-    s = s + "<button onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
+    s = s + "<button id=\"higherorderfields_addlinkrefs_" + index + "_" + ho_index + "\" onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
     s = s +"<div id=\"higherorderfields_pendinglinkrefs_" + index + "_" + ho_index + "\" class=\"pendinglinkrefs\"></div>";
     return s;
 
@@ -2173,11 +2173,11 @@ function addlinkrefs(index, ho_index) {
     //Bound to a button to Add link references, enabled/disables the link selector
     if (linkselector >= 0) {
         linkselector = -1;
-        $(this).removeClass("linkselectoron");
+        $("#higherorderfields_addlinkrefs_" + index + "_" + ho_index).removeClass("linkselectoron");
     } else {
         linkselector = index;
         linkselector_sub = ho_index;
-        $(this).addClass("linkselectoron");
+        $("#higherorderfields_addlinkrefs_" + index + "_" + ho_index).addClass("linkselectoron");
     }
 }
 
