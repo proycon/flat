@@ -2194,11 +2194,38 @@ function addlinkrefs(index, ho_index) {
     }
 }
 
-function linktotarget() {
+function linktotarget(query) {
+    if (linkselector >= 0) {
+        var val = $("#higherorderfields_xrefs_" + linkselector + "_" + linkselector_sub).val();
+        if (val) {
+            $("#higherorderfields_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
+        }
+        $("#higherorderfields_pendinglinkrefs_" + linkselector + "_" + linkselector_sub).html("New pending link references will be added upon submission!");
+        $('#viewer').hide();
+        linkselector = -1;
+        $('#editor .linkselectoron').removeClass("linkselectoron");
+    } else {
+        alert("linktotarget() called but no link selector active (this should not happen)");
+    }
 }
 
 function getlinktotarget(annotation, structureelement) {
     //build a query to link to the specified element
+    var query = "TO " + annotation.type;
+    if (annotation.id) {
+        query += " ID " + annotation.id;
+    } else {
+        if (annotation.set) {
+            query += " OF " + annotation.set;
+        }
+        if (annotation.class) {
+            query += " WHERE class = " + annotation.class; //no quotes because we embed this in an onclick attribute (TODO: will cause issues if there is a space!)
+        }
+        if (structureelement) {
+            query += " FOR ID " + structureelement.id;
+        }
+    }
+    return query;
 }
 
 function editor_submit(addtoqueue) {

@@ -463,6 +463,10 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 		if (structureelement.class) {
 			s = s + " &bull; <span class=\"class\">" + structureelement.class + "</span>";
 		}
+        if ((extended) && (linkselector >= 0)) {
+            s = s + "<br/>(Click the icon below to link to this entire " + folia_label(structureelement.type, structureelement.set)+")";
+            s = s + "<div class=\"linktotarget\" style=\"margin-left: auto; margin-right: auto;\" title=\"Link to this structural element\" onclick=\"linktotarget('" + getlinktotarget(structureelement,false) + "')\"></div>";
+        }
 		s = s + "</div>";
 	}
 	s += "<table>";
@@ -489,7 +493,7 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 				}
                 if ((extended) && (linkselector >= 0)) {
                     //this is actually an editor feature
-					s = s + "<div class=\"linktotarget\" title=\"Link to this annotation\" onclick=\"linktotarget(" + getlinktotarget(annotation, structureelement) + ")\"></div>";
+					s = s + "<div class=\"linktotarget\" title=\"Link to this specific annotation\" onclick=\"linktotarget('" + getlinktotarget(annotation, structureelement) + "')\"></div>";
                 }
 				s = s + "</th><td>";
                 s = s + renderannotation(annotation, false, extended);
@@ -515,7 +519,7 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
             }
             if ((extended) && (linkselector >= 0)) {
                 //this is actually an editor feature
-                s = s + "<div class=\"linktotarget\" title=\"Link to this annotation\" onclick=\"linktotarget(" + getlinktotarget(substructure, structureelement) + ")\"></div>";
+                s = s + "<div class=\"linktotarget\" title=\"Link to this specific annotation\" onclick=\"linktotarget('" + getlinktotarget(substructure, structureelement) + "')\"></div>";
             }
             s += "</th><td>";
 			s += renderannotation(substructure, false, extended); //renders class
