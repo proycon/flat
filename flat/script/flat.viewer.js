@@ -626,7 +626,7 @@ function renderannotation(annotation, norecurse, extended) {
         var s2 = "";
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
-                if (nnotation.children[i].type == "xref") {
+                if (annotation.children[i].type == "xref") {
                     s2 = s2 + "<span class=\"linkreference\">↳";
                     if (annotation.children[i].linktype) {
                         s2 = s2 + " <strong>Type:</strong> " + annotation.children[i].linktype;
