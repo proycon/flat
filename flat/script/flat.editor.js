@@ -1295,9 +1295,20 @@ function setconfidenceslider(index, value) {
 
 function editor_onclick(element) {
     /* An element is clicked: open the editor */
-    if (coselector >= 0) {
-        select(element); //toggle
+    if (linkselector >= 0) {
+        //link selector mode, we open an extended viewer which
+        //will be populated with extra buttons to set the target of the link
+		renderviewer(element, "#viewer div.body");
+		$('#viewer').show();
+		$('#viewer').draggable();
+		$('#viewer').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //viewer positioning
+    } else if (coselector >= 0) {
+        //we are in coselection mode (the mode to select other targets for a span annotation)
+        //toggle the clicked element's inclusion in the span:
+        select(element);
     } else if (!editoropen) {
+        //normal mode
+        $('#viewer').hide();
         $('#info').hide();
         showeditor(element);
     }
@@ -1317,9 +1328,11 @@ function editor_ondblclick(element) {
 
 function editor_onmouseenter(element) {
     /* Mouse cursor hovers over an element */
-    if (!editoropen) {
+    if ((!editoropen) || (linkselector >= 0)) {
         sethover(element);
-        renderviewer(element);
+        if (!editoropen) {
+            renderviewer(element);
+        }
     }
 }
 
