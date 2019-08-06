@@ -209,13 +209,13 @@ function toggleoriginal() {
 
 function viewer_onmouseenter(element) {
     sethover(element);
-    showinfo(element);
+    renderviewer(element);
 }
 
 function viewer_onclick(element) {
 	//open the tree viewer on click if there are syntactic annotations
 	if ((element) && (element.id) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) { //sanity check: is there an element selected?
-		showinfo(element, "#viewer div.body");
+		renderviewer(element, "#viewer div.body");
 		$('#viewer').show();
 		$('#viewer').draggable();
 		$('#viewer').css({'display': 'block', 'top':mouseY+ 20, 'left':mouseX-200} ); //editor positioning
@@ -717,7 +717,7 @@ function sortdisplayorder(a,b) {
     return a_index - b_index;
 }
 
-function showinfo(element, extendedcontainer) {
+function renderviewer(element, extendedcontainer) {
     /* Populate and show the pop-up info box with annotations for the element under consideration */
     if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
         if (element.id) {
@@ -1303,7 +1303,7 @@ function viewer_contentloaded(data) {
 function viewer_onrendertextclass() {
     $('div.deepest span.str').mouseenter(function(){
         hoverstr = this.id.substr(7);
-        showinfo($(this).parents('.deepest')[0]);
+        renderviewer($(this).parents('.deepest')[0]);
     });
 }
 

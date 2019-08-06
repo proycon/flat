@@ -1319,7 +1319,7 @@ function editor_onmouseenter(element) {
     /* Mouse cursor hovers over an element */
     if (!editoropen) {
         sethover(element);
-        showinfo(element);
+        renderviewer(element);
     }
 }
 
