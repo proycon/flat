@@ -627,28 +627,7 @@ function renderannotation(annotation, norecurse, extended) {
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
                 if (annotation.children[i].type == "xref") {
-                    s2 = s2 + "<div class=\"linkreference\">↳";
-                    var linkedannotation = annotations[annotation.children[i].idref];
-                    if (annotation.children[i].linktype) {
-                        s2 = s2 + " to " + folia_label(annotation.children[i].linktype) + " (<tt>" + annotation.children[i].idref + "</tt>)";
-                    } else {
-                        s2 = s2 + " to <tt>" + annotation.children[i].idref + "</tt>";
-                    }
-                    s2 = s2 + "<br/>";
-                    if (typeof linkedannotation === "undefined") {
-                        s2 = s2 + "(reference target missing or not currently loaded)<br/>";
-                        if (annotation.children[i].class) {
-                            s2 = s2 + " <strong>Class:</strong> " + annotation.children[i].class;
-                        }
-                        if (annotation.children[i].t) {
-                            s2 = s2 + " <strong>Text:</strong> " + annotation.children[i].t;
-                        }
-                    } else {
-                        s2 = s2 + "<div class=\"linkreference_body\">";
-                        s2 = s2 + renderannotation(annotations[annotation.children[i].idref], true,false);
-                        s2 = s2 + "</div>";
-                    }
-                    s2 = s2 + "</div>";
+                    s2 = s2 + renderlinkreference(annotation.children[i]);
                 }
             }
         }
@@ -698,6 +677,33 @@ function renderannotation(annotation, norecurse, extended) {
     if (annotation.inalternative) {
         s = s + "</div>";
     }
+    return s;
+}
+
+function renderlinkreference(annotation) {
+    var s = "";
+    s = s + "<div class=\"linkreference\">↳";
+    var linkedannotation = annotations[annotation.idref];
+    if (annotation.linktype) {
+        s = s + " to " + folia_label(annotation.linktype) + " (<tt>" + annotation.idref + "</tt>)";
+    } else {
+        s = s + " to <tt>" + annotation.idref + "</tt>";
+    }
+    s = s + "<br/>";
+    if (typeof linkedannotation === "undefined") {
+        s = s + "(reference target missing or not currently loaded)<br/>";
+        if (annotation.class) {
+            s = s + " <strong>Class:</strong> " + annotation.class;
+        }
+        if (annotation.t) {
+            s = s + " <strong>Text:</strong> " + annotation.t;
+        }
+    } else {
+        s = s + "<div class=\"linkreference_body\">";
+        s = s + renderannotation(annotations[annotation.idref], true,false);
+        s = s + "</div>";
+    }
+    s = s + "</div>";
     return s;
 }
 
