@@ -2194,6 +2194,13 @@ function addlinkrefs(index, ho_index) {
     }
 }
 
+function linktotarget() {
+}
+
+function getlinktotarget(annotation, structureelement) {
+    //build a query to link to the specified element
+}
+
 function editor_submit(addtoqueue) {
     /* Submit the annotations prepared in the editor dialog */
 

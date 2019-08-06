@@ -383,6 +383,15 @@ div.opentreeview {
     min-height: 34px;
     cursor: pointer;
 }
+div.linktotarget {
+    background: url(linktarget.png);
+    background-size: 48px 34px;
+    width: 48px;
+    height: 34px;
+    min-width: 48px;
+    min-height: 34px;
+    cursor: pointer;
+}
 div#document span.seqnr {
     float: left;
     display: inline-block;

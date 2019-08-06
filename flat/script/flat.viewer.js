@@ -487,6 +487,10 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 				if ((annotation.type == "su") && (extended)) {
 					s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
 				}
+                if ((extended) && (linkselector >= 0)) {
+                    //this is actually an editor feature
+					s = s + "<div class=\"linktotarget\" title=\"Link to this annotation\" onclick=\"linktotarget(" + getlinktotarget(annotation, structureelement) + ")\"></div>";
+                }
 				s = s + "</th><td>";
                 s = s + renderannotation(annotation, false, extended);
                 s = s + "</td></tr>";
@@ -508,6 +512,10 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 			s += "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
             if (((substructure.type == "morpheme") || (substructure.type == "phoneme"))  && (extended)) {
                 s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview_structure('" + substructure.id + "')\"></div>";
+            }
+            if ((extended) && (linkselector >= 0)) {
+                //this is actually an editor feature
+                s = s + "<div class=\"linktotarget\" title=\"Link to this annotation\" onclick=\"linktotarget(" + getlinktotarget(substructure, structureelement) + ")\"></div>";
             }
             s += "</th><td>";
 			s += renderannotation(substructure, false, extended); //renders class
