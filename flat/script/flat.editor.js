@@ -398,7 +398,7 @@ function renderrelationfields(annotation, index, ho_index) {
                 if (xref_subqueries !== "") {
                     xref_subqueries += " ";
                 }
-                xref_subqueries += "(TO ID \"" + annotation.children[i].idref + "\")";
+                xref_subqueries += "(TO ID " + annotation.children[i].idref + ")";
             }
         }
     }
@@ -407,8 +407,8 @@ function renderrelationfields(annotation, index, ho_index) {
         s2 = s2 + " <button onclick=\"clearlinkrefs(" + index + "," + ho_index + ")\" class=\"clearlinkrefs\">Clear link references</button></br>";
         s = s + "Link references: " + s2;
     }
-    s = s + "<button id=\"higherorderfields_addlinkrefs_" + index + "_" + ho_index + "\" onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
-    s = s +"<div id=\"higherorderfields_pendinglinkrefs_" + index + "_" + ho_index + "\" class=\"pendinglinkrefs\"></div>";
+    s = s + "<button id=\"higherorderfield_addlinkrefs_" + index + "_" + ho_index + "\" onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
+    s = s +"<div id=\"higherorderfield_pendinglinkrefs_" + index + "_" + ho_index + "\" class=\"pendinglinkrefs\"></div>";
     return s;
 
 }
@@ -2131,7 +2131,10 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     if (edititem.children[j].xref_subqueries) {
                         query = query + " " + edititem.children[j].xref_subqueries;
                     }
-                    query = query + " WHERE " + where_clause + " " + targetselector;
+                    if (where_clause) {
+                        query = query + " WHERE " + where_clause;
+                    }
+                    query = query + " " + targetselector;
                 }
             } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
@@ -2178,29 +2181,27 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
 
 
 function clearlinkrefs(index, ho_index) {
-    $("#higherorderfields_pendinglinkrefs_" + index + "_" + ho_index).html("These link references will be removed upon submission!");
-    $("#higherorderfields_xrefs_" + index + "_" + ho_index).val("");
+    $("#higherorderfield_pendinglinkrefs_" + index + "_" + ho_index).html("These link references will be removed upon submission!");
+    $("#higherorderfield_xrefs_" + index + "_" + ho_index).val("");
 }
 
 function addlinkrefs(index, ho_index) {
     //Bound to a button to Add link references, enabled/disables the link selector
     if (linkselector >= 0) {
         linkselector = -1;
-        $("#higherorderfields_addlinkrefs_" + index + "_" + ho_index).removeClass("linkselectoron");
+        $("#higherorderfield_addlinkrefs_" + index + "_" + ho_index).removeClass("linkselectoron");
     } else {
         linkselector = index;
         linkselector_sub = ho_index;
-        $("#higherorderfields_addlinkrefs_" + index + "_" + ho_index).addClass("linkselectoron");
+        $("#higherorderfield_addlinkrefs_" + index + "_" + ho_index).addClass("linkselectoron");
     }
 }
 
 function linktotarget(query) {
     if (linkselector >= 0) {
-        var val = $("#higherorderfields_xrefs_" + linkselector + "_" + linkselector_sub).val();
-        if (val) {
-            $("#higherorderfields_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
-        }
-        $("#higherorderfields_pendinglinkrefs_" + linkselector + "_" + linkselector_sub).html("New pending link references will be added upon submission!");
+        var val = $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val();
+        $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
+        $("#higherorderfield_pendinglinkrefs_" + linkselector + "_" + linkselector_sub).html("New pending link references will be added upon submission!");
         $('#viewer').hide();
         linkselector = -1;
         $('#editor .linkselectoron').removeClass("linkselectoron");
