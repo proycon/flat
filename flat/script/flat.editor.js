@@ -285,7 +285,7 @@ function renderhigherorderfields(index, annotation) {
         s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
     if (folia_accepts(annotation.type, 'relation')) {
-        Object.keys(declarations[annotationtype]).forEach(function(relation_set){
+        Object.keys(declarations['relation']).forEach(function(relation_set){
             s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + relation_set + "'," + index + ",'relation')\">Add Relation (" + relation_set + ")</li>";
         });
     }
@@ -480,7 +480,7 @@ function addhigherorderfield(set, index, type) {
     } else if (folia_isspanrole(type)) {
         newchildannotation = {'type':type,'targets': [], 'targets_begin': []};
     } else if (type == "relation") {
-        newchildannotation = {'type':type, 'href': "", 'format': "", 'class':"", 'set': set};
+        newchildannotation = {'type':type, 'href': "", 'format': "", 'class':"", 'set': set,"children": []};
     }
     if (folia_occurrences(type) == 1) {
         //ensure we don't add a duplicate
