@@ -696,23 +696,38 @@ function renderlinkreference(annotation) {
     var s = "";
     s = s + "<div class=\"linkreference\">↳";
     var linkedannotation = annotations[annotation.idref];
+    var linkedstructure = structure[annotation.idref];
     if (annotation.linktype) {
         s = s + " to " + folia_label(annotation.linktype) + " (<tt>" + annotation.idref + "</tt>)";
+    } else if ((linkedannotation) && (linkedannotation.type)) {
+        s = s + " to " + folia_label(linkedannotation.type) + " (<tt>" + annotation.idref + "</tt>)";
+    } else if ((linkedstructure) && (linkedstructure.type)) {
+        s = s + " to " + folia_label(linkedstructure.type) + " (<tt>" + annotation.idref + "</tt>)";
     } else {
         s = s + " to <tt>" + annotation.idref + "</tt>";
     }
     s = s + "<br/>";
     if (typeof linkedannotation === "undefined") {
-        s = s + "(reference target missing or not currently loaded)<br/>";
+        //perhaps we link to structure?
+        var text = "";
+        if (linkedstructure) {
+            text = $('#' + valid(linkedstructure.id) + ' span.lbl').html();
+        } else {
+            s = s + "(reference target missing or not currently loaded)<br/>";
+        }
+        s = s + "<div class=\"linkreference_body\">";
         if (annotation.class) {
-            s = s + " <strong>Class:</strong> " + annotation.class;
+            s = s + " <span class=\"class\">" + annotation.class + "</span>";
         }
-        if (annotation.t) {
-            s = s + " <strong>Text:</strong> " + annotation.t;
+        if (text) {
+            s = s + " <span class=\"text\">" + text + "</span>";
+        } else if (annotation.t) {
+            s = s + " <span class=\"text\">" + annotation.t + "</span>";
         }
+        s = s + "</div>";
     } else {
         s = s + "<div class=\"linkreference_body\">";
-        s = s + renderannotation(annotations[annotation.idref], true,false);
+        s = s + renderannotation(linkedannotation, true,false);
         s = s + "</div>";
     }
     s = s + "</div>";
