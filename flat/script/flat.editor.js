@@ -403,6 +403,7 @@ function renderrelationfields(annotation, index, ho_index) {
         }
     }
     s += "<input id=\"higherorderfield_xrefs_"+ index + "_" + ho_index+ "\" class=\"relationformat\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
+    s += "<input id=\"higherorderfield_xrefchanged_"+ index + "_" + ho_index+ "\" class=\"relationformat\" type=\"hidden\" value=\"no\" />"; //a hidden field storing whether xrefs have changed or not
     if (s2) {
         s2 = s2 + " <button onclick=\"clearlinkrefs(" + index + "," + ho_index + ")\" class=\"clearlinkrefs\">Clear link references</button></br>";
         s = s + "Link references: " + s2;
@@ -1540,6 +1541,13 @@ function gather_changes() {
                     var href = $('#higherorderfield_href_' + i +'_' + j).val();
                     var format = $('#higherorderfield_format_' + i +'_' + j).val();
 
+
+                    if (editdata[i].children[j].class) {
+                        editdata[i].children[j].oldclass =  editdata[i].children[j].class;
+                    } else {
+                        editdata[i].children[j].oldclass = null;
+                    }
+
                     //has the class been changed OR has the format been changed?
                     if ((((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
                         if (editdata[i].children[j].class) {
@@ -1568,17 +1576,16 @@ function gather_changes() {
                         editdata[i].children[j].format = format;
                         editdata[i].children[j].changed = true;
                         editdata[i].higherorderchanged = true;
-                    } else {
-                        //have the xrefs been changed?
+                    }
+                    //have the xrefs been changed?
 
-                        var xref_subqueries = $('#higherorderfield_xrefs_' + i +'_' + j).val();
-                        var xref_changed = $('#higherorderfield_xrefchanged_' + i +'_' + j).val() == "yes";
+                    var xref_subqueries = $('#higherorderfield_xrefs_' + i +'_' + j).val();
+                    var xref_changed = $('#higherorderfield_xrefchanged_' + i +'_' + j).val() == "yes"; //this field is actively set to 'yes' when the linkselector has been used
 
-                        if ((xref_subqueries) && (xref_changed)) {
-                            editdata[i].children[j].xref_subqueries = xref_subqueries;
-                            editdata[i].children[j].changed = true;
-                            editdata[i].higherorderchanged = true;
-                        }
+                    if ((xref_subqueries) && (xref_changed)) {
+                        editdata[i].children[j].xref_subqueries = xref_subqueries;
+                        editdata[i].children[j].changed = true;
+                        editdata[i].higherorderchanged = true;
                     }
                 } else if (folia_isspanrole(editdata[i].children[j].type)) {
                     //Span roles: detect changes in span, and set the changed flag
@@ -2100,13 +2107,28 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                 var where_clause = "";
                 var with_clause = "";
                 if (edititem.children[j].oldclass) {
-                    if (edititem.children[j].class === "") {
-                        query = "DELETE " + edititem.children[j].type;
+                    if (edititem.children[j].class != edititem.children[j].oldclass) {
+                        //class has changed
+                        if (edititem.children[j].class === "") {
+                            query = "DELETE " + edititem.children[j].type;
+                        } else {
+                            query = "EDIT " + edititem.children[j].type;
+                            with_clause += "class \"" + escape_fql_value(edititem.children[j].class) + "\" ";
+                        }
+                        if (edititem.children[j].id) {
+                            query += " ID " + edititem.children[j].id;
+                        } else {
+                            where_clause += "class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" ";
+                        }
                     } else {
+                        //class is still the same, e.g. we are editing other attributes of an existing relation
                         query = "EDIT " + edititem.children[j].type;
-                        with_clause += "class \"" + escape_fql_value(edititem.children[j].class) + "\" ";
+                        if (edititem.children[j].id) {
+                            query += " ID " + edititem.children[j].id;
+                        } else {
+                            where_clause += "class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" ";
+                        }
                     }
-                    where_clause += "class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" ";
                 } else {
                     query = "ADD " + edititem.children[j].type;
                 }
@@ -2183,6 +2205,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
 function clearlinkrefs(index, ho_index) {
     $("#higherorderfield_pendinglinkrefs_" + index + "_" + ho_index).html("These link references will be removed upon submission!");
     $("#higherorderfield_xrefs_" + index + "_" + ho_index).val("");
+    $("#higherorderfield_xrefchanged_" + index + "_" + ho_index).val("yes");
 }
 
 function addlinkrefs(index, ho_index) {
@@ -2202,6 +2225,7 @@ function linktotarget(query) {
         var val = $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val();
         $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
         $("#higherorderfield_pendinglinkrefs_" + linkselector + "_" + linkselector_sub).html("New pending link references will be added upon submission!");
+        $("#higherorderfield_xrefchanged_" + linkselector + "_" + linkselector_sub).val("yes");
         $('#viewer').hide();
         linkselector = -1;
         $('#editor .linkselectoron').removeClass("linkselectoron");
