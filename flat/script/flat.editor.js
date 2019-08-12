@@ -2127,12 +2127,12 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     returntype = "ancestor-target";
                     query = query + " WHERE " + where_clause + " " + targetselector;
                 } else {
+                    if (where_clause) {
+                        query = query + " WHERE " + where_clause;
+                    }
                     query = query + " WITH " + with_clause;
                     if (edititem.children[j].xref_subqueries) {
                         query = query + " " + edititem.children[j].xref_subqueries;
-                    }
-                    if (where_clause) {
-                        query = query + " WHERE " + where_clause;
                     }
                     query = query + " " + targetselector;
                 }
