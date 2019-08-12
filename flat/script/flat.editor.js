@@ -285,7 +285,9 @@ function renderhigherorderfields(index, annotation) {
         s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
     if (folia_accepts(annotation.type, 'relation')) {
-        s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'relation')\">Add Relation</li>";
+        Object.keys(declarations[annotationtype]).forEach(function(relation_set){
+            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + relation_set + "'," + index + ",'relation')\">Add Relation (" + relation_set + ")</li>";
+        });
     }
     if (folia_isspan(annotation.type)) {
         var spanroles = folia_spanroles(annotation.type);
@@ -467,6 +469,7 @@ function renderfeatureclassfield(set, subset, cls, index, ho_index) {
 
 function addhigherorderfield(set, index, type) {
     /* Add a new higher order annotation field (called when the user selects a field to add from the higher-order menu) */
+    /* "set" can be either the set of the parent element, OR the set of the higher order fields. This depends on the type */
 
     var ho_index = editdata[index].children.length;
     var newchildannotation = null;
@@ -476,6 +479,8 @@ function addhigherorderfield(set, index, type) {
         newchildannotation = {'type':type, 'subset': "", 'class':""};
     } else if (folia_isspanrole(type)) {
         newchildannotation = {'type':type,'targets': [], 'targets_begin': []};
+    } else if (type == "relation") {
+        newchildannotation = {'type':type, 'href': "", 'format': "", 'class':"", 'set': set};
     }
     if (folia_occurrences(type) == 1) {
         //ensure we don't add a duplicate
