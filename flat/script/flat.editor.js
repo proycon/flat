@@ -419,8 +419,8 @@ function renderrelationfields(annotation, index, ho_index) {
             }
         }
     }
-    s += "<input id=\"" + fieldprefix + "_xrefs_" + fieldindex + "\" class=\"relationformat\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
-    s += "<input id=\"" + fieldprefix + "_xrefchanged_" + fieldindex + "\" class=\"relationformat\" type=\"hidden\" value=\"no\" />"; //a hidden field storing whether xrefs have changed or not
+    s += "<input id=\"" + fieldprefix + "_xrefs_" + fieldindex + "\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
+    s += "<input id=\"" + fieldprefix + "_xrefchanged_" + fieldindex + "\" type=\"hidden\" value=\"no\" />"; //a hidden field storing whether xrefs have changed or not
     if (s2) {
         s2 = s2 + " <button onclick=\"clearlinkrefs(" + index + "," + ho_index + ")\" class=\"clearlinkrefs\">Clear link references</button></br>";
         s = s + "Link references: " + s2;
