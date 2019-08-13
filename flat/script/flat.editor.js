@@ -2273,7 +2273,7 @@ function getfieldprefix(index,ho_index) {
     var fieldindex;
     if (ho_index === null) {
         fieldprefix = "editfield";
-        fieldindex = index + "_" + ho_index;
+        fieldindex = index;
     } else {
         fieldprefix = "higherorderfield";
         fieldindex = index + "_" + ho_index;
