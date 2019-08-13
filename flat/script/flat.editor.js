@@ -906,7 +906,7 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
     if ((annotation.type == 't') || (annotation.type == 'ph')) {
         //Annotation concerns text or phonological content
         s = s + rendereditfield_content(annotation, editfields);
-    } else if (annotationtype == "relation") {
+    } else if (annotation.type == "relation") {
         s  = s + renderrelationfields(annotation, editfields, null);
     } else {
         //Annotation concerns class
@@ -2289,7 +2289,7 @@ function addlinkrefs(index, ho_index) {
 function linktotarget(query) {
     var r = getfieldprefix(linkselector,linkselector_sub);
     if (linkselector >= 0) {
-        var val = $("#" + r.fieldprefix + "_xrefs_" + r..fieldindex).val();
+        var val = $("#" + r.fieldprefix + "_xrefs_" + r.fieldindex).val();
         $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
         $("#" + r.fieldprefix + "_pendinglinkrefs_" + r.fieldindex).html("New pending link references will be added upon submission!");
         $("#" + r.fieldprefix + "_xrefchanged_" + r.fieldindex).val("yes");
