@@ -2170,60 +2170,7 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
                     query = "EDIT " + edititem.children[j].type + " WHERE subset = \"" + escape_fql_value(edititem.children[j].oldsubset) + "\" AND class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\"  WITH subset \"" + escape_fql_value(edititem.children[j].subset) + "\" class \"" + escape_fql_value(edititem.children[j].class) + "\" " + targetselector;
                 }
             } else if ((edititem.children[j].type == 'relation')) {
-                var where_clause = "";
-                var with_clause = "";
-                if (edititem.children[j].oldclass) {
-                    if (edititem.children[j].class != edititem.children[j].oldclass) {
-                        //class has changed
-                        if (edititem.children[j].class === "") {
-                            query = "DELETE " + edititem.children[j].type;
-                        } else {
-                            query = "EDIT " + edititem.children[j].type;
-                            with_clause += "class \"" + escape_fql_value(edititem.children[j].class) + "\" ";
-                        }
-                        if (edititem.children[j].id) {
-                            query += " ID " + edititem.children[j].id;
-                        } else {
-                            where_clause += "class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" ";
-                        }
-                    } else {
-                        //class is still the same, e.g. we are editing other attributes of an existing relation
-                        query = "EDIT " + edititem.children[j].type;
-                        if (edititem.children[j].id) {
-                            query += " ID " + edititem.children[j].id;
-                        } else {
-                            where_clause += "class = \"" + escape_fql_value(edititem.children[j].oldclass) + "\" ";
-                        }
-                    }
-                } else {
-                    query = "ADD " + edititem.children[j].type;
-                }
-                if (edititem.children[j].oldhref) {
-                    where_clause += "href = \"" + escape_fql_value(edititem.children[j].oldhref) + "\" ";
-                }
-                if ((((edititem.children[j].oldhref) && (edititem.children[j].oldhref != edititem.children[j].href))) || (!edititem.children[j].oldhref))  {
-                    with_clause += " href \""+edititem.children[j].href+"\"";
-                }
-                if (edititem.children[j].oldformat) {
-                    where_clause += "format = \"" + escape_fql_value(edititem.children[j].oldformat) + "\" ";
-                }
-                if ((((edititem.children[j].oldformat) && (edititem.children[j].oldformat != edititem.children[j].format))) || (!edititem.children[j].oldformat))  {
-                    with_clause += " format \""+edititem.children[j].format+"\"";
-                }
-                if (edititem.children[j].class === "") {
-                    //deletion
-                    returntype = "ancestor-target";
-                    query = query + " WHERE " + where_clause + " " + targetselector;
-                } else {
-                    if (where_clause) {
-                        query = query + " WHERE " + where_clause;
-                    }
-                    query = query + " WITH " + with_clause;
-                    if (edititem.children[j].xref_subqueries) {
-                        query = query + " " + edititem.children[j].xref_subqueries;
-                    }
-                    query = query + " " + targetselector;
-                }
+                query = build_relation_query(edititem.children[j], targetselector);
             } else if ((folia_isspanrole(edititem.children[j].type))) {
                 //formulate query for span roles
                 //foliadocserve adds IDs to all span roles
@@ -2267,6 +2214,64 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
     }
 }
 
+function build_relation_query(edititem, targetselector) {
+    var query;
+    var where_clause = "";
+    var with_clause = "";
+    if (edititem.oldclass) {
+        if (edititem.class != edititem.oldclass) {
+            //class has changed
+            if (edititem.class === "") {
+                query = "DELETE " + edititem.type;
+            } else {
+                query = "EDIT " + edititem.type;
+                with_clause += "class \"" + escape_fql_value(edititem.class) + "\" ";
+            }
+            if (edititem.id) {
+                query += " ID " + edititem.id;
+            } else {
+                where_clause += "class = \"" + escape_fql_value(edititem.oldclass) + "\" ";
+            }
+        } else {
+            //class is still the same, e.g. we are editing other attributes of an existing relation
+            query = "EDIT " + edititem.type;
+            if (edititem.id) {
+                query += " ID " + edititem.id;
+            } else {
+                where_clause += "class = \"" + escape_fql_value(edititem.oldclass) + "\" ";
+            }
+        }
+    } else {
+        query = "ADD " + edititem.type;
+    }
+    if (edititem.oldhref) {
+        where_clause += "href = \"" + escape_fql_value(edititem.oldhref) + "\" ";
+    }
+    if ((((edititem.oldhref) && (edititem.oldhref != edititem.href))) || (!edititem.oldhref))  {
+        with_clause += " href \""+edititem.href+"\"";
+    }
+    if (edititem.oldformat) {
+        where_clause += "format = \"" + escape_fql_value(edititem.oldformat) + "\" ";
+    }
+    if ((((edititem.oldformat) && (edititem.oldformat != edititem.format))) || (!edititem.oldformat))  {
+        with_clause += " format \""+edititem.format+"\"";
+    }
+    if (edititem.class === "") {
+        //deletion
+        returntype = "ancestor-target";
+        query = query + " WHERE " + where_clause + " " + targetselector;
+    } else {
+        if (where_clause) {
+            query = query + " WHERE " + where_clause;
+        }
+        query = query + " WITH " + with_clause;
+        if (edititem.xref_subqueries) {
+            query = query + " " + edititem.xref_subqueries;
+        }
+        query = query + " " + targetselector;
+    }
+    return query;
+}
 
 function getfieldprefix(index,ho_index) {
     var fieldprefix;
