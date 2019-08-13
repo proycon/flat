@@ -348,47 +348,60 @@ function renderhigherorderfield(index, ho_index, childannotation, set) {
 }
 
 function renderrelationfields(annotation, index, ho_index) {
-    /* Renders two fields to edit a specific relation: a class field and a target field, called by renderhigherorderfields() and addhigherorderfield() */
+    /* Renders two fields to edit a specific relation: a class field and a target field,
+        can be called by renderhigherorderfields() and addhigherorderfield()
+        but also by rendereditfields() and addeditorfield() (first degree)  */
     var s = "";
     var set = annotation.set;
-    //Class field
-    if ((setdefinitions[set]) && (setdefinitions[set].type == "closed")) {
-        //Annotation type uses a closed set of options, present a drop-down list
-        s = s + "<select id=\"higherorderfield_" + index + "_" + ho_index + "\" class=\"classedit\">";
-        s = s + "<option value=\"\"></option>";
-        setdefinitions[set].classorder.forEach(function(cid){
-            var c = setdefinitions[set].classes[cid];
-            if (repeatmode) {
-                s = s + getclassesasoptions(c, repeatreference.class, set); // will add to s
-                if (annotation.class != repeatreference.class) { repeat_preset = true; }
-            } else {
-                s = s + getclassesasoptions(c, annotation.class, set); // will add to s
-            }
-        });
-        s = s + "</select>";
+    var fieldprefix;
+    var fieldindex;
+    if (ho_index === null) {
+        //if ho_index === null, we are rendering this as a first degree annotation rather than a second degree one
+        fieldprefix = "editfield";
+        fieldindex = index;
+        s = s + rendereditfield_class(annotation, index);
     } else {
-        //Annotation type uses a free-fill value, present a textbox:
-        var class_value = annotation.class;
-        if (repeatmode) {
-            class_value = repeatreference.class;
-            if (cls != class_value) { repeat_preset = true; }
+        fieldprefix = "higherorderfield";
+        fieldindex = index + "_" + ho_index;
+        //Class field
+        if ((setdefinitions[set]) && (setdefinitions[set].type == "closed")) {
+            //Annotation type uses a closed set of options, present a drop-down list
+            s = s + "<select id=\"higherorderfield_" + index + "_" + ho_index + "\" class=\"classedit\">";
+            s = s + "<option value=\"\"></option>";
+            setdefinitions[set].classorder.forEach(function(cid){
+                var c = setdefinitions[set].classes[cid];
+                if (repeatmode) {
+                    s = s + getclassesasoptions(c, repeatreference.class, set); // will add to s
+                    if (annotation.class != repeatreference.class) { repeat_preset = true; }
+                } else {
+                    s = s + getclassesasoptions(c, annotation.class, set); // will add to s
+                }
+            });
+            s = s + "</select>";
+        } else {
+            //Annotation type uses a free-fill value, present a textbox:
+            var class_value = annotation.class;
+            if (repeatmode) {
+                class_value = repeatreference.class;
+                if (cls != class_value) { repeat_preset = true; }
+            }
+            s = s + "<input id=\"" + fieldprefix + "_" + fieldindex + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
         }
-        s = s + "<input id=\"higherorderfield_" + index + "_" + ho_index + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
     }
 
     //Target field
     s += "<br/>Target resource:";
     if (annotation.href) {
-        s += "<input id=\"higherorderfield_href_"+ index + "_" + ho_index+ "\" class=\"relationtarget\" value=\"" + annotation.href + "\" ";
+        s += "<input id=\"" + fieldprefix + "_href_" + fieldindex + "\" class=\"relationtarget\" value=\"" + annotation.href + "\" ";
     } else {
-        s += "<input id=\"higherorderfield_href_"+ index + "_" + ho_index+ "\" class=\"relationtarget\" value=\"\" ";
+        s += "<input id=\"" + fieldprefix + "_href_" + fieldindex + "\" class=\"relationtarget\" value=\"\" ";
     }
     s += " title=\"URL to the target document, leave empty if the relation is inside this FoLiA document itself\" />";
     s += "<br/>Target format:";
     if (annotation.format) {
-        s += "<input id=\"higherorderfield_format_"+ index + "_" + ho_index+ "\" class=\"relationformat\" value=\"" + annotation.format + "\" ";
+        s += "<input id=\"" + fieldprefix + "_format_" + fieldindex + "\" class=\"relationformat\" value=\"" + annotation.format + "\" ";
     } else {
-        s += "<input id=\"higherorderfield_format_"+ index + "_" + ho_index+ "\" class=\"relationformat\" value=\"\" ";
+        s += "<input id=\"" + fieldprefix + "_format_" + fieldindex + "\" class=\"relationformat\" value=\"\" ";
     }
     s += " title=\"MIME Type indicating the format of the target document, just leave empty if the relation is inside this FoLiA document itself\" /><br/>";
     var s2 = "";
@@ -404,14 +417,14 @@ function renderrelationfields(annotation, index, ho_index) {
             }
         }
     }
-    s += "<input id=\"higherorderfield_xrefs_"+ index + "_" + ho_index+ "\" class=\"relationformat\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
-    s += "<input id=\"higherorderfield_xrefchanged_"+ index + "_" + ho_index+ "\" class=\"relationformat\" type=\"hidden\" value=\"no\" />"; //a hidden field storing whether xrefs have changed or not
+    s += "<input id=\"" + fieldprefix + "_xrefs_" + fieldindex + "\" class=\"relationformat\" type=\"hidden\" value=\"" +xref_subqueries + "\" />"; //a hidden field storing all xref subqueries
+    s += "<input id=\"" + fieldprefix + "_xrefchanged_" + fieldindex + "\" class=\"relationformat\" type=\"hidden\" value=\"no\" />"; //a hidden field storing whether xrefs have changed or not
     if (s2) {
         s2 = s2 + " <button onclick=\"clearlinkrefs(" + index + "," + ho_index + ")\" class=\"clearlinkrefs\">Clear link references</button></br>";
         s = s + "Link references: " + s2;
     }
-    s = s + "<button id=\"higherorderfield_addlinkrefs_" + index + "_" + ho_index + "\" onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
-    s = s +"<div id=\"higherorderfield_pendinglinkrefs_" + index + "_" + ho_index + "\" class=\"pendinglinkrefs\"></div>";
+    s = s + "<button id=\"" + fieldprefix + "_addlinkrefs_" + fieldindex + "\" onclick=\"addlinkrefs(" + index + "," + ho_index + ")\" class=\"addlinksrefs\">Add internal link reference&gt;</button>";
+    s = s +"<div id=\"" + fieldprefix + "_pendinglinkrefs_" + fieldindex + "\" class=\"pendinglinkrefs\"></div>";
     return s;
 
 }
@@ -893,6 +906,8 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
     if ((annotation.type == 't') || (annotation.type == 'ph')) {
         //Annotation concerns text or phonological content
         s = s + rendereditfield_content(annotation, editfields);
+    } else if (annotationtype == "relation") {
+        s  = s + renderrelationfields(annotation, editfields, null);
     } else {
         //Annotation concerns class
         s = s + rendereditfield_class(annotation, editfields);
@@ -1499,106 +1514,7 @@ function gather_changes() {
         editdata[i].higherorderchanged = false; //independent of editdata[i].changed
         if (editdata[i].children.length > 0) {
             for (var j = 0; j < editdata[i].children.length; j++) {
-                editdata[i].children[j].changed = false;
-                if ((editdata[i].children[j].type == 'comment') ||(editdata[i].children[j].type == 'desc')) {
-                    //Comments and descriptions
-                    var value = $('#higherorderfield' + i +'_' + j).val();
-                    if (((editdata[i].children[j].value) && (editdata[i].children[j].value != value)) || (!editdata[i].children[j].value)) {
-                        if (editdata[i].children[j].value) {
-                            editdata[i].children[j].oldvalue =  editdata[i].children[j].value;
-                        } else {
-                            editdata[i].children[j].oldvalue = null;
-                        }
-                        editdata[i].children[j].value = value;
-                        editdata[i].children[j].changed = true;
-                        editdata[i].higherorderchanged = true;
-                    }
-                } else if (editdata[i].children[j].type == 'feat') {
-                    //Features
-                    var subset = $('#higherorderfield_subset_' + i +'_' + j).val();
-                    var cls = $('#higherorderfield_' + i +'_' + j).val();
-
-
-                    //has the subset been changed OR has the class been changed?
-                    if ((((editdata[i].children[j].subset) && (editdata[i].children[j].subset != subset)) || (!editdata[i].children[j].subset)) ||
-                       (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
-
-                        //remember old values (null if new)
-                        if (editdata[i].children[j].subset) {
-                            editdata[i].children[j].oldsubset =  editdata[i].children[j].subset;
-                        } else {
-                            editdata[i].children[j].oldsubset = null;
-                        }
-                        if (editdata[i].children[j].class) {
-                            editdata[i].children[j].oldclass =  editdata[i].children[j].class;
-                        } else {
-                            editdata[i].children[j].oldclass = null;
-                        }
-
-                        editdata[i].children[j].subset = subset;
-                        editdata[i].children[j].class = cls;
-                        editdata[i].children[j].changed = true;
-                        editdata[i].higherorderchanged = true;
-                    }
-                } else if (editdata[i].children[j].type == 'relation') {
-                    //Relations
-                    var cls = $('#higherorderfield_' + i +'_' + j).val();
-                    var href = $('#higherorderfield_href_' + i +'_' + j).val();
-                    var format = $('#higherorderfield_format_' + i +'_' + j).val();
-
-
-                    if (editdata[i].children[j].class) {
-                        editdata[i].children[j].oldclass =  editdata[i].children[j].class;
-                    } else {
-                        editdata[i].children[j].oldclass = null;
-                    }
-
-                    //has the class been changed OR has the format been changed?
-                    if ((((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
-                        if (editdata[i].children[j].class) {
-                            editdata[i].children[j].oldclass =  editdata[i].children[j].class;
-                        } else {
-                            editdata[i].children[j].oldclass = null;
-                        }
-                        editdata[i].children[j].class = cls;
-                        editdata[i].children[j].changed = true;
-                        editdata[i].higherorderchanged = true;
-                    }
-                    if ((((editdata[i].children[j].href) && (editdata[i].children[j].href != href)) || (!editdata[i].children[j].href)) ||
-                       (((editdata[i].children[j].format) && (editdata[i].children[j].format != cls)) || (!editdata[i].children[j].format))) {
-                        //remember old values (null if new)
-                        if (editdata[i].children[j].href) {
-                            editdata[i].children[j].oldhref =  editdata[i].children[j].href;
-                        } else {
-                            editdata[i].children[j].oldhref = null;
-                        }
-                        if (editdata[i].children[j].format) {
-                            editdata[i].children[j].oldformat =  editdata[i].children[j].format;
-                        } else {
-                            editdata[i].children[j].oldformat = null;
-                        }
-                        editdata[i].children[j].href = href;
-                        editdata[i].children[j].format = format;
-                        editdata[i].children[j].changed = true;
-                        editdata[i].higherorderchanged = true;
-                    }
-                    //have the xrefs been changed?
-
-                    var xref_subqueries = $('#higherorderfield_xrefs_' + i +'_' + j).val();
-                    var xref_changed = $('#higherorderfield_xrefchanged_' + i +'_' + j).val() == "yes"; //this field is actively set to 'yes' when the linkselector has been used
-
-                    if ((xref_subqueries) && (xref_changed)) {
-                        editdata[i].children[j].xref_subqueries = xref_subqueries;
-                        editdata[i].children[j].changed = true;
-                        editdata[i].higherorderchanged = true;
-                    }
-                } else if (folia_isspanrole(editdata[i].children[j].type)) {
-                    //Span roles: detect changes in span, and set the changed flag
-                    if ( (!editdata[i].children[j].targets_begin) || (JSON.stringify(editdata[i].children[j].targets) != JSON.stringify(editdata[i].children[j].targets_begin) )) {
-                        editdata[i].children[j].changed = true;
-                        editdata[i].higherorderchanged = true;
-                    }
-                }
+                gather_changes_higherorder(i,j);
             }
 
         }
@@ -1729,6 +1645,136 @@ function gather_changes() {
         }
     }
     return changes;
+}
+
+
+function gather_changes_higherorder(i,j) {
+    /* See if there are any changes for the higher order values: did the user do something and do we have to prepare a query for the backend?
+     * This functions prepares validates the input and prepares the editdata structures so queries can be more
+     * easily formed in the next stage. Called by gather_changes()  */
+
+    editdata[i].children[j].changed = false;
+    if ((editdata[i].children[j].type == 'comment') ||(editdata[i].children[j].type == 'desc')) {
+        //Comments and descriptions
+        var value = $('#higherorderfield' + i +'_' + j).val();
+        if (((editdata[i].children[j].value) && (editdata[i].children[j].value != value)) || (!editdata[i].children[j].value)) {
+            if (editdata[i].children[j].value) {
+                editdata[i].children[j].oldvalue =  editdata[i].children[j].value;
+            } else {
+                editdata[i].children[j].oldvalue = null;
+            }
+            editdata[i].children[j].value = value;
+            editdata[i].children[j].changed = true;
+            editdata[i].higherorderchanged = true;
+        }
+    } else if (editdata[i].children[j].type == 'feat') {
+        //Features
+        var subset = $('#higherorderfield_subset_' + i +'_' + j).val();
+        var cls = $('#higherorderfield_' + i +'_' + j).val();
+
+
+        //has the subset been changed OR has the class been changed?
+        if ((((editdata[i].children[j].subset) && (editdata[i].children[j].subset != subset)) || (!editdata[i].children[j].subset)) ||
+           (((editdata[i].children[j].class) && (editdata[i].children[j].class != cls)) || (!editdata[i].children[j].class))) {
+
+            //remember old values (null if new)
+            if (editdata[i].children[j].subset) {
+                editdata[i].children[j].oldsubset =  editdata[i].children[j].subset;
+            } else {
+                editdata[i].children[j].oldsubset = null;
+            }
+            if (editdata[i].children[j].class) {
+                editdata[i].children[j].oldclass =  editdata[i].children[j].class;
+            } else {
+                editdata[i].children[j].oldclass = null;
+            }
+
+            editdata[i].children[j].subset = subset;
+            editdata[i].children[j].class = cls;
+            editdata[i].children[j].changed = true;
+            editdata[i].higherorderchanged = true;
+        }
+    } else if (editdata[i].children[j].type == 'relation') {
+        //Relations
+        gather_changes_relations(i,j);
+    } else if (folia_isspanrole(editdata[i].children[j].type)) {
+        //Span roles: detect changes in span, and set the changed flag
+        if ( (!editdata[i].children[j].targets_begin) || (JSON.stringify(editdata[i].children[j].targets) != JSON.stringify(editdata[i].children[j].targets_begin) )) {
+            editdata[i].children[j].changed = true;
+            editdata[i].higherorderchanged = true;
+        }
+    }
+}
+
+
+function gather_changes_relations(i,j) {
+    /* Gather changes for relations, both as higher order as well as first degree */
+    var r = getfieldprefix(i,j)
+
+    var cls;
+    var edititem;
+    if (j === null) {
+        cls = $('#' + r.fieldprefix + r.fieldindex).val(); //note there is some inconsistency in naming (no leading _ here)
+        edititem = editdata[i];
+    } else {
+        cls = $('#' + r.fieldprefix + '_' + r.fieldindex).val();
+        edititem = editdata[i].children[j];
+    }
+    var href = $('#' + r.fieldprefix + '_href_' + r.fieldindex).val();
+    var format = $('#' + r.fieldprefix + '_format_' + r.fieldindex).val();
+
+    if (edititem.class) {
+        edititem.oldclass =  edititem.class;
+    } else {
+        edititem.oldclass = null;
+    }
+
+    //has the class been changed OR has the format been changed?
+    if ((((edititem.class) && (edititem.class != cls)) || (!edititem.class))) {
+        if (edititem.class) {
+            edititem.oldclass =  edititem.class;
+        } else {
+            edititem.oldclass = null;
+        }
+        edititem.class = cls;
+        edititem.changed = true;
+        if (j !== null) {
+            editdata[i].higherorderchanged = true;
+        }
+    }
+    if ((((edititem.href) && (edititem.href != href)) || (!edititem.href)) ||
+       (((edititem.format) && (edititem.format != cls)) || (!edititem.format))) {
+        //remember old values (null if new)
+        if (edititem.href) {
+            edititem.oldhref =  edititem.href;
+        } else {
+            edititem.oldhref = null;
+        }
+        if (edititem.format) {
+            edititem.oldformat =  edititem.format;
+        } else {
+            edititem.oldformat = null;
+        }
+        edititem.href = href;
+        edititem.format = format;
+        edititem.changed = true;
+        if (j !== null) {
+            editdata[i].higherorderchanged = true;
+        }
+    }
+    //have the xrefs been changed?
+
+    var xref_subqueries = $('#' + r.fieldprefix + '_xrefs_' + r.fieldindex).val();
+    var xref_changed = $('#' + r.fieldprefix + '_xrefchanged_' + r.fieldindex).val() == "yes"; //this field is actively set to 'yes' when the linkselector has been used
+
+    if ((xref_subqueries) && (xref_changed)) {
+        edititem.xref_subqueries = xref_subqueries;
+        edititem.changed = true;
+        if (j !== null) {
+            editdata[i].higherorderchanged = true;
+        }
+    }
+
 }
 
 
@@ -2207,32 +2253,48 @@ function build_higherorder_queries(edititem, useclause, build_subqueries) {
 }
 
 
+function getfieldprefix(index,ho_index) {
+    var fieldprefix;
+    var fieldindex;
+    if (ho_index === null) {
+        fieldprefix = "editfield";
+        fieldindex = index + "_" + ho_index;
+    } else {
+        fieldprefix = "higherorderfield";
+        fieldindex = index + "_" + ho_index;
+    }
+    return {"fieldprefix": fieldprefix, "fieldindex": fieldindex};
+}
+
 function clearlinkrefs(index, ho_index) {
-    $("#higherorderfield_pendinglinkrefs_" + index + "_" + ho_index).html("These link references will be removed upon submission!");
-    $("#higherorderfield_xrefs_" + index + "_" + ho_index).val("");
-    $("#higherorderfield_xrefchanged_" + index + "_" + ho_index).val("yes");
+    var r = getfieldprefix(index,ho_index);
+    $("#" + r.fieldprefix + "_pendinglinkrefs_" + r.fieldindex).html("These link references will be removed upon submission!");
+    $("#" + r.fieldprefix + "_xrefs_" + r.fieldindex).val("");
+    $("#" + r.fieldprefix + "_xrefchanged_" + r.fieldindex).val("yes");
 }
 
 function addlinkrefs(index, ho_index) {
+    var r = getfieldprefix(index,ho_index);
     //Bound to a button to Add link references, enabled/disables the link selector
     if (linkselector >= 0) {
-        linkselector = -1;
-        $("#higherorderfield_addlinkrefs_" + index + "_" + ho_index).removeClass("linkselectoron");
+        linkselector = -1; //means off
+        $("#" + r.fieldprefix + "_addlinkrefs_" + r.fieldindex).removeClass("linkselectoron");
     } else {
         linkselector = index;
         linkselector_sub = ho_index;
-        $("#higherorderfield_addlinkrefs_" + index + "_" + ho_index).addClass("linkselectoron");
+        $("#" + r.fieldprefix + "_addlinkrefs_" + r.fieldindex).addClass("linkselectoron");
     }
 }
 
 function linktotarget(query) {
+    var r = getfieldprefix(linkselector,linkselector_sub);
     if (linkselector >= 0) {
-        var val = $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val();
+        var val = $("#" + r.fieldprefix + "_xrefs_" + r..fieldindex).val();
         $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
-        $("#higherorderfield_pendinglinkrefs_" + linkselector + "_" + linkselector_sub).html("New pending link references will be added upon submission!");
-        $("#higherorderfield_xrefchanged_" + linkselector + "_" + linkselector_sub).val("yes");
+        $("#" + r.fieldprefix + "_pendinglinkrefs_" + r.fieldindex).html("New pending link references will be added upon submission!");
+        $("#" + r.fieldprefix + "_xrefchanged_" + r.fieldindex).val("yes");
         $('#viewer').hide();
-        linkselector = -1;
+        linkselector = -1; //means off
         $('#editor .linkselectoron').removeClass("linkselectoron");
     } else {
         alert("linktotarget() called but no link selector active (this should not happen)");
