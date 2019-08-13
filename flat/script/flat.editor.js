@@ -2301,11 +2301,15 @@ function addlinkrefs(index, ho_index) {
     }
 }
 
+
 function linktotarget(query) {
+    /* Called when the link button is clicked in the editor, finalising the linkselector
+     * determines the target xref fora relation
+     * */
     var r = getfieldprefix(linkselector,linkselector_sub);
     if (linkselector >= 0) {
         var val = $("#" + r.fieldprefix + "_xrefs_" + r.fieldindex).val();
-        $("#higherorderfield_xrefs_" + linkselector + "_" + linkselector_sub).val(val + " (" + query + ")");
+        $("#" + r.fieldprefix + "_xrefs_" + r.fieldindex).val(val + " (" + query + ")");
         $("#" + r.fieldprefix + "_pendinglinkrefs_" + r.fieldindex).html("New pending link references will be added upon submission!");
         $("#" + r.fieldprefix + "_xrefchanged_" + r.fieldindex).val("yes");
         $('#viewer').hide();
