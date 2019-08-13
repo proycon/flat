@@ -882,7 +882,7 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
     } else {
         setname = "";
     }
-    var repeatreference;
+    var repeatreference = null;
     if (repeatmode) {
         for (var i = 0; i < sentdata.length;i++) {
             if ((sentdata[i].type === annotation.type) && (sentdata[i].set === annotation.set)) {
@@ -910,7 +910,7 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
         s  = s + renderrelationfields(annotation, editfields, null);
     } else {
         //Annotation concerns class
-        s = s + rendereditfield_class(annotation, editfields);
+        s = s + rendereditfield_class(annotation, editfields, repeatreference);
     }
     if (repeat_preset) s = s + " <span class=\"repeatnotice\">(preset)</span>";
     if ((annotation.type == "t") || ((folia_isspan(annotation.type) && (folia_accepts_class(foliatag2class[annotation.type],'WordReference'))))) { //are we manipulating a span annotation element and does this element take word references? (as opposed to one that only takes span roles)... also accept a span selector for text (needed for word merges/splits)
@@ -959,7 +959,7 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
     };
 }
 
-function rendereditfield_class(annotation, editfields) {
+function rendereditfield_class(annotation, editfields, repeatreference) {
     /* renders an edit field for editing a class */
     var s = "";
     //Annotation concerns a class
@@ -997,6 +997,7 @@ function rendereditfield_class(annotation, editfields) {
         }
         s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\" title=\"Enter a value (class) for this annotation, an empty class will delete it\" />";
     }
+    if (repeatmode && repeatreference) s = s + " <span class=\"repeatnotice\">(preset)</span>";
     return s;
 }
 
@@ -1160,8 +1161,14 @@ function addeditorfield(index) {
         s = s + "<tr>";
     }
     s =  s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
+    if (editoraddablefields[index].type == "relation") {
+        s =  s + renderrelationfields(editoraddablefields[index], editfields, null);
+    } else {
+        s =  s + rendereditfield_class(editoraddablefields[index], editfields, repeatreference);
+    }
+    /*
     if ((setdefinitions[editoraddablefields[index].set]) && (setdefinitions[editoraddablefields[index].set].type == "closed")) {
-        //drop-down field
+        //drop-down field for class
         s = s + "<select id=\"editfield" + editfields + "\" class=\"classedit\">";
         var selected_option;
         if ((!repeatmode) || (repeatreference === null) || (repeatreference.class === "")) {
@@ -1179,10 +1186,11 @@ function addeditorfield(index) {
         }
         s = s + "</select>";
     } else {
-        //text-field
+        //text-field for class
         s = s + "<input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"\"/>";
     }
     if (repeatmode) s = s + " <span class=\"repeatnotice\">(preset)</span>";
+    */
 
     var isspan = folia_isspan(editoraddablefields[index].type);
     var accepts_wrefs = folia_accepts_class(foliatag2class[editoraddablefields[index].type],'WordReference');
