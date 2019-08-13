@@ -406,14 +406,16 @@ function renderrelationfields(annotation, index, ho_index) {
     s += " title=\"MIME Type indicating the format of the target document, just leave empty if the relation is inside this FoLiA document itself\" /><br/>";
     var s2 = "";
     var xref_subqueries = "";
-    for (i = 0; i < annotation.children.length; i++) {
-        if (annotation.children[i].type) {
-            if (annotation.children[i].type == "xref") {
-                s2 = s2 + renderlinkreference(annotation.children[i]);
-                if (xref_subqueries !== "") {
-                    xref_subqueries += " ";
+    if (annotation.children) {
+        for (i = 0; i < annotation.children.length; i++) {
+            if (annotation.children[i].type) {
+                if (annotation.children[i].type == "xref") {
+                    s2 = s2 + renderlinkreference(annotation.children[i]);
+                    if (xref_subqueries !== "") {
+                        xref_subqueries += " ";
+                    }
+                    xref_subqueries += "(TO ID " + annotation.children[i].idref + ")";
                 }
-                xref_subqueries += "(TO ID " + annotation.children[i].idref + ")";
             }
         }
     }
@@ -964,15 +966,17 @@ function rendereditfield_class(annotation, editfields, repeatreference) {
     var s = "";
     //Annotation concerns a class
     if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
-        //Annotation is a span annotation, gather the text of the entire span for presentation:
-        //omit span annotations that only have span roles
-        if (annotation.type == 'su') {
-            spantext = getspantext(annotation, false);
-        } else {
-            spantext = getspantext(annotation, true);
+        if (annotation.targets || annotation.scope) {
+            //Annotation is a span annotation, gather the text of the entire span for presentation:
+            //omit span annotations that only have span roles
+            if (annotation.type == 'su') {
+                spantext = getspantext(annotation, false);
+            } else {
+                spantext = getspantext(annotation, true);
+            }
+            s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
+            s  = s + "<br/>";
         }
-        s  = s + "<span id=\"spantext" + editfields + "\" class=\"text\">" + spantext + "</span>";
-        s  = s + "<br/>";
     }
     if ((setdefinitions[annotation.set]) && (setdefinitions[annotation.set].type == "closed")) {
         //Annotation type uses a closed set of options, present a drop-down list
@@ -991,6 +995,9 @@ function rendereditfield_class(annotation, editfields, repeatreference) {
     } else {
         //Annotation type uses a free-fill value, present a textbox:
         var class_value = annotation.class;
+        if (typeof class_value === "undefined") {
+            class_value = "";
+        }
         if (repeatmode) {
             class_value = repeatreference.class;
             if (annotation.class != class_value) { repeat_preset = true; }
