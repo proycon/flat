@@ -1472,10 +1472,13 @@ function gather_changes() {
     for (var i = 0; i < editfields;i++) {
         if ($('#editfield' + i) && (($('#editfield' + i).val() != editdata[i].class) || (editdata[i].editform == 'new') ) && ($('#editfield' + i).val() != 'undefined') ) {
             //A class was changed
-            //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
-            editdata[i].oldclass = editdata[i].class;
-            editdata[i].class = $('#editfield' + i).val().trim();
-            editdata[i].changed = true;
+            //extra check
+            if (!((typeof editdata[i].class === "undefined") && $('#editfield' +i).val() == "")) {
+                //alert("Class change for " + i + ", was " + editdata[i].class + ", changed to " + $('#editfield'+i).val());
+                editdata[i].oldclass = editdata[i].class;
+                editdata[i].class = $('#editfield' + i).val().trim();
+                editdata[i].changed = true;
+            }
         }
         if (((editdata[i].type == "t") || (editdata[i].type == "ph")) && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
             //Text content was changed
