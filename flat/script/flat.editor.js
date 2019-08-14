@@ -2274,7 +2274,9 @@ function build_relation_query(edititem, targetselector) {
         if (edititem.xref_subqueries) {
             query = query + " " + edititem.xref_subqueries;
         }
-        query = query + " " + targetselector;
+        if (targetselector) {
+            query = query + " " + targetselector;
+        }
     }
     return query;
 }
