@@ -1889,7 +1889,7 @@ function build_queries(addtoqueue) {
                 if ((editdata[i].editform == "new") || editdata[i].editform == "alternative") {
                     action = "ADD";
                     if (editdata[i].class === "") continue;
-                } else if (editdata[i].class === "") {
+                } else if ((editdata[i].class === "")  && (editdata[i].oldclass)) {
                     //deletion
                     action = "DELETE";
                     returntype = "ancestor-focus";
