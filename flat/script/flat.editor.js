@@ -1828,6 +1828,7 @@ function build_queries(addtoqueue) {
                 }
             }
             if ((editdata[i].correctionclasschanged) && (!editdata[i].respan)) {
+                //corrections
                 if (editdata[i].correctionclass == ""){
                     //delete a correction and restore the original
                     action = "DELETE";
@@ -1846,6 +1847,7 @@ function build_queries(addtoqueue) {
                         query += forids;
                     }
                 } else {
+                    //edit a correction
                     action = "EDIT";
                     query += "EDIT correction OF " + editdata[i].correctionset + " ";
                     if (editdata[i].oldcorrectionclass !== "") {
@@ -1879,6 +1881,10 @@ function build_queries(addtoqueue) {
                     query += " (AS CORRECTION OF " + editdata[i].correctionset + " WITH class \"" + editdata[i].correctionclass + "\" datetime now confidence " + editdata[i].confidence + ")";
                 }
                 returntype = "ancestor-focus";
+            } else if (editdata[i].type == "relation") {
+                q = build_relation_query(editdata[i],  "");
+                action = q.split(" ")[0];
+                query += q + " " + build_target_expression(editdata, i, action, addtoqueue);
             } else {
                 if ((editdata[i].editform == "new") || editdata[i].editform == "alternative") {
                     action = "ADD";
