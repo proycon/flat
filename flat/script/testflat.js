@@ -517,6 +517,18 @@ QUnit.asyncTest("Adding a new syntax annotation from scratch",function(assert){
     ui_click('#editorsubmit');
 });
 
+QUnit.asyncTest("Adding external higher order relation", function(assert){
+    testinit("relation_add",assert);;
+    ui_click('#untitleddoc.p.2.s.1.w.1');
+    var idx = ui_find('chunk');
+    ui_click('#editform' + idx + 'direct');
+    ui_click('#editoraddhigherorder' + idx + '_relation');
+    ui_edit('#higherorderfield_' + idx + '_0',"test");
+    ui_edit('#higherorderfield_href_' + idx + '_0',"http://duizendensnoepjes.nl");
+    ui_edit('#higherorderfield_format_' + idx + '_0',"text/html");
+    ui_click('#editorsubmit');
+});
+
 
 
 QUnit.asyncTest("Tests completed", function(assert){
@@ -525,6 +537,14 @@ QUnit.asyncTest("Tests completed", function(assert){
     $('#document').html("(All tests completed!)");
     annotations = {};//reset, will be newly populated
 });
+
+/*
+function relation_declare() {
+    ui_click('#addnewannotationtype');
+    ui_choose('#newdeclarationannotationtype',  "relation");
+    ui_edit("#newdeclarationset","adhoc");
+    ui_click('#newdeclarationsubmit');
+}*/
 
 function findcorrectionbytext(text) {
     var correction = null;
@@ -730,6 +750,11 @@ function testeval(data) {
     } else if ((testname == "spanrole_delete")) {
         globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children.length, 1,  "Testing number of children (span roles)");
         globalassert.equal(annotations["untitleddoc.p.3.s.1.dependencies.1.dependency.10"].children[0].type, "dep" ,"Testing class of span role");
+    } else if ((testname == "relation_add")) {
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].type, "relation");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].href, "http://duizendensnoepjes.nl");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].format, "text/html");
     }
 
     console.log("(testeval) (qunit.start)");

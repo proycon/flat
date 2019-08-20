@@ -286,13 +286,13 @@ function renderhigherorderfields(index, annotation) {
     }
     if (folia_accepts(annotation.type, 'relation') && declarations['relation']) {
         Object.keys(declarations['relation']).forEach(function(relation_set){
-            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + relation_set + "'," + index + ",'relation')\">Add Relation (" + relation_set + ")</li>";
+            s += "<li id=\"editoraddhigherorder" + index + "_relation\" onclick=\"addhigherorderfield('" + relation_set + "'," + index + ",'relation')\">Add Relation (" + relation_set + ")</li>";
         });
     }
     if (folia_isspan(annotation.type)) {
         var spanroles = folia_spanroles(annotation.type);
         for (var j in spanroles) {
-            s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanroles[j] + "')\">Add " + folia_label(spanroles[j]) + "</li>";
+            s += "<li id=\"editoraddhigherorder" + index + "_spanrole\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'" + spanroles[j] + "')\">Add " + folia_label(spanroles[j]) + "</li>";
         }
     }
     s += "</ul>";

@@ -11,6 +11,7 @@
       <correction-annotation set="http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml"/>
       <morphological-annotation annotator="frog-mbma-1.0" annotatortype="auto" datetime="2014-08-20T22:21:17" set="http://ilk.uvt.nl/folia/sets/frog-mbma-nl"/>
       <dependency-annotation annotator="frog-depparse-1.0" annotatortype="auto" set="http://ilk.uvt.nl/folia/sets/frog-depparse-nl"/>
+      <alignment-annotation set="adhoc" />
     </annotations>
   </metadata>
   <text xml:id="untitleddoc.text">
