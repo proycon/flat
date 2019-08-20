@@ -557,7 +557,6 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
             s = s + "</td></tr>";
         });
     }
-
     s = s + "</table>";
 
     if ((structureelement.incorrection) && (!norecurse)) {
@@ -677,7 +676,7 @@ function renderannotation(annotation, norecurse, extended) {
         if (s2) s = s + "Link references: " + s2;
         s = s + "</div>";
     }
-    if (annotation.children) {
+    if ((annotation.children) && (!norecurse)) {
         //Render higher order annotation
         for (i = 0; i < annotation.children.length; i++) {
             if (annotation.children[i].type) {
