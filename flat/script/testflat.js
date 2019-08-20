@@ -529,6 +529,19 @@ QUnit.asyncTest("Adding external higher order relation", function(assert){
     ui_click('#editorsubmit');
 });
 
+QUnit.asyncTest("Adding internal higher order relation", function(assert){
+    testinit("relation_add_internal",assert);;
+    ui_click('#untitleddoc.p.2.s.1.w.1');
+    var idx = ui_find('chunk');
+    ui_click('#editform' + idx + 'direct');
+    ui_click('#editoraddhigherorder' + idx + '_relation');
+    ui_edit('#higherorderfield_' + idx + '_0',"test");
+    ui_click('#higherorderfield_addlinkrefs_' + idx + '_0',"test");
+    ui_click('#untitleddoc.p.2.s.1.w.2');
+    ui_click('#linkttarget_structure');
+    ui_click('#editorsubmit');
+});
+
 
 
 QUnit.asyncTest("Tests completed", function(assert){
@@ -753,8 +766,15 @@ function testeval(data) {
     } else if ((testname == "relation_add")) {
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children.length, 1);
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].type, "relation");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].cls, "test");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].href, "http://duizendensnoepjes.nl");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].format, "text/html");
+    } else if ((testname == "relation_add_internal")) {
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children.length, 1);
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].type, "relation");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].cls, "test");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].children[0].type, "xref");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].children[0].idref, "untitleddoc.p.2.s.1.w.2");
     }
 
     console.log("(testeval) (qunit.start)");

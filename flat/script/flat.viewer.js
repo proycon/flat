@@ -465,7 +465,7 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 		}
         if ((extended) && (linkselector >= 0)) {
             s = s + "<br/>(Click the icon below to link to this entire " + folia_label(structureelement.type, structureelement.set)+")";
-            s = s + "<div class=\"linktotarget\" style=\"margin-left: auto; margin-right: auto;\" title=\"Link to this structural element\" onclick=\"linktotarget('" + getlinktotarget(structureelement,false) + "')\"></div>";
+            s = s + "<div id=\"linktotarget_structure\" class=\"linktotarget\" style=\"margin-left: auto; margin-right: auto;\" title=\"Link to this structural element\" onclick=\"linktotarget('" + getlinktotarget(structureelement,false) + "')\"></div>";
         }
 		s = s + "</div>";
 	}
