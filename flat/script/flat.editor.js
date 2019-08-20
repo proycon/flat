@@ -672,7 +672,7 @@ function showeditor(element) {
                     if (result !== null) {
                         s = s + result.html;
                         editformcount = result.editformcount;
-                        editdata.push( setup_editdata(editedelement, result.children, result.nestablespan) );
+                        editdata.push( setup_editdata(editedelement, result.children, result.nestablespan, result.preselectcorrectionclass) );
                         editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
                         renderedfields.push([editedelement.type,s]);
                     }
@@ -698,9 +698,10 @@ function showeditor(element) {
                     if (result !== null) {
                         s = s + result.html;
                         editformcount = result.editformcount;
+                        preselectcorrectionclass = result.preselectcorrectionclass;
 
                         //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
-                        editdata.push( setup_editdata(annotation, result.children, result.nestablespan) );
+                        editdata.push( setup_editdata(annotation, result.children, result.nestablespan, result.preselectcorrectionclass) );
                         //increase editfields for the next one
                         editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
                         renderedfields.push([annotation.type,s]);
@@ -962,6 +963,7 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
         "children": children,
         "editformcount": editformcount, //we need to return this so the editor knows whether to show or hide the buttons
         "nestablespan": nestablespan,
+        "preselectcorrectionclass": preselectcorrectionclass,
     };
 }
 
@@ -1082,7 +1084,7 @@ function rendereditsuggestions(annotation, editfields) {
     return s;
 }
 
-function setup_editdata(annotation, children, nestablespan) {
+function setup_editdata(annotation, children, nestablespan, preselectcorrectionclass) {
     /* Set up the data structure for this annotation input, changes in the forms will be reflected back into this  */
     if (typeof children === 'undefined') {
         children = [];
