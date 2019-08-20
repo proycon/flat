@@ -527,6 +527,37 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 			s = s + "</td></tr>";
 		}
 	});
+
+    //some higher order elements (such as relations) are not in annotations but in children
+    if (structureelement.children) {
+        structureelement.children.forEach(function(annotation){
+            var label = folia_label(annotation.type, annotation.set);
+            if (annotation.inalternative) {
+                if (!showalternatives) return;
+                label = "Alternative " + label;
+            }
+            var setname = "";
+            if (annotation.set) {
+                setname = annotation.set;
+            }
+            if (setname === "undefined") setname = "";
+            s += "<tr><th>" + label + "<br /><span class=\"setname\">" + setname + "</span>";
+            if (annotation.inalternative) {
+                s += "<br/><tt class=\"alt\">" + annotation.inalternative +"</tt>";
+            }
+            if ((annotation.type == "su") && (extended)) {
+                s = s + "<div class=\"opentreeview\" title=\"Show in Tree Viewer\" onclick=\"treeview('" + annotation.id + "')\"></div>";
+            }
+            if ((extended) && (linkselector >= 0)) {
+                //this is actually an editor feature
+                s = s + "<div class=\"linktotarget\" title=\"Link to this specific annotation\" onclick=\"linktotarget('" + getlinktotarget(annotation, structureelement) + "')\"></div>";
+            }
+            s = s + "</th><td>";
+            s = s + renderannotation(annotation, false, extended);
+            s = s + "</td></tr>";
+        });
+    }
+
     s = s + "</table>";
 
     if ((structureelement.incorrection) && (!norecurse)) {

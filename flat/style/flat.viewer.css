@@ -401,6 +401,7 @@ div#document span.seqnr {
     color: #999;
 }
 div.relation {
+    color: #6d0000;
     background: #d6e8ee;
 }
 div.linkreference {
