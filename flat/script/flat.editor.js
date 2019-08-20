@@ -284,7 +284,7 @@ function renderhigherorderfields(index, annotation) {
     if (folia_accepts(annotation.type, 'feat')) {
         s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + annotation.set + "'," + index + ",'feat')\">Add Feature</li>";
     }
-    if (folia_accepts(annotation.type, 'relation')) {
+    if (folia_accepts(annotation.type, 'relation') && declarations['relation']) {
         Object.keys(declarations['relation']).forEach(function(relation_set){
             s += "<li id=\"editoraddhigherorder" + index + "_feat\" onclick=\"addhigherorderfield('" + relation_set + "'," + index + ",'relation')\">Add Relation (" + relation_set + ")</li>";
         });
@@ -669,11 +669,13 @@ function showeditor(element) {
                 if (editedelement.set) {
                     var isannotationfocus = ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set));
                     var result = rendereditannotation(editedelement, editfields, isannotationfocus);
-                    s = s + result.html;
-                    editformcount = result.editformcount;
-                    editdata.push( setup_editdata(editedelement, result.children, result.nestablespan) );
-                    editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
-                    renderedfields.push([editedelement.type,s]);
+                    if (result !== null) {
+                        s = s + result.html;
+                        editformcount = result.editformcount;
+                        editdata.push( setup_editdata(editedelement, result.children, result.nestablespan) );
+                        editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
+                        renderedfields.push([editedelement.type,s]);
+                    }
                 }
               }
             }
@@ -693,20 +695,22 @@ function showeditor(element) {
                 //Is this an annotation we want to show? Is it either in editannotations or is it the annotationfocus? (corrections are never shown directly)
                 if ((annotation.type != "correction") && ((editannotations[annotation.type+"/" + annotation.set]) ||  (isannotationfocus))) {
                     var result = rendereditannotation(annotation, editfields, isannotationfocus);
-                    s = s + result.html;
-                    editformcount = result.editformcount;
+                    if (result !== null) {
+                        s = s + result.html;
+                        editformcount = result.editformcount;
 
-                    //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
-                    editdata.push( setup_editdata(annotation, result.children, result.nestablespan) );
-                    //increase editfields for the next one
-                    editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
-                    renderedfields.push([annotation.type,s]);
+                        //Set up the data structure for this annotation input, changes in the forms will be reflected back into this (all items are pushed to the editdata list)
+                        editdata.push( setup_editdata(annotation, result.children, result.nestablespan) );
+                        //increase editfields for the next one
+                        editfields = editfields + 1; //number of items in editdata, i.e. number of editable annotations in the editor
+                        renderedfields.push([annotation.type,s]);
 
 
-                    if (isannotationfocus) {
-                        //highlight other targets if this annotation type is the annotation focus (just mimicks user click)
-                        for (var j = 0; j < annotation.targets.length; j++) {
-                            $('#' + valid(annotation.targets[j])).addClass('selected');
+                        if (isannotationfocus) {
+                            //highlight other targets if this annotation type is the annotation focus (just mimicks user click)
+                            for (var j = 0; j < annotation.targets.length; j++) {
+                                $('#' + valid(annotation.targets[j])).addClass('selected');
+                            }
                         }
                     }
 
@@ -871,7 +875,7 @@ function rendereditannotation(annotation, editfields, isannotationfocus) {
     var label = folia_label(annotation.type, annotation.set);
     if (annotation.inalternative) {
         if (!showalternatives) {
-            return;
+            return null;
         }
         label = "Alternative " + label;
     } else if (folia_isstructure(annotation.type, annotation.set)) {
