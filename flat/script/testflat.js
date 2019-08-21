@@ -112,6 +112,15 @@ function ui_find(annotationtype){
     throw "Annotation type " + annotationtype + " not found";
 }
 
+function ui_find_alternative(annotationtype){
+    for (var i = 0; i < editfields; i++) {
+        if ((editdata[i].type === annotationtype) && (editdata[i].inalternative)) {
+            return i;
+        }
+    }
+    throw "Annotation type " + annotationtype + " not found";
+}
+
 //we want tests in the order defined here
 //our tests are run sequentially
 QUnit.config.reorder = false;
@@ -541,12 +550,22 @@ QUnit.asyncTest("Adding internal higher order relation", function(assert){
     ui_click('#linktotarget_structure');
     ui_click('#editorsubmit');
 });
-QUnit.asyncTest("[As alternative] Alternative inline annotation", function(assert){
+QUnit.asyncTest("[As alternative] Add alternative inline annotation", function(assert){
     testinit("alternative_pos",assert);
     if (!editforms['alternative']) toggleeditform('alternative');
     if (!showalternatives) ui_click('#togglealternatives');
     ui_click('#untitleddoc.p.3.s.6.w.8');
     var idx = ui_find('pos');
+    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");
+    ui_click('#editform' + idx + 'alternative');
+    ui_click('#editorsubmit');
+});
+QUnit.asyncTest("[As alternative] Edit alternative inline annotation", function(assert){
+    testinit("edit_alternative_lemma",assert);
+    if (!editforms['alternative']) toggleeditform('alternative');
+    if (!showalternatives) ui_click('#togglealternatives');
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find('lemma');
     ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");
     ui_click('#editform' + idx + 'alternative');
     ui_click('#editorsubmit');

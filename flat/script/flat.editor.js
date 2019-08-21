@@ -1101,6 +1101,9 @@ function setup_editdata(annotation, children, nestablespan, preselectcorrectionc
     } else {
         editdataitem.confidence = "NONE"; //not set, FQL keyword
     }
+    if (annotation.inalternative) {
+        editdataitem.inalternative = annotation.inalternative;
+    }
 
 
     if (folia_isstructure(annotation.type)) {
@@ -1737,7 +1740,7 @@ function gather_changes_higherorder(i,j) {
 
 function gather_changes_relations(i,j) {
     /* Gather changes for relations, both as higher order as well as first degree */
-    var r = getfieldprefix(i,j)
+    var r = getfieldprefix(i,j);
 
     var cls;
     var edititem;
