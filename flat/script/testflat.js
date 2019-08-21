@@ -118,7 +118,7 @@ function ui_find_alternative(annotationtype){
             return i;
         }
     }
-    throw "Annotation type " + annotationtype + " not found";
+    throw "Alternative annotation type " + annotationtype + " not found";
 }
 
 //we want tests in the order defined here
@@ -562,11 +562,13 @@ QUnit.asyncTest("[As alternative] Add alternative inline annotation", function(a
 });
 QUnit.asyncTest("[As alternative] Edit alternative inline annotation", function(assert){
     testinit("edit_alternative_lemma",assert);
+    //if (!showalternatives) ui_click('#togglealternatives');
+    showalternatives = true;
     if (!editforms['alternative']) toggleeditform('alternative');
-    if (!showalternatives) ui_click('#togglealternatives');
-    ui_click('#editform' + idx + 'direct');
+    globalassert.equal(showalternatives,true, "testing whether showalternatives is enabled");
     ui_click('#untitleddoc.p.3.s.1.w.11');
-    var idx = ui_find_alternative('lemma');
+    var idx = ui_find_alternative('lemma', "");
+    ui_click('#editform' + idx + 'direct');
     ui_edit('#editfield' + idx,"vlugBLAH");
     ui_click('#editorsubmit');
 });
