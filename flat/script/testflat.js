@@ -538,7 +538,7 @@ QUnit.asyncTest("Adding internal higher order relation", function(assert){
     ui_edit('#higherorderfield_' + idx + '_0',"test");
     ui_click('#higherorderfield_addlinkrefs_' + idx + '_0',"test");
     ui_click('#untitleddoc.p.2.s.1.w.2');
-    ui_click('#linkttarget_structure');
+    ui_click('#linktotarget_structure');
     ui_click('#editorsubmit');
 });
 
@@ -766,13 +766,13 @@ function testeval(data) {
     } else if ((testname == "relation_add")) {
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children.length, 1);
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].type, "relation");
-        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].cls, "test");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].class, "test");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].href, "http://duizendensnoepjes.nl");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].format, "text/html");
     } else if ((testname == "relation_add_internal")) {
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children.length, 1);
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].type, "relation");
-        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].cls, "test");
+        globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].class, "test");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].children[0].type, "xref");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].children[0].idref, "untitleddoc.p.2.s.1.w.2");
     }
