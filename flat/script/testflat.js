@@ -564,10 +564,10 @@ QUnit.asyncTest("[As alternative] Edit alternative inline annotation", function(
     testinit("edit_alternative_lemma",assert);
     if (!editforms['alternative']) toggleeditform('alternative');
     if (!showalternatives) ui_click('#togglealternatives');
+    ui_click('#editform' + idx + 'direct');
     ui_click('#untitleddoc.p.3.s.1.w.11');
-    var idx = ui_find('lemma');
-    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");
-    ui_click('#editform' + idx + 'alternative');
+    var idx = ui_find_alternative('lemma');
+    ui_edit('#editfield' + idx,"vlugBLAH");
     ui_click('#editorsubmit');
 });
 
@@ -816,6 +816,18 @@ function testeval(data) {
         var altpos = annotations[altannotation.annotations[0]];
         globalassert.ok(altpos.inalternative,"Testing whether inalternative is set");
         globalassert.equal(altpos.class,"LID(onbep,stan,rest)");
+    } else if (testname == "edit_alternative_lemma") {
+        var altannotation = null;
+        forannotations("untitleddoc.p.3.s.1.w.11",function(annotation){
+            if (annotation.type == "alt") {
+                altannotation = annotation;
+            }
+        });
+        globalassert.equal(altannotation.type, "alt");
+        globalassert.equal(altannotation.targets[0], "untitleddoc.p.3.s.1.w.11");
+        var altpos = annotations[altannotation.annotations[0]];
+        globalassert.ok(altpos.inalternative,"Testing whether inalternative is set");
+        globalassert.equal(altpos.class,"vlugBLAH");
     }
 
     console.log("(testeval) (qunit.start)");
