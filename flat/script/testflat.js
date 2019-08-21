@@ -139,7 +139,7 @@ QUnit.asyncTest("Text Change", function(assert){
     ui_click('#editform' + idx + 'direct');
     ui_click('#editorsubmit');
 });
-QUnit.asyncTest("Class change (token annotation)", function(assert){
+QUnit.asyncTest("Class change (inline annotation)", function(assert){
     testinit("classchange_token",assert);
     ui_click('#untitleddoc.p.3.s.1.w.2');
     var idx = ui_find('lemma');
@@ -166,7 +166,7 @@ QUnit.asyncTest("Text Change (Merging multiple words)", function(assert){
     ui_click('#editform' + idx + 'direct');
     ui_click('#editorsubmit');
 });
-QUnit.asyncTest("Changing Text and multiple token annotations at once", function(assert){
+QUnit.asyncTest("Changing Text and multiple inline annotations at once", function(assert){
     testinit("multiannotchange",assert);
     ui_click('#untitleddoc.p.3.s.6.w.8');
     var idx = ui_find('t');
@@ -265,7 +265,7 @@ QUnit.asyncTest("Span and class change", function(assert){
     ui_click('#editform' + idx + 'direct');
     ui_click('#editorsubmit');
 });
-QUnit.asyncTest("Deletion of token annotation", function(assert){
+QUnit.asyncTest("Deletion of inline annotation", function(assert){
     testinit("tokenannotationdeletion",assert);
     ui_click('#untitleddoc.p.3.s.8.w.4');
     var idx = ui_find('lemma');
@@ -329,7 +329,7 @@ QUnit.asyncTest("[As correction] Text Change (Merging multiple words)", function
     ui_choose('#editform' + idx + 'correctionclass',FLATTEST_CORRECTIONCLASS_UNCERTAIN);  //corresponds to uncertain, as long as the set definition doesn't change
     ui_click('#editorsubmit');
 });
-QUnit.asyncTest("[As correction] Changing token annotation", function(assert){
+QUnit.asyncTest("[As correction] Changing inline annotation", function(assert){
     testinit("correction_tokenannotationchange",assert);
     if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.6.w.8');
@@ -381,7 +381,7 @@ QUnit.asyncTest("[As correction] Word insertion to the left", function(assert){
     ui_click('#editorsubmit');
 });
 
-QUnit.asyncTest("[As correction] Deletion of token annotation", function(assert){
+QUnit.asyncTest("[As correction] Deletion of inline annotation", function(assert){
     testinit("correction_tokenannotationdeletion",assert);
     if (!editforms['correction']) toggleeditform('correction');
     ui_click('#untitleddoc.p.3.s.8.w.4');
@@ -500,7 +500,7 @@ QUnit.asyncTest("Adding a new span annotation (dependency) with span roles from 
 QUnit.asyncTest("Adding a new syntax annotation from scratch",function(assert){
     testinit("syntax_add",assert);
     ui_click('#untitleddoc.p.3.s.15.w.1');
-    ui_choose('#editoraddablefields',"6");  //5 corresponds to syntax, as long as the ordering doesn't change...
+    ui_choose('#editoraddablefields',"6");  //6 corresponds to syntax, as long as the ordering doesn't change...
     ui_click('#editoraddfield'); //click add button
 
     //fill new field:
@@ -539,6 +539,16 @@ QUnit.asyncTest("Adding internal higher order relation", function(assert){
     ui_click('#higherorderfield_addlinkrefs_' + idx + '_0',"test");
     ui_click('#untitleddoc.p.2.s.1.w.2');
     ui_click('#linktotarget_structure');
+    ui_click('#editorsubmit');
+});
+QUnit.asyncTest("[As alternative] Alternative inline annotation", function(assert){
+    testinit("alternative_pos",assert);
+    if (!editforms['alternative']) toggleeditform('alternative');
+    if (!showalternatives) ui_click('#togglealternatives');
+    ui_click('#untitleddoc.p.3.s.6.w.8');
+    var idx = ui_find('pos');
+    ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");
+    ui_click('#editform' + idx + 'alternative');
     ui_click('#editorsubmit');
 });
 
@@ -775,6 +785,18 @@ function testeval(data) {
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].class, "test");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].children[0].type, "xref");
         globalassert.equal(annotations["untitleddoc.p.2.s.1.chunking.1.chunk.1"].children[0].children[0].idref, "untitleddoc.p.2.s.1.w.2");
+    } else if ((testname == "alternative_pos") ) {
+        var altannotation = null;
+        forannotations("untitleddoc.p.3.s.6.w.8",function(annotation){
+            if (annotation.type == "alt") {
+                altannotation = annotation;
+            }
+        });
+        globalassert.equal(altannotation.type, "alt");
+        globalassert.equal(altannotation.targets[0], "untitleddoc.p.3.s.6.w.8");
+        var altpos = annotations[altannotation.annotations[0]];
+        globalassert.ok(altpos.inalternative,"Testing whether inalternative is set");
+        globalassert.equal(altpos.class,"LID(onbep,stan,rest)");
     }
 
     console.log("(testeval) (qunit.start)");
