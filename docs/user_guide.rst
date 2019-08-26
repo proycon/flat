@@ -270,7 +270,7 @@ Which edit forms are available is determined by the administratori, as well as
 by the toggles in the **Edit form** menu.
 
 -------------------------
-Higher order annotation
+Higher order annotations
 -------------------------
 
 FLAT allows you to put annotations on annotations. A notable example is the
