@@ -380,7 +380,12 @@ function renderrelationfields(annotation, index, ho_index) {
             s = s + "</select>";
         } else {
             //Annotation type uses a free-fill value, present a textbox:
-            var class_value = annotation.class;
+            var class_value;
+            if (typeof annotation.class != "undefined") {
+                class_value = annotation.class;
+            } else {
+                class_value = "";
+            }
             if (repeatmode) {
                 class_value = repeatreference.class;
                 if (cls != class_value) { repeat_preset = true; }
