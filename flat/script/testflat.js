@@ -572,6 +572,14 @@ QUnit.asyncTest("[As alternative] Edit alternative inline annotation", function(
     ui_edit('#editfield' + idx,"vlugBLAH");
     ui_click('#editorsubmit');
 });
+QUnit.asyncTest("Edit class of structural element", function(assert){
+    testinit("edit_structure_class",assert);
+    editstructure = true;
+    ui_click('#untitleddoc.p.2.s.1.w.1');
+    var idx = ui_find('w');
+    ui_edit('#editfield' + idx,"NUMBER");
+    ui_click('#editorsubmit');
+});
 
 
 
@@ -830,6 +838,8 @@ function testeval(data) {
         var altpos = annotations[altannotation.annotations[0]];
         globalassert.ok(altpos.inalternative,"Testing whether inalternative is set");
         globalassert.equal(altpos.class,"vlugBLAH");
+    } else if (testname == "edit_structure_class") {
+        globalassert.equal(structure["untitleddoc.p.2.s.1.w.1"].class, "NUMBER");
     }
 
     console.log("(testeval) (qunit.start)");
