@@ -93,7 +93,8 @@ We will discuss the individual configuration options here:
 * ``slices`` - This is strongly tied to perspectives and determines how big of a slice to show per page for each
   perspective. Setting this (and choosing the desired perspective) enables pagination through documents. The value is a
   comma-delimited string of ``tag:number`` pairs, for instance: ``p:25,s:100`` to set a page size of 25 paragraphs in
-  the paragraph perspective, and 100 sentences in the sentence perspective.
+  the paragraph perspective, and 100 sentences in the sentence perspective. Note that if you make the size of a page too
+  large, you will be confronted with the error: *"Loading aborted: there was too much data to display at once"*.
 * ``allowupload`` - Boolean value indicating whether users may upload their own FoLiA documents or not
 * ``annotationfocustype`` - Sets the annotation type for the default annotation focus, effectively highlighting annotations of this type immediately upon opening the document. The type needs to be a valid FoLiA tag name (see the FoLiA documentation at https://proycon.github.io/folia), such as ``'pos'``, ``'lemma'``, ``'entity'``, etc...  If you set this, also set the next option.
 * ``annotationfocusset`` - Sets the set for the default annotation focus. The set is a URL pointing to a FoLiA Set Definition file. Set to ``None`` if not used, use with the above otherwise.
