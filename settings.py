@@ -245,7 +245,15 @@ CONFIGURATIONS = {
     #Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example:
     #'metadataconstraints': {'language': ['fr','en','es'], 'status':['completed','inprogress']},
 
-    #'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities", 'changeperspective': false}]
+    #'searches': [{'query': 'SELECT entity WHERE annotatortype = "manual" FOR w RETURN target', 'label': "Highlight manually annotated entities", 'changeperspective': false}],
+
+    #Slices are  strongly tied to perspectives and determines how big of a slice to show per page for each
+    #perspective. Setting this (and choosing the desired perspective) enables pagination through documents. The value is a
+    #comma-delimited string of ``tag:number`` pairs, for instance: ``p:25,s:100`` to set a page size of 25 paragraphs in
+    #the paragraph perspective, and 100 sentences in the sentence perspective. Note that if you make the size of a page too
+    #large, you will be confronted with the error: *"Loading aborted: there was too much data to display at once"*.
+
+    #slices: 'p:25,s:100',
 
     'converters': [
         { 'id': 'conllu2folia',
