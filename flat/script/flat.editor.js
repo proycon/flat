@@ -380,7 +380,12 @@ function renderrelationfields(annotation, index, ho_index) {
             s = s + "</select>";
         } else {
             //Annotation type uses a free-fill value, present a textbox:
-            var class_value = annotation.class;
+            var class_value;
+            if (typeof annotation.class != "undefined") {
+                class_value = annotation.class;
+            } else {
+                class_value = "";
+            }
             if (repeatmode) {
                 class_value = repeatreference.class;
                 if (cls != class_value) { repeat_preset = true; }
@@ -1101,6 +1106,9 @@ function setup_editdata(annotation, children, nestablespan, preselectcorrectionc
     } else {
         editdataitem.confidence = "NONE"; //not set, FQL keyword
     }
+    if (annotation.inalternative) {
+        editdataitem.inalternative = annotation.inalternative;
+    }
 
 
     if (folia_isstructure(annotation.type)) {
@@ -1737,7 +1745,7 @@ function gather_changes_higherorder(i,j) {
 
 function gather_changes_relations(i,j) {
     /* Gather changes for relations, both as higher order as well as first degree */
-    var r = getfieldprefix(i,j)
+    var r = getfieldprefix(i,j);
 
     var cls;
     var edititem;

@@ -112,6 +112,15 @@ function ui_find(annotationtype){
     throw "Annotation type " + annotationtype + " not found";
 }
 
+function ui_find_alternative(annotationtype){
+    for (var i = 0; i < editfields; i++) {
+        if ((editdata[i].type === annotationtype) && (editdata[i].inalternative)) {
+            return i;
+        }
+    }
+    throw "Alternative annotation type " + annotationtype + " not found";
+}
+
 //we want tests in the order defined here
 //our tests are run sequentially
 QUnit.config.reorder = false;
@@ -541,7 +550,7 @@ QUnit.asyncTest("Adding internal higher order relation", function(assert){
     ui_click('#linktotarget_structure');
     ui_click('#editorsubmit');
 });
-QUnit.asyncTest("[As alternative] Alternative inline annotation", function(assert){
+QUnit.asyncTest("[As alternative] Add alternative inline annotation", function(assert){
     testinit("alternative_pos",assert);
     if (!editforms['alternative']) toggleeditform('alternative');
     if (!showalternatives) ui_click('#togglealternatives');
@@ -549,6 +558,26 @@ QUnit.asyncTest("[As alternative] Alternative inline annotation", function(asser
     var idx = ui_find('pos');
     ui_edit('#editfield' + idx,"LID(onbep,stan,rest)");
     ui_click('#editform' + idx + 'alternative');
+    ui_click('#editorsubmit');
+});
+QUnit.asyncTest("[As alternative] Edit alternative inline annotation", function(assert){
+    testinit("edit_alternative_lemma",assert);
+    //if (!showalternatives) ui_click('#togglealternatives');
+    showalternatives = true;
+    if (!editforms['alternative']) toggleeditform('alternative');
+    globalassert.equal(showalternatives,true, "testing whether showalternatives is enabled");
+    ui_click('#untitleddoc.p.3.s.1.w.11');
+    var idx = ui_find_alternative('lemma', "");
+    ui_click('#editform' + idx + 'direct');
+    ui_edit('#editfield' + idx,"vlugBLAH");
+    ui_click('#editorsubmit');
+});
+QUnit.asyncTest("Edit class of structural element", function(assert){
+    testinit("edit_structure_class",assert);
+    editstructure = true;
+    ui_click('#untitleddoc.p.2.s.1.w.1');
+    var idx = ui_find('w');
+    ui_edit('#editfield' + idx,"NUMBER");
     ui_click('#editorsubmit');
 });
 
@@ -797,6 +826,20 @@ function testeval(data) {
         var altpos = annotations[altannotation.annotations[0]];
         globalassert.ok(altpos.inalternative,"Testing whether inalternative is set");
         globalassert.equal(altpos.class,"LID(onbep,stan,rest)");
+    } else if (testname == "edit_alternative_lemma") {
+        var altannotation = null;
+        forannotations("untitleddoc.p.3.s.1.w.11",function(annotation){
+            if (annotation.type == "alt") {
+                altannotation = annotation;
+            }
+        });
+        globalassert.equal(altannotation.type, "alt");
+        globalassert.equal(altannotation.targets[0], "untitleddoc.p.3.s.1.w.11");
+        var altpos = annotations[altannotation.annotations[0]];
+        globalassert.ok(altpos.inalternative,"Testing whether inalternative is set");
+        globalassert.equal(altpos.class,"vlugBLAH");
+    } else if (testname == "edit_structure_class") {
+        globalassert.equal(structure["untitleddoc.p.2.s.1.w.1"].class, "NUMBER");
     }
 
     console.log("(testeval) (qunit.start)");

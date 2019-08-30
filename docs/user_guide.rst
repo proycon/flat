@@ -270,7 +270,7 @@ Which edit forms are available is determined by the administratori, as well as
 by the toggles in the **Edit form** menu.
 
 -------------------------
-Higher order annotation
+Higher order annotations
 -------------------------
 
 FLAT allows you to put annotations on annotations. A notable example is the
@@ -288,6 +288,34 @@ specified type:
 .. image:: higherordercomment.png
     :alt: Higher order comment
     :align: center
+
+A common type of higher-order annotation is **features**, which allow you to associated classes with subsets and provide
+additional detail on the annotation. They can be used with almost any annotation type.
+
+.. image:: featureediting.png
+    :alt: Feature Editing
+    :align: center
+
+**Relations** are another form of higher-order annotation. Relations link arbitrary annotations to either outside resources,
+or to other annotations in the FoLiA document. They can be used on almost any annotation type. Relations take a class
+describing the nature of the relation (which is defined by whatever set you decide to use). External relations take a
+URL to the external resource and optionally an indication of the format the external resource is in (a MIME Type). For
+internal relations, these fields remain empty, but you add one or more **link references**.
+
+.. image:: editinternalrelation.png
+    :alt: Feature Editing
+    :align: center
+
+Adding a link reference is
+done by clicking the button, and subsequently the word and annotation you mean to link to. Clicking a token will open a
+new dialog populated with link buttons in the form of a yellow crosshair:
+
+.. image:: createlinkreference.png
+    :alt: Feature Editing
+    :align: center
+
+The centered link button at the top can be used to link to the structural element as a whole rather than a specific annotation inside
+it.
 
 
 ------------------------------------------------------------------
