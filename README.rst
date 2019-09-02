@@ -19,11 +19,9 @@ these documents with new annotations, a wide variety of linguistic annotation
 types is supported through the FoLiA paradigm. It is a document-centric tool
 that fully preserves and visualises document structure.
 
-FLAT is written in Python using the Django framework. The user interface is
-written using javascript with jquery.  The FoLiA Document Server
-(https://github.com/proycon/foliadocserve) , the back-end
-of the system, is written in Python with CherryPy and is used as a RESTful
-webservice.
+FLAT is written in javascript with jquery on a backend of Python using the Django framework.  The FoLiA Document Server
+(https://github.com/proycon/foliadocserve) , the back-end of the system, is written in Python with CherryPy and is used
+as a RESTful webservice.
 
 FLAT is open source software developed at the Centre of Language and Speech
 Technology, Radboud University Nijmegen. It is licensed under the GNU Public
@@ -41,7 +39,7 @@ Features
   Read and write permissions to access namespaces are fully configurable.
 * Concurrency (multiple users may edit the same document similtaneously)
 * Full versioning control for documents (using git), allowing limitless undo operations. (in foliadocserve)
-* Full annotator information, with timestamps, is stored in the FoLiA XML and can be displayed by the interface. The git log also contains verbose information on annotations.
+* Full provenance information, including annotator names and timestamps, is stored in the FoLiA XML and can be displayed by the interface. The git log also contains verbose information on annotations.
 * Annotators can indicate their confidence for each annotation
 * Highly configurable interface; interface options may be disabled on a
   per-configuration basis. Multiple configurations can be deployed on a single
@@ -61,7 +59,7 @@ Features
 * In-document search (CQL or FQL), advanced searches can be predefined by administrators
 * Morphosyntactic tree visualisation (constituency parses and morphemes)
 * Higher-order annotation: associate features, comments, descriptions with any
-  linguistic annotation
+  linguistic annotation, also allow for arbritary relations between any type of annotation or structure
 
 ============================================
 Architecture
