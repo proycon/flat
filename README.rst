@@ -8,6 +8,14 @@
 .. image:: https://zenodo.org/badge/15584383.svg
    :target: https://zenodo.org/badge/latestdoi/15584383
 
+.. image:: https://www.repostatus.org/badges/latest/active.svg
+   :alt: Project Status: Active – The project has reached a stable, usable state and is being actively developed.
+   :target: https://www.repostatus.org/#active
+
+.. image:: https://img.shields.io/pypi/v/FoLiA-Linguistic-Annotation-Tool?color=green
+   :alt: Latest release in the Python Package Index
+   :target: https://pypi.org/project/FoLiA-Linguistic-Annotation-Tool/
+
 *****************************************
 FLAT - FoLiA Linguistic Annotation Tool
 *****************************************
