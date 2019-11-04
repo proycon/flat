@@ -124,10 +124,11 @@ def initdoc(request, namespace, docid, mode, template, context=None, configurati
     """Initialise a document (not invoked directly)"""
     perspective = request.GET.get('perspective','document')
     if context is None: context = {}
-    if 'configuration' in request.session:
-        configuration = request.session['configuration']
-    elif configuration is None:
-        return fatalerror(request, "No configuration specified")
+    if configuration is None:
+        if 'configuration' in request.session:
+            configuration = request.session['configuration']
+        else:
+            return fatalerror(request, "No configuration specified")
     if configuration not in settings.CONFIGURATIONS:
         return fatalerror(request, "Specified configuration does not exist")
     flatargs = {
