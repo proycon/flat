@@ -156,11 +156,42 @@ particular annotation when you hover over it, and when exactly this was done.
 Search
 ~~~~~~~~~
 
-You can access the search function through the **Tools & Options** menu. The
-search dialog allows you to enter complex queries using CQL, the Corpus Query
-Language, or FQL, the FoLiA Query Language.
+You can access the search function through the **Tools & Options** menu. The search dialog allows you to enter complex
+queries using CQL, the `Corpus Query Language <https://www.sketchengine.eu/documentation/corpus-querying/>`_, or FQL, the
+`FoLiA Query Language <https://folia.readthedocs.io/en/latest/fql.html>`_ .
 
-(TODO: needs further documentation)
+CQL, is considerably more concise than FQL, already well-spread, and its syntax is
+easier. FQL has more FoLiA-specific features.
+
+A CQL query consists of a match on one or more tokens, each token is represented by square brackets::
+
+    ["to"] ["be"] ["or"] ["not"] ["to"] ["be"]
+
+You can use ``[]`` as a wildcard match on any token::
+
+    ["to"] [] ["or"] ["not"] ["to"] []
+
+Rather than matching word forms, you can also match on linguistic annotations, such as for example lemmas, as follows::
+
+    [lemma="to"] [lemma="be"] [lemma="or"] [lemma="not"] [lemma="to"] [lemma="be"]
+
+You can match on any annotation type FoLiA supports (simply use the names of the corresponding folia tags). To be
+compatible with existing CQL systax, the attribute ``tag`` maps to ``pos``, and ``word`` maps to ``text``.
+
+If you match on word forms only, you can simply leave out the square brackets::
+
+    "to" "be" "or" "not" "to" "be"
+
+FLAT supports a subset of CQL:
+
+* Operators for attribute matching (``>``, ``<``, ``!=``, ``=``)
+* The following regular expression operators for token matching: ``[]*`` (zero or more) , ``[]+`` (one or more) and ``[]?`` (one or zero) and the interval expression: ``[]{x,y}`` where x and y are numbers (e.g. ``[]{1,4}``).
+* Regular expression syntax in value matching (following Python's regular expression syntax), for example: ``"to" "be"
+  "or" "n?t" "to" "be"``
+* Intersections using ``&``, for example: ``[ lemma="be" & pos="V" ]``
+
+Other more advanced features are not available.
+
 
 =======================
 Annotation Editor
