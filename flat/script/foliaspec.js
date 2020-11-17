@@ -1,4 +1,4 @@
-foliaspec = {
+/home/proycon/work/folia/schemas/folia.yml = {
     "annotationtype": [
         "TEXT",
         "TOKEN",
@@ -54,7 +54,9 @@ foliaspec = {
         "COMMENT",
         "DESCRIPTION",
         "HYPHENATION",
-        "HIDDENTOKEN"
+        "HIDDENTOKEN",
+        "MODALITY",
+        "EXTERNAL"
     ],
     "annotationtype_doc": {
         "alternative": {
@@ -132,6 +134,11 @@ foliaspec = {
             "history": "since v0.12",
             "name": "Example Annotation"
         },
+        "external": {
+            "description": "External annotation makes a reference to an external FoLiA document whose structure is inserted at the exact place the external element occurs.",
+            "history": "Since v2.4.0",
+            "name": "External Annotation"
+        },
         "figure": {
             "description": "Structure annotation for including pictures, optionally captioned, in documents.",
             "history": "Since the beginning",
@@ -181,6 +188,11 @@ foliaspec = {
             "description": "Metric Annotation is a form of higher-order annotation that allows annotation of some kind of measurement. The type of measurement is defined by the class, which in turn is defined by the set as always. The metric element has a ``value`` attribute that stores the actual measurement, the value is often numeric but this needs not be the case.",
             "history": "since v0.9",
             "name": "Metric Annotation"
+        },
+        "modality": {
+            "description": "Modality annotation is used to describe the relationship between cue word(s) and the scope it covers. It is primarily used for the annotation of negation, but also for the annotation of factuality, certainty and truthfulness:.",
+            "history": "Since v2.4.0",
+            "name": "Modality Annotation"
         },
         "morphological": {
             "description": "Morphological Annotation allows splitting a word/token into morphemes, morphemes itself may be nested. It is embedded within a layer ``morphology`` which can be embedded within word/tokens.",
@@ -386,7 +398,7 @@ foliaspec = {
             "name": "endtime"
         },
         "id": {
-            "description": "The ID of the element; this has to be a unique in the entire document or collection of documents (corpus). All identifiers in FoLiA are of the `XML NCName <https://www.w3.org/TR/1999/WD-xmlschema-2-19990924/#NCName>`_ datatype, which roughly means it is a unique string that has to start with a letter (not a number or symbol), may contain numers, but may never contain colons or spaces. FoLiA does not define any naming convention for IDs.",
+            "description": "The ID of the element; this has to be a unique in the entire document or collection of documents (corpus). All identifiers in FoLiA are of the `XML NCName <https://www.w3.org/TR/1999/WD-xmlschema-2-19990924/#NCName>`_ datatype, which roughly means it is a unique string that has to start with a letter (not a number or symbol), may contain numbers, but may never contain colons or spaces. FoLiA does not define any naming convention for IDs.",
             "group": "core",
             "name": "xml:id"
         },
@@ -498,6 +510,7 @@ foliaspec = {
         "annotationtype": null,
         "auth": true,
         "auto_generate_id": false,
+        "hidden": false,
         "occurrences": 0,
         "occurrences_per_set": 0,
         "optional_attribs": null,
@@ -662,6 +675,17 @@ foliaspec = {
                         "primaryelement": false,
                         "xmltag": "timing"
                     }
+                },
+                {
+                    "class": "ModalitiesLayer",
+                    "properties": {
+                        "accepted_data": [
+                            "Modality"
+                        ],
+                        "annotationtype": "MODALITY",
+                        "primaryelement": false,
+                        "xmltag": "modalities"
+                    }
                 }
             ],
             "properties": {
@@ -670,13 +694,7 @@ foliaspec = {
                     "ForeignData"
                 ],
                 "optional_attribs": [
-                    "ID",
-                    "ANNOTATOR",
-                    "CONFIDENCE",
-                    "DATETIME",
-                    "N",
-                    "TEXTCLASS",
-                    "METADATA"
+                    "ID"
                 ],
                 "printable": false,
                 "setonly": true,
@@ -689,33 +707,45 @@ foliaspec = {
                 {
                     "class": "Current",
                     "properties": {
+                        "annotationtype": "CORRECTION",
                         "occurrences": 1,
                         "optional_attribs": null,
+                        "primaryelement": false,
                         "xmltag": "current"
                     }
                 },
                 {
                     "class": "New",
                     "properties": {
+                        "annotationtype": "CORRECTION",
                         "occurrences": 1,
                         "optional_attribs": null,
+                        "primaryelement": false,
                         "xmltag": "new"
                     }
                 },
                 {
                     "class": "Original",
                     "properties": {
+                        "annotationtype": "CORRECTION",
                         "auth": false,
                         "occurrences": 1,
                         "optional_attribs": null,
+                        "primaryelement": false,
                         "xmltag": "original"
                     }
                 },
                 {
                     "class": "Suggestion",
                     "properties": {
+                        "annotationtype": "CORRECTION",
                         "auth": false,
                         "occurrences": 0,
+                        "optional_attribs": [
+                            "CONFIDENCE",
+                            "N"
+                        ],
+                        "primaryelement": false,
                         "xmltag": "suggestion"
                     }
                 }
@@ -809,6 +839,29 @@ foliaspec = {
                                 "primaryelement": false,
                                 "xmltag": "target"
                             }
+                        },
+                        {
+                            "class": "Cue",
+                            "properties": {
+                                "label": "Cue",
+                                "occurrences": 1,
+                                "primaryelement": false,
+                                "xmltag": "cue"
+                            }
+                        },
+                        {
+                            "class": "Scope",
+                            "properties": {
+                                "accepted_data": [
+                                    "Cue",
+                                    "Source",
+                                    "Target"
+                                ],
+                                "label": "Scope",
+                                "occurrences": 1,
+                                "primaryelement": false,
+                                "xmltag": "scope"
+                            }
                         }
                     ],
                     "properties": {
@@ -818,10 +871,7 @@ foliaspec = {
                             "LinkReference"
                         ],
                         "optional_attribs": [
-                            "ID",
-                            "ANNOTATOR",
-                            "N",
-                            "DATETIME"
+                            "ID"
                         ],
                         "primaryelement": false
                     }
@@ -851,6 +901,23 @@ foliaspec = {
                             "CoreferenceLink"
                         ],
                         "xmltag": "coreferencechain"
+                    }
+                },
+                {
+                    "class": "Modality",
+                    "properties": {
+                        "accepted_data": [
+                            "Scope",
+                            "Feature",
+                            "Cue",
+                            "Source",
+                            "Target",
+                            "PolarityFeature",
+                            "StrengthFeature"
+                        ],
+                        "annotationtype": "MODALITY",
+                        "label": "Modality",
+                        "xmltag": "modality"
                     }
                 },
                 {
@@ -1022,6 +1089,7 @@ foliaspec = {
                             "Linebreak",
                             "Paragraph",
                             "PhonContent",
+                            "Quote",
                             "Reference",
                             "Sentence",
                             "String",
@@ -1054,11 +1122,14 @@ foliaspec = {
                             "Entry",
                             "Event",
                             "Example",
+                            "Figure",
                             "Gap",
                             "Head",
                             "Linebreak",
+                            "List",
                             "Note",
                             "Paragraph",
+                            "Quote",
                             "Reference",
                             "Sentence",
                             "String",
@@ -1135,7 +1206,8 @@ foliaspec = {
                             "Table",
                             "TextContent",
                             "Utterance",
-                            "Whitespace"
+                            "Whitespace",
+                            "Word"
                         ],
                         "annotationtype": "DIVISION",
                         "label": "Division",
@@ -1226,7 +1298,8 @@ foliaspec = {
                         "accepted_data": [
                             "Caption",
                             "String",
-                            "TextContent"
+                            "TextContent",
+                            "Linebreak"
                         ],
                         "annotationtype": "FIGURE",
                         "label": "Figure",
@@ -1255,7 +1328,6 @@ foliaspec = {
                         ],
                         "annotationtype": "HEAD",
                         "label": "Head",
-                        "occurrences": 1,
                         "textdelimiter": "\n\n",
                         "xmltag": "head"
                     }
@@ -1271,6 +1343,7 @@ foliaspec = {
                             "TextContent"
                         ],
                         "annotationtype": "HIDDENTOKEN",
+                        "hidden": true,
                         "label": "Hidden Word/Token",
                         "optional_attribs": [
                             "ID",
@@ -1287,8 +1360,6 @@ foliaspec = {
                             "METADATA",
                             "SPACE"
                         ],
-                        "printable": false,
-                        "speakable": false,
                         "textdelimiter": " ",
                         "wrefable": true,
                         "xmltag": "hiddenw"
@@ -1338,6 +1409,7 @@ foliaspec = {
                             "Relation",
                             "Caption",
                             "Event",
+                            "Linebreak",
                             "ListItem",
                             "Metric",
                             "Note",
@@ -1366,6 +1438,7 @@ foliaspec = {
                             "Paragraph",
                             "Part",
                             "PhonContent",
+                            "Quote",
                             "Reference",
                             "Sentence",
                             "String",
@@ -1459,7 +1532,7 @@ foliaspec = {
                         ],
                         "annotationtype": "PART",
                         "label": "Part",
-                        "textdelimiter": null,
+                        "textdelimiter": " ",
                         "xmltag": "part"
                     }
                 },
@@ -1467,14 +1540,17 @@ foliaspec = {
                     "class": "Quote",
                     "properties": {
                         "accepted_data": [
+                            "AbstractInlineAnnotation",
                             "Division",
                             "Gap",
+                            "Linebreak",
                             "Paragraph",
                             "Quote",
                             "Sentence",
                             "String",
                             "TextContent",
                             "Utterance",
+                            "Whitespace",
                             "Word",
                             "Hiddenword",
                             "Reference"
@@ -1502,7 +1578,7 @@ foliaspec = {
                         ],
                         "annotationtype": "REFERENCE",
                         "label": "Reference",
-                        "textdelimiter": null,
+                        "textdelimiter": " ",
                         "xlink": true,
                         "xmltag": "ref"
                     }
@@ -1591,7 +1667,8 @@ foliaspec = {
                         "accepted_data": [
                             "AbstractInlineAnnotation",
                             "Row",
-                            "TableHead"
+                            "TableHead",
+                            "Linebreak"
                         ],
                         "annotationtype": "TABLE",
                         "label": "Table",
@@ -1758,6 +1835,7 @@ foliaspec = {
             "properties": {
                 "accepted_data": [
                     "AbstractAnnotationLayer",
+                    "External",
                     "Relation",
                     "Alternative",
                     "AlternativeLayers",
@@ -1910,6 +1988,14 @@ foliaspec = {
                         "label": "Hyphbreak",
                         "textdelimiter": "",
                         "xmltag": "t-hbr"
+                    }
+                },
+                {
+                    "class": "TextMarkupReference",
+                    "properties": {
+                        "annotationtype": "REFERENCE",
+                        "primaryelement": false,
+                        "xmltag": "t-ref"
                     }
                 }
             ],
@@ -2229,14 +2315,23 @@ foliaspec = {
                     "class": "External",
                     "properties": {
                         "accepted_data": null,
-                        "auth": true,
+                        "annotationtype": "EXTERNAL",
                         "label": "External",
-                        "optional_attribs": null,
+                        "optional_attribs": [
+                            "ID",
+                            "ANNOTATOR",
+                            "CONFIDENCE",
+                            "DATETIME",
+                            "N",
+                            "METADATA",
+                            "BEGINTIME",
+                            "ENDTIME"
+                        ],
                         "printable": true,
                         "required_attribs": [
                             "SRC"
                         ],
-                        "speakable": false,
+                        "speakable": true,
                         "xmltag": "external"
                     }
                 },
@@ -2288,7 +2383,7 @@ foliaspec = {
                         {
                             "class": "ModalityFeature",
                             "properties": {
-                                "subset": "modality",
+                                "subset": "mod",
                                 "xmltag": null
                             }
                         },
@@ -2528,7 +2623,7 @@ foliaspec = {
         "Caption",
         "Head"
     ],
-    "version": "2.0.2",
+    "version": "2.4.0",
     "wrefables": [
         "Word",
         "Hiddenword",
