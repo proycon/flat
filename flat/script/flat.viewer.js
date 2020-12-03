@@ -10,6 +10,7 @@ var hover = null;
 var globannotationsorder = ['entity','semrole','coreferencechain','su','dependency','sense','pos','lemma','chunk']; //from top to bottom
 var displayorder = ['t','ph','lemma','pos','sense','entity','sentiment','observation','statement','chunk','su','dependency','predicate','semrole'];
 var hoverstr = null; //ID of string element we're currently hovering over
+var renderedelement = null; //currently rendered element in the DOM
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
 var NROFCLASSES = 7; //number of coloured classes
 var searchsubmitted = false;
@@ -787,6 +788,7 @@ function renderviewer(element, extendedcontainer) {
     /* Populate and show the pop-up info box with annotations for the element under consideration */
     if ((element) && (((selector !== "") && ($(element).hasClass(selector))) || ((selector === "") && ($(element).hasClass('deepest')))) ) {
         if (element.id) {
+            renderedelement = element;
             var s = "";
             var structureelement = structure[element.id];
             if ((structureelement) && (structureelement.auth)) {
@@ -1260,6 +1262,15 @@ function viewer_onupdate() {
 
     $('div.deepest span.str').mouseenter(function(){
         hoverstr = this.id.substr(7);
+        if (renderedelement) {
+            renderviewer(renderedelement);
+        }
+    });
+    $('div.deepest span.str').mouseleave(function(){
+        if (renderedelement && hoverstr) {
+            hoverstr = null;
+            renderviewer(renderedelement);
+        }
     });
     if (annotationfocus) {
         setclasscolors();
