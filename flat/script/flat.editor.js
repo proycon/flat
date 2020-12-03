@@ -1560,6 +1560,9 @@ function gather_changes() {
             if (editdata[i].editform == 'correction') {
                 //editdata[i].editform = 'correction';
                 editdata[i].correctionclass = $('#editform' + i + 'correctionclass').val().trim();
+                if ($('#editformcorrectionset').val() == null) {
+                    throw "Error (" + i + "): Before you can do corrections, you need to declare what correction set to use. Declare a new correction set in the menu: Tools & Options > Add new annotation Type > Correction";
+                }
                 editdata[i].correctionset = $('#editformcorrectionset').val().trim();
                 if (!editdata[i].correctionclass) {
                     throw "Error (" + i + "): Annotation " + editdata[i].type + " was changed and submitted as correction, but no correction class was entered";
