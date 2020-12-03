@@ -41,7 +41,7 @@ span.str {
     border-bottom: 1px #696487 solid;
 }
 span.correction {
-    border-bottom: 1px #ff0000 solid;
+    border-bottom: 2px #ff0000 solid;
 }
 span.str:hover {
     border: 1px #2400ff dashed;
