@@ -643,6 +643,7 @@ function renderannotation(annotation, norecurse, extended) {
             s = s + "<span class=\"id\">" + annotation.id + "</span>";
         }
         annotation.annotations.forEach(function(subannotation){
+           subannotation = annotations[subannotation];
            if (subannotation.type) { //filter out invalid elements
             if (subannotation.type == "correction") {
                 s = s + rendercorrection( setupcorrection(subannotation), true, true);
