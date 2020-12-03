@@ -530,7 +530,11 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
 
     //some higher order elements (such as relations) are not in annotations but in children
     if (structureelement.children) {
+        var stringcount = 0;
         structureelement.children.forEach(function(annotation){
+           if (annotation.type == "str") { //string are handled as annotations already, but only if focussed
+               stringcount += 1
+           } else {
             var label = folia_label(annotation.type, annotation.set);
             if (annotation.inalternative) {
                 if (!showalternatives) return;
@@ -555,7 +559,11 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
             s = s + "</th><td>";
             s = s + renderannotation(annotation, false, extended);
             s = s + "</td></tr>";
+           }
         });
+        if (stringcount > 0) {
+            s = s + "<tr><th>Strings</th><td>There are " + stringcount + " substring(s) defined (they can be visualised only if markup information is present too)</td></tr>";
+        }
     }
     s = s + "</table>";
 
@@ -630,12 +638,15 @@ function renderannotation(annotation, norecurse, extended) {
         s = s + "<br/><span class=\"confidence\">Confidence " + (annotation.confidence * 100) +"%</span>";
     }
     if (annotation.type == "str") {
-        //TODO: refactor
         s = s + "<div class=\"strinfo\">";
-        s = s + "<span class=\"id\">" + annotation.annotationid + "</span>";
-        annotation.children.forEach(function(subannotation){
-            if (subannotation.type) { //filter out invalid elements
-            if (subannotation.type != "correction") {
+        if (annotation.id) {
+            s = s + "<span class=\"id\">" + annotation.id + "</span>";
+        }
+        annotation.annotations.forEach(function(subannotation){
+           if (subannotation.type) { //filter out invalid elements
+            if (subannotation.type == "correction") {
+                s = s + rendercorrection( setupcorrection(subannotation), true, true);
+            } else {
                 s  = s + "<table>";
                 label = folia_label(subannotation.type, subannotation.set);
                 if (subannotation.set) {
@@ -648,11 +659,8 @@ function renderannotation(annotation, norecurse, extended) {
                 s = s + renderannotation(subannotation);
                 s = s + "</td></tr>";
                 s = s + "</table>";
-            } else {
-                //correction
-                s = s + rendercorrection( setupcorrection(subannotation), true, true);
             }
-            }
+           }
         });
         s = s + "</div>";
     }
