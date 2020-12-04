@@ -121,16 +121,16 @@ div.hover span.lbl, div.hover>span.ab {
     background: black;
     color: yellow;
 }
-div.hover span.lbl, div.hover>span.lbl>span.str {
+div.hover>span.lbl>span.str {
     background: #000033;
 }
-div.hover span.lbl, div.hover>span.lbl span.correction {
+div.hover>span.lbl span.correction {
     background: #880000;
 }
-div.hover span.lbl, div.selected>span.lbl>span.str {
+div.selected>span.lbl>span.str {
     background: transparent;
 }
-div.hover span.lbl, div.selected>span.lbl span.correction {
+div.selected>span.lbl span.correction {
     background: transparent;
 }
 div#connectioninfo {
