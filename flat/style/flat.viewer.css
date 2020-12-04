@@ -46,6 +46,9 @@ span.correction {
 span.str:hover {
     border: 1px #2400ff dashed;
 }
+span.correction:hover {
+    border: 1px #ff0000 dashed;
+}
 span.dependency span.headtext {
     font-style: italic;
 }
@@ -117,6 +120,18 @@ div.classother span.lbl, div#classotherlegend {
 div.hover span.lbl, div.hover>span.ab {
     background: black;
     color: yellow;
+}
+div.hover span.lbl, div.hover>span.lbl>span.str {
+    background: #000033;
+}
+div.hover span.lbl, div.hover>span.lbl span.correction {
+    background: #880000;
+}
+div.hover span.lbl, div.selected>span.lbl>span.str {
+    background: transparent;
+}
+div.hover span.lbl, div.selected>span.lbl span.correction {
+    background: transparent;
 }
 div#connectioninfo {
     position: fixed;
