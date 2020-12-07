@@ -669,10 +669,10 @@ function showeditor(element) {
 
             //Process the structural element itself (proycon/flat#152)
             if (editstructure) {
-              if ((!annotationfocus) || (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set)) {
+              if ((!annotationfocus) || (annotationfocus.type == editedelement.type) && (annotationfocus.set == editedelement.set)) {
                 var s = "";
                 if (editedelement.set) {
-                    var isannotationfocus = ((annotationfocus) && (annotationfocus.type == annotation.type) && (annotationfocus.set == annotation.set));
+                    var isannotationfocus = ((annotationfocus) && (annotationfocus.type == editedelement.type) && (annotationfocus.set == editedelement.set));
                     var result = rendereditannotation(editedelement, editfields, isannotationfocus);
                     if (result !== null) {
                         s = s + result.html;
