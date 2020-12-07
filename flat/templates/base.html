@@ -94,13 +94,19 @@
                     {% if docid %}
                     <li>Modes
                     <ul>
-                            {% for mode, modename in modes %}
-                            {% if namespace == "pub" %}
-                            <li><a href="{{base_prefix}}/{{ mode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a></li>
+                        {% for navmode, modename in modes %}
+                            {% if navmode == mode %}
+                            <li class="on">
                             {% else %}
-                            <li><a href="{{base_prefix}}/{{ mode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a></li>
+                            <li>
                             {% endif %}
-                            {% endfor %}
+                            {% if namespace == "pub" %}
+                            <a href="{{base_prefix}}/{{ navmode }}/pub/{{ configuration_id }}/{{ docid }}/">{{ modename }}</a>
+                            {% else %}
+                            <a href="{{base_prefix}}/{{ navmode }}/{{ namespace }}/{{ docid }}/">{{ modename }}</a>
+                            {% endif %}
+                            </li>
+                        {% endfor %}
                     </ul>
                     </li>
                     {% block menu %}
