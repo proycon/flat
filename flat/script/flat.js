@@ -231,12 +231,27 @@ function rendertextclass() {
     forallannotations(function(structureelement, annotation){
         if ((annotation.type == "t") && (annotation.class == textclass)) {
             lbl = $('#' + valid(structureelement.id) + " span.lbl");
-            if ((lbl.length == 1) && ($('#'  + valid(structureelement.id)).hasClass('deepest'))) {
-                if (annotation.htmltext) {
-                    lbl.html(annotation.htmltext);
-                } else {
-                    lbl.html(annotation.text);
+            if(lbl.length == 1) {
+                if ($('#'  + valid(structureelement.id)).hasClass('deepest')) {
+                    if (annotation.htmltext) {
+                        lbl.html(annotation.htmltext);
+                    } else {
+                        lbl.html(annotation.text);
+                    }
                 }
+            } else if (lbl.length == 0) {
+                //in case there is no label at all associated yet (occurs when
+                //there was no text to visualise in the first place, as in #139)
+                var ab = document.createElement("span");
+                $(ab).addClass("ab");
+                lbl = document.createElement("span");
+                $(lbl).addClass("lbl");
+                if (annotation.htmltext) {
+                    $(lbl).html(annotation.htmltext);
+                } else {
+                    $(lbl).html(annotation.text);
+                }
+                $('#' + valid(structureelement.id)).append(ab,lbl);
             }
         }
     });
@@ -471,25 +486,15 @@ function settextclassselector(data) {
     //Populate the text class selector and render text classes
     $('#textclassselector').hide();
     if (data.textclasses) {
-        if (data.textclasses.length > 1) {
+        var hascurrent = $.inArray("current", data.textclasses) != -1;
+        var forceupdate = false;
+        if ((data.textclasses.length == 1) || ((!hascurrent) && (textclass == "current"))) {
+            //reset the textclass to what's available:
+            forceupdate = data.textclasses[0] != textclass;
+            textclass = data.textclasses[0];
+        }
+        if ((data.textclasses.length > 1) || (!hascurrent)) {
             var s = "<span class=\"title\">Text class</span><select id=\"textclass\">";
-            var found = false;
-            var hascurrent = false;
-            for (i = 0; i < data.textclasses.length; i++) {
-                if (textclass == data.textclasses[i]) {
-                    found = true;
-                }
-                if (data.textclasses[i] == 'current') {
-                    hascurrent = true;
-                }
-            }
-            if (!found) {
-                if (hascurrent) {
-                    textclass = "current";
-                } else {
-                    textclass = data.textclasses[0];
-                }
-            }
             for (i = 0; i < data.textclasses.length; i++) {
                 var extra ="";
                 if (textclass == data.textclasses[i]) {
@@ -504,6 +509,9 @@ function settextclassselector(data) {
                 textclass = $('#textclass').val();
                 rendertextclass();
             });
+        }
+        if (forceupdate) {
+            rendertextclass();
         }
     }
 }
