@@ -7,7 +7,7 @@ import json
 import requests
 from flat import VERSION
 
-REQUIREFOLIADOCSERVE = '0.7.2'
+REQUIREFOLIADOCSERVE = '0.7.4'
 
 def checkversion(version):
     """Checks foliadocserve version, returns 1 if the document is newer than the library, -1 if it is older, 0 if it is equal"""

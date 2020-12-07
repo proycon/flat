@@ -42,5 +42,5 @@ setup(
     ],
     zip_safe=False,
     package_data = {'flat':['templates/*.html','style/*','script/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'], 'flat.modes.metadata':['templates/*.html']  },
-    install_requires=['folia >= 2.4.0','Django >= 1.8','requests', 'foliadocserve >= 0.7.2']
+    install_requires=['folia >= 2.4.0','Django >= 1.8','requests', 'foliadocserve >= 0.7.4']
 )
