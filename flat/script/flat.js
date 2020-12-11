@@ -251,7 +251,7 @@ function rendertextclass() {
                 } else {
                     $(lbl).html(annotation.text);
                 }
-                $('#' + valid(structureelement.id)).append(ab,lbl);
+                $('#' + valid(structureelement.id)).prepend(ab,lbl);
             }
         }
     });
