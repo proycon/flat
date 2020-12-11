@@ -534,7 +534,7 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
         var stringcount = 0;
         structureelement.children.forEach(function(annotation){
            if (annotation.type == "str") { //string are handled as annotations already, but only if focussed
-               stringcount += 1
+               stringcount += 1;
            } else {
             var label = folia_label(annotation.type, annotation.set);
             if (annotation.inalternative) {
