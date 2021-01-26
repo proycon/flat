@@ -191,7 +191,13 @@ Introduction
 
 We urge people wanting to set up FLAT to familiarise themselves with `FoLiA
 <https://proycon.github.io/folia>`_, as
-the tool is specifically designed around this format. A main characteristic of FoLiA is
+the tool is specifically designed around this format.
+
+------------------------------------------
+Set Definitions (Defining Vocabularies)
+------------------------------------------
+
+A main characteristic of FoLiA is
 the **class/set paradigm** and the distinction of a large number of specific
 **annotation types**, such as for example part-of-speech, lemma, dependencies,
 syntax, co-references, semantic roles, and many more...
@@ -205,15 +211,27 @@ create sets! This offers a great deal of flexibility, as you can use FLAT and
 FoLiA with whatever tagset you desire (provided you make a set definition for
 it).
 
-Sets are defined in Set Definition files, these tie the classes to nice human
+Sets are defined in **Set Definition** files, these tie the classes to nice human
 presentable labels (they may also impose taxonomies, put constraints on class
 combinations,  and link to data category registries). FLAT relies on
 these set definitions a great deal, as it uses them to present the labels for
-the classes. Examples of set definitions can be found here:
+the classes. The set definition need to be published somewhere online (whereever you prefer),
+and are refered to by URL. This makes the set definition independent of your FLAT installation
+(or FLAT in general). FLAT and other FoLiA tools retrieve these set definition files automatically.
+
+If you set up your annotation task and want to use your own vocabulary for a particular annotation type, then it is up
+to you to provide such a set definition.
+
+Examples of set definitions can be found here:
 https://github.com/proycon/folia/tree/master/setdefinitions
 
-For more information about FoLiA, see https://proycon.github.io/folia , the
-format itself is extensively documented.
+Extensive documentation regarding set definition can be found here, this should be a starting point when you create your
+own set definition for your task:
+https://folia.readthedocs.io/en/latest/set_definitions.html
+
+If you use your own set definition, then you are likely also interested in setting the ``autodeclare`` option in the
+FLAT configuration for your annotation task, so you can automatically associate an annotation type using this set
+definition with any document that is loaded/uploaded. See the Configuration section of this documentation for details.
 
 -----------------------
 Right-to-left support

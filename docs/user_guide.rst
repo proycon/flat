@@ -268,7 +268,14 @@ subsequently pressing the **+** button:
     :alt: New annotation
     :align: center
 
-The new annotations in this list are annotations of a type and set that is already declared to be used in the document. If you want to add
+The new annotations in this list are annotations of a type and set that is already declared to be used in the document.
+
+
+----------------------------
+Adding new annotation types
+----------------------------
+
+If you want to add
 a whole new annotation type and set that has not been used at all yet, you need
 to *declare* it by clicking the **Tools & Options** menu and choosing **Add new
 Annotation Type**. It will open a dialog that allows you to select the
@@ -278,6 +285,13 @@ annotation type and asks you for a URL to your FoLiA set definition:
 .. image:: newdeclaration.png
     :alt: New declaration
     :align: center
+
+The actual vocabulary of your annotation type is called a set definition and is defined in a set definition file. This set
+definition file needs to be hosted publicly online, somewhere, and this is the URL you enter in the above field. FLAT
+downloads that file to know about the vocabulary for the annotation type.
+
+Creating a proper set definition is usually the task of the people who set up the annotation task, and not of the actual
+annotators. See the part on Set Definition in the Administration Guide for more details.
 
 --------------
 Edit Forms
