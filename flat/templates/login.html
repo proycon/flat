@@ -7,26 +7,30 @@
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
-    <form action="{{base_prefix}}/login/" method="post">
-    <label>Username:</label> <input name="username" /><br />
-    <label>Password:</label> <input type="password" name="password" /><br/>
-    <label>Configuration:</label> <select name="configuration">
-        {% for confname, conf in configurations.items %}
-        {% if confname == defaultconfiguration %}
-        <option value="{{ confname }}" selected="selected">{{ conf.name }}</option>
-        {% else %}
-        <option value="{{ confname }}">{{ conf.name }}</option>
-        {% endif %}
-        {% endfor %}
-    </select></br>
-    <div class="buttoncontainer">
-        <input class="button" type="submit" value="Log in" />
-        <span class="helptext">
-         ({% if allowregistration %} no account yet? <a href="{{base_prefix}}/register/">Register here</a> |{% endif %} <a href="{{base_prefix}}/account/password_reset/">Forgot password?</a>)
-        </span>
-    </div>
-    {% csrf_token %}
-    </form>
+    {% if oidc %}
+        <a href="{% url 'oidc_authentication_init' %}">Login</a>
+    {% else %}
+        <form action="{{base_prefix}}/login/" method="post">
+        <label>Username:</label> <input name="username" /><br />
+        <label>Password:</label> <input type="password" name="password" /><br/>
+        <label>Configuration:</label> <select name="configuration">
+            {% for confname, conf in configurations.items %}
+            {% if confname == defaultconfiguration %}
+            <option value="{{ confname }}" selected="selected">{{ conf.name }}</option>
+            {% else %}
+            <option value="{{ confname }}">{{ conf.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select></br>
+        <div class="buttoncontainer">
+            <input class="button" type="submit" value="Log in" />
+            <span class="helptext">
+             ({% if allowregistration %} no account yet? <a href="{{base_prefix}}/register/">Register here</a> |{% endif %} <a href="{{base_prefix}}/account/password_reset/">Forgot password?</a>)
+            </span>
+        </div>
+        {% csrf_token %}
+        </form>
+    {% endif %}
 </div>
 {% endblock %}
 

@@ -6,7 +6,7 @@ if VERSION[0] >= 2 or VERSION[1] >= 8: #Django 1.8 and higher
     from django.conf.urls import url, include
     from django.conf.urls.static import static
 elif VERSION[1] >= 6: #Django 1.6
-    from django.conf.urls import patterns, url, include
+    from django.conf.urls import patterns, url, path, include
     from django.conf.urls.static import static
 else:
     from django.conf.urls.defaults import *
@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^addnamespace/?$', flat.views.addnamespace, name='addnamespace'),
     url(r'^pub/(?P<configuration>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.pub_query, name='query'), #generic query function
     url(r'^(?P<namespace>[\w\d\-_\./@]+)/(?P<docid>[\w\d\-_\.]+)/query/?$', flat.views.query, name='query'), #generic query function
+    path('oidc/', include('mozilla_django_oidc.urls')),
     # url(r'^flat/', include('flat.foo.urls')),
 ]
 

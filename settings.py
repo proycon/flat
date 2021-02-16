@@ -294,6 +294,24 @@ SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
 
 DEBUG = True #Set to False for production environments!!!!
 
+##############################################################################
+# DJANGO SETTINGS FOR OPENID CONNECT AUTHENTICATION
+#############################################################################
+
+OIDC = False #Set this to True if you want want OpenID Connect Authentication,
+             #and uncomment and fill all lines below
+
+    #note: The redirect url you register with your authorization provider should end in /oidc/callback/
+
+#AUTHENTICATION_BACKENDS = ( 'mozilla_django_oidc.auth.OIDCAuthenticationBackend',)
+
+#OIDC_RP_CLIENT_ID = "" #As provided by your authorization provider, do not check this into public version control!!!
+#OIDC_RP_CLIENT_SECRET = ""#As provider by your authorization provider, Do not check this into public version control!!!
+
+
+#OIDC_OP_AUTHORIZATION_ENDPOINT = "<URL of the OIDC OP authorization endpoint>"
+#OIDC_OP_TOKEN_ENDPOINT = "<URL of the OIDC OP token endpoint>"
+#OIDC_OP_USER_ENDPOINT = "<URL of the OIDC OP userinfo endpoint>"
 
 
 ##############################################################################
@@ -469,10 +487,14 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
     'flat.users'
 ]
+if OIDC: INSTALLED_APPS.insert(1, 'mozilla_django-oidc')
 for mode,_ in MODES:
     INSTALLED_APPS.append('flat.modes.' + mode)
 INSTALLED_APPS = tuple(INSTALLED_APPS)
 
+
+LOGIN_REDIRECT_URL = BASE_PREFIX + "/"
+LOGOUT_REDIRECT_URL = BASE_PREFIX + "/"
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 

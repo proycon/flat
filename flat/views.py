@@ -40,6 +40,7 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
         authenticated = request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated()
     else:
         authenticated = False
+    oidc = settings.OIDC if hasattr(settings, 'OIDC') else False
     return {
             'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "",
             'configuration_id': configuration,
@@ -66,7 +67,8 @@ def getcontext(request,namespace,docid, doc, mode, configuration = None):
             'loggedin': authenticated,
             'isadmin': request.user.is_staff if request.user else False,
             'version': settings.VERSION,
-            'username': request.user.username if namespace != "pub" else "anonymous",
+            'username': request.user.email if oidc and namespace != 'pub' else request.user.username if namespace != "pub" else "anonymous",
+            'oidc': oidc,
             'waitmessage': "Loading document on server and initialising web-environment...",
     }
 
@@ -253,6 +255,7 @@ def pub_query(request,configuration, docid):
     return query_helper(request, 'pub',docid, configuration)
 
 def login(request):
+    oidc = settings.OIDC if hasattr(settings, 'OIDC') else False
     if 'username' in request.POST and 'password' in request.POST:
         username = request.POST['username']
         password = request.POST['password']
@@ -271,12 +274,12 @@ def login(request):
                     return redirect(base_prefix + "/")
             else:
                 # Return a 'disabled account' error message
-                return render(request, 'login.html', {'error': "This account is disabled","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS , 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" } )
+                return render(request, 'login.html', {'error': "This account is disabled","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS , 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': oidc } )
         else:
             # Return an 'invalid login' error message.
-            return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" } )
+            return render(request, 'login.html', {'error': "Invalid username or password","defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': oidc } )
     else:
-        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, "version": settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "" })
+        return render(request, 'login.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, "version": settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': oidc })
 
 
 def logout(request):
@@ -302,7 +305,8 @@ def register(request):
     return render(request, "register.html", {
         'form': form,
         'version': settings.VERSION,
-        'base_prefix':  base_prefix
+        'base_prefix':  base_prefix,
+        'oidc': False
     })
 
 def fatalerror(request, e,code=404):
@@ -310,10 +314,14 @@ def fatalerror(request, e,code=404):
     if isinstance(e, Exception):
         response = render(request,'base.html', docserveerror(e))
     else:
-        response = render(request,'base.html', {'fatalerror': str(e),'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""})
+        response = render(request,'base.html', {'fatalerror': str(e),'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': settings.OIDC if hasattr(settings, 'OIDC') else False })
     response.status_code = code
     return response
 
+def getusername(request):
+    if hasattr(settings, 'OIDC') and settings.OIDC:
+        return request.user.email
+    return request.user.username
 
 @login_required
 def index(request, namespace=""):
@@ -327,9 +335,9 @@ def index(request, namespace=""):
 
     if not namespace:
         #check if user namespace is preset, if not, make it
-        if not request.user.username in namespaces['namespaces']:
+        if getusername(request) not in namespaces['namespaces']:
             try:
-                flat.comm.get(request, "createnamespace/" + request.user.username, False)
+                flat.comm.get(request, "createnamespace/" + getusername(request), False)
             except Exception as e:
                 return fatalerror(request,e)
 
@@ -345,7 +353,10 @@ def index(request, namespace=""):
             for group in request.user.groups.all():
                 for user in django.contrib.auth.models.User.objects.filter(groups__name=group.name):
                     try:
-                        flat.comm.get(request, "createnamespace/" + user.username, False)
+                        if hasattr(settings, 'OIDC') and settings.OIDC:
+                            flat.comm.get(request, "createnamespace/" + user.email, False)
+                        else:
+                            flat.comm.get(request, "createnamespace/" + user.username, False)
                     except Exception as e:
                         return fatalerror(request,e)
 
@@ -392,12 +403,13 @@ def index(request, namespace=""):
         parentdir = '/'.join(namespace.split('/')[:-1])
     else:
         parentdir = ""
-
-    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'recursivedirs': recursivedirs, 'subdirs': subdirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'allowcopy': request.user.has_perm('auth.allowcopy'), 'allowdelete': request.user.has_perm('auth.allowdelete'),'version': settings.VERSION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""})
+    oidc = settings.OIDC if hasattr(settings, 'OIDC') else False
+    return render(request, 'index.html', {'namespace': namespace,'parentdir': parentdir, 'dirs': dirs, 'recursivedirs': recursivedirs, 'subdirs': subdirs, 'docs': docs, 'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.email if oidc else request.user.username, 'configuration': settings.CONFIGURATIONS[request.session['configuration']], 'converters': get_converters(request), 'inputformatchangefunction': inputformatchangefunction(request), 'allowcopy': request.user.has_perm('auth.allowcopy'), 'allowdelete': request.user.has_perm('auth.allowdelete'),'version': settings.VERSION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': oidc})
 
 def pub(request):
+    oidc = settings.OIDC if hasattr(settings, 'OIDC') else False
     if hasattr(settings,'ALLOWPUBLICUPLOAD') and settings.ALLOWPUBLICUPLOAD:
-        return render(request, 'pub.html', {'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.username,"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""})
+        return render(request, 'pub.html', {'defaultmode': settings.DEFAULTMODE,'loggedin': request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated(), 'isadmin': request.user.is_staff, 'username': request.user.email if oidc else request.user.username,"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, 'version': settings.VERSION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': oidc })
     else:
         return fatalerror(request, "Public anonymous write permission denied",403)
 
