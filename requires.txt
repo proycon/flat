@@ -1,4 +1,5 @@
-pynlpl >= 1.1.2
-foliadocserve >= 0.5
+folia >= 2.4.0
+foliadocserve >= 0.7.4
 Django>=1.8.13
 requests
+mozilla_django_oidc
