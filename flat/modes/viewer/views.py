@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import flat.comm
 import flat.users
-from flat.views import initdoc, query
+from flat.views import initdoc, query, getusername
 import json
 import sys
 from urllib.error import URLError
@@ -19,7 +19,7 @@ def view(request, namespace, docid):
 
 @login_required
 def poll(request, namespace, docid):
-    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
+    if flat.users.models.hasreadpermission(getusername(request), namespace, request):
         try:
             r = flat.comm.get(request, '/poll/' + namespace + '/' + docid + '/', False)
         except URLError:

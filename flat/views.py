@@ -221,7 +221,7 @@ def query_helper(request,namespace, docid, configuration=None):
             needwritepermission = False
 
     if namespace != "pub":
-        if needwritepermission and not flat.users.models.haswritepermission(request.user.username, namespace, request):
+        if needwritepermission and not flat.users.models.haswritepermission(getusername(request), namespace, request):
             return HttpResponseForbidden("Permission denied, no write access")
 
     query = "\n".join(data['queries']) #throw all queries on a big pile to transmit
@@ -242,7 +242,7 @@ def query(request,namespace, docid):
     if request.method != 'POST':
         return HttpResponseForbidden("POST method required for " + namespace + "/" + docid + "/query")
 
-    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
+    if flat.users.models.hasreadpermission(getusername(request), namespace, request):
         return query_helper(request, namespace,docid, request.session['configuration'])
     else:
         return HttpResponseForbidden("Permission denied, no read access")
@@ -360,12 +360,12 @@ def index(request, namespace=""):
                     except Exception as e:
                         return fatalerror(request,e)
 
-    readpermission = flat.users.models.hasreadpermission(request.user.username, namespace, request)
+    readpermission = flat.users.models.hasreadpermission(getusername(request), namespace, request)
     dirs = []
     recursivedirs =  []
     subdirs =[]
     for ns in sorted(namespaces['namespaces']):
-        if flat.users.models.hasreadpermission(request.user.username, ns, request):
+        if flat.users.models.hasreadpermission(getusername(request), ns, request):
             recursivedirs.append(ns)
             if '/' not in ns:
                 dirs.append(ns)
@@ -444,7 +444,7 @@ def filemanagement(request):
                 return fatalerror(request, "No documents selected",404)
 
             if targetnamespace:
-                if not flat.users.models.haswritepermission(request.user.username, targetnamespace, request):
+                if not flat.users.models.haswritepermission(getusername(request), targetnamespace, request):
                     return fatalerror(request, "Write permission denied for " + targetnamespace,403)
 
             namespace = None
@@ -455,9 +455,9 @@ def filemanagement(request):
                 else:
                     data = {}
 
-                if not flat.users.models.hasreadpermission(request.user.username, namespace, request):
+                if not flat.users.models.hasreadpermission(getusername(request), namespace, request):
                     return fatalerror(request, "Read permission denied for " + docid,403)
-                if request.POST['filemanmode'] in ('delete','move') and not flat.users.models.haswritepermission(request.user.username, namespace, request):
+                if request.POST['filemanmode'] in ('delete','move') and not flat.users.models.haswritepermission(getusername(request), namespace, request):
                     return fatalerror(request, "Write permission denied for " + docid,403)
 
                 try:
@@ -559,7 +559,7 @@ def upload_helper(request, namespace, configuration=None, mode=None):
 def upload(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('..','.').replace(' ','').replace('&','')
-        if flat.users.models.haswritepermission(request.user.username, namespace, request) and 'file' in request.FILES:
+        if flat.users.models.haswritepermission(getusername(request), namespace, request) and 'file' in request.FILES:
             return upload_helper(request, namespace)
         else:
             return fatalerror(request, "Write permission denied",403)
@@ -597,7 +597,7 @@ def addnamespace(request):
     if request.method == 'POST':
         namespace = request.POST['namespace'].replace('/','').replace('..','.').replace(' ','').replace('&','')
         newdirectory = request.POST['newdirectory'].replace('/','').replace('..','.').replace(' ','').replace('&','')
-        if flat.users.models.haswritepermission(request.user.username, namespace, request):
+        if flat.users.models.haswritepermission(getusername(request), namespace, request):
             try:
                 response = flat.comm.get(request,"createnamespace/" + namespace + "/" + newdirectory)
             except Exception as e:

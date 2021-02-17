@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import flat.comm
 import flat.users
-from flat.views import initdoc, fatalerror
+from flat.views import initdoc, fatalerror, getusername
 import json
 
 
@@ -18,9 +18,9 @@ import json
 @login_required
 def view(request, namespace, docid):
     """The initial view, does not provide the document content yet"""
-    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
+    if flat.users.models.hasreadpermission(getusername(request), namespace, request):
         if 'autodeclare' in settings.CONFIGURATIONS[request.session['configuration']]:
-            if flat.users.models.haswritepermission(request.user.username, namespace, request):
+            if flat.users.models.haswritepermission(getusername(request), namespace, request):
                 for annotationtype, set in settings.CONFIGURATIONS[request.session['configuration']]['autodeclare']:
                     try:
                         r = flat.comm.query(request, "USE " + namespace + "/" + docid + " DECLARE " + annotationtype + " OF " + set)
@@ -46,7 +46,7 @@ def pub_view(request, docid, configuration):
 
 @login_required
 def history(request,namespace, docid):
-    if namespace == 'pub' or flat.users.models.hasreadpermission(request.user.username, namespace, request):
+    if namespace == 'pub' or flat.users.models.hasreadpermission(getusername(request), namespace, request):
         try:
             if hasattr(request, 'body'):
                 d = flat.comm.get(request, '/getdochistory/' +namespace + '/' + docid + '/',False)
@@ -60,7 +60,7 @@ def history(request,namespace, docid):
 
 @login_required
 def revert(request,namespace, docid, commithash):
-    if namespace == 'pub' or flat.users.models.haswritepermission(request.user.username, namespace, request):
+    if namespace == 'pub' or flat.users.models.haswritepermission(getusername(request), namespace, request):
         try:
             if hasattr(request, 'body'):
                 flat.comm.get(request, '/revert/' +namespace + '/' + docid + '/?commithash=' + commithash,False)
@@ -74,7 +74,7 @@ def revert(request,namespace, docid, commithash):
 
 @login_required
 def save(request,namespace, docid):
-    if namespace == 'pub' or flat.users.models.haswritepermission(request.user.username, namespace, request):
+    if namespace == 'pub' or flat.users.models.haswritepermission(getusername(request), namespace, request):
         if 'message' in request.GET:
             message = request.GET['message']
         else:

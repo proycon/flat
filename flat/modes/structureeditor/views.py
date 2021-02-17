@@ -5,13 +5,13 @@ from django.http import HttpResponse,HttpResponseForbidden
 from django.conf import settings
 import flat.comm
 import flat.users
-from flat.views import getcontext
+from flat.views import getcontext, getusername
 import json
 
 
 @login_required
 def view(request, namespace, docid):
-    if flat.users.models.hasreadpermission(request.user.username, namespace, request):
+    if flat.users.models.hasreadpermission(getusername(request), namespace, request):
         try:
             doc = flat.comm.query(request, "USE " + namespace + "/" + docid + " SELECT ALL FORMAT flat", setdefinitions=True,declarations=True) #get the entire document with meta information
         except URLError:

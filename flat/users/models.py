@@ -49,7 +49,10 @@ def hasreadpermission(username, namespace, request):
             if groupread:
                 try:
                     #is the namespace a user namespace?
-                    usernamespace = User.objects.get(username=namespace.split('/')[0])
+                    if '@' in namespace.split('/')[0]:
+                        usernamespace = User.objects.get(email=namespace.split('/')[0])
+                    else:
+                        usernamespace = User.objects.get(username=namespace.split('/')[0])
                     #user's namespace must share a group with us
                     if usernamespace.groups.filter(name__in=(g.name for g in request.user.groups.all())).exists():
                         return True
@@ -63,7 +66,7 @@ def hasreadpermission(username, namespace, request):
             nsparts = namespace.split('/')
             namespace = ""
             for i, nspart in enumerate(nsparts):
-                if i == 0 and nspart == username: 
+                if i == 0 and nspart == username:
                     return True
                 namespace = (namespace + '/' + nspart).strip('/')
                 try:
@@ -91,7 +94,10 @@ def haswritepermission(username, namespace, request):
             if groupwrite:
                 try:
                     #is the namespace a user namespace?
-                    usernamespace = User.objects.get(username=namespace.split('/')[0])
+                    if '@' in namespace.split('/')[0]:
+                        usernamespace = User.objects.get(email=namespace.split('/')[0])
+                    else:
+                        usernamespace = User.objects.get(username=namespace.split('/')[0])
                     #user's namespace must share a group with us
                     if usernamespace.groups.filter(name__in=(g.name for g in request.user.groups.all())).exists():
                         return True

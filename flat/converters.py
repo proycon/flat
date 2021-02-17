@@ -1,6 +1,7 @@
 import json
 import importlib
 from django.conf import settings
+from flat.views import getusername
 
 class Converter:
     def __init__(self, id, module, function, name, parameter_help="", parameter_default="", inputextensions=None): #pylint: disable=redefined-builtin
@@ -27,7 +28,7 @@ class Converter:
 
     def parse_parameters(self, request, parameterfield, method='POST'):
         parameters =  json.loads('{' + getattr(request,method)[parameterfield] + '}')
-        parameters['flatuser'] = request.user.username
+        parameters['flatuser'] = getusername(request)
         parameters['flatconfiguration'] =  settings.CONFIGURATIONS[request.session['configuration']]
         return parameters
 
