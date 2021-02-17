@@ -487,7 +487,7 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
     'flat.users'
 ]
-if OIDC: INSTALLED_APPS.insert(1, 'mozilla_django-oidc')
+if OIDC: INSTALLED_APPS.insert(1, 'mozilla_django_oidc')
 for mode,_ in MODES:
     INSTALLED_APPS.append('flat.modes.' + mode)
 INSTALLED_APPS = tuple(INSTALLED_APPS)
