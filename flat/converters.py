@@ -1,7 +1,11 @@
 import json
 import importlib
 from django.conf import settings
-from flat.views import getusername
+
+def getusername(request):
+    if hasattr(settings, 'OIDC') and settings.OIDC:
+        return request.user.email
+    return request.user.username
 
 class Converter:
     def __init__(self, id, module, function, name, parameter_help="", parameter_default="", inputextensions=None): #pylint: disable=redefined-builtin
