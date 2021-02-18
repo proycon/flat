@@ -294,6 +294,10 @@ SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
 
 DEBUG = True #Set to False for production environments!!!!
 
+#Enable the following if you are behind a HTTPS proxy (you should be if you run a public instance!)
+#Make sure your reverse proxy sets and forwards the X-Forwarded-Proto header, and strips it from incoming user request
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ##############################################################################
 # DJANGO SETTINGS FOR OPENID CONNECT AUTHENTICATION
 #############################################################################
