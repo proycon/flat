@@ -317,6 +317,9 @@ OIDC = False #Set this to True if you want want OpenID Connect Authentication,
 #OIDC_OP_TOKEN_ENDPOINT = "<URL of the OIDC OP token endpoint>"
 #OIDC_OP_USER_ENDPOINT = "<URL of the OIDC OP userinfo endpoint>"
 
+   #You may also need the following:
+#OIDC_RP_SIGN_ALGO = "RS256" #should be HS256 or RS256
+#OIDC_OP_JWKS_ENDPOINT = "<URL of the OIDC OP JWKS endpoint>"
 
 ##############################################################################
 # DJANGO SETTINGS THAT NEED NOT BE CHANGED (but you may if you want to, do scroll through at least)
