@@ -111,6 +111,17 @@ populated. Set ``PYTHONPATH`` to the directory that contains your
     $ django-admin migrate --run-syncdb
     $ django-admin createsuperuser
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OpenID Connect Authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Flat supports OpenID Connect as a means of authenticating with a single-sign on authentication provider.
+Set ``OIDC = True`` and configure the various ``OIDC_*`` variables in ``settings.py`` as indicated.
+
+Users that are authenticated in this way are still added to the internal user database, which is needed when you want to
+configure groups and rights. Matching OpenID Connect users with users in the database is always done on the basis of the
+user's e-mail address. FLAT will consistently use e-mail addresses to represent users if you enabled Open ID Connect.
+
 --------------------------------
 Starting the Document Server
 --------------------------------
