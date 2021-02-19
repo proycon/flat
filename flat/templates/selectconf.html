@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block main %}
+<img id="logo" src="{{base_prefix}}/style/logo.svg" alt="FoLiA Linguistic Annotation Tool" />
+<div id="logindialog" class="dialog">
+    <h3>Log in</h3>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    {% if loggedin %}
+        <p>You are logged in as {% if oidc %}{{ user.email }}{% else %}{{ username }}{% endif %}</p>
+
+        <p>Please select a configuration:</p>
+        <form action="{{base_prefix}}/selectconf/" method="post">
+            <select name="configuration">
+                {% for confname, conf in configurations.items %}
+                {% if confname == defaultconfiguration %}
+                <option value="{{ confname }}" selected="selected">{{ conf.name }}</option>
+                {% else %}
+                <option value="{{ confname }}">{{ conf.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select></br>
+            <div class="buttoncontainer">
+                <input class="button" type="submit" value="Select configuration" />
+            </div>
+            {% csrf_token %}
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
+

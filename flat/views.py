@@ -325,6 +325,17 @@ def getusername(request):
     return request.user.username
 
 @login_required
+def selectconf(request):
+    oidc = settings.OIDC if hasattr(settings, 'OIDC') else False
+    loggedin = request.user.is_authenticated if isinstance(request.user.is_authenticated, bool) else request.user.is_authenticated()
+    if 'configuration' in request.POST:
+        request.session['configuration'] = request.POST['configuration']
+        base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
+        return HttpResponseRedirect(base_prefix + "/index/")
+
+    return render(request, 'selectconf.html',{"defaultconfiguration":settings.DEFAULTCONFIGURATION, "configurations":settings.CONFIGURATIONS, "version": settings.VERSION, "allowregistration": hasattr(settings, 'ALLOWREGISTRATION') and settings.ALLOWREGISTRATION,'base_prefix': settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else "", 'oidc': oidc, 'username': 'anonymous' if not loggedin else request.user.email if oidc else request.user.username, 'loggedin': loggedin })
+
+@login_required
 def index(request, namespace=""):
     try:
         namespaces = flat.comm.get(request, '/namespaces/')
@@ -332,7 +343,8 @@ def index(request, namespace=""):
         return fatalerror(request,e)
 
     if not 'configuration' in request.session:
-        return logout(request)
+        base_prefix = settings.BASE_PREFIX if hasattr(settings,'BASE_PREFIX') else ""
+        return HttpResponseRedirect(base_prefix + "/selectconf/")
 
     if not namespace:
         #check if user namespace is preset, if not, make it

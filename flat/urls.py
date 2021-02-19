@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^config/?$', flat.views.config, name='config'),
     url(r'^index/(?P<namespace>[\w\d\-_\./@]+)/?$', flat.views.index, name='index'),
     url(r'^login/?$', flat.views.login, name='login'),
+    url(r'^selectconf/?$', flat.views.selectconf, name='selectconf'),
     url(r'^logout/?$', flat.views.logout, name='logout'),
     url(r'^account/', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls if VERSION[0] >= 2 else include(admin.site.urls)),
