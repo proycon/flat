@@ -7,7 +7,9 @@
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
-    {% if oidc %}
+    {% if loggedin %}
+    You are already logged in as {% if oidc %}{{ user.email }}{% else %}{{ username }}{% endif %}
+    {% elif oidc %}
         <a href="{% url 'oidc_authentication_init' %}">Login</a>
     {% else %}
         <form action="{{base_prefix}}/login/" method="post">
