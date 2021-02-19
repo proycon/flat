@@ -318,6 +318,7 @@ OIDC = False #Set this to True if you want want OpenID Connect Authentication,
 #OIDC_OP_USER_ENDPOINT = "<URL of the OIDC OP userinfo endpoint>"
 
    #You may also need the following for OpenID Connect:
+#OIDC_TOKEN_USE_BASIC_AUTH = True  #Use client_secret_basic, if not enabled, client_secret_post will be default
 #OIDC_RP_SIGN_ALGO = "RS256" #should be HS256 or RS256
 #OIDC_OP_JWKS_ENDPOINT = "<URL of the OIDC OP JWKS endpoint>" #to obtain the signing key automatically
 #OIDC_RP_IDP_SIGN_KEY = {    #OR provide the key manually:
