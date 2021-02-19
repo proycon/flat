@@ -307,7 +307,7 @@ OIDC = False #Set this to True if you want want OpenID Connect Authentication,
 
     #note: The redirect url you register with your authorization provider should end in /oidc/callback/
 
-#AUTHENTICATION_BACKENDS = ( 'mozilla_django_oidc.auth.OIDCAuthenticationBackend',)
+#AUTHENTICATION_BACKENDS = ( 'django.contrib.auth.backends.ModelBackend','mozilla_django_oidc.auth.OIDCAuthenticationBackend',)
 
 #OIDC_RP_CLIENT_ID = "" #As provided by your authorization provider, do not check this into public version control!!!
 #OIDC_RP_CLIENT_SECRET = ""#As provider by your authorization provider, Do not check this into public version control!!!
