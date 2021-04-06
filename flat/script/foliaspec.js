@@ -56,7 +56,8 @@ foliaspec = {
         "HYPHENATION",
         "HIDDENTOKEN",
         "MODALITY",
-        "EXTERNAL"
+        "EXTERNAL",
+        "HSPACE"
     ],
     "annotationtype_doc": {
         "alternative": {
@@ -158,6 +159,11 @@ foliaspec = {
             "description": "This annotation type allows for a hidden token layer in the document. Hidden tokens are ignored for most intents and purposes but may serve a purpose when annotations on implicit tokens is required, for example as targets for syntactic movement annotation.",
             "history": "Since v2.0",
             "name": "Hidden Token Annotation"
+        },
+        "hspace": {
+            "description": "Markup annotation introducing horizontal whitespace",
+            "history": "Since the v2.5.0",
+            "name": "Horizontal Whitespace"
         },
         "hyphenation": {
             "description": "This is a text-markup annotation form that indicates where in the original text a linebreak was inserted and a word was hyphenised.",
@@ -342,7 +348,7 @@ foliaspec = {
         "whitespace": {
             "description": "Structure annotation introducing vertical whitespace",
             "history": "Since the beginning",
-            "name": "Whitespace"
+            "name": "Vertical Whitespace"
         }
     },
     "attributes": [
@@ -359,7 +365,8 @@ foliaspec = {
         "TEXTCLASS",
         "METADATA",
         "IDREF",
-        "SPACE"
+        "SPACE",
+        "TAG"
     ],
     "attributes_doc": {
         "annotator": {
@@ -436,6 +443,10 @@ foliaspec = {
             "description": "Points to a file or full URL of a sound or video file. This attribute is inheritable.",
             "group": "speech",
             "name": "src"
+        },
+        "tag": {
+            "description": "Contains a space separated list of processing tags associated with the element. A processing tag carries arbitrary user-defined information that may aid in processing a document. It may carry cues on how a specific tool should treat a specific element. The tag vocabulary is specific to the tool that processes the document. Tags carry no instrinsic meaning for the data representation and should not be used except to inform/aid processors in their task. Processors are encouraged to clean up the tags they use. Ideally, published FoLiA documents at the end of a processing pipeline carry no further tags. For encoding actual data, use ``class`` and optionally features instead.",
+            "name": "tag"
         },
         "textclass": {
             "description": "Refers to the text class this annotation is based on. This is an advanced attribute, if not specified, it defaults to ``current``. See :ref:`textclass_attribute`.",
@@ -694,7 +705,8 @@ foliaspec = {
                     "ForeignData"
                 ],
                 "optional_attribs": [
-                    "ID"
+                    "ID",
+                    "TAG"
                 ],
                 "printable": false,
                 "setonly": true,
@@ -709,7 +721,9 @@ foliaspec = {
                     "properties": {
                         "annotationtype": "CORRECTION",
                         "occurrences": 1,
-                        "optional_attribs": null,
+                        "optional_attribs": [
+                            "TAG"
+                        ],
                         "primaryelement": false,
                         "xmltag": "current"
                     }
@@ -719,7 +733,9 @@ foliaspec = {
                     "properties": {
                         "annotationtype": "CORRECTION",
                         "occurrences": 1,
-                        "optional_attribs": null,
+                        "optional_attribs": [
+                            "TAG"
+                        ],
                         "primaryelement": false,
                         "xmltag": "new"
                     }
@@ -730,7 +746,9 @@ foliaspec = {
                         "annotationtype": "CORRECTION",
                         "auth": false,
                         "occurrences": 1,
-                        "optional_attribs": null,
+                        "optional_attribs": [
+                            "TAG"
+                        ],
                         "primaryelement": false,
                         "xmltag": "original"
                     }
@@ -743,7 +761,8 @@ foliaspec = {
                         "occurrences": 0,
                         "optional_attribs": [
                             "CONFIDENCE",
-                            "N"
+                            "N",
+                            "TAG"
                         ],
                         "primaryelement": false,
                         "xmltag": "suggestion"
@@ -767,7 +786,8 @@ foliaspec = {
                     "ANNOTATOR",
                     "CONFIDENCE",
                     "DATETIME",
-                    "N"
+                    "N",
+                    "TAG"
                 ],
                 "printable": true,
                 "speakable": true,
@@ -871,7 +891,8 @@ foliaspec = {
                             "LinkReference"
                         ],
                         "optional_attribs": [
-                            "ID"
+                            "ID",
+                            "TAG"
                         ],
                         "primaryelement": false
                     }
@@ -1071,7 +1092,8 @@ foliaspec = {
                     "ENDTIME",
                     "SPEAKER",
                     "TEXTCLASS",
-                    "METADATA"
+                    "METADATA",
+                    "TAG"
                 ],
                 "printable": true,
                 "speakable": true
@@ -1109,7 +1131,8 @@ foliaspec = {
                             "ENDTIME",
                             "SPEAKER",
                             "METADATA",
-                            "SPACE"
+                            "SPACE",
+                            "TAG"
                         ],
                         "xmltag": "caption"
                     }
@@ -1150,7 +1173,8 @@ foliaspec = {
                             "ENDTIME",
                             "SPEAKER",
                             "METADATA",
-                            "SPACE"
+                            "SPACE",
+                            "TAG"
                         ],
                         "textdelimiter": " | ",
                         "xmltag": "cell"
@@ -1358,7 +1382,8 @@ foliaspec = {
                             "SPEAKER",
                             "TEXTCLASS",
                             "METADATA",
-                            "SPACE"
+                            "SPACE",
+                            "TAG"
                         ],
                         "textdelimiter": " ",
                         "wrefable": true,
@@ -1458,7 +1483,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "textdelimiter": "\n",
                         "xmltag": "item"
@@ -1655,7 +1681,8 @@ foliaspec = {
                             "ENDTIME",
                             "SPEAKER",
                             "METADATA",
-                            "SPACE"
+                            "SPACE",
+                            "TAG"
                         ],
                         "textdelimiter": "\n\n\n",
                         "xmltag": "speech"
@@ -1693,7 +1720,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "xmltag": "tablehead"
                     }
@@ -1762,7 +1790,8 @@ foliaspec = {
                             "ENDTIME",
                             "SPEAKER",
                             "METADATA",
-                            "SPACE"
+                            "SPACE",
+                            "TAG"
                         ],
                         "textdelimiter": "\n\n\n",
                         "xmltag": "text"
@@ -1824,7 +1853,8 @@ foliaspec = {
                             "SPEAKER",
                             "TEXTCLASS",
                             "METADATA",
-                            "SPACE"
+                            "SPACE",
+                            "TAG"
                         ],
                         "textdelimiter": " ",
                         "wrefable": true,
@@ -1858,7 +1888,8 @@ foliaspec = {
                     "ENDTIME",
                     "SPEAKER",
                     "METADATA",
-                    "SPACE"
+                    "SPACE",
+                    "TAG"
                 ],
                 "printable": true,
                 "required_attribs": null,
@@ -1930,7 +1961,8 @@ foliaspec = {
                     "BEGINTIME",
                     "ENDTIME",
                     "SPEAKER",
-                    "METADATA"
+                    "METADATA",
+                    "TAG"
                 ],
                 "printable": true,
                 "required_attribs": null,
@@ -1976,6 +2008,10 @@ foliaspec = {
                 {
                     "class": "TextMarkupStyle",
                     "properties": {
+                        "accepted_data": [
+                            "FontFeature",
+                            "SizeFeature"
+                        ],
                         "annotationtype": "STYLE",
                         "primaryelement": true,
                         "xmltag": "t-style"
@@ -1997,12 +2033,38 @@ foliaspec = {
                         "primaryelement": false,
                         "xmltag": "t-ref"
                     }
+                },
+                {
+                    "class": "TextMarkupWhitespace",
+                    "properties": {
+                        "annotationtype": "WHITESPACE",
+                        "primaryelement": false,
+                        "textdelimiter": "",
+                        "xmltag": "t-whitespace"
+                    }
+                },
+                {
+                    "class": "TextMarkupHSpace",
+                    "properties": {
+                        "annotationtype": "HSPACE",
+                        "textdelimiter": "",
+                        "xmltag": "t-hspace"
+                    }
+                },
+                {
+                    "class": "TextMarkupLanguage",
+                    "properties": {
+                        "annotationtype": "LANG",
+                        "primaryelement": false,
+                        "xmltag": "t-lang"
+                    }
                 }
             ],
             "properties": {
                 "accepted_data": [
                     "AbstractTextMarkup",
-                    "Linebreak"
+                    "Linebreak",
+                    "Feature"
                 ],
                 "optional_attribs": [
                     "ID",
@@ -2015,7 +2077,8 @@ foliaspec = {
                     "BEGINTIME",
                     "ENDTIME",
                     "SPEAKER",
-                    "METADATA"
+                    "METADATA",
+                    "TAG"
                 ],
                 "primaryelement": false,
                 "printable": true,
@@ -2112,7 +2175,8 @@ foliaspec = {
                     "ENDTIME",
                     "SPEAKER",
                     "TEXTCLASS",
-                    "METADATA"
+                    "METADATA",
+                    "TAG"
                 ],
                 "required_attribs": [
                     "CLASS"
@@ -2144,7 +2208,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "printable": false,
                         "required_attribs": null,
@@ -2176,7 +2241,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "printable": false,
                         "required_attribs": null,
@@ -2204,7 +2270,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "primaryelement": false,
                         "printable": false,
@@ -2235,7 +2302,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "printable": false,
                         "required_attribs": null,
@@ -2269,7 +2337,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "printable": true,
                         "speakable": true,
@@ -2288,7 +2357,8 @@ foliaspec = {
                             "CONFIDENCE",
                             "DATETIME",
                             "N",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "printable": false,
                         "xmltag": "comment"
@@ -2306,7 +2376,8 @@ foliaspec = {
                             "CONFIDENCE",
                             "DATETIME",
                             "N",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "xmltag": "desc"
                     }
@@ -2325,7 +2396,8 @@ foliaspec = {
                             "N",
                             "METADATA",
                             "BEGINTIME",
-                            "ENDTIME"
+                            "ENDTIME",
+                            "TAG"
                         ],
                         "printable": true,
                         "required_attribs": [
@@ -2428,6 +2500,20 @@ foliaspec = {
                                 "subset": "value",
                                 "xmltag": null
                             }
+                        },
+                        {
+                            "class": "FontFeature",
+                            "properties": {
+                                "subset": "font",
+                                "xmltag": null
+                            }
+                        },
+                        {
+                            "class": "SizeFeature",
+                            "properties": {
+                                "subset": "size",
+                                "xmltag": null
+                            }
                         }
                     ],
                     "properties": {
@@ -2456,7 +2542,8 @@ foliaspec = {
                             "BEGINTIME",
                             "ENDTIME",
                             "SPEAKER",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "xmltag": "metric"
                     }
@@ -2487,7 +2574,8 @@ foliaspec = {
                             "SRC",
                             "BEGINTIME",
                             "ENDTIME",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "printable": true,
                         "xmltag": "str"
@@ -2520,7 +2608,8 @@ foliaspec = {
                             "SRC",
                             "BEGINTIME",
                             "ENDTIME",
-                            "METADATA"
+                            "METADATA",
+                            "TAG"
                         ],
                         "xmltag": "gap"
                     }
@@ -2539,7 +2628,8 @@ foliaspec = {
                     "properties": {
                         "accepted_data": [
                             "AbstractTextMarkup",
-                            "Linebreak"
+                            "Linebreak",
+                            "Feature"
                         ],
                         "annotationtype": "TEXT",
                         "label": "Text",
@@ -2553,7 +2643,9 @@ foliaspec = {
                 {
                     "class": "PhonContent",
                     "properties": {
-                        "accepted_data": null,
+                        "accepted_data": [
+                            "Feature"
+                        ],
                         "annotationtype": "PHON",
                         "label": "Phonetic Content",
                         "phoncontainer": true,
@@ -2580,7 +2672,8 @@ foliaspec = {
                     "ANNOTATOR",
                     "CONFIDENCE",
                     "DATETIME",
-                    "METADATA"
+                    "METADATA",
+                    "TAG"
                 ],
                 "required_attribs": null
             }
@@ -2589,7 +2682,8 @@ foliaspec = {
             "class": "WordReference",
             "properties": {
                 "optional_attribs": [
-                    "IDREF"
+                    "IDREF",
+                    "TAG"
                 ],
                 "xmltag": "wref"
             }
@@ -2598,7 +2692,8 @@ foliaspec = {
             "class": "LinkReference",
             "properties": {
                 "optional_attribs": [
-                    "IDREF"
+                    "IDREF",
+                    "TAG"
                 ],
                 "xmltag": "xref"
             }
@@ -2623,7 +2718,7 @@ foliaspec = {
         "Caption",
         "Head"
     ],
-    "version": "2.4.0",
+    "version": "2.5.0",
     "wrefables": [
         "Word",
         "Hiddenword",
