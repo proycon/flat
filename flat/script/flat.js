@@ -41,7 +41,7 @@ function function_exists(functionName) {
 function hash(s){
   //Generic hash function
   if (s) {
-    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);  //jshint ignore:line
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0);  //jshint ignore:line
   }
   return 0;
 }
@@ -726,7 +726,7 @@ function bySortedValue(obj, callback, context) {
 
     for (var key in obj) tuples.push([key, obj[key]]);
 
-    tuples.sort(function(a, b) { return a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0 }); //jshint ignore:line
+    tuples.sort(function(a, b) { return a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0; }); //jshint ignore:line
 
     var length = tuples.length;
     while (length--) callback.call(context, tuples[length][0], tuples[length][1]);
