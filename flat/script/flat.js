@@ -109,6 +109,9 @@ function loadtext(annotationresponse) {
             }
         }
     });
+    //there may be a performance inefficiency here because this will process all annotations again rather
+    //than only those in the response:
+    if (textclass != "current") rendertextclass();
     /*if (function_exists(mode + '_onloadtext')) {
         var f = eval(mode + '_onloadtext');
         f(annotationlist);
