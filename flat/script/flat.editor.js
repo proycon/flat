@@ -1503,6 +1503,7 @@ function gather_changes() {
             //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
             editdata[i].oldtext = editdata[i].text;
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
+            editdata[i].textclass = editdata[i].class;
             editdata[i].changed = true;
         }
         if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && (editdata[i].oldcorrectionclass) && ($('#editform' + i + 'correctionclass').val().trim() != editdata[i].oldcorrectionclass)) {
@@ -1521,6 +1522,7 @@ function gather_changes() {
             if (((editdata[i].type == "t") || (editdata[i].type == "ph"))  && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() == editdata[i].text))) {
                 editdata[i].oldtext = editdata[i].text; //will remain equal
                 editdata[i].text = $('#editfield' + i + 'text').val().trim();
+                editdata[i].textclass = editdata[i].class;
             }
         }
         if ((editdata[i].parentspan !== undefined) && (editdata[i].parentspan != $('#parentspan' + i).val())) {
@@ -1949,12 +1951,12 @@ function build_queries(addtoqueue) {
                     if (editdata[i].insertright) { //APPEND (insertion)
                         query += " " + editdata[i].insertright_type;
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //PREPEND (insertion)
                         query += " " + editdata[i].insertleft_type;
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else { //normal behaviour
                         query += " " +editdata[i].type;
@@ -1964,33 +1966,33 @@ function build_queries(addtoqueue) {
                             query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
-                            query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         } else if (editdata[i].class !== "") {
                             //no deletion
-                            query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH class \"" + escape_fql_value(editdata[i].class) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     }
                 } else { //substitute
                     if (editdata[i].insertright) { //insertright as substitute
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertright !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertright) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } else if (editdata[i].insertleft) { //insertleft as substitute
                         query += "SUBSTITUTE w";
                         if ((editdata[i].type == "t") && (editdata[i].insertleft !== "")) {
-                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\"  datetime now confidence " + editdata[i].confidence;
+                            query += " WITH text \"" + escape_fql_value(editdata[i].insertleft) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\" datetime now confidence " + editdata[i].confidence;
                         }
                     } if (editdata[i].dosplit) {
                         parts = editdata[i].text.split(" ");
                         for (var j = 0; j < parts.length; j++) { //SPLIT
                             if (j > 0) query += " ";
-                            query += "SUBSTITUTE w WITH text \"" + escape_fql_value(parts[j]) + "\"";
+                            query += "SUBSTITUTE w WITH text \"" + escape_fql_value(parts[j]) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\"";
                         }
                     } else if (editdata[i].targets.length > 1) { //MERGE
-                        query += "SUBSTITUTE w WITH text \"" + escape_fql_value(editdata[i].text) + "\"";
+                        query += "SUBSTITUTE w WITH text \"" + escape_fql_value(editdata[i].text) + "\" textclass \"" + escape_fql_value(editdata[i].textclass) + "\"";
                     }
                 }
                 if ((editdata[i].respan) && (action != "SUBSTITUTE")) { //isspan && editdata[i].id && (action == "EDIT")) {
