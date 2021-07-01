@@ -103,8 +103,8 @@ We will discuss the individual configuration options here:
 * ``initialviewannotation`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the local annotation viewer, i.e. the pop-up when the user hovers over elements. Set to ``True`` to enable all.
 * ``initialglobviewannotations`` - List of FoLiA annotation types (corresponding to the xml tags) that are initially enabled in the global annotation viewers (the annotation boxes above the words).
 * ``allowedviewannotation`` - List of FoLiA annotation types (xml tags) that are allowed to be viewed,  a superset of initialviewannotations/initialglobviewannotations. Users can enable/disable each as they see fit. Set to ``True`` to enable all.
-* ``initialeditannotations`` - List of FoLiA annotation types (xml tags) that are initially enabled in the editor dialog (when users click an element for editing), set to ``True`` to enable all.
-* ``allowededitannotations`` - List of FoLiA annotation types (xml tags) that are allowed in the editor dialog (the user can enable/disable each as he/she sees fit), set to ``True`` to enable all.
+* ``initialeditannotations`` - List of FoLiA annotation types (xml tags) that are initially enabled in the editor dialog (when users click an element for editing), set to ``True`` to enable all. You will want to limit this for most annotation tasks!
+* ``allowededitannotations`` - List of FoLiA annotation types (xml tags) that are allowed in the editor dialog (the user can enable/disable each as he/she sees fit), set to ``True`` to enable all. You will want to limit this for most annotation tasks!
 * ``allowaddfields`` - Boolean value, allow the user to add annotation types not yet present on a certain element?
 * ``allowdeclare`` -- Boolean value, allow the user to add annotation types not yet present in the document?
 * ``editformdirect`` -- Boolean, enable the direct editing form (this is the default and most basic form of editing, consult the user guide). It should be ``True`` unless you want to force other editing forms.
