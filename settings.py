@@ -203,8 +203,10 @@ CONFIGURATIONS = {
     #Enable editing as new, this allows for adding multiple or overlapping annotations of the same type
     'editformnew': True, #boolean
 
+    #Enable editing the structure element (i.e. its class)
+    'editstructure': True,
 
-    #This defines what edit modes the user can enable/disable from the menu
+    #This defines what edit modes the user can enable/disable from the menu himself/herself
     'alloweditformdirect': True, #boolean
     'alloweditformcorrection': True, #boolean
     'alloweditformalternative': True, #boolean
@@ -213,8 +215,9 @@ CONFIGURATIONS = {
     #Allow confidence values to be set/edited?
     'allowconfidence': True,
 
-    #Allow editing the structure element (i.e. its class)
+    #Allow enabling/disabling editing the structure element (i.e. its class)
     'alloweditstructure': True,
+
 
     # FoLiA set to use for corrections
     #'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',

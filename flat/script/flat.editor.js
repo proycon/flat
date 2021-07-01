@@ -72,6 +72,7 @@ function toggleeditstructure() {
     }
 }
 
+
 function select(element) {
     /* toggles selection of an element (coselector) */
     var found = false;
@@ -2671,7 +2672,7 @@ function editor_oninit() {
     if (editconfidence) {
         $('#toggleeditconfidence').addClass('on');
     }
-    editstructure = (configuration.alloweditstructure === true); //allow setting/editing structure?
+    editstructure = (configuration.editstructure === true); //allow setting/editing structure?
     if (editstructure) {
         $('#toggleeditstructure').addClass('on');
     }

@@ -111,10 +111,13 @@ We will discuss the individual configuration options here:
 * ``editformcorrection`` -- Boolean, enable editing as correction.
 * ``editformalternative`` -- Boolean, enable editing as alternative.
 * ``editformnew`` -- Boolean, enable editing as new annotation, this allows for adding multiple or overlapping annotations of the same type/set.
+* ``editstructure`` -- Boolean, allow the user to edit the class of structural elements.
+  most annotation tasks that operate on provided data.
 * ``alloweditformdirect`` -- Boolean, allow the user the enable/disable direct editing himself/herself.
 * ``alloweditformcorrection`` -- Boolean, allow the user the enable/disable correction editing himself/herself.
 * ``alloweditformalternative`` -- Boolean, allow the user the enable/disable alternative editing himself/herself.
 * ``alloweditformnew`` -- Boolean, allow the user the enable/disable new editing himself/herself.
+* ``alloweditstructure`` -- Boolean, allow the user to enable/disable the ability to add the class of structural elements
 * ``allowconfidence`` -- Boolean, allow confidence values to be set/added?
 * ``initialcorrectionset`` - String to the set definition used for corrections.
 * ``autodeclare`` -- Automatically declare the following annotation types when a document is loaded. This is a list of 2-tuples ``(tag,set)`` that specify what annotation types and with what sets to declare automatically for each document that is opened.  (recall that FoLiA demands all annotations to be declared and that sets can be customi-made by anyone)
