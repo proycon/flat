@@ -2726,7 +2726,9 @@ function editor_oninit() {
             url = base_prefix + "/" + namespace + "/"+ docid + "/query/";
         }
         queries = [];
-        queries.push('USE ' + namespace + "/" + docid + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());
+        var useclause = 'USE ' + namespace + "/" + docid;
+        var processorclause = "PROCESSOR name \"" + escape_fql_value(username) + "\" type manual IN $FLAT_PROCESSOR IN $FOLIADOCSERVE_PROCESSOR"; //the processor placeholders will be expanded and replaced server-side
+        queries.push(useclause + " " + processorclause + " DECLARE " + $('#newdeclarationannotationtype').val() + " OF " + $('#newdeclarationset').val());
         $.ajax({
             type: 'POST',
             url: url,
