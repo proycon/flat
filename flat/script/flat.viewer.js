@@ -451,7 +451,7 @@ function checkparentincorrection(annotation, correctionid) {
 
 
 function renderspanrole(spanroledata) {
-    return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + getspantext(spanroledata) + "</span>";
+    return "<br/><label class=\"spanrole\">" + folia_label(spanroledata.type) + ":</label> <span class=\"text\">" + text2html(getspantext(spanroledata)) + "</span>";
 }
 
 function renderstructure(structureelement, norecurse, noheader, extended) {
@@ -574,6 +574,10 @@ function renderstructure(structureelement, norecurse, noheader, extended) {
     return s;
 }
 
+function text2html(s) {
+    return s.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br/>").replace(/\&/g,"&amp;");
+}
+
 function renderannotation(annotation, norecurse, extended) {
     //renders the annotation in the details popup
     var s = "";
@@ -593,7 +597,7 @@ function renderannotation(annotation, norecurse, extended) {
     }
     if (annotation.span) {
         if (folia_accepts_class(foliatag2class[annotation.type],'WordReference')) {
-            s = s + "<br /><span class=\"text\">" + getspantext(annotation) + "</span>";
+            s = s + "<br /><span class=\"text\">" + text2html(getspantext(annotation)) + "</span>";
         }
         if ((annotation.children) && (annotation.children.length > 0)) {
             for (i = 0; i < annotation.children.length; i++) {
@@ -605,10 +609,10 @@ function renderannotation(annotation, norecurse, extended) {
     }
     if (annotation.type == "t") {
         if (annotation.class != "current") s = s + "<br />";
-        s = s + "<span class=\"text\">" + annotation.text + "</span>";
+        s = s + "<span class=\"text\">" + text2html(annotation.text) + "</span>";
     } else if (annotation.type == "ph") {
         if (annotation.class != "current") s = s + "<br />";
-        s = s + "<span class=\"text\">" + annotation.phon + "</span>";
+        s = s + "<span class=\"text\">" + text2html(annotation.phon) + "</span>";
     }
     if (annotatordetails) {
         if (annotation.processor) {
@@ -760,9 +764,9 @@ function renderlinkreference(annotation) {
             s = s + " <span class=\"class\">" + annotation.class + "</span>";
         }
         if (text) {
-            s = s + " <span class=\"text\">" + text + "</span>";
+            s = s + " <span class=\"text\">" + text2html(text) + "</span>";
         } else if (annotation.t) {
-            s = s + " <span class=\"text\">" + annotation.t + "</span>";
+            s = s + " <span class=\"text\">" + text2html(annotation.t) + "</span>";
         }
         s = s + "</div>";
     } else {
