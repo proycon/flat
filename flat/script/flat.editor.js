@@ -1047,7 +1047,7 @@ function rendereditfield_content(annotation, editfields) {
     } else {
         s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/>";
     }
-    s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value + "\"/>";
+    s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value.replace(/\n/g," ") + "\"/>";
     return s;
 }
 
@@ -1502,7 +1502,7 @@ function gather_changes() {
         if (((editdata[i].type == "t") || (editdata[i].type == "ph")) && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
             //Text content was changed
             //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
-            editdata[i].oldtext = editdata[i].text;
+            editdata[i].oldtext = editdata[i].text.replace(/\n/g," ").trim();
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
             editdata[i].textclass = editdata[i].class;
             editdata[i].changed = true;
