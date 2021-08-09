@@ -757,6 +757,7 @@ function submitfilemanager(filemanmode) {
     //Submit a file management operation (sets a mode and submits the HTML form)
     $('#filemanmode').val(filemanmode);
     $('#filemanform').submit();
+    $('#filemanmode').val("");
 }
 
 function auto_grow(element) {
