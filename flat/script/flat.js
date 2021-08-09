@@ -755,6 +755,11 @@ function clickparent() {
 
 function submitfilemanager(filemanmode) {
     //Submit a file management operation (sets a mode and submits the HTML form)
+    if (filemanmode == "delete") {
+        if (!confirm("Are you sure you want to delete the selected documents?")) {
+            return;
+        }
+    }
     $('#filemanmode').val(filemanmode);
     $('#filemanform').submit();
     $('#filemanmode').val("");
