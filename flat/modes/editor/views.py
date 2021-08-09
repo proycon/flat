@@ -2,10 +2,7 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,HttpResponseForbidden
 import sys
-if sys.version < '3':
-    from urllib2 import URLError
-else:
-    from urllib.error import URLError
+from urllib.error import URLError
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import flat.comm

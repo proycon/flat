@@ -93,19 +93,10 @@ def get( request, url, parsejson=True):
             return ""
 
 def filemanagement(request, filemanmode, namespace, doc, **data):
-    if sys.version < '3':
-        #encode for python 2
-        for key, value in data.items():
-            if isinstance(value,unicode): #pylint: disable=undefined-variable
-                data[key] = value.encode('utf-8')
-
     docservereq = Request("http://" + settings.FOLIADOCSERVE_HOST + ":" + str(settings.FOLIADOCSERVE_PORT) + "/" + filemanmode + "/" + namespace + "/" + doc)
     setsid(docservereq, getsid(request))
     f = urlopen(docservereq,urlencode(data).encode('utf-8')) #or opener.open()
-    if sys.version < '3':
-        contents = unicode(f.read(),'utf-8') #pylint: disable=undefined-variable
-    else:
-        contents = str(f.read(),'utf-8')
+    contents = str(f.read(),'utf-8')
     f.close()
     if contents and contents[0] in ('{','['):
         return json.loads(contents)
@@ -121,10 +112,7 @@ def postjson( request, url, data):
     setsid(docservereq, getsid(request))
     docservereq.add_header('Content-Type', 'application/json')
     f = urlopen(docservereq, urlencode(data).encode('utf-8'))
-    if sys.version < '3':
-        contents = unicode(f.read(),'utf-8')
-    else:
-        contents = str(f.read(),'utf-8')
+    contents = str(f.read(),'utf-8')
     f.close()
     if contents and contents[0] == '{':
         #assume this is json

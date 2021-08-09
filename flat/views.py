@@ -22,10 +22,7 @@ import flat.users
 from flat.converters import get_converters, inputformatchangefunction
 from flat.modes.metadata.models import MetadataIndex
 import lxml.html
-if sys.version < '3':
-    from urllib2 import URLError, HTTPError #pylint: disable=import-error
-else:
-    from urllib.error import URLError, HTTPError
+from urllib.error import URLError, HTTPError
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -106,13 +103,6 @@ def docserveerror(e, d=None):
         d['fatalerror'] =  "<strong>Fatal Error:</strong> Could not connect to document server!"
         d['fatalerror_text'] =  "Could not connect to document server!"
     elif isinstance(e, str) :
-        if sys.version < '3':
-            d['fatalerror'] =   e.decode('utf-8') #pylint: disable=undefined-variable
-            d['fatalerror_text'] = e.decode('utf-8') #pylint: disable=undefined-variable
-        else:
-            d['fatalerror'] =  e
-            d['fatalerror_text'] = e
-    elif sys.version < '3' and isinstance(e, unicode): #pylint: disable=undefined-variable
         d['fatalerror'] =  e
         d['fatalerror_text'] = e
     elif isinstance(e, Exception):
@@ -185,16 +175,10 @@ def query_helper(request,namespace, docid, configuration=None):
         'customslicesize': request.POST.get('customslicesize',settings.CONFIGURATIONS[configuration].get('customslicesize','50')), #for pagination of search results
     }
     #stupid compatibility stuff
-    if sys.version < '3':
-        if hasattr(request, 'body'):
-            data = json.loads(unicode(request.body,'utf-8')) #pylint: disable=undefined-variable
-        else: #older django
-            data = json.loads(unicode(request.raw_post_data,'utf-8')) #pylint: disable=undefined-variable
-    else:
-        if hasattr(request, 'body'):
-            data = json.loads(str(request.body,'utf-8'))
-        else: #older django
-            data = json.loads(str(request.raw_post_data,'utf-8'))
+    if hasattr(request, 'body'):
+        data = json.loads(str(request.body,'utf-8'))
+    else: #older django
+        data = json.loads(str(request.raw_post_data,'utf-8'))
 
     if not data['queries']:
         return HttpResponseForbidden("No queries to run")
@@ -228,11 +212,7 @@ def query_helper(request,namespace, docid, configuration=None):
     try:
         d = flat.comm.query(request, query,**flatargs)
     except Exception as e:
-        if sys.version < '3':
-            errmsg = docserveerror(e)['fatalerror_text']
-            return HttpResponseForbidden("FoLiA Document Server error: ".encode('utf-8') + errmsg.encode('utf-8'))
-        else:
-            return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
+        return HttpResponseForbidden("FoLiA Document Server error: " + docserveerror(e)['fatalerror_text'])
     return HttpResponse(json.dumps(d).encode('utf-8'), content_type='application/json')
 
 
@@ -539,10 +519,7 @@ def upload_helper(request, namespace, configuration=None, mode=None):
     else:
         f_folia = request.FILES['file']
 
-    #if sys.version < '3':
-    #    data = unicode(request.FILES['file'].read(),'utf-8') #pylint: disable=undefined-variable
-    #else:
-    #    data = str(request.FILES['file'].read(),'utf-8')
+    #data = str(request.FILES['file'].read(),'utf-8')
     failed = False
     try:
         response = flat.comm.postxml(request,"upload/" + namespace , f_folia)
