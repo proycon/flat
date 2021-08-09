@@ -745,6 +745,7 @@ function hideadddirectoryform() {
 }
 
 function index_click() {
+    $('#filemanmode').val("");
     $('#wait span.msg').html("Loading document on the server...<br/>(this may take a while for large documents)");
     $('#wait').show();
 }
@@ -762,7 +763,6 @@ function submitfilemanager(filemanmode) {
     }
     $('#filemanmode').val(filemanmode);
     $('#filemanform').submit();
-    $('#filemanmode').val("");
 }
 
 function auto_grow(element) {
