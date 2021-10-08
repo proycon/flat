@@ -219,6 +219,9 @@ CONFIGURATIONS = {
     'alloweditstructure': True,
 
 
+    #Always assign colors for tags by frequency?
+    'colorbyfreq': False,
+
     # FoLiA set to use for corrections
     #'initialcorrectionset': 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',
 

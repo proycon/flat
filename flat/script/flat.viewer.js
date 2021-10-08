@@ -912,10 +912,25 @@ function computeclassfreq() {
     var classfreq = {};
     forallannotations(function(structureelement,annotation){
             if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
-                if (classfreq[annotation.class]) {
-                    classfreq[annotation.class]--; //reverse for sorting later
+                if ((!configuration.colorbyfreq) && (setdefinitions[annotation.set]) && (setdefinitions[annotation.set].classes)) {
+                    //not a real class frequency, simply assign the rank number
+                    var i = -1;
+                    for (i = 0; i < setdefinitions[annotation.set].classes.length; i++) {
+                        if (setdefinitions[annotation.set].classes[i].id == annotation.class) {
+                            break;
+                        }
+                    }
+                    if (i != -1) {
+                        classfreq[annotation.class] = i;
+                    } else {
+                        classfreq[annotation.class] = 99999;
+                    }
                 } else {
-                    classfreq[annotation.class] = -1; //reverse for sorting later
+                    if (classfreq[annotation.class]) {
+                        classfreq[annotation.class]--; //reverse for sorting later
+                    } else {
+                        classfreq[annotation.class] = -1; //reverse for sorting later
+                    }
                 }
             }
     });
