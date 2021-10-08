@@ -12,7 +12,7 @@ var displayorder = ['t','ph','lemma','pos','sense','entity','sentiment','observa
 var hoverstr = null; //ID of string element we're currently hovering over
 var renderedelement = null; //currently rendered element in the DOM
 var suggestinsertion = {}; //holds suggestions for insertion: id => annotation  , for use in the editor
-var NROFCLASSES = 7; //number of coloured classes
+var NROFCLASSES = 14; //number of coloured classes
 var searchsubmitted = false;
 
 

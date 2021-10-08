@@ -114,6 +114,27 @@ div.class6 span.lbl, div#class6legend {
 div.class7 span.lbl, div#class7legend {
     background: #e1c398; /*orange*/
 }
+div.class8 span.lbl, div#class8legend {
+    background: #6faa61; /*green*/
+}
+div.class9 span.lbl, div#class9legend {
+    background: #79a3cb; /*blue */
+}
+div.class10 span.lbl, div#class10legend {
+    background: #bc5858; /*red*/
+}
+div.class11 span.lbl, div#class11legend {
+    background: #b2b158; /*yellow */
+}
+div.class12 span.lbl, div#class12legend {
+    background: #49b2ac; /*cyan*/
+}
+div.class13 span.lbl, div#class13legend {
+    background: #b977b3; /*pink*/
+}
+div.class14 span.lbl, div#class14legend {
+    background: #b9a161; /*orange*/
+}
 div.classother span.lbl, div#classotherlegend {
     background: #ccc; /*gray*/
 }
