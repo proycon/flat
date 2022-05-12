@@ -10,6 +10,7 @@ from django import VERSION as DJANGOVERSION
 from socket import gethostname
 import os.path
 from os import environ
+import json
 import flat
 
 
@@ -28,13 +29,13 @@ hostname = gethostname()
 #Configure your database here, by default a simple sqlite database will be used
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'db',                      # Or path to database file if using sqlite3.
+        'ENGINE': environ.get("FLAT_DATABASE_ENGINE", 'django.db.backends.sqlite3'), # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': environ.get("FLAT_DATABASE", '/data/flat.db'),                # Or path to database file if using sqlite3. (change this!)
         # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'USER': environ.get("FLAT_DATABASE_USER",""),
+        'PASSWORD': environ.get("FLAT_DATABASE_PASSWORD",""),
+        'HOST': environ.get("FLAT_DATABASE_HOST",""),            # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': environ.get("FLAT_DATABASE_PORT",""),            # Set to empty string for default.
     }
 }
 
@@ -45,14 +46,14 @@ DATABASES = {
 
 #This is the path to the document root directory, this is the same directory as specified when running foliadocserve.
 #If the document server is running on a different system, the remote root disk will have to be mounted and the mountpoint specified here.
-WORKDIR = "/path/to/document/root/"
+WORKDIR = environ.get("FLAT_DOCROOT","/data/flat.docroot/")
 
 #The path and port on which the FoLiA Document Server can be reached (these defaults suffice for a local connection)
 FOLIADOCSERVE_HOST = '127.0.0.1'
 FOLIADOCSERVE_PORT = 8080
 
 # Make sure to start the document server when starting FLAT!
-#   $ foliadocserve -d /path/to/document/root -p 8080
+#   $ foliadocserve -d /data/flat.docroot -p 8080
 
 
 ##############################################################################
@@ -289,51 +290,57 @@ CONFIGURATIONS = {
 #############################################################################
 
 ADMINS = ( #Change to your contact details
-    ('Maarten van Gompel', 'proycon@anaproy.nl'),
+    (environ.get("FLAT_ADMIN_NAME",'FLAT Administrator'), environ.get("FLAT_EMAIL","")),
 )
 
 # Make this unique, and don't share it with anybody.
 # IMPORTANT!!!! GENERATE A NEW SECRET KEY !!!! The default one here is *NOT*
 # secret as it's publicly disclosed in the FLAT sources!
 # (Use for instance http://www.miniwebtool.com/django-secret-key-generator/)
-SECRET_KEY = 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk'
+SECRET_KEY = environ.get("FLAT_SECRET_KEY", 'ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk')
 
-DEBUG = True #Set to False for production environments!!!!
+DEBUG = int(environ.get("FLAT_DEBUG",0)) #Keep set to False (0) for production environments!!!!
 
 #Enable the following if you are behind a HTTPS proxy (you should be if you run a public instance!)
 #Make sure your reverse proxy sets and forwards the X-Forwarded-Proto header, and strips it from incoming user request
-#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if bool(int(environ.get("FLAT_REVERSE_PROXY_HTTPS",0))):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ##############################################################################
 # DJANGO SETTINGS FOR OPENID CONNECT AUTHENTICATION
 #############################################################################
 
-OIDC = False #Set this to True if you want want OpenID Connect Authentication,
-             #and uncomment and fill all lines below
+OIDC = bool(int(environ.get("FLAT_OIDC", 0))) #Set this to True if you want want OpenID Connect Authentication,
+                                              #and uncomment and fill all lines below
 
     #note: The redirect url you register with your authorization provider should end in /oidc/callback/
 
-#AUTHENTICATION_BACKENDS = ( 'django.contrib.auth.backends.ModelBackend','mozilla_django_oidc.auth.OIDCAuthenticationBackend',)
+if OIDC:
+    AUTHENTICATION_BACKENDS = ( 'django.contrib.auth.backends.ModelBackend','mozilla_django_oidc.auth.OIDCAuthenticationBackend',)
 
-#OIDC_RP_CLIENT_ID = "" #As provided by your authorization provider, do not check this into public version control!!!
-#OIDC_RP_CLIENT_SECRET = ""#As provider by your authorization provider, Do not check this into public version control!!!
+    OIDC_RP_CLIENT_ID = environ.get("FLAT_CLIENT_ID","") #As provided by your authorization provider, do not check this into public version control!!!
+    OIDC_RP_CLIENT_SECRET = environ.get("FLAT_CLIENT_SECRET","") #As provider by your authorization provider, Do not check this into public version control!!!
 
 
-#OIDC_OP_AUTHORIZATION_ENDPOINT = "<URL of the OIDC OP authorization endpoint>"
-#OIDC_OP_TOKEN_ENDPOINT = "<URL of the OIDC OP token endpoint>"
-#OIDC_OP_USER_ENDPOINT = "<URL of the OIDC OP userinfo endpoint>"
+    OIDC_OP_AUTHORIZATION_ENDPOINT = environ.get("FLAT_AUTH_ENDPOINT","") # URL of the OIDC OP authorization endpoint
+    OIDC_OP_TOKEN_ENDPOINT = environ.get("FLAT_TOKEN_ENDPOINT","") #URL of the OIDC OP token endpoint
+    OIDC_OP_USER_ENDPOINT = environ.get("FLAT_USER_ENDPOINT","") #URL of the OIDC OP userinfo endpoint
 
-   #You may also need the following for OpenID Connect:
-#OIDC_TOKEN_USE_BASIC_AUTH = True  #Use client_secret_basic, if not enabled, client_secret_post will be default
-#OIDC_RP_SIGN_ALGO = "RS256" #should be HS256 or RS256
-#OIDC_OP_JWKS_ENDPOINT = "<URL of the OIDC OP JWKS endpoint>" #to obtain the signing key automatically
-#OIDC_RP_IDP_SIGN_KEY = {    #OR provide the key manually:
-#      "kty": "RSA",
-#      "use": "sig",
-#      "alg": "RS256",
-#      "n": "<to be filled!>",
-#      "e": "AQAB"
-#}
+    #You may also need the following for OpenID Connect:
+    OIDC_TOKEN_USE_BASIC_AUTH = bool(int(environ.get("FLAT_TOKEN_USE_BASIC_AUTH", 1)))  #Use client_secret_basic, if not enabled, client_secret_post will be default
+    OIDC_RP_SIGN_ALGO = environ.get("FLAT_SIGN_ALGO", "RS256") #should be HS256 or RS256
+    OIDC_OP_JWKS_ENDPOINT = environ.get("FLAT_JWKS_ENDPOINT","") #URL of the OIDC OP JWKS endpoint, to obtain the signing key automatically
+    #or provide the signing key manually:
+    OIDC_RP_IDP_SIGN_KEY = json.loads(environ.get("FLAT_IDP_SIGN_KEY",""))
+
+    #example key: {
+    #      "kty": "RSA",
+    #      "use": "sig",
+    #      "alg": "RS256",
+    #      "n": "", #to be filled!
+    #      "e": "AQAB"
+    #}
+
 
 ##############################################################################
 # DJANGO SETTINGS THAT NEED NOT BE CHANGED (but you may if you want to, do scroll through at least)
@@ -499,7 +506,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
@@ -559,7 +566,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 
 #Remove this when done configuring:
-raise Exception("settings.py hasn't been configured yet!!")
+raise Exception("settings.py hasn't been configured yet!!") #remove me
 
 
 # Now you can start FLAT as follows:

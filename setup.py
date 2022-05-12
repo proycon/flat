@@ -30,7 +30,7 @@ setup(
     packages=['flat','flat.modes','flat.modes.structureeditor','flat.modes.viewer','flat.modes.editor','flat.modes.metadata','flat.users','flat.users.migrations'],
     long_description=read('README.rst'),
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Topic :: Text Processing :: Linguistic",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
