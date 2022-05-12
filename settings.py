@@ -98,7 +98,7 @@ DEFAULTCONFIGURATION = 'full'
 ALLOWREGISTRATION = True
 
 # Allow public anonymous uploads without any authentication?
-ALLOWPUBLICUPLOAD = False
+ALLOWPUBLICUPLOAD = True
 
 #These are the configurations, add new ones by copying the 'full' configuration and adapting it to your needs.
 CONFIGURATIONS = {
