@@ -7,12 +7,33 @@ FLAT Installation Guide
 Installation
 =================
 
-Setting up a web application is often a fairly complex endeavour. We provide
-instructions in this sections.
+Setting up a web application is often a fairly complex endeavour. To facilitate this process we provide an OCI/Docker
+container image which you can use. For thi we assume some basic familiarity with docker on your part::
 
-FLAT runs on Python 3 (the document server requires Python 3, the rest can
-also work on Python 2). We recommend installation in a Python *virtualenv* with
-Python 3, create one as follows::
+    $ docker pull proycon/flat
+
+You can subsequently start a container as follows::
+
+    $ docker run -p 8080:80 -v /path/to/data:/data proycon/flat
+
+The ``/path/to/data`` is the data on the host system you want to mount into the container. This is where all FoLiA
+documents will be stored. Make sure you have write permission here; the FLAT container will use UID and GID 100, you may
+need to `remap subordinate user/group IDs <https://docs.docker.com/engine/security/userns-remap/>` .
+
+After the container is started you can navigate to ``https://localhost:8080`` and login with user ``flat`` and password
+``flat`` if you haven't made any modifications to the default configuration.
+
+Usage of our container images is the recommended way to install in production environments. The container accepts a wide
+variety of environment variables to configure FLAT. See the `Dockerfile
+<https://github.com/proycon/flat/blob/master/Dockerfile>` for the precise details.
+
+
+---------------------
+Manual Installatiion
+---------------------
+
+FLAT runs on Python 3 (the document server requires Python 3, the rest can also work on Python 2). If you don't use the
+container image, we recommend installation in a Python *virtualenv* with Python 3, create one as follows::
 
     $ virtualenv --python=python3 env
 
@@ -56,13 +77,12 @@ you are on another system.
 Upgrade
 ------------
 
-To upgrade your existing instalation of flat to the latest version, run the
+If you use the container images as recommended, just pull in the latest image version from Docker Hub.
+
+To upgrade your existing manual installation of flat to the latest version, run the
 following from within your virtual environment::
 
     $ pip install -U FoLiA-Linguistic-Annotation-Tool
-
-In production environments, you may also need to update your webserver configuration to point
-to the right version, if explicit version numbers are used.
 
 New versions of FLAT may introduce new configuration options for your
 ``settings.py`` (introduced in next section). Please inspect the differences
@@ -102,7 +122,10 @@ to this database. Multiple backends are supported  (MySQL, PostgreSQL and
 others). Make sure you create the desired database and user, with proper rights
 to access and modify the database, in your database management system.
 
-Before you start FLAT for the first time, this database needs to be
+If you use the container image (as recommended), you can set environment variables to configure the database
+(see https://github.com/proycon/flat/blob/master/Dockerfile).
+
+In manual installations, before you start FLAT for the first time, the database needs to be
 populated. Set ``PYTHONPATH`` to the directory that contains your
 ``settings.py``, and ``DJANGO_SETTINGS_MODULE`` to the name of the file without the extension::
 
@@ -116,7 +139,8 @@ OpenID Connect Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Flat supports OpenID Connect as a means of authenticating with a single-sign on authentication provider.
-Set ``OIDC = True`` and configure the various ``OIDC_*`` variables in ``settings.py`` as indicated.
+Set ``OIDC = True`` and configure the various ``OIDC_*`` variables in ``settings.py`` as indicated, or pass the proper environment
+variables when starting the container (see https://github.com/proycon/flat/blob/master/Dockerfile)
 
 Users that are authenticated in this way are still added to the internal user database, which is needed when you want to
 configure groups and rights. Matching OpenID Connect users with users in the database is always done on the basis of the
@@ -127,10 +151,11 @@ Starting the Document Server
 --------------------------------
 
 FLAT constantly talks to a document server running in the background.
+
 We need to start the FoLiA document server prior to starting FLAT, it is a
-required component that needs not necessarily be on the same host. Your copy of
-``settings.py`` should point to the host and port where FLAT can reach the
-document server, start it as follows::
+required component that needs not necessarily be on the same host. The container image we provide contains both FLAT and
+the document server. Your copy of ``settings.py`` should point to the host and port where FLAT can reach the
+document server, in manual installations you can start it as follows::
 
     $ foliadocserve -d /path/to/document/root -p 8080 --git
 
@@ -140,7 +165,7 @@ sufficient write permission there. The document server needs no further
 configuration. Note that it does not provide any authentication features so it
 should run somewhere where the outside world **can NOT reach** it, only FLAT needs
 to be able to connect to it. Often, FLAT and the document server run on the
-same host, so a localhost connection is sufficient.
+same host (like in our container setup), so a localhost connection is sufficient.
 
 The ``--git`` option enables git versioning support, allowing users to undo annotations
 and go back to previous revisions, it requires ``git`` to be installed on the
@@ -153,9 +178,9 @@ system and your git identity to be configured::
 Starting FLAT (development server)
 -------------------------------------
 
-After all this is done, the *development server* can be started now using your ``settings.py`` by setting
-``PYTHONPATH`` to the directory that contains it, and
-``DJANGO_SETTINGS_MODULE`` to the name of the file without the extension::
+If you followed the manual installation route, you can start a development server using your ``settings.py`` by setting
+``PYTHONPATH`` to the directory that contains it, and ``DJANGO_SETTINGS_MODULE`` to the name of the file without the
+extension::
 
     $ export PYTHONPATH=/your/settings/path/
     $ export DJANGO_SETTINGS_MODULE=settings
@@ -175,54 +200,52 @@ browser to ``http://127.0.0.1:8000/editor/testflat/testflat`` to execute all tes
 Deployment in Production
 =============================
 
-The development server is not intended for production use. In production
-environments, you will want to hook up FLAT to a webserver such as Apache2 or
-nginx. First ensure that you completed all previous steps and
-you manage to run the development server properly, as this mode is by
-definition more suited for debugging any problems that may occur. After all that works, you can consider
-deployment in a production setting.
-
-For Apache2, you can use either ``mod_wsgi`` or ``mod_uwsgi_proxy``. For both,
-you need a ``wsgi`` script, so the first step is to copy the provided
-``template.wsgi`` (or grab it from
-https://github.com/proycon/flat/blob/master/template.wsgi) and edit it for your
-situation, this script will be referenced from your web server's configuration.
-It is commented to guide you in the setup.
-
-----------------------------
-Apache 2.4 with mod_wsgi
-----------------------------
+For production environments we strongly recommend usage of our container image, or more specifically, you should build a customised container image
+with your ``settings.py`` configuration that is derived from our image. For your own ``settings.py``, you can create the following simple ``Dockerfile`` alongside it::
 
 
-1) Install and enable the ``mod_wsgi`` module for Apache (corresponding also to the Python version
-you intend to use). On Debian/Ubuntu systems, install the package
-``libapache2-mod-wsgi`` (python 2) or ``libapache2-mod-wsgi-py3`` (python 3).
-2) Configure Apache2 for FLAT. We assume you use a dedicated subdomain for FLAT, so a configuration with a dedicated ``VirtualHost``
-directive. Create a file ``flat`` in ``/etc/apache2/sites-available/`` (or similar) to this end. The configuration within should look as follows, but make sure all paths and Python and FLAT version numbers correspond exactly to your setup:
+    FROM proycon:flat
+    COPY settings.py /tmp/flat_settings.py
+    RUN cp -f /tmp/flat_settings.py /usr/lib/python3.*/site-packages/
 
-.. code::
+Build your image with ``docker build .``. This builds a docker image based on the image we provide, and merely overrides it with your configuration.
 
-    <VirtualHost *:80>
-        ServerName flat.yourdomain.org
+A significant part of the deployment-specific configuration (database settings, authentication etc) can be configured by
+setting environment variables when starting the container. Please study the available environment variables defined in
+https://github.com/proycon/flat/blob/master/Dockerfile . Ensure you at least set a custom
+``FLAT_SECRET_KEY``, ``FLAT_PASSWORD`` and set ``FLAT_REVERSE_PROXY_HTTPS`` to ``1`` if you're behind a reverse proxy
+that handled HTTPS (you always should be).
 
-        WSGIScriptAlias / /path/to/your_copy_of_template.wsgi
-        Alias /static/ /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/
-        Alias /style/ /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/
-        <Directory /path/to/virtualenv/lib/python3.4/site-packages/FoLiA_Linguistic_Annotation_Tool-0.4.2-py3.4.egg/flat/style/>
-          Options All
-          AllowOverride All
-          Require all granted
-        </Directory>
-        <Directory /path/to/virtualenv/lib/python3.4/site-packages/django/contrib/admin/static/>
-          Options All
-          AllowOverride All
-          Require all granted
-        </Directory>
-    </VirtualHost>
+As said, SSL should be handled by your own reverse proxy, it's not handled by the container. Your reverse proxy should
+simply handle SSL and forward all traffic to the container. The following is a reverse proxy configuration
+example for nginx, assuming the container is mapped to localhost on port 8080 and you have certificates ready::
 
-If you did not use a virtualenv but installed everything globally then ``/path/to/virtualenv/`` is usually ``/usr/`` or ``/usr/local/``.
-The FLAT directory may also reside in ``dist-packages/flat/`` on some installations.
+    server {
+        listen 443;
+        server_name flat.yourdomain.org;
 
-Enable the configuration using ``sudo a2ensite flat`` and restart Apache after this.
+        ssl on;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4";
+        ssl_prefer_server_ciphers on;
+        ssl_certificate /etc/letsencrypt/live/flat.yourdomain.org/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/flat.yourdomain.org/privkey.pem;
 
+        client_max_body_size 750m;
+
+        location / {
+            proxy_set_header  Host             $host;
+            proxy_set_header  X-Real-IP        $remote_addr;
+            proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
+            proxy_set_header  X-Forwarded-Proto "https";
+            proxy_set_header  X-Forwarded-Host $host;
+            proxy_pass http://127.0.0.1:8080/;
+        }
+    }
+
+
+If you don't want to use our container image or don't want to use a reverse proxy, then you'll have to dive a bit deeper
+to get things working. In such cases we recommend using ``uwsgi`` for serving FLAT. Apache2 users can it with
+``mod_uwsgi_proxy``. Even if you don't use our container image, it provides a good reference for how you can set up
+things.
 
