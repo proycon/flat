@@ -20,7 +20,7 @@ def read(fname):
 
 setup(
     name = "FoLiA-Linguistic-Annotation-Tool",
-    version = "0.10.2", #Also change in flat/__init__.py !!
+    version = "0.10.3", #Also change in flat/__init__.py !!
     author = "Maarten van Gompel",
     author_email = "proycon@anaproy.nl",
     description = ("FLAT is a web-based linguistic annotation environment based around the FoLiA format (https://proycon.github.io/folia), a rich XML-based format for linguistic annotation. Flat allows users to view annotated FoLiA documents and enrich these documents with new annotations, a wide variety of linguistic annotation types is supported through the FoLiA paradigm."),
@@ -42,5 +42,5 @@ setup(
     ],
     zip_safe=False,
     package_data = {'flat':['templates/*.html','style/*','script/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'], 'flat.modes.metadata':['templates/*.html']  },
-    install_requires=['folia >= 2.5.5','Django >= 3.0','requests', 'foliadocserve >= 0.7.6', 'mozilla-django-oidc']
+    install_requires=['folia >= 2.5.7','Django >= 3.0','requests', 'foliadocserve >= 0.7.7', 'mozilla-django-oidc']
 )
