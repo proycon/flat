@@ -165,7 +165,7 @@ starting the container:
   provider)
 * ``$FLAT_SIGN_ALGO`` - Sign algorithm your OpenID Connect provider uses, defaults to RS256 (can be set to HS256)
 * ``$FLAT_JWKS_ENDPOINT`` - URL of the OIDC OP JWKS endpoint, to obtain the signing key automatically
-* ``$FLAT_RD_IDP_SIGN_KEY`` - The full signing key manually (alternative to the above), the content of this variable is interpreted as JSON. Example::
+* ``$FLAT_IDP_SIGN_KEY`` - The full signing key manually (alternative to the above), the content of this variable is interpreted as JSON. Example::
 
     key: {
           "kty": "rsa",
