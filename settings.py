@@ -10,8 +10,11 @@ from django import VERSION as DJANGOVERSION
 from socket import gethostname
 import os.path
 from os import environ
+from glob import glob
 import json
+import yaml
 import flat
+
 
 
 VERSION = flat.VERSION
@@ -23,8 +26,11 @@ hostname = gethostname()
 
 
 ##############################################################################
-#               DATABASE CONFIGURATION (edit me!)
+#               DATABASE CONFIGURATION
 ##############################################################################
+
+# Either edit this section or use environment variables to configure it at run-time.
+# The latter is recommended in container setups.
 
 #Configure your database here, by default a simple sqlite database will be used
 DATABASES = {
@@ -41,25 +47,32 @@ DATABASES = {
 
 
 ##############################################################################
-#               FOLIA DOCUMENT SERVER CONFIGURATION (edit me!)
+#               FOLIA DOCUMENT SERVER CONFIGURATION
 ##############################################################################
+
+# Either edit this section or use environment variables to configure it at run-time.
+# The latter is recommended in container setups.
 
 #This is the path to the document root directory, this is the same directory as specified when running foliadocserve.
 #If the document server is running on a different system, the remote root disk will have to be mounted and the mountpoint specified here.
 WORKDIR = environ.get("FLAT_DOCROOT","/data/flat.docroot/")
 
 #The path and port on which the FoLiA Document Server can be reached (these defaults suffice for a local connection)
-FOLIADOCSERVE_HOST = '127.0.0.1'
-FOLIADOCSERVE_PORT = 8080
+FOLIADOCSERVE_HOST = environ.get("FOLIADOCSERVE_HOST", '127.0.0.1')
+FOLIADOCSERVE_PORT = int(environ.get("FOLIADOCSERVE_PORT", '8080'))
 
 # Make sure to start the document server when starting FLAT!
 #   $ foliadocserve -d /data/flat.docroot -p 8080
 
 
 ##############################################################################
-#               FLAT CONFIGURATION (edit me!)
+#               FLAT CONFIGURATION
 ##############################################################################
 
+# Either edit this section or use environment variables to configure it at run-time.
+# The latter is recommended in container setups.
+# In addition, you can pass a FLAT_CONFIG_DIR variable
+# with YAML configuration files (*.yml) for each configuration.
 
 # FLAT consists of several modes, the user can select a mode from the menu.
 # Each enables the user to do completely different things.
@@ -71,6 +84,8 @@ MODES = [
     ('structureeditor','Structure Editor'),
     ('metadata','Metadata Editor'),
 ]
+#Alternatively pass a FLAT_MODES environment variable with comma-delimited values like: viewer,editor,metadata
+if environ.get('FLAT_MODES'): MODES.filter(lambda x: x[0] in environ['FLAT_MODES'].split(","))
 
 # The viewer and editor allow for different perspectives on the data.
 #  - document: view of the entire document
@@ -78,11 +93,14 @@ MODES = [
 #  be automatically constructed)
 #  - any other FoLiA XML tag corresponsing to a structural element: paged data
 #  over this type of element
-PERSPECTIVES = [ 'document', 'toc', 'p', 's' ]
+if environ.get('FLAT_PERSPECTIVES'):
+    PERSPECTIVES = [ x.strip() for x in environ['FLAT_PERSPECTIVES'].split(",") ]
+else:
+    PERSPECTIVES = [ 'document', 'toc', 'p', 's' ]
 
 
 # Which mode should be used by default when the user opens a document?
-DEFAULTMODE = 'editor'
+DEFAULTMODE = environ.get('FLAT_DEFAULTMODE','editor')
 
 # You may have several configurations for FLAT, a configuration determines what
 # features will be enabled and what defaults will be set. Enabling all features
@@ -92,15 +110,17 @@ DEFAULTMODE = 'editor'
 
 # Users choose a configuration when logging in, the following configuration
 # will be selected by default:
-DEFAULTCONFIGURATION = 'full'
+DEFAULTCONFIGURATION = environ.get('FLAT_DEFAULTCONFIGURATION', 'full')
 
-# Allow users to register their own accounts?
-ALLOWREGISTRATION = True
+# Allow users to register their own accounts? (1=True, 0=False)
+ALLOWREGISTRATION = bool(int(environ.get('FLAT_ALLOWREGISTRATION',True)))
 
 # Allow public anonymous uploads without any authentication?
-ALLOWPUBLICUPLOAD = True
+ALLOWPUBLICUPLOAD = bool(int(environ.get('FLAT_ALLOWPUBLICUPLOAD',True)))
 
 #These are the configurations, add new ones by copying the 'full' configuration and adapting it to your needs.
+#INSTEAD of specifying them here, you can load configurations from YAML files (*.yml) in a a configuration directory
+#you pass using the FLAT_CONFIG_DIR variable. The filename determines the configuration name (e.g. full.yml -> full).
 CONFIGURATIONS = {
 'full':{
     # This is the 'full' configuration, it will enable all available functionality and is not fine-tuned for any specific task
@@ -283,7 +303,14 @@ CONFIGURATIONS = {
 },
 }
 
-
+if environ.get("FLAT_CONFIG_DIR"):
+    # You can also define configurations externally in .yml files (YAML syntax),
+    # the following code will load them INSTEAD OF the above configuration
+    CONFIGURATIONS = {}
+    for configfile in glob(os.path.join(environ['FLAT_CONFIG_DIR'],"/*.yml")):
+        configname = os.path.basename(configfile).split('.')[0]
+        with open(configfile,'r', encoding='utf-8') as f:
+            CONFIGURATIONS[configname] = yaml.safe_load(f.read())
 
 ##############################################################################
 # DJANGO SETTINGS THAT NEED TO BE CHANGED (so edit me!)
@@ -310,10 +337,10 @@ if bool(int(environ.get("FLAT_REVERSE_PROXY_HTTPS",0))):
 # DJANGO SETTINGS FOR OPENID CONNECT AUTHENTICATION
 #############################################################################
 
-OIDC = bool(int(environ.get("FLAT_OIDC", 0))) #Set this to True if you want want OpenID Connect Authentication,
+OIDC = bool(int(environ.get("FLAT_OIDC", 0))) #Set this to 1 if you want want OpenID Connect Authentication,
                                               #and uncomment and fill all lines below
 
-    #note: The redirect url you register with your authorization provider should end in /oidc/callback/
+#note: The redirect url you register with your authorization provider should end in /oidc/callback/
 
 if OIDC:
     AUTHENTICATION_BACKENDS = ( 'django.contrib.auth.backends.ModelBackend','mozilla_django_oidc.auth.OIDCAuthenticationBackend',)
@@ -358,7 +385,7 @@ ALLOWED_HOSTS = []
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Europe/Amsterdam'
+TIME_ZONE = environ.get("FLAT_TIMEZONE", 'Europe/Amsterdam')
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -395,7 +422,7 @@ STATIC_ROOT = BASE_DIR + '/flat/static/'
 
 #If you don't run at the document root of your webserver/virtual host, set BASE_PREFIX to your URL prefix (no trailing slash), e.g BASE_PREFIX = "/flat"
 #leave empty in all other scenarios
-BASE_PREFIX = ""
+BASE_PREFIX = environ.get("FLAT_BASE_PREFIX", "")
 if BASE_PREFIX: FORCE_SCRIPT_NAME = BASE_PREFIX
 
 
@@ -548,7 +575,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 raise Exception("settings.py hasn't been configured yet!!") #remove me
 
 
-# Now you can start FLAT as follows:
+# Now you can start FLAT as follows (container users can ignore all of the below):
 
 # $ export PYTHONPATH=/your/settings/path/
 # $ export DJANGO_SETTINGS_MODULE=settings

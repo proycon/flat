@@ -102,11 +102,15 @@ FoLiA Document Server (``foliadocserve``) after each upgrade.
 FLAT Configuration
 ---------------------------
 
-Download the ``settings.py`` from
+You can configure FLAT either by editing ``settings.py``, or by passing environment variables and some YAML files at run
+time.
+
+If you use ``settings.py`` directly, download a copy from
 https://raw.githubusercontent.com/proycon/flat/master/settings.py to some
 custom location, edit it and add a configuration for your system. The file is
 heavily commented to guide you along with the configuration. It is here where
-you specify what your users will see and what function are enabled..
+you specify what your users will see and what function are enabled.
+
 
 Further documentation on configuration FLAT, after completing the installation
 and configuration described in the remainder of this section, can be found in
@@ -117,13 +121,22 @@ the `FLAT Administration Guide
 Database Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FLAT uses a database to store user accounts. In your ``settings.py`` you refer
+FLAT uses a database only to store user accounts. In your ``settings.py`` you refer
 to this database. Multiple backends are supported  (MySQL, PostgreSQL and
 others). Make sure you create the desired database and user, with proper rights
 to access and modify the database, in your database management system.
 
 If you use the container image (as recommended), you can set environment variables to configure the database
-(see https://github.com/proycon/flat/blob/master/Dockerfile).
+(see https://github.com/proycon/flat/blob/master/Dockerfile). In most cases you won't need to edit anything and the
+default sqlite database the containers offers should be sufficient as FLAT only makes light usage of the database.
+
+* ``$FLAT_DATABASE_ENGINE``: can be set to ``django.db.backends.sqlite3``, ``django.db.backends.mysql``,
+  ``django.db.backends.postgresql_psycopg2`` and others.
+* ``$FLAT_DATABASE``: name of the database, filename in case of sqlite3
+* ``$FLAT_DATABASE_USER``
+* ``$FLAT_DATABASE_PASSWORD``
+* ``$FLAT_DATABASE_HOST``
+* ``$FLAT_DATABASE_PORT``
 
 In manual installations, before you start FLAT for the first time, the database needs to be
 populated. Set ``PYTHONPATH`` to the directory that contains your
@@ -138,9 +151,29 @@ populated. Set ``PYTHONPATH`` to the directory that contains your
 OpenID Connect Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Flat supports OpenID Connect as a means of authenticating with a single-sign on authentication provider.
-Set ``OIDC = True`` and configure the various ``OIDC_*`` variables in ``settings.py`` as indicated, or pass the proper environment
-variables when starting the container (see https://github.com/proycon/flat/blob/master/Dockerfile)
+Flat supports OpenID Connect as a means of authenticating with a single-sign on authentication provider. Set ``OIDC =
+True`` in ``settings.py`` or set environment variable ``FLAT_OIDC=1`` and configure all the other variables needed for
+OpenID Connect Authentication, either by editing ``settings.py`` or by passing the proper environment variables when
+starting the container:
+
+* ``$FLAT_CLIENT_ID`` - Client ID as registered with the OpenID Connect Provider
+* ``$FLAT_CLIENT_SECRET`` - Client secret as registered with the OpenID Connect Provider
+* ``$FLAT_AUTH_ENDPOINT`` - URL of the authorization endpoint at the OpenID Connect Provider
+* ``$FLAT_TOKEN_ENDPOINT`` - URL of the token endpoint at the OpenID Connect Provider
+* ``$FLAT_USER_ENDPOINT`` - URL of the userinfo endpoint at the OpenID Connect Provider
+* ``$FLAT_TOKEN_USE_BASIC_AUTH`` - Set to 1 to use client_secret_basic rather than client_secret_post  (depends on your
+  provider)
+* ``$FLAT_SIGN_ALGO`` - Sign algorithm your OpenID Connect provider uses, defaults to RS256 (can be set to HS256)
+* ``$FLAT_JWKS_ENDPOINT`` - URL of the OIDC OP JWKS endpoint, to obtain the signing key automatically
+* ``$FLAT_RD_IDP_SIGN_KEY`` - The full signing key manually (alternative to the above), the content of this variable is interpreted as JSON. Example::
+
+    key: {
+          "kty": "rsa",
+          "use": "sig",
+          "alg": "rs256",
+          "n": "SOME VALUE!",
+          "e": "aqab"
+    }
 
 Users that are authenticated in this way are still added to the internal user database, which is needed when you want to
 configure groups and rights. Matching OpenID Connect users with users in the database is always done on the basis of the
@@ -153,9 +186,12 @@ Starting the Document Server
 FLAT constantly talks to a document server running in the background.
 
 We need to start the FoLiA document server prior to starting FLAT, it is a
-required component that needs not necessarily be on the same host. The container image we provide contains both FLAT and
-the document server. Your copy of ``settings.py`` should point to the host and port where FLAT can reach the
-document server, in manual installations you can start it as follows::
+required component that needs not necessarily be on the same host. The container image we provide already contains both FLAT and
+the document server, so you don't need to do anything for it and can skip this section entirely.
+
+Your copy of ``settings.py`` should point to the host and port where FLAT can reach the
+document server, this can also be done using environment variables ``FOLIADOCSERVE_HOST``, ``FOLIADOCSERVE_PORT`` and
+``FLAT_DOCROOT``. In manual installations you can then start it as follows::
 
     $ foliadocserve -d /path/to/document/root -p 8080 --git
 
@@ -165,9 +201,10 @@ sufficient write permission there. The document server needs no further
 configuration. Note that it does not provide any authentication features so it
 should run somewhere where the outside world **can NOT reach** it, only FLAT needs
 to be able to connect to it. Often, FLAT and the document server run on the
-same host (like in our container setup), so a localhost connection is sufficient.
+same host (like in our container setup), so a localhost connection is sufficient. You can set the document root using
+environment variable ``FLAT_DOCROOT``.
 
-The ``--git`` option enables git versioning support, allowing users to undo annotations
+The ``--git`` option to ``foliadocserve`` enables git versioning support, allowing users to undo annotations
 and go back to previous revisions, it requires ``git`` to be installed on the
 system and your git identity to be configured::
 
@@ -175,7 +212,7 @@ system and your git identity to be configured::
     $ git config --global user.name "Your Name"
 
 -------------------------------------
-Starting FLAT (development server)
+Starting FLAT as development server
 -------------------------------------
 
 If you followed the manual installation route, you can start a development server using your ``settings.py`` by setting
@@ -187,7 +224,7 @@ extension::
     $ django-admin runserver
 
 FLAT will advertise the host and port it is running on (as configured in your
-``settings.py``), and you can access it in your browser.
+``settings.py`` or ``$FOLIADOCSERVE_HOST`` and ``$FOLIADOCSERVE_PORT``), and you can access it in your browser.
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 Tests
@@ -200,8 +237,12 @@ browser to ``http://127.0.0.1:8000/editor/testflat/testflat`` to execute all tes
 Deployment in Production
 =============================
 
-For production environments we strongly recommend usage of our container image, or more specifically, you should build a customised container image
-with your ``settings.py`` configuration that is derived from our image. For your own ``settings.py``, you can create the following simple ``Dockerfile`` alongside it::
+For production environments we strongly recommend usage of our container image and using environment variables (and YAML
+files) for the configuration.
+
+If you prefer editing ``settings.py`` rather than passing environment variables, you can build a
+customised container image with your ``settings.py`` configuration that is derived from our image. For your own
+``settings.py``, you can create the following simple ``Dockerfile`` alongside it::
 
 
     FROM proycon:flat
@@ -213,7 +254,7 @@ Build your image with ``docker build .``. This builds a docker image based on th
 A significant part of the deployment-specific configuration (database settings, authentication etc) can be configured by
 setting environment variables when starting the container. Please study the available environment variables defined in
 https://github.com/proycon/flat/blob/master/Dockerfile . Ensure you at least set a custom
-``FLAT_SECRET_KEY``, ``FLAT_PASSWORD`` and set ``FLAT_REVERSE_PROXY_HTTPS`` to ``1`` if you're behind a reverse proxy
+``$FLAT_SECRET_KEY``, ``$FLAT_PASSWORD`` and set ``$FLAT_REVERSE_PROXY_HTTPS`` to ``1`` if you're behind a reverse proxy
 that handled HTTPS (you always should be).
 
 As said, SSL should be handled by your own reverse proxy, it's not handled by the container. Your reverse proxy should

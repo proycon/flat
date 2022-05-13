@@ -26,6 +26,9 @@ ENV FLAT_DATABASE_PASSWORD=""
 ENV FLAT_DATABASE_HOST=""
 ENV FLAT_DATABASE_PORT=""
 
+ENV FOLIADOCSERVE_HOST="127.0.0.1"
+ENV FOLIADOCSERVE_PORT=8080
+
 #Directory where all documents are stored
 ENV FLAT_DOCROOT="/data/flat.docroot"
 
@@ -35,8 +38,8 @@ ENV FLAT_SECRET_KEY="ki5^nfv01@1g7(+*#l_0fmi9h&cf^_lv6bs4j9^6mpr&(%o4zk"
 ENV FLAT_GIT_NAME=$FLAT_ADMIN_NAME
 ENV FLAT_GIT_MAIL=$FLAT_EMAIL
 
-# For OpenID Connect Authentication, set OIDC=1 and configure all of these:
-ENV OIDC=0
+# For OpenID Connect Authentication, set FLAT_OIDC=1 and configure all of these:
+ENV FLAT_OIDC=0
 ENV FLAT_CLIENT_ID=""
 # URL of the OIDC OP authorization endpoint
 ENV FLAT_AUTH_ENDPOINT=""

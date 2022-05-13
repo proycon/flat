@@ -5,8 +5,8 @@ FLAT Administration Guide
 After FLAT has been properly installed, administration entails the following
 parts:
 
-1. Setting up configuration(s) for your annotation task(s) in ``settings.py``
-2. Managing user accounts and permissions using the administrative webinterface (``http://your.flat.url/admin/``)
+1. Setting up configuration(s) for your annotation task(s) either in ``settings.py`` or in separate YAML files.
+2. Managing user accounts and permissions using the administrative webinterface (``http://flat.yourdomain.org/admin/``)
 3. Preparing your data in FoLiA
 
 Note that this documentation does not cover installation and the initial setup!
@@ -17,14 +17,16 @@ Configuration
 
 Configuration of FLAT is done in the typical unix fashion by editing a
 configuration file, there is no web interface for this. For FLAT
-``settings.py`` (or however you renamed) fulfills this role. Making it a
+``settings.py`` (or however you renamed it) fulfills this role. Making it a
 centralized place for all settings. The file is heavily commented to guide you
 along. The template can be obtained from
 https://raw.githubusercontent.com/proycon/flat/master/settings.py .
 
 Although ``settings.py`` is a Python script, no Python knowledge is necessary.
-It may help some to know that, the pythonic configuration syntax is also very
-similar to JSON.
+
+Many of the variables in ``settings.py`` can also be set at run-time through environment variables. This approach is
+often preferred if you run FLAT as a container as it allows for deploments in different infrastructures. The actual
+configurations can also reside in external YAML files, more about that later.
 
 -----------
 Modes
@@ -37,7 +39,7 @@ The following are available:
 
 * ``viewer`` - A document and annotation viewer (no editing)
 * ``editor`` - The annotation editor
-* ``structureeditor`` - A structural editor (not finished yet)
+* ``structureeditor`` - A structural editor (experimental and incomplete)
 * ``metadata`` - A simple metadata editor
 
 These are defined in the ``MODES`` variable. Individual configurations (see
@@ -55,6 +57,8 @@ below) can in turn pick a subset of the modes, if not all of them:
 The pairs correspond to the internal name for the mode, and a human readable
 label.
 
+You can set also set modes by passing an environment variable like ``FLAT_MODES=viewer,editor,metadata``.
+
 -----------------
 Configurations
 -----------------
@@ -67,7 +71,7 @@ for multiple annotation projects. The document store is shared amongst all
 configurations, allowing for different ways to view/edit the same document,
 unless explicitly constrained.
 
-Each configuration defines precisely what elements of user interface are shown and
+Each configuration defines precisely what elements of the user interface are shown and
 which are not, what functionality is enabled, and what defaults are set. FLAT contains a lot of
 features, which will easily overwhelm the user if all are enabled. You will
 want to constrain this for your annotation task.
@@ -75,12 +79,14 @@ want to constrain this for your annotation task.
 The ``DEFAULTCONFIGURATION`` variable refers to the configuration that is pre-selected
 upon login, and will therefore be the default unless the user selects another.
 
-All configurations are defined in ``CONFIGURATIONS`` (a simple Python
-dictionary for those familiar with Python, the keys correspond to the
-configuration name and the value is another dictionary with configuration
-options). By default, a ``full`` configuration will be defined that is as
+All configurations are either defined in ``CONFIGURATIONS`` in ``settings.py``, **OR** they are
+defined in external YAML files. In the latter case, you pass the environment variable ``$FLAT_CONFIG_DIR`` when starting
+FLAT and all ``*.yml`` files in that directory will be parsed as configurations.
+
+By default, ``settings.py`` defines a ``full`` configuration will that is as
 permissive as possible. You will want to add your own configurations that are
-more restrictive.
+more restrictive. If you use the external yaml files, the filename determines the configuration name (e.g. ``full.yml``
+defines a configuration named ``full``).
 
 We will discuss the individual configuration options here:
 
