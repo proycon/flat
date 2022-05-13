@@ -246,6 +246,7 @@ setting environment variables when starting the container. Here are some of the 
 need to change:
 
 * ``$FLAT_DOMAIN`` - The domain FLAT is served from (without scheme), e.g. ``flat.yourdomain.org``
+* ``$FLAT_BASE_PREFIX`` - If don't serve under the root of the domain, set the prefix here (with leading slash ut without trailing slash)
 * ``$FLAT_SECRET_KEY`` - You need to set this to some random string
 * ``$FLAT_USER`` - The default administrative user (default: flat)
 * ``$FLAT_PASSWORD`` - The password for the administrative user (default: flat)
