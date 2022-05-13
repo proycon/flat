@@ -32,8 +32,8 @@ variety of environment variables to configure FLAT. See the `Dockerfile
 Manual Installatiion
 ---------------------
 
-FLAT runs on Python 3 (the document server requires Python 3, the rest can also work on Python 2). If you don't use the
-container image, we recommend installation in a Python *virtualenv* with Python 3, create one as follows::
+FLAT runs on Python 3. If you don't use the container image, we recommend installation in a Python *virtualenv* with
+Python 3, create one as follows::
 
     $ virtualenv --python=python3 env
 
@@ -102,8 +102,8 @@ FoLiA Document Server (``foliadocserve``) after each upgrade.
 FLAT Configuration
 ---------------------------
 
-You can configure FLAT either by editing ``settings.py``, or by passing environment variables and some YAML files at run
-time.
+You can configure FLAT either by editing ``settings.py``, or by passing environment variables and some external YAML
+files at run time.
 
 If you use ``settings.py`` directly, download a copy from
 https://raw.githubusercontent.com/proycon/flat/master/settings.py to some
@@ -237,10 +237,32 @@ browser to ``http://127.0.0.1:8000/editor/testflat/testflat`` to execute all tes
 Deployment in Production
 =============================
 
-For production environments we strongly recommend usage of our container image and using environment variables (and YAML
-files) for the configuration.
+For production environments we strongly recommend use of our container image as-is and using environment variables (and YAML
+files) for the configuration. This allows for nice integration in infrastructure using container orchestration
+platforms like kubernetes, or simpler solutions like docker compose.
 
-If you prefer editing ``settings.py`` rather than passing environment variables, you can build a
+A significant part of the deployment-specific configuration (database settings, authentication etc) can be configured by
+setting environment variables when starting the container. Here are some of the key environment variables you absolutely
+need to change:
+
+* ``$FLAT_DOMAIN`` - The domain FLAT is served from (without scheme), e.g. ``flat.yourdomain.org``
+* ``$FLAT_SECRET_KEY`` - You need to set this to some random string
+* ``$FLAT_USER`` - The default administrative user (default: flat)
+* ``$FLAT_PASSWORD`` - The password for the administrative user (default: flat)
+* ``$FLAT_REVERSE_PROXY_HTTPS`` - You should set this to 1 after making sure you are behind a reverse proxy that handles
+  SSL.
+* ``$FLAT_CONFIG_DIR`` - Set this to a directory on the ``/data/`` mount that holds the external configuration files in YAML format. Example: ``/data/flat.d/``. You may omit this if you instead decided to edit ``settings.py`` directly.
+* ``$FLAT_ADMIN_NAME`` - The full name of the FLAT administrator
+* ``$FLAT_EMAIL`` - The email address for the administrator
+* ``$FLAT_OIDC`` -  Set this to 1 if you want OpenID Connect Authentication (see the relevant section in this
+  documentation for the rest of this configuration).
+* ``$FLAT_DEFAULTCONFIGURATION`` -  Set to the name of your default configuration (the filename part without the ``.yml`` extension).
+* ``$FLAT_DOCROOT`` - Defaults to ``/data/flat.docroot`` if unset, this is the directory that holds the documents and
+  should always reside on the ``/data/`` mount.
+
+The remaining configurations for actual annotation tasks can be specified in the external YAML files.
+
+If you prefer editing ``settings.py`` rather than passing environment variables, you could build a
 customised container image with your ``settings.py`` configuration that is derived from our image. For your own
 ``settings.py``, you can create the following simple ``Dockerfile`` alongside it::
 
@@ -249,15 +271,10 @@ customised container image with your ``settings.py`` configuration that is deriv
     COPY settings.py /tmp/flat_settings.py
     RUN cp -f /tmp/flat_settings.py /usr/lib/python3.*/site-packages/
 
-Build your image with ``docker build .``. This builds a docker image based on the image we provide, and merely overrides it with your configuration.
 
-A significant part of the deployment-specific configuration (database settings, authentication etc) can be configured by
-setting environment variables when starting the container. Please study the available environment variables defined in
-https://github.com/proycon/flat/blob/master/Dockerfile . Ensure you at least set a custom
-``$FLAT_SECRET_KEY``, ``$FLAT_PASSWORD`` and set ``$FLAT_REVERSE_PROXY_HTTPS`` to ``1`` if you're behind a reverse proxy
-that handled HTTPS (you always should be).
+Build your image with ``docker build .`` and you have a docker image derived on the image we provide, which merely overrides it with your configuration.
 
-As said, SSL should be handled by your own reverse proxy, it's not handled by the container. Your reverse proxy should
+As said before, SSL should be handled by your own reverse proxy, it's not handled by the container. Your reverse proxy should
 simply handle SSL and forward all traffic to the container. The following is a reverse proxy configuration
 example for nginx, assuming the container is mapped to localhost on port 8080 and you have certificates ready::
 
@@ -286,7 +303,7 @@ example for nginx, assuming the container is mapped to localhost on port 8080 an
 
 
 If you don't want to use our container image or don't want to use a reverse proxy, then you'll have to dive a bit deeper
-to get things working. In such cases we recommend using ``uwsgi`` for serving FLAT. Apache2 users can it with
-``mod_uwsgi_proxy``. Even if you don't use our container image, it provides a good reference for how you can set up
-things.
+to get things working. In such cases we recommend using ``uwsgi`` for serving FLAT. Apache2 users can use it with
+``mod_uwsgi_proxy``. Even if you don't use our container image, studying our `Dockerfile` and configurations provides a
+good reference for how you can set up things.
 
