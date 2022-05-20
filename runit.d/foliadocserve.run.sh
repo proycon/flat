@@ -6,4 +6,6 @@ echo "Starting foliadocserve..." >&2
 mkdir -p "${FLAT_DOCROOT:-/data/flat.docroot}"
 chown ${UWSGI_UID:-100}:${UWSGI_GID:-100} "${FLAT_DOCROOT:-/data/flat.docroot}"
 chmod g+ws "${FLAT_DOCROOT:-/data/flat.docroot}"
+#set very permissive stderr
+chmod a+rwx /proc/self/fd/2
 sudo -u nginx foliadocserve -d ${FLAT_DOCROOT:-/data/flat.docroot} --log /dev/stderr --git --gitshare false --expirationtime 120 -p 8080
