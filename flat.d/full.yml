@@ -1,0 +1,195 @@
+name: Full Editor
+
+modes:
+  - [ "viewer", "Viewer" ]
+  - [ "editor", "Annotation Editor" ]
+  - [ "metadata", "Metadata Editor" ]
+
+perspectives:
+  - document
+  - toc
+  - p
+  - s
+
+# Allow users to upload FoLiA documents?
+allowupload: true
+
+#Automatically create namespaces for all the groups a user is in and has write permission for
+creategroupnamespaces: true
+
+# The default annotation focus upon loading a document
+# The annotation type that has is set as annotation focus will be
+# visualised. Set to a valid FoLiA tag name (see the FoLiA documentation at
+# https://proycon.github.io/folia) or null to start without a specific focus
+annotationfocustype: null
+
+# If you set the above, you will also need to set what FoLiA set to use
+annotationfocusset: null
+
+#EXAMPLES:
+#annotationfocustype: correction
+#annotationfocusset: http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml
+
+#annotationfocustype: entity
+#annotationfocusset: https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml
+
+
+# Automatically enable the select span button for the annotation focus when opening the editor dialog
+autoselectspan: false
+
+
+# List of FoLiA annotation types (xml tags) that are allowed as annotation focus, set to True to enable all.
+# Users may switch annotation focus through the menu
+# Here and everywhere else, the annotation type equals the FoLiA XML tag
+# for the annotation, specific sets may be attached to annotation types using a slash, for example:
+#     entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml
+allowedannotationfocus: true
+
+#EXAMPLE:
+#allowedannotationfocus: [
+#       - [ entity/https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml ]
+
+# List of FoLiA annotation types (xml tags) that are initially enabled in
+# the local annotation viewer (the pop-up when the user hovers over elements)
+# set to True to enable all
+initialviewannotations: true
+
+
+# List of FoLiA annotation types (xml tags) that are initially enabled in
+# the global annotation viewer (in the annotation box above the words)
+initialglobviewannotations: []
+
+# List of FoLiA annotation types (xml tags) that are allowed to be viewed
+# a superset of initialviewannotations/initialglobviewannotations. Users can enable/disable each as
+# they see fit. Set to True to enable all
+allowedviewannotations: true
+
+# List of FoLiA annotation types (xml tags) that are initially enabled in the editor dialog (when users click an element for editing)
+# set to True to enable all
+initialeditannotations: true
+
+# List of FoLiA annotation types (xml tags) that are allowed in the editor
+# dialog (the user can enable/disable each as he/she sees fit), set to True
+# to enable all
+allowededitannotations: true
+
+# Allow the user to add annotation types not yet present on a certain element?
+# If set to False, users can only edit existing annotations, never add new ones
+allowaddfields: true
+
+
+# Allow the user to add annotation types not yet present in the document?
+allowdeclare: true
+
+
+# The following values correspond to edit forms
+# They are shown as a set of option buttons in the editor dialog, between
+# which the user can choose. Each of these options enables a button (if
+# only one is selected, no buttons appear). The edit forms can be
+# enabled/disabled by the user from a menu.
+
+#Enable direct editing (this is the default and most basic form of editing)
+#It should be True unless you want to force other editing forms
+editformdirect: true
+
+#Enable editing as correction
+editformcorrection: false
+
+#Enable editing as alternative
+editformalternative: false
+
+#Enable editing as new, this allows for adding multiple or overlapping annotations of the same type
+editformnew: true
+
+#Enable editing the structure element (i.e. its class)
+editstructure: true
+
+#This defines what edit modes the user can enable/disable from the menu himself/herself
+alloweditformdirect: true
+alloweditformcorrection: true
+alloweditformalternative: true
+alloweditformnew: true
+
+#Allow confidence values to be set/edited?
+allowconfidence: true
+
+#Allow enabling/disabling editing the structure element (i.e. its class)
+alloweditstructure: true
+
+
+#Always assign colors for tags by frequency?
+colorbyfreq: false
+
+# FoLiA set to use for corrections
+#initialcorrectionset: http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml
+
+# List of 2-tuples (tag,set) that specify what annotation types and with
+# what sets to declare automatically for each document that is opened.
+# (recall that FoLiA demands all annotations to be declared and that sets
+# can be custom-made by anyone)
+
+#autodeclare:
+#    - [ 'correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml']
+#    - [ 'entity', 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml' ]
+
+# List of 2-tuples (tag,set) that specify what annotation types and with
+# what are required sets to be already present for each document that is
+# opened. This is more or less the opposite of autodeclare
+
+#requiredeclaration:
+#    - [ 'correction', 'http://raw.github.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml' ]
+#    - [ 'entity', 'https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/namedentities.foliaset.xml' ]
+
+#List of metadata keys (in  FoLiA's native metadata) to show in the
+# document index.
+#
+#metadataindex:
+#    - status
+#    - language
+#    - title
+
+#Dictionary of metadata keys to lists of possible values, constrains the values in the metadata editor rather than offering a free-fill field. Example:
+#
+#metadataconstraints:
+#   - language:
+#        - fr
+#        - en
+#        - es
+#     status:
+#        - completed
+#        - inprogress
+#
+#searches:
+#     - query: SELECT entity WHERE annotatortype = "manual" FOR w RETURN target
+#       label: Highlight manually annotated entities
+#       changeperspective: false
+
+#Slices are  strongly tied to perspectives and determines how big of a slice to show per page for each
+#perspective. Setting this (and choosing the desired perspective) enables pagination through documents. The value is a
+#comma-delimited string of ``tag:number`` pairs, for instance: ``p:25,s:100`` to set a page size of 25 paragraphs in
+#the paragraph perspective, and 100 sentences in the sentence perspective. Note that if you make the size of a page too
+#large, you will be confronted with the error: *"Loading aborted: there was too much data to display at once"*.
+
+#slices: p:25,s:100
+
+converters:
+  - id: conllu2folia
+    module: foliatools.conllu2folia
+    function: flat_convert
+    name: CONLL-U
+    parameter_help: 'Metadata. Set <em>"direction": "rtl"</em> for right-to left languages (JSON syntax without the envelopping curly braces)'
+    #default parameter, JSON syntax without the envelopping {}
+    parameter_default: ""
+    inputextensions:
+        - conllu
+        - conll
+  - id: rst2folia
+    module: foliatools.rst2folia
+    function: flat_convert
+    name: ReStructuredText
+    #human readable help for parameters
+    parameter_help: ""
+    #default parameter, JSON syntax without the envelopping {}
+    parameter_default: ""
+    inputextensions:
+      - rst

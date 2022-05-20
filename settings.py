@@ -6,6 +6,7 @@
 #---------------------------------------------------------------------------
 #               PREAMBLE (don't edit this part)
 #---------------------------------------------------------------------------
+import sys
 from django import VERSION as DJANGOVERSION
 from socket import gethostname
 import os.path
@@ -307,10 +308,13 @@ if environ.get("FLAT_CONFIG_DIR"):
     # You can also define configurations externally in .yml files (YAML syntax),
     # the following code will load them INSTEAD OF the above configuration
     CONFIGURATIONS = {}
-    for configfile in glob(os.path.join(environ['FLAT_CONFIG_DIR'],"/*.yml")):
+    for configfile in glob(os.path.join(environ['FLAT_CONFIG_DIR'],"*.yml")):
         configname = os.path.basename(configfile).split('.')[0]
+        print(f"Loading {configname} from {configfile}",file=sys.stderr)
         with open(configfile,'r', encoding='utf-8') as f:
             CONFIGURATIONS[configname] = yaml.safe_load(f.read())
+    if not CONFIGURATIONS:
+        raise Exception(f"No configurations found in {environ['FLAT_CONFIG_DIR']}")
 
 ##############################################################################
 # DJANGO SETTINGS THAT NEED TO BE CHANGED (so edit me!)
