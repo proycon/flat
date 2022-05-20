@@ -86,7 +86,8 @@ FLAT and all ``*.yml`` files in that directory will be parsed as configurations.
 By default, ``settings.py`` defines a ``full`` configuration will that is as
 permissive as possible. You will want to add your own configurations that are
 more restrictive. If you use the external yaml files, the filename determines the configuration name (e.g. ``full.yml``
-defines a configuration named ``full``).
+defines a configuration named ``full``). An example of the full configuration in YAML is available at
+https://github.com/proycon/flat/blob/master/flat.d/full.yml .
 
 We will discuss the individual configuration options here:
 
