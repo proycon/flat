@@ -8,24 +8,41 @@ Installation
 =================
 
 Setting up a web application is often a fairly complex endeavour. To facilitate this process we provide an OCI/Docker
-container image which you can use. For thi we assume some basic familiarity with docker on your part::
+container image which you can use. For this we assume some basic familiarity with docker on your part::
 
     $ docker pull proycon/flat
 
-You can subsequently start a container as follows::
+You can subsequently start a container as follows (minimal example)::
 
     $ docker run -p 8080:80 -v /path/to/data:/data proycon/flat
 
 The ``/path/to/data`` is the data on the host system you want to mount into the container. This is where all FoLiA
-documents will be stored. Make sure you have write permission here; the FLAT container will use UID and GID 100, you may
-need to `remap subordinate user/group IDs <https://docs.docker.com/engine/security/userns-remap/>` .
+documents will be stored. Make sure you have write permission here; the FLAT container will use UID and GID 100 internally (by default), which will translate to higher UIDS/GIDS on the host based on 
+your subordinate user/group configuration, you may need to need to `remap subordinate user/group IDs <https://docs.docker.com/engine/security/userns-remap/>`_ .
 
-After the container is started you can navigate to ``https://localhost:8080`` and login with user ``flat`` and password
-``flat`` if you haven't made any modifications to the default configuration.
+The setting ``-p 8080:80`` maps port 8080 on the host to 80 in the container,
+so after the container is started you can navigate to
+``https://localhost:8080``. By default you can login with user ``flat`` and password ``flat``
+if you haven't made any modifications to the default configuration.
 
-Usage of our container images is the recommended way to install in production environments. The container accepts a wide
-variety of environment variables to configure FLAT. See the `Dockerfile
-<https://github.com/proycon/flat/blob/master/Dockerfile>` for the precise details.
+Usage of our container images is the recommended way to install in production
+environments. The container accepts a wide variety of environment variables to
+configure FLAT. See the `Dockerfile
+<https://github.com/proycon/flat/blob/master/Dockerfile>`_ for the various
+variables you can set, you can subsequently pass them to ``docker run`` using
+``--env`` (can be passed multiple times), for example::
+
+    $ docker run -p 8080:80 -v /path/to/data:/data --env FLAT_REVERSE_PROXY_HTTPS=1 proycon/flat
+
+In order to configure FLAT for specific annotation tasks we recommend you use
+of external YAML files. The format of these is described in the `FLAT
+Administration Guide
+<https://github.com/proycon/flat/blob/master/docs/administration_guide.rst>`_.
+Once you have a directory on your host (e.g. `/path/to/config`) containing one or more such
+external YAML files (use extension `.yml`, an example is provided `here <https://github.com/proycon/flat/blob/master/flat.d/full.yml>`_), you can make them available inside the container by
+setting ``FLAT_CONFIG_DIR`` and mounting another volume as follows::
+
+    $ docker run -p 8080:80 -v /path/to/data:/data -v /path/to/config:/etc/flat --env FLAT_CONFIG_DIR=/etc/flat proycon/flat
 
 
 ---------------------
@@ -58,7 +75,7 @@ The following dependencies will be pulled in automatically if you follow either
 of the above steps:
 
 * foliadocserve (https://github.com/proycon/foliadocserve)
-* pynlpl (https://github.com/proycon/pynlpl) (contains the FoLiA and FQL library)
+* foliapy (https://github.com/proycon/foliapy)
 * django (https://www.djangoproject.com)
 
 *Troubleshooting*: If the pip installation procedure fails because of libxml2
@@ -77,9 +94,9 @@ you are on another system.
 Upgrade
 ------------
 
-If you use the container images as recommended, just pull in the latest image version from Docker Hub.
+If you use the container images as recommended, just pull in the latest image version from Docker Hub and you can ignore the rest of this section.
 
-To upgrade your existing manual installation of flat to the latest version, run the
+To upgrade your existing *manual* installation of flat to the latest version, run the
 following from within your virtual environment::
 
     $ pip install -U FoLiA-Linguistic-Annotation-Tool
@@ -87,7 +104,9 @@ following from within your virtual environment::
 New versions of FLAT may introduce new configuration options for your
 ``settings.py`` (introduced in next section). Please inspect the differences
 between your variant of ``settings.py`` and the one provided with FLAT, and
-copy what is needed. New versions may also introduce database migrations. To
+copy what is needed. If you use external YAML configuration files, you likely won't have this problem.
+
+New versions may also introduce database migrations. To
 run these, set ``PYTHONPATH`` to the directory that contains your
 ``settings.py``, and ``DJANGO_SETTINGS_MODULE`` to the name of the file without the extension::
 
@@ -103,14 +122,13 @@ FLAT Configuration
 ---------------------------
 
 You can configure FLAT either by editing ``settings.py``, or by passing environment variables and some external YAML
-files at run time.
+files at run time, the latter is recommended as it means you can use the container image as-is.
 
-If you use ``settings.py`` directly, download a copy from
+If you do use ``settings.py`` directly, download a copy from
 https://raw.githubusercontent.com/proycon/flat/master/settings.py to some
 custom location, edit it and add a configuration for your system. The file is
 heavily commented to guide you along with the configuration. It is here where
 you specify what your users will see and what function are enabled.
-
 
 Further documentation on configuration FLAT, after completing the installation
 and configuration described in the remainder of this section, can be found in
