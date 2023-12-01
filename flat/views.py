@@ -548,7 +548,7 @@ def upload_helper(request, namespace, configuration=None, mode=None):
 @login_required
 def upload(request):
     if request.method == 'POST':
-        namespace = request.POST['namespace'].replace('..','.').replace(' ','').replace('&','')
+        namespace = request.POST.get('namespace',getusername(request)).replace('..','.').replace(' ','').replace('&','')
         if flat.users.models.haswritepermission(getusername(request), namespace, request) and 'file' in request.FILES:
             return upload_helper(request, namespace)
         else:
