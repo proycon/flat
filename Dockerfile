@@ -87,7 +87,7 @@ RUN cp /usr/src/flat/runit.d/nginx.run.sh /etc/service/nginx/run &&\
     cp -f /usr/src/flat/nginx.conf /etc/nginx/http.d/default.conf
 
 # Install FLAT
-RUN cd /usr/src/flat && pip install . &&\
+RUN cd /usr/src/flat && pip install --break-system-packages . &&\
     ln -s /usr/lib/python3.*/site-packages/flat /opt/flat &&\
     ln -s /usr/lib/python3.*/site-packages/django /opt/django &&\
     sed '/remove me/d' settings.py > flat_settings.py &&\
