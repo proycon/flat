@@ -1969,9 +1969,11 @@ function build_queries(addtoqueue) {
                             query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
+                            if (editdata[i].textclass) query += " WHERE textclass = \"" + escape_fql_value(editdata[i].textclass) + "\"";
                             query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
                             if (editdata[i].textclass) query += " textclass \"" + escape_fql_value(editdata[i].textclass) + "\"";
                         } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
+                            if (editdata[i].textclass) query += " WHERE textclass = \"" + escape_fql_value(editdata[i].textclass) + "\"";
                             query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
                             if (editdata[i].textclass) query += " textclass \"" + escape_fql_value(editdata[i].textclass) + "\"";
                         } else if (editdata[i].class !== "") {
