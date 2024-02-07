@@ -32,18 +32,18 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Text Processing :: Linguistic",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Operating System :: POSIX",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     zip_safe=False,
     package_data = {'flat':['templates/*.html','style/*','script/*'], 'flat.modes.structureeditor':['templates/*.html'],  'flat.modes.viewer':['templates/*.html'], 'flat.modes.editor':['templates/*.html'], 'flat.modes.metadata':['templates/*.html']  },
-    install_requires=['folia >= 2.5.7','Django >= 3.0','requests', 'foliadocserve >= 0.7.7', 'mozilla-django-oidc']
+    install_requires=['folia >= 2.5.7','Django >= 3.0','requests', 'foliadocserve >= 0.7.8', 'mozilla-django-oidc']
 )

@@ -1,5 +1,5 @@
 folia >= 2.5.7
-foliadocserve >= 0.7.7
+foliadocserve >= 0.7.8
 Django>=3.0
 requests
 mozilla_django_oidc
