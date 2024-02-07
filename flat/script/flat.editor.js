@@ -1023,13 +1023,18 @@ function rendereditfield_class(annotation, editfields, repeatreference) {
 function rendereditfield_content(annotation, editfields) {
     /* renders an edit field for editing text/phonological content */
     var s = "";
+    var text_value = "";
     var class_value = annotation.class;
+    var force_show_class = false;
     if (repeatmode) {
         class_value = repeatreference.class;
         if (class_value != annotation.class) { repeat_preset = true; }
     }
-    var text_value;
     if (annotation.type == 't') {
+        if (class_value === undefined) {
+            class_value = "current";
+            force_show_class = true;
+        }
         text_value = annotation.text;
         if (repeatmode) {
             text_value = repeatreference.text;
@@ -1042,12 +1047,16 @@ function rendereditfield_content(annotation, editfields) {
             if (text_value != annotation.phon) { repeat_preset = true; }
         }
     }
-    if (annotation.class != "current") {
+    if ((annotation.class != "current") || (force_show_class)) {
         s = s + "Class: <input id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/><br/>Text:";
     } else {
         s = s + "<input style=\"display: none\" id=\"editfield" + editfields + "\" class=\"classedit\" value=\"" + class_value + "\"/>";
     }
-    s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value.replace(/\n/g," ") + "\"/>";
+    if (text_value !== undefined) {
+        s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"" + text_value.replace(/\n/g," ") + "\"/>";
+    } else {
+        s = s + "<input id=\"editfield" + editfields + "text\" class=\"textedit\" value=\"\"/>";
+    }
     return s;
 }
 
@@ -1185,6 +1194,8 @@ function addeditorfield(index) {
     s =  s + "<th>" + label + "<br /><span class=\"setname\">" + setname + "</span></th><td>";
     if (editoraddablefields[index].type == "relation") {
         s =  s + renderrelationfields(editoraddablefields[index], editfields, null);
+    } else if ((editoraddablefields[index].type == "t") || (editoraddablefields[index].type == "ph")) {
+        s =  s + rendereditfield_content(editoraddablefields[index], editfields);
     } else {
         s =  s + rendereditfield_class(editoraddablefields[index], editfields, repeatreference);
     }
@@ -1502,9 +1513,17 @@ function gather_changes() {
         if (((editdata[i].type == "t") || (editdata[i].type == "ph")) && ($('#editfield' + i + 'text') && ($('#editfield' + i + 'text').val() != editdata[i].text))) {
             //Text content was changed
             //alert("Text change for " + i + ", was " + editdata[i].text + ", changed to " + $('#editfield'+i+'text').val());
-            editdata[i].oldtext = editdata[i].text.replace(/\n/g," ").trim();
+            if (editdata[i].text !== undefined) {
+                editdata[i].oldtext = editdata[i].text.replace(/\n/g," ").trim();
+            } else {
+                editdata[i].oldtext = "";
+            }
             editdata[i].text = $('#editfield' + i + 'text').val().trim();
-            editdata[i].textclass = editdata[i].class;
+            if (editdata[i].class !== undefined) {
+                editdata[i].textclass = editdata[i].class;
+            } else {
+                editdata[i].textclass = "current";
+            }
             editdata[i].changed = true;
         }
         if ((editdata[i].editform == 'correction') && (!editdata[i].changed) && (editdata[i].oldcorrectionclass) && ($('#editform' + i + 'correctionclass').val().trim() != editdata[i].oldcorrectionclass)) {
@@ -1969,11 +1988,11 @@ function build_queries(addtoqueue) {
                             query += " OF " + editdata[i].set;
                         }
                         if ((editdata[i].type == "t") && (editdata[i].text !== "")) {
-                            if (editdata[i].textclass) query += " WHERE textclass = \"" + escape_fql_value(editdata[i].textclass) + "\"";
+                            if ((editdata[i].textclass) && action != "ADD") query += " WHERE textclass = \"" + escape_fql_value(editdata[i].textclass) + "\"";
                             query += " WITH text \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
                             if (editdata[i].textclass) query += " textclass \"" + escape_fql_value(editdata[i].textclass) + "\"";
                         } else if ((editdata[i].type == "ph") && (editdata[i].text !== "")) {
-                            if (editdata[i].textclass) query += " WHERE textclass = \"" + escape_fql_value(editdata[i].textclass) + "\"";
+                            if ((editdata[i].textclass) && action != "ADD") query += " WHERE textclass = \"" + escape_fql_value(editdata[i].textclass) + "\"";
                             query += " WITH phon \"" + escape_fql_value(editdata[i].text) + "\" datetime now confidence " + editdata[i].confidence;
                             if (editdata[i].textclass) query += " textclass \"" + escape_fql_value(editdata[i].textclass) + "\"";
                         } else if (editdata[i].class !== "") {
