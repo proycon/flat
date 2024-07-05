@@ -253,15 +253,17 @@ function getspantext(annotation, explicit) {
 
 function getclasslabel_helper(c, key) {
     var label = key;
-    c.subclasses.forEach(function(subc){
-        if (label != key) return;
-        if (subc.id == key) {
-            label = subc.label;
-            return;
-        }
-        label = getclasslabel_helper(subc, key);
-        if (label != key) return;
-    });
+    if (c.subclasses) {
+        c.subclasses.forEach(function(subc){
+            if (label != key) return;
+            if (subc.id == key) {
+                label = subc.label;
+                return;
+            }
+            label = getclasslabel_helper(subc, key);
+            if (label != key) return;
+        });
+    }
     return label;
 }
 
@@ -915,8 +917,9 @@ function computeclassfreq() {
                 if ((!configuration.colorbyfreq) && (setdefinitions[annotation.set]) && (setdefinitions[annotation.set].classes)) {
                     //not a real class frequency, simply assign the rank number
                     var i = -1;
-                    for (i = 0; i < setdefinitions[annotation.set].classes.length; i++) {
-                        if (setdefinitions[annotation.set].classes[i].id == annotation.class) {
+                    for (var c in setdefinitions[annotation.set].classes) {
+                        i += 1;
+                        if (c == annotation.class) {
                             break;
                         }
                     }
@@ -938,14 +941,14 @@ function computeclassfreq() {
 }
 
 function setclasscolors() {
-    //count class distribution
+    //count class distribution and assign colours based on rank
 
     var legendtype = annotationfocus.type;
     var legendset = annotationfocus.set;
     var legendtitle = folia_label(legendtype, legendset);
     var classfreq = computeclassfreq();
 
-    s = "<span class=\"title\">Legend &bull; " + legendtitle + "</span>"; //text for legend
+    var s = "<span class=\"title\">Legend &bull; " + legendtitle + "</span>"; //text for legend
     s = s + "(<a href=\"javascript:removeclasscolors(true)\">Hide</a>)<br />";
     classrank = {};
     currentrank = 1;
@@ -960,6 +963,8 @@ function setclasscolors() {
         }
     });
 
+    $('#legend').html(s);
+    $('#legend').show();
 
     forallannotations(function(structureelement, annotation){
         if ((annotation.type == annotationfocus.type) && (annotation.set == annotationfocus.set) && (annotation.class)) {
@@ -985,8 +990,6 @@ function setclasscolors() {
         }
     });
 
-    $('#legend').html(s);
-    $('#legend').show();
 }
 
 function showdeletions() {
