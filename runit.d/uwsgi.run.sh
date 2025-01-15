@@ -33,9 +33,11 @@ else:
 #one.name = 'FLAT'
 #one.save()" | django-admin shell -i python
 
-chown ${UWSGI_UID:-100}:${UWSGI_GID:-100} "$(dirname "$FLAT_DATABASE")"
-chown ${UWSGI_UID:-100}:${UWSGI_GID:-100} "${FLAT_DATABASE}"
-chmod ug+rw "${FLAT_DATABASE}"
+if [ "$FLAT_DATABASE_ENGINE" = "django.db.backends.sqlite3" ]; then
+    chown ${UWSGI_UID:-100}:${UWSGI_GID:-100} "$(dirname "$FLAT_DATABASE")"
+    chown ${UWSGI_UID:-100}:${UWSGI_GID:-100} "${FLAT_DATABASE}"
+    chmod ug+rw "${FLAT_DATABASE}"
+fi
 
 echo "Starting FLAT via uwsgi..." >&2
 uwsgi --plugin python3 \
@@ -45,7 +47,7 @@ uwsgi --plugin python3 \
       --socket "127.0.0.1:8888" \
       --wsgi-file /etc/flat.wsgi \
       --processes ${UWSGI_PROCESSES:-2} \
-      --single-interpreter
+      --single-interpreter \
       --threads ${UWSGI_THREADS:-2} \
       --manage-script-name
 
