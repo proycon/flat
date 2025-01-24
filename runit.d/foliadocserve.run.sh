@@ -9,4 +9,4 @@ chmod g+ws "${FLAT_DOCROOT:-/data/flat.docroot}"
 #set very permissive stdout/stderr
 chmod a+rwx /proc/self/fd/1
 chmod a+rwx /proc/self/fd/2
-sudo -u nginx foliadocserve -d ${FLAT_DOCROOT:-/data/flat.docroot} --log ${FOLIADOCSERVE_LOG:-/dev/stdout} --git --gitshare false --expirationtime 120 -p 8080
+sudo -u \#${UWSGI_UID:-100} foliadocserve -d ${FLAT_DOCROOT:-/data/flat.docroot} --log ${FOLIADOCSERVE_LOG:-/dev/stdout} --git --gitshare false --expirationtime 120 -p 8080
